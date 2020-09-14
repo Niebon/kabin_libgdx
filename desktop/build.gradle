@@ -1,6 +1,8 @@
 apply plugin: "java"
 
-sourceCompatibility = 1.7
+
+sourceCompatibility = '14'
+targetCompatibility = '14'
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
@@ -39,3 +41,4 @@ task dist(type: Jar) {
 dist.dependsOn classes
 
 eclipse.project.name = appName + "-desktop"
+
