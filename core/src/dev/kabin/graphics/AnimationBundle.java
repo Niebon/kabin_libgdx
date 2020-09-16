@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class AnimationBundle implements Animations, Disposable {
 
-    private static final float DURATION_SECONDS = 0.1f;
+    private static final float DURATION_SECONDS = 0.1f; // 100 ms.
 
     private final SpriteBatch batch;
     private final Map<AnimationType, Animation<TextureRegion>> animations;
@@ -29,19 +29,17 @@ public class AnimationBundle implements Animations, Disposable {
     ) {
         this.batch = new SpriteBatch();
         this.regions = GlobalData.atlas.findRegions(atlasRegionPath);
-        this.animations = animations.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> {
-                    List<Integer> indices = e.getValue();
-                    Array<TextureRegion> textureArray = new Array<>(indices.size());
-                    for (int i : indices) {
-                        textureArray.add(regions.get(i));
-                    }
-                    return new Animation<>(DURATION_SECONDS, textureArray);
-                }
-        ));
+        this.animations = animations.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue())));
     }
 
+    private Animation<TextureRegion> generateAnimation(List<Integer> indices) {
+        final Array<TextureRegion> textureArray = new Array<>(indices.size());
+        for (int i : indices) {
+            textureArray.add(regions.get(i));
+        }
+        return new Animation<>(DURATION_SECONDS, textureArray);
+    }
 
     @Override
     public void setCurrentAnimation(AnimationType animationType) {
@@ -52,13 +50,9 @@ public class AnimationBundle implements Animations, Disposable {
     public void renderNextAnimationFrame(float stateTime) {
         if (!animations.containsKey(currentAnimationType)) return;
 
-        final TextureRegion region;
+        final TextureRegion region
+                = animations.get(currentAnimationType).getKeyFrame(stateTime, currentAnimationType.isLooping());
 
-        if (currentAnimationType.isLooping()) {
-            region = animations.get(currentAnimationType).getKeyFrame(stateTime, true);
-        } else {
-            region = animations.get(currentAnimationType).getKeyFrame(stateTime);
-        }
         // Switch to default if last frame is not repeating
         if (!currentAnimationType.isLastFrameRepeating() &&
                 !currentAnimationType.isLooping() &&

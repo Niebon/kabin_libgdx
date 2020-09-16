@@ -44,9 +44,6 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
-//		GlobalData.batch.dispose();
-//		GlobalData.img.dispose();
-//		GlobalData.spriteBatch.dispose();
 		bundle.dispose();
 	}
 
