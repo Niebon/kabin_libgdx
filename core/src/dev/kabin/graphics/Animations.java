@@ -1,11 +1,13 @@
 package dev.kabin.graphics;
 
-import dev.kabin.geometry.shapes.RectDouble;
+import dev.kabin.geometry.helperinterfaces.Area;
+import dev.kabin.geometry.helperinterfaces.ModifiableCoordinates;
+import dev.kabin.geometry.helperinterfaces.Scalable;
 import dev.kabin.utilities.Direction;
 
 import java.util.List;
 
-public interface Animations {
+public interface Animations extends ModifiableCoordinates, Area, Scalable {
 
     List<AnimationType> STANDARD_RIGHT_LIST = List.of(AnimationType.STANDARD1_RIGHT,
             AnimationType.STANDARD2_RIGHT,
@@ -52,35 +54,10 @@ public interface Animations {
         }
     }
 
-    AnimationType getAnimation();
+    void setCurrentAnimation(AnimationType animationType);
 
-    String getCurrentFrameName();
+    void renderNextAnimationFrame(float stateTime);
 
-    List<String> getFrames();
+    void renderFrameByIndex(int index);
 
-    List<String> getAnimationFrames(AnimationType animationType);
-
-    void addFrame(String key, RectDouble viewport);
-
-    void removeFrame(String key);
-
-    void showFrame(String key);
-
-    void showFrame(int index);
-
-    void setAnimation(AnimationType animationType, List<String> animationFrames);
-
-    void playAnimation(AnimationType animationType);
-
-    void nextAnimationFrame();
-
-    boolean hasKey(String key);
-
-    boolean hasViewport(RectDouble viewport);
-
-    boolean hasAnimation(AnimationType animationType);
-
-    boolean hasAnimations();
-
-    RectDouble getViewport(String frameKey);
 }
