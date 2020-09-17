@@ -6,11 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.global.GlobalData;
 import dev.kabin.graphics.AnimationBundle;
+import dev.kabin.graphics.AnimationBundleFactory;
 import dev.kabin.graphics.Animations;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -22,9 +19,7 @@ public class MainGame extends ApplicationAdapter {
 		GlobalData.atlas = new TextureAtlas("textures.atlas");
 
 
-		bundle = new AnimationBundle(
-				"player/player",
-				Map.of(Animations.AnimationType.RUN_RIGHT, IntStream.range(0, 10).boxed().collect(Collectors.toList())));
+		bundle = AnimationBundleFactory.load("player");
 		bundle.setScale(5);
 		bundle.setX(0);
 		bundle.setY(0);

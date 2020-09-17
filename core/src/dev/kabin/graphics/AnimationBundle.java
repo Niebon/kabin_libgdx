@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Direction;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AnimationBundle implements Animations, Disposable {
 
@@ -28,9 +28,20 @@ public class AnimationBundle implements Animations, Disposable {
             Map<AnimationType, List<Integer>> animations
     ) {
         this.batch = new SpriteBatch();
-        this.regions = GlobalData.atlas.findRegions(atlasRegionPath);
+        this.regions = findAllAnimations(atlasRegionPath);
         this.animations = animations.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue())));
+    }
+
+    private Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath) {
+        return new Array<>(Arrays.stream(AnimationType.values())
+                .map(type -> GlobalData.atlas.findRegions(atlasRegionPath + '/' + type.name()))
+                .filter(Objects::nonNull)
+                .filter(Array::notEmpty)
+                .sorted(Comparator.comparing(region -> region.first().index))
+                .map(Array::toArray)
+                .flatMap(Stream::of)
+                .toArray(TextureAtlas.AtlasRegion[]::new));
     }
 
     private Animation<TextureRegion> generateAnimation(List<Integer> indices) {
