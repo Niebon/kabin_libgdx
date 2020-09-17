@@ -11,7 +11,7 @@ public class AnimationBundleFactory {
 
     public static String ASSETS_RAW_TEXTURES = "core/assets/raw_textures/";
 
-    public static AnimationBundle load(String assetPath) {
+    public static AnimationBundle loadFromAssetPath(String assetPath) {
 
         final File directory = new File(ASSETS_RAW_TEXTURES + assetPath);
         if (!directory.isDirectory()) throw new IllegalArgumentException("The provided assetPath '" + assetPath
@@ -36,6 +36,11 @@ public class AnimationBundleFactory {
         }
 
         return new AnimationBundle(assetPath, animationTypeToIntListMap);
+    }
+
+    public static AnimationBundle loadFromAtlasPath(String atlasPath) {
+        //TODO implement.
+        return null;
     }
 
 

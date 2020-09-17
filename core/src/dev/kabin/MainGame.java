@@ -18,14 +18,13 @@ public class MainGame extends ApplicationAdapter {
 	public void create() {
 		GlobalData.atlas = new TextureAtlas("textures.atlas");
 
-
-		bundle = AnimationBundleFactory.load("player");
+		bundle = AnimationBundleFactory.loadFromAssetPath("player");
 		bundle.setScale(5);
 		bundle.setX(0);
 		bundle.setY(0);
 		bundle.setWidth(32);
 		bundle.setHeight(32);
-		bundle.setCurrentAnimation(Animations.AnimationType.RUN_RIGHT);
+		bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
 	}
 
 	@Override
