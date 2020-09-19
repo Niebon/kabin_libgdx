@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Entity extends Scalable, ModifiableCoordinates, Comparable<Entity> {
 
 
-    void render();
+    void render(float stateTime);
 
     void updatePhysics();
 

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -55,7 +54,7 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
     private void makeCallToListeners(@NotNull T value, boolean pressed, boolean oldValue) {
         makeCallToListeners(getDefaultListeners());
 
-        logger.fine(() -> "Making call to listeners " + value + ", " + pressed + ".");
+        logger.info(() -> "Making call to listeners " + value + ", " + pressed + ".");
 
         if (pressed != oldValue) {
             makeCallToListeners(getChangeListeners());

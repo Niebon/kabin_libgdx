@@ -1,10 +1,13 @@
 package dev.kabin.entities;
 
+import dev.kabin.graphics.animation.AnimationBundle;
+import dev.kabin.graphics.animation.AnimationBundleFactory;
 import dev.kabin.utilities.GameData;
 import org.json.JSONObject;
 
 public class EntitySimple implements Entity {
 
+    private final AnimationBundle animationBundle;
     private final String atlasPath;
     private float x, y, scale;
 
@@ -18,18 +21,21 @@ public class EntitySimple implements Entity {
         this.y = y;
         this.scale = scale;
         this.atlasPath = atlasPath;
-
+        this.animationBundle = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
 
     }
 
     @Override
-    public void render() {
-
+    public void render(float stateTime) {
+        animationBundle.setX(x);
+        animationBundle.setY(y);
+        animationBundle.setScale(scale);
+        animationBundle.renderNextAnimationFrame(stateTime);
     }
 
     @Override
     public void updatePhysics() {
-
+        // Update x and y accordingly.
     }
 
     @Override
