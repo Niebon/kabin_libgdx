@@ -3,11 +3,10 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.global.GlobalData;
-import dev.kabin.graphics.AnimationBundle;
-import dev.kabin.graphics.AnimationBundleFactory;
-import dev.kabin.graphics.Animations;
+import dev.kabin.graphics.animation.AnimationBundle;
+import dev.kabin.graphics.animation.AnimationBundleFactory;
+import dev.kabin.graphics.animation.Animations;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -16,15 +15,14 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		GlobalData.atlas = new TextureAtlas("textures.atlas");
-
-		bundle = AnimationBundleFactory.loadFromAssetPath("player");
+		bundle = AnimationBundleFactory.loadFromAtlasPath("player");
 		bundle.setScale(5);
 		bundle.setX(0);
 		bundle.setY(0);
 		bundle.setWidth(32);
 		bundle.setHeight(32);
 		bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
+		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
 	}
 
 	@Override

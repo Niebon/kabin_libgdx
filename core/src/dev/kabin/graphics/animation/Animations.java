@@ -1,4 +1,4 @@
-package dev.kabin.graphics;
+package dev.kabin.graphics.animation;
 
 import dev.kabin.geometry.helperinterfaces.Area;
 import dev.kabin.geometry.helperinterfaces.ModifiableCoordinates;

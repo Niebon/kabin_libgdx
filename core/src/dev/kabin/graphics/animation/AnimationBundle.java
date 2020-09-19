@@ -1,4 +1,4 @@
-package dev.kabin.graphics;
+package dev.kabin.graphics.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,42 +6,32 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Direction;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AnimationBundle implements Animations, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
 
-    private final SpriteBatch batch;
+    private final SpriteBatch batch = new SpriteBatch();
     private final Map<AnimationType, Animation<TextureRegion>> animations;
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, width, height, scale;
     private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
 
     public AnimationBundle(
-            String atlasRegionPath,
+            Array<TextureAtlas.AtlasRegion> regions,
             Map<AnimationType, List<Integer>> animations
     ) {
-        this.batch = new SpriteBatch();
-        this.regions = findAllAnimations(atlasRegionPath);
-        this.animations = animations.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue())));
-    }
-
-    private Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath) {
-        return new Array<>(Arrays.stream(AnimationType.values())
-                .map(type -> GlobalData.atlas.findRegions(atlasRegionPath + '/' + type.name()))
-                .filter(Objects::nonNull)
-                .filter(Array::notEmpty)
-                .sorted(Comparator.comparing(region -> region.first().index))
-                .map(Array::toArray)
-                .flatMap(Stream::of)
-                .toArray(TextureAtlas.AtlasRegion[]::new));
+        this.regions = regions;
+        //noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
+        this.animations = new EnumMap<AnimationType, Animation<TextureRegion>>(animations.entrySet().stream().collect(
+                Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue()))
+        ));
     }
 
     private Animation<TextureRegion> generateAnimation(List<Integer> indices) {
