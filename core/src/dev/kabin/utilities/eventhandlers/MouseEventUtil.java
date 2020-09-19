@@ -37,7 +37,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 	}
 
 	public void registerMouseMoved(double x, double y) {
-	    // TODO reinstate
+	    logger.fine(() -> "Registered mouse wherabouts: " + x + ", " + y);
 		//EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
 		MouseEventUtil.x = x;
 		MouseEventUtil.y = y;

@@ -55,7 +55,7 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
     private void makeCallToListeners(@NotNull T value, boolean pressed, boolean oldValue) {
         makeCallToListeners(getDefaultListeners());
 
-        logger.log(Level.INFO, "Making call to listeners " + value + ", " + pressed + ".");
+        logger.fine(() -> "Making call to listeners " + value + ", " + pressed + ".");
 
         if (pressed != oldValue) {
             makeCallToListeners(getChangeListeners());
