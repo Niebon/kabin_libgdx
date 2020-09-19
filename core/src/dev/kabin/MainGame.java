@@ -8,6 +8,10 @@ import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
 import dev.kabin.graphics.animation.Animations;
 
+import java.util.logging.Level;
+
+import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
+
 public class MainGame extends ApplicationAdapter {
 
 	float stateTime;
@@ -23,6 +27,8 @@ public class MainGame extends ApplicationAdapter {
 		bundle.setHeight(32);
 		bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
 		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
+
+		logger.setLevel(Level.INFO);
 	}
 
 	@Override
