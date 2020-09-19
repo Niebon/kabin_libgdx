@@ -15,4 +15,6 @@ dependencies {
     compile 'org.jetbrains:annotations:20.1.0'
     compile 'org.json:json:20200518'
     compile 'org.apache.commons:commons-collections4:4.4'
+    compile 'com.google.guava:guava:29.0-jre'
+
 }

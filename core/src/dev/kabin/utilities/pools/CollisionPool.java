@@ -1,5 +1,7 @@
 package dev.kabin.utilities.pools;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import dev.kabin.geometry.points.PointInt;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
@@ -16,70 +18,55 @@ public class CollisionPool {
     private static final Map<String, List<PointInt>> imagePathToCollisionProfileBoundaryMapping = new HashMap<>();
     private static final Map<String, List<PointInt>> imagePathToSurfaceContourMapping = new HashMap<>();
     private static final Map<String, IntPrimitivePairPredicate> collisionCheck = new HashMap<>();
+    private static final String TEXTURES_PATH = "core/assets/textures.png";
 
 
-    public static IntPrimitivePairPredicate findCollisionCheck(String imagePath, String frameKey) {
-        return collisionCheck.computeIfAbsent(imagePath + frameKey, missing -> {
-            final List<PointInt> profile = findCollisionProfile(imagePath, frameKey);
-            final int maxX = profile.stream().mapToInt(PointInt::x).max().orElse(0);
-            final int maxY = profile.stream().mapToInt(PointInt::y).max().orElse(0);
-            final boolean[][] predicateHelper = new boolean[maxX + 1][maxY + 1];
-            for (boolean[] booleans : predicateHelper) {
-                Arrays.fill(booleans, false);
-            }
-            for (PointInt p : profile) {
-                predicateHelper[p.x][p.y] = true;
-            }
-            return (i, j) -> predicateHelper[i][j];
-        });
+//    public static IntPrimitivePairPredicate findCollisionCheck(int minX, int minY) {
+//        return collisionCheck.computeIfAbsent(genKey(minX, minY), missing -> {
+//            final List<PointInt> profile = findCollisionProfile(minX, minY);
+//            final int maxX = profile.stream().mapToInt(PointInt::x).max().orElse(0);
+//            final int maxY = profile.stream().mapToInt(PointInt::y).max().orElse(0);
+//            final boolean[][] predicateHelper = new boolean[maxX + 1][maxY + 1];
+//            for (boolean[] booleans : predicateHelper) {
+//                Arrays.fill(booleans, false);
+//            }
+//            for (PointInt p : profile) {
+//                predicateHelper[p.x][p.y] = true;
+//            }
+//            return (i, j) -> predicateHelper[i][j];
+//        });
+//    }
+
+//    private static List<PointInt> findCollisionProfile(int minX, int minY) {
+//        if (!imagePathToCollisionProfileMapping.containsKey(genKey(minX, minY))) {
+//            calculateCollisionData(minX, minY);
+//        }
+//        return imagePathToCollisionProfileMapping.get(genKey(minX, minY));
+//    }
+
+    private static String genKey(int x, int y) {
+        return x + "_" + y;
     }
 
-    private static String generatePath(String imageAssetFolder, String filenameNoExtension) {
-        return imageAssetFolder + '/' + filenameNoExtension + ".png";
-    }
-
-    public static List<PointInt> findCollisionProfile(String imageAssetFolder, String filenameNoExtension) {
-        final String path = generatePath(imageAssetFolder, filenameNoExtension);
-        if (!imagePathToCollisionProfileMapping.containsKey(imageAssetFolder + filenameNoExtension)) {
-            calculateCollisionData(path);
-        }
-        return imagePathToCollisionProfileMapping.get(imageAssetFolder + filenameNoExtension);
-    }
-
-    public static List<PointInt> findCollisionProfileBoundary(String imageAssetFolder, String filenameNoExtension) {
-        final String path = generatePath(imageAssetFolder, filenameNoExtension);
-        if (!imagePathToCollisionProfileBoundaryMapping.containsKey(path)) {
-            calculateCollisionData(path);
-        }
-        return imagePathToCollisionProfileBoundaryMapping.get(path);
-    }
-
-    public static List<PointInt> findSurfaceContourProfile(String imageAssetFolder, String filenameNoExtension) {
-        final String path = generatePath(imageAssetFolder, filenameNoExtension);
-        if (!imagePathToSurfaceContourMapping.containsKey(path)) {
-            calculateCollisionData(path);
-        }
-        return imagePathToSurfaceContourMapping.get(path);
-    }
-
-    private static void calculateCollisionData(@NotNull String imageResource) {
+    private static void calculateCollisionData(
+            int minX,
+            int minY,
+            int width,
+            int height
+    ) {
 
         final BufferedImage bufferedImage;
-        final int minX, minY, width, height;
 
-        if (imageResource.endsWith(".png")) {
-            bufferedImage = ImagePool.findBufferedImage(imageResource);
-            width = bufferedImage.getWidth();
-            height = bufferedImage.getHeight();
-            minX = 0;
-            minY = 0;
-        } else throw new RuntimeException("Provided image resource was not '.png'.");
+
+        bufferedImage = ImagePool.findBufferedImage(TEXTURES_PATH);
+
+
 
         final BiFunction<Integer, Integer, Boolean>
                 indexValidator = Functions.indexValidator(minX, minX + width, minY, minY + height);
 
-        imagePathToCollisionProfileMapping.put(imageResource, new ArrayList<>());
-        imagePathToSurfaceContourMapping.put(imageResource, new ArrayList<>());
+        imagePathToCollisionProfileMapping.put(genKey(minX, minY), new ArrayList<>());
+        imagePathToSurfaceContourMapping.put(genKey(minX, minY), new ArrayList<>());
         /*
         Here i : position x relative to image
              j : position y relative to image
@@ -98,10 +85,10 @@ public class CollisionPool {
                     }
                 } else pointOfPath = false;
                 if (collision) {
-                    imagePathToCollisionProfileMapping.get(imageResource).add(new PointInt(i - minX, j - minY));
+                    imagePathToCollisionProfileMapping.get(genKey(minX, minY)).add(new PointInt(i - minX, j - minY));
                 }
                 if (pointOfPath) {
-                    imagePathToSurfaceContourMapping.get(imageResource).add(new PointInt(i - minX, j - minY));
+                    imagePathToSurfaceContourMapping.get(genKey(minX, minY)).add(new PointInt(i - minX, j - minY));
                 }
             }
         }
@@ -109,7 +96,7 @@ public class CollisionPool {
         /*
         Calculate collision profile boundary.
         */
-        imagePathToCollisionProfileBoundaryMapping.put(imageResource,
+        imagePathToCollisionProfileBoundaryMapping.put(genKey(minX, minY),
                 findCollisionProfileBoundary(minX, minY, width, height, bufferedImage));
     }
 

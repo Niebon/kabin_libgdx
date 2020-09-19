@@ -18,10 +18,12 @@ public class AnimationBundle implements Animations, Disposable {
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
 
     private final SpriteBatch batch = new SpriteBatch();
-    private final Map<AnimationType, Animation<TextureRegion>> animations;
+    private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animations;
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, width, height, scale;
     private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
+
+    private TextureAtlas.AtlasRegion cachedTextureRegion;
 
     public AnimationBundle(
             Array<TextureAtlas.AtlasRegion> regions,
@@ -29,13 +31,13 @@ public class AnimationBundle implements Animations, Disposable {
     ) {
         this.regions = regions;
         //noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
-        this.animations = new EnumMap<AnimationType, Animation<TextureRegion>>(animations.entrySet().stream().collect(
+        this.animations = new EnumMap<AnimationType, Animation<TextureAtlas.AtlasRegion>> (animations.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue()))
         ));
     }
 
-    private Animation<TextureRegion> generateAnimation(List<Integer> indices) {
-        final Array<TextureRegion> textureArray = new Array<>(indices.size());
+    private Animation<TextureAtlas.AtlasRegion> generateAnimation(List<Integer> indices) {
+        final Array<TextureAtlas.AtlasRegion> textureArray = new Array<>(indices.size());
         for (int i : indices) {
             textureArray.add(regions.get(i));
         }
@@ -51,17 +53,18 @@ public class AnimationBundle implements Animations, Disposable {
     public void renderNextAnimationFrame(float stateTime) {
         if (!animations.containsKey(currentAnimationType)) return;
 
-        final TextureRegion region
-                = animations.get(currentAnimationType).getKeyFrame(stateTime, currentAnimationType.isLooping());
+        cachedTextureRegion = animations.get(currentAnimationType).getKeyFrame(stateTime, currentAnimationType.isLooping());
 
         // Switch to default if last frame is not repeating
         if (!currentAnimationType.isLastFrameRepeating() &&
                 !currentAnimationType.isLooping() &&
                 animations.get(currentAnimationType).isAnimationFinished(stateTime)) {
-            currentAnimationType = currentAnimationType.getDirection() == Direction.RIGHT ? AnimationType.DEFAULT_RIGHT : AnimationType.DEFAULT_LEFT;
+            currentAnimationType = currentAnimationType.getDirection() == Direction.RIGHT ? AnimationType.DEFAULT_RIGHT
+                    : AnimationType.DEFAULT_LEFT;
         }
         batch.begin();
-        batch.draw(region, getX() * getScale(), getY() * getScale(), getWidth() * getScale(), getHeight() * getScale());
+        batch.draw(cachedTextureRegion, getX() * getScale(), getY() * getScale(),
+                getWidth() * getScale(), getHeight() * getScale());
         batch.end();
     }
 
@@ -77,6 +80,10 @@ public class AnimationBundle implements Animations, Disposable {
         batch.end();
     }
 
+    @Override
+    public String getCurrentImageAssetPath() {
+        return String.valueOf(cachedTextureRegion.index);
+    }
 
     @Override
     public float getWidth() {

@@ -60,4 +60,6 @@ public interface Animations extends ModifiableCoordinates, Area, Scalable {
 
     void renderFrameByIndex(int index);
 
+    String getCurrentImageAssetPath();
+
 }

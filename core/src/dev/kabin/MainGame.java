@@ -36,6 +36,7 @@ public class MainGame extends ApplicationAdapter {
 
 		//bundle.renderFrameByIndex(0);
 		bundle.renderNextAnimationFrame(stateTime);
+		System.out.println(bundle.getCurrentImageAssetPath());
 	}
 	
 	@Override
