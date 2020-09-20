@@ -25,6 +25,7 @@ public class Functions {
     private static final int PIZZA_SLICE_DEGREES = 12;
     public static final int NUMBER_OF_SLICES = 360 / PIZZA_SLICE_DEGREES;
 
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     @Contract(pure = true)
     public static boolean oneTrue(@NotNull boolean... array) {
         //noinspection ForLoopReplaceableByForEach
@@ -32,7 +33,6 @@ public class Functions {
         return false;
     }
 
-    @SuppressWarnings("unused")
     @Contract(pure = true)
     public static boolean oneFalse(@NotNull boolean... array) {
         //noinspection ForLoopReplaceableByForEach
@@ -40,7 +40,6 @@ public class Functions {
         return false;
     }
 
-    @SuppressWarnings("unused")
     @Contract(pure = true)
     public static boolean onePositive(@NotNull int... array) {
         for (int b : array) if (b > 0) return true;
