@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Wrapper class for a pair of ints.
  */
-public class PointInt implements Point<Integer> {
+public class PointInt implements PrimitivePointInt {
 
 	public int x, y;
 
@@ -40,12 +40,12 @@ public class PointInt implements Point<Integer> {
 	}
 
 	@Override
-	public Integer getX() {
+	public int getX() {
 		return x;
 	}
 
 	@Override
-	public Integer getY() {
+	public int getY() {
 		return y;
 	}
 
@@ -57,17 +57,6 @@ public class PointInt implements Point<Integer> {
 		return y;
 	}
 
-	@Override
-	public Point<Integer> setX(@NotNull Integer x) {
-		this.x = x;
-		return this;
-	}
-
-	@Override
-	public Point<Integer> setY(@NotNull Integer y) {
-		this.y = y;
-		return this;
-	}
 
 	public PointInt transform(@NotNull IntToIntFunction fx, @NotNull IntToIntFunction fy) {
 		x = fx.apply(x);
@@ -75,7 +64,6 @@ public class PointInt implements Point<Integer> {
 		return this;
 	}
 
-	@Override
 	public PointInt rotate(double angleRadians) {
 		final double cs = Math.cos(angleRadians), sn = Math.sin(angleRadians);
 		x = (int) Math.round(x * cs - y * sn);

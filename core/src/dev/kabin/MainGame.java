@@ -17,6 +17,9 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
+
+		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
+
 		bundle = AnimationBundleFactory.loadFromAtlasPath("player");
 		bundle.setScale(5);
 		bundle.setX(0);
@@ -24,7 +27,7 @@ public class MainGame extends ApplicationAdapter {
 		bundle.setWidth(32);
 		bundle.setHeight(32);
 		bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
-		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
+
 
 		logger.setLevel(GlobalData.getLogLevel());
 	}

@@ -1,6 +1,9 @@
 package dev.kabin.utilities.pools;
 
-import dev.kabin.geometry.points.PointInt;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import dev.kabin.geometry.points.ImmutablePointInt;
+import dev.kabin.geometry.points.PrimitivePointInt;
+import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +16,9 @@ public class CollisionPool {
 
 	// TODO: define or import int to object hash maps.
 	// References to collision points for image pool.
-	private static final Map<Integer, Map<Integer, List<PointInt>>> indexPairToCollisionProfile = new HashMap<>();
-	private static final Map<Integer, Map<Integer, List<PointInt>>> indexPairToCollisionProfileBoundary = new HashMap<>();
-	private static final Map<Integer, Map<Integer, List<PointInt>>> indexPairToSurfaceContourMapping = new HashMap<>();
+	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfile = new HashMap<>();
+	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfileBoundary = new HashMap<>();
+	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToSurfaceContourMapping = new HashMap<>();
 	private static final Map<Integer, Map<Integer, IntPrimitivePairPredicate>> indexPairToCollisionCheck = new HashMap<>();
 	private static final String TEXTURES_PATH = "core/assets/textures.png";
 
@@ -27,39 +30,42 @@ public class CollisionPool {
 		}
 
 		return indexPairToCollisionCheck.get(x).computeIfAbsent(y, missing -> {
-			final List<PointInt> profile = indexPairToCollisionProfile.get(x).get(y);
-			final int maxX = profile.stream().mapToInt(PointInt::x).max().orElse(0);
-			final int maxY = profile.stream().mapToInt(PointInt::y).max().orElse(0);
+
+			final List<PrimitivePointInt> profile = findCollisionProfile(x, y);
+			final int maxX = profile.stream().mapToInt(PrimitivePointInt::getX).max().orElse(0);
+			final int maxY = profile.stream().mapToInt(PrimitivePointInt::getY).max().orElse(0);
 			final boolean[][] predicateHelper = new boolean[maxX + 1][maxY + 1];
 			for (boolean[] booleans : predicateHelper) {
 				Arrays.fill(booleans, false);
 			}
-			for (PointInt p : profile) {
-				predicateHelper[p.x][p.y] = true;
+			for (PrimitivePointInt p : profile) {
+				predicateHelper[p.getX()][p.getY()] = true;
 			}
 			return (i, j) -> predicateHelper[i][j];
 		});
 	}
 
-//    private static List<PointInt> findCollisionProfile(int minX, int minY) {
-//        if (!imagePathToCollisionProfileMapping.containsKey(genKey(minX, minY))) {
-//            calculateCollisionData(minX, minY);
-//        }
-//        return imagePathToCollisionProfileMapping.get(genKey(minX, minY));
-//    }
+    private static List<PrimitivePointInt> findCollisionProfile(int x, int y) {
+        if (!indexPairToCollisionProfile.containsKey(x) || indexPairToCollisionProfile.get(x).containsKey(y)) {
+            calculateCollisionData(x, y);
+        }
+        return indexPairToCollisionProfile.get(x).get(y);
+    }
 
 	private static void calculateCollisionData(
 			int x,
-			int y,
-			int width,
-			int height
+			int y
 	) {
 
-		final BufferedImage bufferedImage;
+		final int width, height;
+		final TextureAtlas.AtlasRegion atlasRegion = Arrays.stream(GlobalData.getAtlas().getRegions().items).filter(
+				a -> x == a.getRegionX() && y == a.getRegionY()
+		).findFirst().orElseThrow();
+		width = atlasRegion.getRegionWidth();
+		height = atlasRegion.getRegionHeight();
 
 
-		bufferedImage = ImagePool.findBufferedImage(TEXTURES_PATH);
-
+		final BufferedImage bufferedImage = ImagePool.findBufferedImage(TEXTURES_PATH);
 
 		// proc: add map entries
 		{
@@ -67,6 +73,7 @@ public class CollisionPool {
 			indexPairToCollisionProfile.get(x).put(y, new ArrayList<>());
 			indexPairToCollisionProfileBoundary.putIfAbsent(x, new HashMap<>());
 			indexPairToCollisionProfileBoundary.get(x).put(y, new ArrayList<>());
+			indexPairToSurfaceContourMapping.putIfAbsent(x, new HashMap<>());
 		}
 
 		// Helper function to do index validations.
@@ -92,10 +99,10 @@ public class CollisionPool {
 					}
 				} else pointOfPath = false;
 				if (collision) {
-					indexPairToCollisionProfile.get(x).get(y).add(new PointInt(i - x, j - y));
+					indexPairToCollisionProfile.get(x).get(y).add(new ImmutablePointInt(i - x, j - y));
 				}
 				if (pointOfPath) {
-					indexPairToSurfaceContourMapping.get(x).get(y).add(new PointInt(i - x, j - y));
+					indexPairToSurfaceContourMapping.get(x).get(y).add(new ImmutablePointInt(i - x, j - y));
 				}
 			}
 		}
@@ -103,18 +110,22 @@ public class CollisionPool {
         /*
         Finally, calculate collision profile boundary.
         */
-		indexPairToSurfaceContourMapping.putIfAbsent(x,
-				new HashMap<>(Map.of(y, findCollisionProfileBoundary(x, y, width, height, bufferedImage)))
-		);
+        indexPairToCollisionProfileBoundary.get(x).put(y, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
+
+
+		// Finally, transform to game coordinates: positive y-direction points upwards.
+        indexPairToCollisionProfile.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        indexPairToCollisionProfileBoundary.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        indexPairToSurfaceContourMapping.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
 	}
 
 	/*
 	A helper method for finding a convex representation of the collision profile boundary.
 	*/
-	private static @NotNull List<PointInt> findCollisionProfileBoundary(int x, int y, int width, int height,
-																		BufferedImage bufferedImage) {
+	private static @NotNull List<PrimitivePointInt> findCollisionProfileBoundary(int x, int y, int width, int height,
+																				 BufferedImage bufferedImage) {
 
-		List<PointInt> collisionProfileBoundary = new ArrayList<>();
+		List<PrimitivePointInt> collisionProfileBoundary = new ArrayList<>();
 
 		outer:
 		for (int i = x; i < width; i++) {
@@ -142,11 +153,11 @@ public class CollisionPool {
 		}
 		boolean keepLookingForPointsTooClose = true;
 		while (keepLookingForPointsTooClose) {
-			PointInt toDiscard = null;
+			PrimitivePointInt toDiscard = null;
 			looking:
-			for (PointInt p : collisionProfileBoundary) {
-				for (PointInt q : collisionProfileBoundary) {
-					if (p != q && Functions.distance(p.x, p.y, q.x, q.y) < 1) {
+			for (PrimitivePointInt p : collisionProfileBoundary) {
+				for (PrimitivePointInt q : collisionProfileBoundary) {
+					if (p != q && Functions.distance(p.getX(), p.getY(), q.getX(), q.getY()) < 1) {
 						toDiscard = q;
 						break looking;
 					}
@@ -159,12 +170,15 @@ public class CollisionPool {
 		return collisionProfileBoundary;
 	}
 
-	private static boolean boundaryFound(int i, int j, @NotNull BufferedImage bufferedImage, List<PointInt> boundary) {
+	private static boolean boundaryFound(int i, int j, @NotNull BufferedImage bufferedImage, List<PrimitivePointInt> boundary) {
 		final double alphaValue = (0xFF & (bufferedImage.getRGB(i, j) >> 24));
 		final boolean collision = alphaValue > 0;
-		if (collision) boundary.add(new PointInt(i, j));
+		if (collision) boundary.add(new ImmutablePointInt(i, j));
 		return collision;
 	}
 
+	private static int transformY(int y, int height) {
+	    return -y + height;
+    }
 
 }
