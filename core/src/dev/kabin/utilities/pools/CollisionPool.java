@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 
 public class CollisionPool {
 
-	// TODO: define or import int to object hash maps.
+	// TODO: impl or import int to object maps.
 	// References to collision points for image pool.
 	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfile = new HashMap<>();
 	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfileBoundary = new HashMap<>();
@@ -177,8 +177,23 @@ public class CollisionPool {
 		return collision;
 	}
 
+	/**
+	 * <p>A transform from a coordinate system where y points downwards to one where y points upwards; also
+	 * it is slightly by a "height".</p>
+	 * <pre>
+	 *              ----> x                y
+	 *              | .p                   ^ .p
+	 *              |           ->         |
+	 *              v                      |____> x
+	 *              y
+	 * </pre>
+	 *
+	 * @param y      coordinate.
+	 * @param height height of the given image.
+	 * @return new y-coordinate.
+	 */
 	private static int transformY(int y, int height) {
-	    return -y + height;
-    }
+		return -y + height;
+	}
 
 }
