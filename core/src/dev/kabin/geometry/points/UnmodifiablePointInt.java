@@ -1,13 +1,13 @@
 package dev.kabin.geometry.points;
 
 /**
- * An immutable implementation of {@link PrimitivePointInt}.
+ * An unmodifiable implementation of {@link PrimitivePointInt}.
  */
-public class ImmutablePointInt implements PrimitivePointInt{
+public class UnmodifiablePointInt implements PrimitivePointInt {
 
 	final int x, y;
 
-	public ImmutablePointInt(int x, int y){
+	public UnmodifiablePointInt(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
