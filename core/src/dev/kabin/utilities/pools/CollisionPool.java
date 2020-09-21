@@ -124,9 +124,9 @@ public class CollisionPool {
 
 
 		// Finally, transform to game coordinates: positive y-direction points upwards.
-        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
-        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
-        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
 	}
 
 	/*
@@ -185,25 +185,6 @@ public class CollisionPool {
 		final boolean collision = alphaValue > 0;
 		if (collision) boundary.add(new UnmodifiablePointInt(i, j));
 		return collision;
-	}
-
-	/**
-	 * <p>A transform from a coordinate system where y points downwards to one where y points upwards; also
-	 * it is translated by a "height" parameter.</p>
-	 * <pre>
-	 *              ----> x                y
-	 *              | .p                   ^ .p
-	 *              |           ->         |
-	 *              v                      |____> x
-	 *              y
-	 * </pre>
-	 *
-	 * @param y      coordinate.
-	 * @param height height of the given image.
-	 * @return new y-coordinate.
-	 */
-	private static int transformY(int y, int height) {
-		return -y + height;
 	}
 
 }

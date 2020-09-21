@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointInt;
 import dev.kabin.global.GlobalData;
+import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
@@ -27,25 +28,24 @@ public class ImageAnalysisPool {
 		return data.get(path).get(index);
 	}
 
-
 	public static class Analysis {
 
 		final List<PointInt> pixelProfile = new ArrayList<>();
+		private final int lowestPixel;
+		private final int highestPixel;
+		private final int leftmostPixel;
+		private final int rightmostPixel;
+		private final int pixelHeight;
+		private final int pixelWidth;
+		private final int pixelMassCenterXInt;
+		private final int pixelMassCenterYInt;
+		private final int pixelsX;
+		private final int pixelsY;
 		double
 				pixelMassCenterX,
 				pixelMassCenterY;
-		private int
-				lowestPixel,
-				highestPixel,
-				leftmostPixel,
-				rightmostPixel,
-				lowestPixelFromAbove,
-				highestPixelFromBelow, //TODO find this
-				pixelHeight,
-				pixelWidth,
-				pixelMassCenterXInt,
-				pixelMassCenterYInt,
-				pixelsX, pixelsY;
+		private int lowestPixelFromAbove;
+		private int highestPixelFromBelow; //TODO find this
 
 		public Analysis(@NotNull String path, int index) {
 			final int width, height;
@@ -59,7 +59,6 @@ public class ImageAnalysisPool {
 
 
 			final BufferedImage bufferedImage = ImagePool.findBufferedImage(TEXTURES_PATH);
-
 
 
 			// Find pixel mass center.
@@ -112,15 +111,15 @@ public class ImageAnalysisPool {
 				}
 			}
 
-			this.lowestPixel = lowestPixel;
-			this.highestPixel = highestPixel;
+			this.lowestPixel = Functions.transformY(lowestPixel, height);
+			this.highestPixel = Functions.transformY(highestPixel, height);
 			this.rightmostPixel = rightmostPixel;
 			this.leftmostPixel = leftmostPixel;
 
 			pixelMassCenterX = (double) sumx / nx;
-			pixelMassCenterY = (double) sumy / ny;
+			pixelMassCenterY = Functions.transformY((double) sumy / ny, height);
 			pixelMassCenterXInt = (int) Math.round(pixelMassCenterX);
-			pixelMassCenterYInt = (int) Math.round(pixelMassCenterY);
+			pixelMassCenterYInt = Functions.transformY((int) Math.round(pixelMassCenterY), height);
 
 			pixelHeight = lowestPixel - highestPixel;
 			pixelWidth = rightmostPixel - leftmostPixel;

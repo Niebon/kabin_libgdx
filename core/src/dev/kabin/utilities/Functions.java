@@ -270,4 +270,27 @@ public class Functions {
             return ex / (1 + ex);
         }
     }
+
+	/**
+	 * <p>A transform from a coordinate system where y points downwards to one where y points upwards; also
+	 * it is translated by a "height" parameter.</p>
+	 * <pre>
+	 *              ----> x                y
+	 *              | .p                   ^ .p
+	 *              |           ->         |
+	 *              v                      |____> x
+	 *              y
+	 * </pre>
+	 *
+	 * @param y      coordinate.
+	 * @param height height of the given image.
+	 * @return new y-coordinate.
+	 */
+	public static int transformY(int y, int height) {
+		return -y + height;
+	}
+
+    public static double transformY(double y, int height) {
+        return -y + height;
+    }
 }
