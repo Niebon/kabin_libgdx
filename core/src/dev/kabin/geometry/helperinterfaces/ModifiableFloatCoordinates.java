@@ -1,6 +1,6 @@
 package dev.kabin.geometry.helperinterfaces;
 
-public interface ModifiableCoordinates {
+public interface ModifiableFloatCoordinates {
 
     float getX();
 

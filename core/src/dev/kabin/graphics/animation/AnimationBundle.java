@@ -53,7 +53,8 @@ public class AnimationBundle implements Animations, Disposable {
     public void renderNextAnimationFrame(float stateTime) {
         if (!animations.containsKey(currentAnimationType)) return;
 
-        cachedTextureRegion = animations.get(currentAnimationType).getKeyFrame(stateTime, currentAnimationType.isLooping());
+        cachedTextureRegion = animations.get(currentAnimationType)
+                .getKeyFrame(stateTime, currentAnimationType.isLooping());
 
         // Switch to default if last frame is not repeating
         if (!currentAnimationType.isLastFrameRepeating() &&
@@ -82,7 +83,12 @@ public class AnimationBundle implements Animations, Disposable {
 
     @Override
     public String getCurrentImageAssetPath() {
-        return String.valueOf(cachedTextureRegion.index);
+        return cachedTextureRegion.toString();
+    }
+
+    @Override
+    public int getCurrentImageAssetIndex() {
+        return cachedTextureRegion.index;
     }
 
     @Override

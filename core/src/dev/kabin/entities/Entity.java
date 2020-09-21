@@ -1,10 +1,10 @@
 package dev.kabin.entities;
 
-import dev.kabin.geometry.helperinterfaces.ModifiableCoordinates;
+import dev.kabin.geometry.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.geometry.helperinterfaces.Scalable;
 import org.jetbrains.annotations.NotNull;
 
-public interface Entity extends Scalable, ModifiableCoordinates, Comparable<Entity> {
+public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable<Entity> {
 
 
     void render(float stateTime);

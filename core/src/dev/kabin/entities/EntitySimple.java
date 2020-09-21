@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class EntitySimple implements Entity {
 
-    private final AnimationBundle animationBundle;
+    protected final AnimationBundle animationBundle;
     private final String atlasPath;
     private float x, y, scale;
 
@@ -22,7 +22,6 @@ public class EntitySimple implements Entity {
         this.scale = scale;
         this.atlasPath = atlasPath;
         this.animationBundle = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
-
     }
 
     @Override

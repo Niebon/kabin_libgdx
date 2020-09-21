@@ -16,22 +16,21 @@ public class CollisionPool {
 
 	// TODO: define or import int to object hash maps.
 	// References to collision points for image pool.
-	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfile = new HashMap<>();
-	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToCollisionProfileBoundary = new HashMap<>();
-	private static final Map<Integer, Map<Integer, List<PrimitivePointInt>>> indexPairToSurfaceContourMapping = new HashMap<>();
-	private static final Map<Integer, Map<Integer, IntPrimitivePairPredicate>> indexPairToCollisionCheck = new HashMap<>();
-	private static final String TEXTURES_PATH = "core/assets/textures.png";
+	private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToCollisionProfile = new HashMap<>();
+	private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToCollisionProfileBoundary = new HashMap<>();
+	private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToSurfaceContourMapping = new HashMap<>();
+	private static final Map<String, Map<Integer, IntPrimitivePairPredicate>> pathIndexPairToCollisionCheck = new HashMap<>();
 
 
-	public static IntPrimitivePairPredicate findCollisionCheck(int x, int y) {
+	public static IntPrimitivePairPredicate findCollisionCheck(String path, int index) {
 
-		if (!indexPairToCollisionCheck.containsKey(x)) {
-			indexPairToCollisionCheck.put(x, new HashMap<>());
+		if (!pathIndexPairToCollisionCheck.containsKey(path)) {
+			pathIndexPairToCollisionCheck.put(path, new HashMap<>());
 		}
 
-		return indexPairToCollisionCheck.get(x).computeIfAbsent(y, missing -> {
+		return pathIndexPairToCollisionCheck.get(path).computeIfAbsent(index, missing -> {
 
-			final List<PrimitivePointInt> profile = findCollisionProfile(x, y);
+			final List<PrimitivePointInt> profile = findCollisionProfile(path, index);
 			final int maxX = profile.stream().mapToInt(PrimitivePointInt::getX).max().orElse(0);
 			final int maxY = profile.stream().mapToInt(PrimitivePointInt::getY).max().orElse(0);
 			final boolean[][] predicateHelper = new boolean[maxX + 1][maxY + 1];
@@ -45,35 +44,46 @@ public class CollisionPool {
 		});
 	}
 
-    private static List<PrimitivePointInt> findCollisionProfile(int x, int y) {
-        if (!indexPairToCollisionProfile.containsKey(x) || indexPairToCollisionProfile.get(x).containsKey(y)) {
-            calculateCollisionData(x, y);
+    public static List<PrimitivePointInt> findCollisionProfile(String path, int index) {
+        if (!pathIndexPairToCollisionProfile.containsKey(path) || pathIndexPairToCollisionProfile.get(path).containsKey(index)) {
+            calculateCollisionData(path, index);
         }
-        return indexPairToCollisionProfile.get(x).get(y);
+        return pathIndexPairToCollisionProfile.get(path).get(index);
     }
 
+
+	public static List<PrimitivePointInt> findSurfaceContourProfile(String path, int index) {
+		if (!pathIndexPairToSurfaceContourMapping.containsKey(path) || pathIndexPairToSurfaceContourMapping.get(path).containsKey(index)) {
+			calculateCollisionData(path, index);
+		}
+		return pathIndexPairToSurfaceContourMapping.get(path).get(index);
+	}
+
+
 	private static void calculateCollisionData(
-			int x,
-			int y
+			String path,
+			int index
 	) {
 
 		final int width, height;
 		final TextureAtlas.AtlasRegion atlasRegion = Arrays.stream(GlobalData.getAtlas().getRegions().items).filter(
-				a -> x == a.getRegionX() && y == a.getRegionY()
+				a -> path.equals(a.getTexture().toString()) && index == a.index
 		).findFirst().orElseThrow();
+		int x = atlasRegion.getRegionX();
+		int y = atlasRegion.getRegionY();
 		width = atlasRegion.getRegionWidth();
 		height = atlasRegion.getRegionHeight();
 
 
-		final BufferedImage bufferedImage = ImagePool.findBufferedImage(TEXTURES_PATH);
+		final BufferedImage bufferedImage = ImagePool.findBufferedImage(GlobalData.TEXTURES_PATH);
 
 		// proc: add map entries
 		{
-			indexPairToCollisionProfile.putIfAbsent(x, new HashMap<>());
-			indexPairToCollisionProfile.get(x).put(y, new ArrayList<>());
-			indexPairToCollisionProfileBoundary.putIfAbsent(x, new HashMap<>());
-			indexPairToCollisionProfileBoundary.get(x).put(y, new ArrayList<>());
-			indexPairToSurfaceContourMapping.putIfAbsent(x, new HashMap<>());
+			pathIndexPairToCollisionProfile.putIfAbsent(path, new HashMap<>());
+			pathIndexPairToCollisionProfile.get(path).put(index, new ArrayList<>());
+			pathIndexPairToCollisionProfileBoundary.putIfAbsent(path, new HashMap<>());
+			pathIndexPairToCollisionProfileBoundary.get(path).put(index, new ArrayList<>());
+			pathIndexPairToSurfaceContourMapping.putIfAbsent(path, new HashMap<>());
 		}
 
 		// Helper function to do index validations.
@@ -99,10 +109,10 @@ public class CollisionPool {
 					}
 				} else pointOfPath = false;
 				if (collision) {
-					indexPairToCollisionProfile.get(x).get(y).add(new ImmutablePointInt(i - x, j - y));
+					pathIndexPairToCollisionProfile.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
 				}
 				if (pointOfPath) {
-					indexPairToSurfaceContourMapping.get(x).get(y).add(new ImmutablePointInt(i - x, j - y));
+					pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
 				}
 			}
 		}
@@ -110,13 +120,13 @@ public class CollisionPool {
         /*
         Finally, calculate collision profile boundary.
         */
-        indexPairToCollisionProfileBoundary.get(x).put(y, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
+        pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
 
 		// Finally, transform to game coordinates: positive y-direction points upwards.
-        indexPairToCollisionProfile.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
-        indexPairToCollisionProfileBoundary.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
-        indexPairToSurfaceContourMapping.get(x).get(y).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
 	}
 
 	/*

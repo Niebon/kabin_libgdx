@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 public class GlobalData {
 
+	public static final String TEXTURES_PATH = "core/assets/textures.png";
 	private static final TextureAtlas atlas = new TextureAtlas("textures.atlas");
 	private static final InputProcessor inputProcessor = new InputEventDistributor();
 

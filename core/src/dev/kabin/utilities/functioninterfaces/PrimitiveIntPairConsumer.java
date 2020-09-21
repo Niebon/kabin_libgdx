@@ -2,6 +2,6 @@ package dev.kabin.utilities.functioninterfaces;
 
 @FunctionalInterface
 public
-interface IntPairConsumer {
+interface PrimitiveIntPairConsumer {
 	void action(int x, int y);
 }
