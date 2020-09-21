@@ -1,8 +1,8 @@
 package dev.kabin.utilities.pools;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.geometry.points.ImmutablePointInt;
 import dev.kabin.geometry.points.PrimitivePointInt;
+import dev.kabin.geometry.points.UnmodifiablePointInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
@@ -109,10 +109,10 @@ public class CollisionPool {
 					}
 				} else pointOfPath = false;
 				if (collision) {
-					pathIndexPairToCollisionProfile.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
+					pathIndexPairToCollisionProfile.get(path).get(index).add(new UnmodifiablePointInt(i - x, j - y));
 				}
 				if (pointOfPath) {
-					pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
+					pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new UnmodifiablePointInt(i - x, j - y));
 				}
 			}
 		}
@@ -124,9 +124,9 @@ public class CollisionPool {
 
 
 		// Finally, transform to game coordinates: positive y-direction points upwards.
-        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
-        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
-        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), transformY(p.getY(), height)));
 	}
 
 	/*
@@ -183,7 +183,7 @@ public class CollisionPool {
 	private static boolean boundaryFound(int i, int j, @NotNull BufferedImage bufferedImage, List<PrimitivePointInt> boundary) {
 		final double alphaValue = (0xFF & (bufferedImage.getRGB(i, j) >> 24));
 		final boolean collision = alphaValue > 0;
-		if (collision) boundary.add(new ImmutablePointInt(i, j));
+		if (collision) boundary.add(new UnmodifiablePointInt(i, j));
 		return collision;
 	}
 
