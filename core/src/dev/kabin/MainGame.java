@@ -3,10 +3,13 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import dev.kabin.entities.Entity;
+import dev.kabin.entities.EntityFactory;
+import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
 import dev.kabin.graphics.animation.AnimationBundle;
-import dev.kabin.graphics.animation.AnimationBundleFactory;
-import dev.kabin.graphics.animation.Animations;
+import dev.kabin.utilities.eventhandlers.KeyEventUtil;
+import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 
@@ -19,29 +22,41 @@ public class MainGame extends ApplicationAdapter {
 	public void create() {
 
 		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
-
-		bundle = AnimationBundleFactory.loadFromAtlasPath("player");
-		bundle.setScale(5);
-		bundle.setX(0);
-		bundle.setY(0);
-		bundle.setWidth(32);
-		bundle.setHeight(32);
-		bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
-
-
 		logger.setLevel(GlobalData.getLogLevel());
+		MouseEventUtil.getInstance().addListener(
+				MouseEventUtil.MouseButton.LEFT, true, () -> {
+					if (KeyEventUtil.isShiftDown()) {
+						float x = MouseEventUtil.getMouseX();
+						float y = MouseEventUtil.getMouseY();
+						System.out.println(x + "," + y);
+						Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, "player", 1f);
+						EntityGroupProvider.registerEntity(e);
+
+//						bundle = AnimationBundleFactory.loadFromAtlasPath("player");
+//						bundle.setScale(5);
+//						bundle.setX(x);
+//						bundle.setY(y);
+//						bundle.setWidth(32);
+//						bundle.setHeight(32);
+//						bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
+					}
+				}
+		);
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
+		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
+
+
+		EntityGroupProvider.actionForEachEntityInGroup(EntityGroupProvider.Type.FOCAL_POINT, e -> e.render(stateTime));
 
 		//bundle.renderFrameByIndex(0);
-		bundle.renderNextAnimationFrame(stateTime);
-		System.out.println(bundle.getCurrentImageAssetPath());
+		//bundle.renderNextAnimationFrame(stateTime);
+		//System.out.println(bundle.getCurrentImageAssetPath());
 	}
-	
+
 	@Override
 	public void dispose () {
 		bundle.dispose();

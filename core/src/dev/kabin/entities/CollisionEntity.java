@@ -45,4 +45,9 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 		return ImageAnalysisPool.findAnalysis(animationBundle.getCurrentImageAssetPath(),
 				animationBundle.getCurrentImageAssetIndex());
 	}
+
+	@Override
+	public EntityFactory.EntityType getType() {
+		return EntityFactory.EntityType.COLLISION_ENTITY;
+	}
 }

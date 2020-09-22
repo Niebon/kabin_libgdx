@@ -15,4 +15,9 @@ public class Player extends EntitySimple {
     public Player(float x, float y, String imageResource, float scale) {
         super(x, y, imageResource, scale);
     }
+
+    @Override
+    public EntityFactory.EntityType getType() {
+        return EntityFactory.EntityType.PLAYER;
+    }
 }

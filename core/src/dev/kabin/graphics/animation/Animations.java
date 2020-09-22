@@ -1,13 +1,13 @@
 package dev.kabin.graphics.animation;
 
-import dev.kabin.geometry.helperinterfaces.Area;
+import dev.kabin.geometry.helperinterfaces.FloatArea;
 import dev.kabin.geometry.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.geometry.helperinterfaces.Scalable;
 import dev.kabin.utilities.Direction;
 
 import java.util.List;
 
-public interface Animations extends ModifiableFloatCoordinates, Area, Scalable {
+public interface Animations extends ModifiableFloatCoordinates, FloatArea, Scalable {
 
     List<AnimationType> STANDARD_RIGHT_LIST = List.of(AnimationType.STANDARD1_RIGHT,
             AnimationType.STANDARD2_RIGHT,

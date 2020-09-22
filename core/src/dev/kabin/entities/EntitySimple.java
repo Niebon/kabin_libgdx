@@ -3,6 +3,7 @@ package dev.kabin.entities;
 import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
 import dev.kabin.utilities.GameData;
+import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.json.JSONObject;
 
 public class EntitySimple implements Entity {
@@ -68,6 +69,11 @@ public class EntitySimple implements Entity {
     }
 
     @Override
+    public EntityFactory.EntityType getType() {
+        return EntityFactory.EntityType.ENTITY_SIMPLE;
+    }
+
+    @Override
     public float getScale() {
         return scale;
     }
@@ -75,5 +81,10 @@ public class EntitySimple implements Entity {
     @Override
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    @Override
+    public ImageAnalysisPool.Analysis getPixelAnalysis() {
+        return ImageAnalysisPool.findAnalysis(animationBundle.getCurrentImageAssetPath(), animationBundle.getCurrentImageAssetIndex());
     }
 }

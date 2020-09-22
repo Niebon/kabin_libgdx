@@ -2,9 +2,10 @@ package dev.kabin.entities;
 
 import dev.kabin.geometry.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.geometry.helperinterfaces.Scalable;
+import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
 
-public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable<Entity> {
+public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable<Entity>, ImageAnalysisPool.Analysis.Analyzable {
 
 
     void render(float stateTime);
@@ -21,5 +22,6 @@ public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable
         return Integer.compare(getLayer(), other.getLayer());
     }
 
+    EntityFactory.EntityType getType();
 
 }

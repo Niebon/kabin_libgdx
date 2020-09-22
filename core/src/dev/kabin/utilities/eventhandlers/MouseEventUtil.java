@@ -1,6 +1,7 @@
 package dev.kabin.utilities.eventhandlers;
 
 import dev.kabin.global.GlobalData;
+import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 	private static final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
 	private static final List<EventListener> defaultListeners = new ArrayList<>();
 	private static MouseEventUtil instance;
-	private static double x, y;
+	private static float x, y;
 
 	protected MouseEventUtil() {
 	}
@@ -28,19 +29,19 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 		return (instance != null) ? instance : (instance = new MouseEventUtil());
 	}
 
-	public static double getMouseX() {
-		return x / GlobalData.getScale().x();
+	public static float getMouseX() {
+		return (float) (x / GlobalData.getScale().x());
 	}
 
-	public static double getMouseY() {
-		return y / GlobalData.getScale().y();
+	public static float getMouseY() {
+		return (float) (y / GlobalData.getScale().y());
 	}
 
-	public void registerMouseMoved(double x, double y) {
+	public void registerMouseMoved(float x, float y) {
 		logger.info(() -> "Registered mouse wherabouts: " + x + ", " + y);
 		//EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
 		MouseEventUtil.x = x;
-		MouseEventUtil.y = y;
+		MouseEventUtil.y = (float) Functions.transformY(y, GlobalData.screenHeight);
 	}
 
 	@NotNull
@@ -79,7 +80,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 		}
 	}
 
-	public void registerMouseDragged(MouseButton button, double x, double y) {
+	public void registerMouseDragged(MouseButton button, float x, float y) {
 		registerMouseMoved(x, y);
 		if (listenersMouseDrag.containsKey(button)) {
 			final List<MouseDraggedEvent> list = listenersMouseDrag.get(button);
@@ -108,7 +109,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 		listenersMouseDrag.clear();
 	}
 
-	enum MouseButton {
+	public enum MouseButton {
 		RIGHT,
 		LEFT,
 		SCROLL

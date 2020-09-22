@@ -3,7 +3,6 @@ package dev.kabin.graphics.animation;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.utilities.Direction;
@@ -16,11 +15,11 @@ import java.util.stream.Collectors;
 public class AnimationBundle implements Animations, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
-
+    final int width, height;
     private final SpriteBatch batch = new SpriteBatch();
     private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animations;
     private final Array<TextureAtlas.AtlasRegion> regions;
-    float x, y, width, height, scale;
+    float x, y, scale;
     private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
 
     private TextureAtlas.AtlasRegion cachedTextureRegion;
@@ -30,10 +29,14 @@ public class AnimationBundle implements Animations, Disposable {
             Map<AnimationType, List<Integer>> animations
     ) {
         this.regions = regions;
+        // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
+        // this is a bug with the eclipse compiler. Maybe libgdx compiles with the eclipse compiler underneath?
         //noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
-        this.animations = new EnumMap<AnimationType, Animation<TextureAtlas.AtlasRegion>> (animations.entrySet().stream().collect(
+        this.animations = new EnumMap<AnimationType, Animation<TextureAtlas.AtlasRegion>>(animations.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue()))
         ));
+        this.width = regions.get(0).originalWidth;
+        this.height = regions.get(0).originalHeight;
     }
 
     private Animation<TextureAtlas.AtlasRegion> generateAnimation(List<Integer> indices) {
@@ -64,20 +67,15 @@ public class AnimationBundle implements Animations, Disposable {
                     : AnimationType.DEFAULT_LEFT;
         }
         batch.begin();
-        batch.draw(cachedTextureRegion, getX() * getScale(), getY() * getScale(),
-                getWidth() * getScale(), getHeight() * getScale());
+        batch.draw(cachedTextureRegion, getX(), getY(),
+                getWidth(), getHeight());
         batch.end();
     }
 
     @Override
     public void renderFrameByIndex(int index) {
         batch.begin();
-        batch.draw(regions.get(index),
-                getX() * getScale(),
-                getY() * getScale(),
-                getWidth() * getScale(),
-                getHeight() * getScale()
-        );
+        batch.draw(regions.get(index), getX(), getY(), getWidth(), getHeight());
         batch.end();
     }
 
@@ -93,22 +91,13 @@ public class AnimationBundle implements Animations, Disposable {
 
     @Override
     public float getWidth() {
-        return width;
+        return width * getScale();
     }
 
-    @Override
-    public void setWidth(float width) {
-        this.width = width;
-    }
 
     @Override
     public float getHeight() {
-        return height;
-    }
-
-    @Override
-    public void setHeight(float height) {
-        this.height = height;
+        return height * getScale();
     }
 
     @Override

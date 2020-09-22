@@ -9,7 +9,7 @@ public class EntityFactory {
     public enum EntityType {
         //BEAR(Bear::new, Bear::new, EntityGroupProvider.Type.FOCAL_POINT),
         //CAT(Cat::new, Cat::new, EntityGroupProvider.Type.FOCAL_POINT),
-        //COLLISION_ENTITY(CollisionEntity::new, CollisionEntity::new, EntityGroupProvider.Type.FOCAL_POINT),
+        COLLISION_ENTITY(CollisionEntity::new, CollisionEntity::new, EntityGroupProvider.Type.FOCAL_POINT),
         //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //ENTITY_BACKGROUND(EntityBackground::new, EntityBackground::newFromMouseClick, EntityGroupProvider.Type.BACKGROUND),
@@ -64,7 +64,7 @@ public class EntityFactory {
 
     @FunctionalInterface
     public interface MouseClickConstructor {
-        Entity construct(float mouseClickX, float mouseClickY, String imageResource, float scale);
+        Entity construct(float mouseClickX, float mouseClickY, String atlasPath, float scale);
     }
 
 }
