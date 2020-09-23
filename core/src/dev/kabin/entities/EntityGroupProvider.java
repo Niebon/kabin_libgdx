@@ -1,9 +1,6 @@
 package dev.kabin.entities;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class EntityGroupProvider {
@@ -27,6 +24,9 @@ public class EntityGroupProvider {
     private static final List<Entity> staticBackground = new ArrayList<>();
 
     private static final List<Entity> sky = new ArrayList<>();
+
+    private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values()).sorted(Comparator.comparingInt(Type::getLayer))
+            .toArray(Type[]::new);
 
     static {
         groupMap.put(Type.BACKGROUND, backgroundEntityImageViews);
@@ -76,6 +76,12 @@ public class EntityGroupProvider {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = entities.size(); i < n; i++) {
             action.accept(entities.get(i));
+        }
+    }
+
+    public static void actionForEachEntityOrderedByGroup(Consumer<Entity> action) {
+        for (Type type : GROUPS_ORDERED) {
+            actionForEachEntityInGroup(type, action);
         }
     }
 }

@@ -31,14 +31,6 @@ public class MainGame extends ApplicationAdapter {
 						System.out.println(x + "," + y);
 						Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, "player", 1f);
 						EntityGroupProvider.registerEntity(e);
-
-//						bundle = AnimationBundleFactory.loadFromAtlasPath("player");
-//						bundle.setScale(5);
-//						bundle.setX(x);
-//						bundle.setY(y);
-//						bundle.setWidth(32);
-//						bundle.setHeight(32);
-//						bundle.setCurrentAnimation(Animations.AnimationType.WALK_LEFT);
 					}
 				}
 		);
@@ -50,7 +42,7 @@ public class MainGame extends ApplicationAdapter {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
 
-		EntityGroupProvider.actionForEachEntityInGroup(EntityGroupProvider.Type.FOCAL_POINT, e -> e.render(stateTime));
+		EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> e.render(stateTime));
 
 		//bundle.renderFrameByIndex(0);
 		//bundle.renderNextAnimationFrame(stateTime);
