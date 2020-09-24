@@ -34,6 +34,8 @@ public class MainGame extends ApplicationAdapter {
 					}
 				}
 		);
+
+
 	}
 
 	@Override

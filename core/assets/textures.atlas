@@ -59,7 +59,7 @@ player/STANDARD1_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 46
+  index: 47
 player/STANDARD1_LEFT
   rotate: false
   xy: 67, 67
@@ -67,27 +67,6 @@ player/STANDARD1_LEFT
   orig: 32, 32
   offset: 0, 0
   index: 53
-player/STANDARD1_LEFT
-  rotate: false
-  xy: 67, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 55
-player/STANDARD1_LEFT
-  rotate: false
-  xy: 67, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 50
-player/STANDARD1_LEFT
-  rotate: false
-  xy: 67, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 47
 player/STANDARD1_LEFT
   rotate: false
   xy: 67, 67
@@ -108,7 +87,35 @@ player/STANDARD1_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
+  index: 55
+player/STANDARD1_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
   index: 49
+player/STANDARD1_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 50
+player/STANDARD1_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 46
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 72
 player/STANDARD2_LEFT
   rotate: false
   xy: 67, 67
@@ -129,13 +136,6 @@ player/STANDARD2_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 72
-player/STANDARD2_LEFT
-  rotate: false
-  xy: 67, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 71
 player/STANDARD3_LEFT
   rotate: false
@@ -150,14 +150,14 @@ player/WALK_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 10
+  index: 16
 player/WALK_LEFT
   rotate: false
   xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 16
+  index: 10
 player/DEFAULT_RIGHT
   rotate: false
   xy: 34, 1
@@ -165,6 +165,41 @@ player/DEFAULT_RIGHT
   orig: 32, 32
   offset: 0, 0
   index: 122
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 39
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 43
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 37
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 38
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 45
 player/STANDARD1_RIGHT
   rotate: false
   xy: 34, 1
@@ -185,49 +220,7 @@ player/STANDARD1_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 43
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 39
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 45
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 36
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 38
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 37
-player/STANDARD2_RIGHT
-  rotate: false
-  xy: 34, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 63
 player/STANDARD2_RIGHT
   rotate: false
   xy: 34, 1
@@ -248,6 +241,13 @@ player/STANDARD2_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
+  index: 63
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
   index: 65
 player/STANDARD3_RIGHT
   rotate: false
@@ -262,14 +262,14 @@ player/WALK_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 6
+  index: 0
 player/WALK_RIGHT
   rotate: false
   xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 0
+  index: 6
 player/JUMP_LEFT
   rotate: false
   xy: 67, 34
@@ -290,7 +290,7 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 114
+  index: 112
 player/JUMP_LEFT
   rotate: false
   xy: 100, 67
@@ -304,20 +304,6 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 112
-player/JUMP_LEFT
-  rotate: false
-  xy: 100, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 115
-player/JUMP_LEFT
-  rotate: false
-  xy: 100, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 111
 player/JUMP_LEFT
   rotate: false
@@ -325,7 +311,14 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 109
+  index: 108
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 114
 player/JUMP_LEFT
   rotate: false
   xy: 100, 67
@@ -339,7 +332,14 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 108
+  index: 109
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 115
 player/JUMP_RIGHT
   rotate: false
   xy: 67, 1
@@ -360,13 +360,6 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 101
-player/JUMP_RIGHT
-  rotate: false
-  xy: 100, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 99
 player/JUMP_RIGHT
   rotate: false
@@ -374,7 +367,21 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 103
+  index: 100
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 98
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 101
 player/JUMP_RIGHT
   rotate: false
   xy: 100, 34
@@ -395,14 +402,7 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 100
-player/JUMP_RIGHT
-  rotate: false
-  xy: 100, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 98
+  index: 103
 player/JUMP_RIGHT
   rotate: false
   xy: 100, 34
