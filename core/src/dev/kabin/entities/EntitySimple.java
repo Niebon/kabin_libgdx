@@ -1,5 +1,6 @@
 package dev.kabin.entities;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
 import dev.kabin.utilities.GameData;
@@ -26,11 +27,11 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public void render(float stateTime) {
+    public void render(SpriteBatch batch, float stateTime) {
         animationBundle.setX(x);
         animationBundle.setY(y);
         animationBundle.setScale(scale);
-        animationBundle.renderNextAnimationFrame(stateTime);
+        animationBundle.renderNextAnimationFrame(batch, stateTime);
     }
 
     @Override

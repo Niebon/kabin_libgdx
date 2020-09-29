@@ -3,11 +3,11 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
-import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 
@@ -16,7 +16,7 @@ import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 public class MainGame extends ApplicationAdapter {
 
 	float stateTime;
-	AnimationBundle bundle;
+	SpriteBatch batch;
 
 	@Override
 	public void create() {
@@ -34,6 +34,7 @@ public class MainGame extends ApplicationAdapter {
 					}
 				}
 		);
+		batch = new SpriteBatch();
 
 
 	}
@@ -44,7 +45,7 @@ public class MainGame extends ApplicationAdapter {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
 
-		EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> e.render(stateTime));
+		EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> e.render(batch, stateTime));
 
 		//bundle.renderFrameByIndex(0);
 		//bundle.renderNextAnimationFrame(stateTime);
@@ -53,7 +54,7 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
-		bundle.dispose();
+		batch.dispose();
 	}
 
 }

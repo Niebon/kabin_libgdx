@@ -280,16 +280,23 @@ public class Functions {
 	 *              |           ->         |
 	 *              v                      |____> x
 	 *              y
-	 * </pre>
-	 *
-	 * @param y      coordinate.
-	 * @param height height of the given image.
-	 * @return new y-coordinate.
-	 */
-	public static int transformY(int y, int height) {
-		return -y + height;
-	}
+     * </pre>
+     *
+     * @param y      coordinate.
+     * @param height height of the given image.
+     * @return new y-coordinate.
+     */
+    public static int transformY(int y, int height) {
+        return -y + height;
+    }
 
+    /**
+     * Similar as {@link #transformY(double y, int height)}, but the y parameter is a {@code double}.
+     *
+     * @param y      coordinate.
+     * @param height height parameter.
+     * @return new y-coordinate.
+     */
     public static double transformY(double y, int height) {
         return -y + height;
     }

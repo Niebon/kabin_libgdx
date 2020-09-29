@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.utilities.Direction;
 
 import java.util.EnumMap;
@@ -12,11 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AnimationBundle implements Animations, Disposable {
+public class AnimationBundle implements Animations {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
-    private final SpriteBatch batch = new SpriteBatch();
     private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animations;
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, scale;
@@ -53,7 +51,7 @@ public class AnimationBundle implements Animations, Disposable {
     }
 
     @Override
-    public void renderNextAnimationFrame(float stateTime) {
+    public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
         if (!animations.containsKey(currentAnimationType)) return;
 
         cachedTextureRegion = animations.get(currentAnimationType)
@@ -67,13 +65,12 @@ public class AnimationBundle implements Animations, Disposable {
                     : AnimationType.DEFAULT_LEFT;
         }
         batch.begin();
-        batch.draw(cachedTextureRegion, getX(), getY(),
-                getWidth(), getHeight());
+        batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
         batch.end();
     }
 
     @Override
-    public void renderFrameByIndex(int index) {
+    public void renderFrameByIndex(SpriteBatch batch, int index) {
         batch.begin();
         batch.draw(regions.get(index), getX(), getY(), getWidth(), getHeight());
         batch.end();
@@ -130,8 +127,4 @@ public class AnimationBundle implements Animations, Disposable {
         this.scale = scale;
     }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-    }
 }

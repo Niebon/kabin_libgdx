@@ -25,7 +25,8 @@ public class EntityGroupProvider {
 
     private static final List<Entity> sky = new ArrayList<>();
 
-    private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values()).sorted(Comparator.comparingInt(Type::getLayer))
+    private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values())
+            .sorted(Comparator.comparingInt(Type::getLayer))
             .toArray(Type[]::new);
 
     static {

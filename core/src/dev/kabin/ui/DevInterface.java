@@ -1,17 +1,21 @@
 package dev.kabin.ui;
 
-import dev.kabin.global.GlobalData;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import dev.kabin.utilities.pools.FontPool;
 
 import javax.swing.*;
 import java.io.File;
 
 public class DevInterface {
 
+    private static final BitmapFont font = FontPool.find(16);
+
     private static String currentlySelectedAsset;
 
     public static void loadAsset() {
         new Thread(() -> {
-            JFileChooser chooser = new JFileChooser(GlobalData.ASSETS_PATH);
+            JFileChooser chooser = new JFileChooser(Gdx.files.getLocalStoragePath());
             JFrame f = new JFrame();
             f.setVisible(true);
             f.toFront();
