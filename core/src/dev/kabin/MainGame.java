@@ -4,11 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
@@ -29,21 +26,8 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage(new ScreenViewport());
-
-		final TextButton button = new TextButton("Load image asset", skin, "default");
-		button.setWidth(200);
-		button.setHeight(50);
-		button.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				DevInterface.loadAsset();
-				return true;
-			}
-		});
-
-
+		DevInterface.init(stage);
 		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
 		Gdx.input.setInputProcessor(stage);
 		logger.setLevel(GlobalData.getLogLevel());
@@ -58,7 +42,7 @@ public class MainGame extends ApplicationAdapter {
 					}
 				}
 		);
-		stage.addActor(button);
+
 		batch = new SpriteBatch();
 
 
