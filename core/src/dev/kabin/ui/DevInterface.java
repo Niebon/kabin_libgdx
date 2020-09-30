@@ -25,8 +25,11 @@ public class DevInterface {
 
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
-    private static final EntitySelectionParameters ENTITY_SELECTION_PARAMETERS = new EntitySelectionParameters();
     private static final EntitySelectionWidget ENTITY_SELECTION_WIDGET = new EntitySelectionWidget();
+
+    public static EntitySelectionWidget getEntitySelectionWidget() {
+        return ENTITY_SELECTION_WIDGET;
+    }
 
     /**
      * Initiates the developer interface by activating buttons with respect to the given stage.
@@ -49,13 +52,9 @@ public class DevInterface {
             f.dispose();
             if (res == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = chooser.getSelectedFile();
-                ENTITY_SELECTION_PARAMETERS.currentlySelectedAsset = selectedFile.getAbsolutePath();
+                ENTITY_SELECTION_WIDGET.setCurrentlySelectedAsset(selectedFile.getAbsolutePath());
             }
         });
-    }
-
-    public static void addEntity() {
-
     }
 
     public static void addDevCue() {
@@ -70,14 +69,11 @@ public class DevInterface {
     public static void redoChange() {
     }
 
-    static class EntitySelectionParameters {
-        String currentlySelectedAsset;
-        EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
-        int layer;
-    }
+    public static class EntitySelectionWidget {
 
-    static class EntitySelectionWidget {
-
+        private String currentlySelectedAsset;
+        private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
+        private int layer;
         private final Group backingGroup = new Group();
 
         EntitySelectionWidget() {
@@ -112,11 +108,15 @@ public class DevInterface {
             backingGroup.addActor(setEntityTypeButton);
         }
 
+        public static void addEntity() {
+
+        }
+
         void showSelectEntityTypeBox() {
             final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
             final SelectBox<String> selectBox = new SelectBox<>(skin, "default");
             selectBox.setItems(Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name).toArray(String[]::new));
-            selectBox.setSelectedIndex(ENTITY_SELECTION_PARAMETERS.type.ordinal());
+            selectBox.setSelectedIndex(type.ordinal());
             var dialog = new Dialog("Setting", skin);
             dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
             dialog.getContentTable().defaults().pad(10);
@@ -126,7 +126,7 @@ public class DevInterface {
             dialog.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    ENTITY_SELECTION_PARAMETERS.type = EntityFactory.EntityType.valueOf(selectBox.getSelected());
+                    type = EntityFactory.EntityType.valueOf(selectBox.getSelected());
                     backingGroup.removeActor(dialog);
                 }
             });
@@ -136,6 +136,17 @@ public class DevInterface {
             stage.addActor(backingGroup);
         }
 
+        public void setCurrentlySelectedAsset(String currentlySelectedAsset) {
+            this.currentlySelectedAsset = currentlySelectedAsset;
+        }
+
+        public void setType(EntityFactory.EntityType type) {
+            this.type = type;
+        }
+
+        public void setLayer(int layer) {
+            this.layer = layer;
+        }
     }
 
     public static class TileSelectionWidget {
