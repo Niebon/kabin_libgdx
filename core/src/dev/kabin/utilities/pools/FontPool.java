@@ -1,6 +1,6 @@
 package dev.kabin.utilities.pools;
 
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
@@ -14,7 +14,7 @@ public class FontPool {
 
     public static BitmapFont find(int size) {
         if (!fontMap.containsKey(size)) {
-            final FreeTypeFontGenerator gen = new FreeTypeFontGenerator(FileHandle.tempFile(juicyPixelFontPath));
+            final FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(juicyPixelFontPath));
             FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             parameter.size = size;
             BitmapFont font = gen.generateFont(parameter);

@@ -1,8 +1,8 @@
 apply plugin: "java"
 
 
-sourceCompatibility = '14'
-targetCompatibility = '14'
+sourceCompatibility = '15'
+targetCompatibility = '15'
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
@@ -14,7 +14,7 @@ task run(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
@@ -22,7 +22,7 @@ task debug(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
+    ignoreExitValue = true as JavaExecSpec
     debug = true
 }
 
