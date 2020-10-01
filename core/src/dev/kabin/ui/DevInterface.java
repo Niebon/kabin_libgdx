@@ -106,6 +106,7 @@ public class DevInterface {
                 }
             });
             backingGroup.addActor(setEntityTypeButton);
+
         }
 
         public static void addEntity() {
@@ -113,7 +114,7 @@ public class DevInterface {
         }
 
         void showSelectEntityTypeBox() {
-            final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+            final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
             final SelectBox<String> selectBox = new SelectBox<>(skin, "default");
             selectBox.setItems(Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name).toArray(String[]::new));
             selectBox.setSelectedIndex(type.ordinal());
@@ -121,7 +122,7 @@ public class DevInterface {
             dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
             dialog.getContentTable().defaults().pad(10);
             dialog.getContentTable().add(selectBox);
-            dialog.setSize(200, 60);
+            dialog.setSize(200, 200);
             backingGroup.addActor(dialog);
             dialog.addListener(new ChangeListener() {
                 @Override
