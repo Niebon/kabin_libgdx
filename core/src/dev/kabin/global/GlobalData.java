@@ -13,7 +13,7 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     private static final TextureAtlas atlas = new TextureAtlas("textures.atlas");
     private static final InputProcessor inputProcessor = new InputEventDistributor();
-    public static boolean developerMode;
+    public static boolean developerMode = true;
 
     private static final PointDouble scale = Point.of(1.0, 1.0);
 

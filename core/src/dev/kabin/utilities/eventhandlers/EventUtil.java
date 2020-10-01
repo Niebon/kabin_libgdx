@@ -45,16 +45,11 @@ public class EventUtil {
 
             keyEventUtil.addChangeListener(EventListener.doNothing());
 
-            mouseEventUtil.addListener(MouseEventUtil.MouseButton.RIGHT, true, () -> {
-                if (Player.getInstance().get().getHeldEntity().isPresent()) {
-                    Player.getInstance().get().releaseHeldEntity();
-                }
-            });
-            mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                if (Player.getInstance().get().getHeldEntity().isPresent()) {
-                    Player.getInstance().get().throwHeldEntity();
-                }
-            });
+            mouseEventUtil.addListener(MouseEventUtil.MouseButton.RIGHT, true,
+                    () -> Player.getInstance().ifPresent(p -> p.getHeldEntity().ifPresent(e -> p.releaseHeldEntity())));
+            mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true,
+                    () -> Player.getInstance().ifPresent(p -> p.getHeldEntity().ifPresent(e -> p.throwHeldEntity()))
+            );
 
         }
         // Listeners for toggle developer mode
@@ -71,26 +66,27 @@ public class EventUtil {
         if (options.isHandleDevModeEvents()) {
 
             // Mouse events
-            mouseEventUtil.addListener(MouseEventUtil.MouseButton.RIGHT, true, () -> {
-                if (KeyEventUtil.isShiftDown() && developerMode) {
+            mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
+                if (KeyEventUtil.isShiftDown()) {
                     DevInterface.EntitySelectionWidget.addEntity();
                 }
-                if (KeyEventUtil.isAltDown() && developerMode) {
+                if (KeyEventUtil.isAltDown()) {
                     DevInterface.TileSelectionWidget.addGroundTile();
                 }
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, (x, y) -> {
-                if (KeyEventUtil.isAltDown() && developerMode) DevInterface.TileSelectionWidget.addGroundTile();
+                if (KeyEventUtil.isAltDown()) DevInterface.TileSelectionWidget.addGroundTile();
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, (x, y) -> {
-                if (KeyEventUtil.isAltDown() && developerMode)
+                if (KeyEventUtil.isAltDown()) {
                     DevInterface.TileSelectionWidget.removeGroundTileAtCurrentMousePosition();
+                }
             });
 
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                if (KeyEventUtil.isControlDown() && developerMode) {
+                if (KeyEventUtil.isControlDown()) {
                     DevInterface.addDevCue();
                 }
             });

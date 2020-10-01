@@ -2,18 +2,16 @@ package dev.kabin;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DevInterface;
-import dev.kabin.utilities.eventhandlers.KeyEventUtil;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
+import dev.kabin.utilities.eventhandlers.EventUtil;
 
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 
@@ -28,24 +26,12 @@ public class MainGame extends ApplicationAdapter {
 	public void create() {
 		stage = new Stage(new ScreenViewport());
 		DevInterface.init(stage);
-		Gdx.input.setInputProcessor(GlobalData.getInputProcessor());
-		Gdx.input.setInputProcessor(stage);
+		InputMultiplexer imp = new InputMultiplexer();
+		imp.setProcessors(GlobalData.getInputProcessor(), stage);
+		Gdx.input.setInputProcessor(imp);
 		logger.setLevel(GlobalData.getLogLevel());
-		MouseEventUtil.getInstance().addListener(
-				MouseEventUtil.MouseButton.LEFT, true, () -> {
-					if (KeyEventUtil.isShiftDown()) {
-						float x = MouseEventUtil.getMouseX();
-						float y = MouseEventUtil.getMouseY();
-						System.out.println(x + "," + y);
-						Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, "player", 1f);
-						EntityGroupProvider.registerEntity(e);
-					}
-				}
-		);
-
+		EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
 		batch = new SpriteBatch();
-
-
 	}
 
 	@Override

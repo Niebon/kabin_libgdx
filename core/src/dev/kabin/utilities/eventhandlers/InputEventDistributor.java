@@ -18,7 +18,7 @@ public class InputEventDistributor implements InputProcessor {
 	public boolean keyDown(int keycode) {
 		final boolean pressed = true;
 		setKeyCodePressedStatus(keycode, pressed);
-		return true;
+		return false;
 	}
 
 	private void setKeyCodePressedStatus(int keycode, boolean pressed) {
@@ -60,7 +60,7 @@ public class InputEventDistributor implements InputProcessor {
 	public boolean keyUp(int keycode) {
 		final boolean pressed = false;
 		setKeyCodePressedStatus(keycode, pressed);
-		return true;
+		return false;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class InputEventDistributor implements InputProcessor {
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		final boolean pressed = true;
 		setMouseButtonStatus(button, pressed);
-		return true;
+		return false;
 	}
 
 	private void setMouseButtonStatus(int button, boolean pressed) {
@@ -86,25 +86,25 @@ public class InputEventDistributor implements InputProcessor {
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		final boolean pressed = false;
 		setMouseButtonStatus(button, pressed);
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.LEFT, x, y);
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int x, int y) {
 		MouseEventUtil.getInstance().registerMouseMoved(x, y);
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
 		MouseEventUtil.getInstance().registerMouseScroll(amount);
-		return true;
+		return false;
 	}
 
 }

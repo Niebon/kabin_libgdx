@@ -12,7 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
+import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
 
 import javax.swing.*;
@@ -110,7 +113,11 @@ public class DevInterface {
         }
 
         public static void addEntity() {
-
+            float x = MouseEventUtil.getMouseX();
+            float y = MouseEventUtil.getMouseY();
+            System.out.println(x + "," + y);
+            Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, "player", 1f);
+            EntityGroupProvider.registerEntity(e);
         }
 
         void showSelectEntityTypeBox() {
