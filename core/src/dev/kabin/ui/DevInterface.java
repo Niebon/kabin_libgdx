@@ -43,22 +43,6 @@ public class DevInterface {
         ENTITY_SELECTION_WIDGET.addToStage(stage);
     }
 
-    public static void loadAsset() {
-        EXECUTOR_SERVICE.execute(() -> {
-            JFileChooser chooser = new JFileChooser(Gdx.files.getLocalStoragePath() + "/core/assets/raw_textures");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            JFrame f = new JFrame();
-            f.setVisible(true);
-            f.toFront();
-            f.setVisible(false);
-            int res = chooser.showOpenDialog(f);
-            f.dispose();
-            if (res == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = chooser.getSelectedFile();
-                ENTITY_SELECTION_WIDGET.setCurrentlySelectedAsset(selectedFile.getAbsolutePath());
-            }
-        });
-    }
 
     public static void addDevCue() {
     }
@@ -74,10 +58,10 @@ public class DevInterface {
 
     public static class EntitySelectionWidget {
 
+        private final Group backingGroup = new Group();
         private String currentlySelectedAsset;
         private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
         private int layer;
-        private final Group backingGroup = new Group();
 
         EntitySelectionWidget() {
 
@@ -90,7 +74,7 @@ public class DevInterface {
             loadImageAssetButton.addListener(new ClickListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    DevInterface.loadAsset();
+                    loadAsset();
                     return true;
                 }
             });
@@ -112,13 +96,39 @@ public class DevInterface {
 
         }
 
-        public static void addEntity() {
+        public void addEntity() {
             float x = MouseEventUtil.getMouseX();
             float y = MouseEventUtil.getMouseY();
             System.out.println(x + "," + y);
-            Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, "player", 1f);
-            EntityGroupProvider.registerEntity(e);
+            try {
+                System.out.println(currentlySelectedAsset);
+                Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, currentlySelectedAsset, 1f);
+                EntityGroupProvider.registerEntity(e);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        public void loadAsset() {
+            EXECUTOR_SERVICE.execute(() -> {
+                final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
+                        + "core/assets/raw_textures/";
+                JFileChooser chooser = new JFileChooser(relativePath);
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                JFrame f = new JFrame();
+                f.setVisible(true);
+                f.toFront();
+                f.setVisible(false);
+                int res = chooser.showOpenDialog(f);
+                f.dispose();
+                if (res == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = chooser.getSelectedFile();
+                    setCurrentlySelectedAsset(selectedFile.getAbsolutePath().replace("\\", "/")
+                            .replace(relativePath, ""));
+                }
+            });
+        }
+
 
         void showSelectEntityTypeBox() {
             final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));

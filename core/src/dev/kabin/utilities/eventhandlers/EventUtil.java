@@ -68,7 +68,7 @@ public class EventUtil {
             // Mouse events
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
                 if (KeyEventUtil.isShiftDown()) {
-                    DevInterface.EntitySelectionWidget.addEntity();
+                    DevInterface.getEntitySelectionWidget().addEntity();
                 }
                 if (KeyEventUtil.isAltDown()) {
                     DevInterface.TileSelectionWidget.addGroundTile();
