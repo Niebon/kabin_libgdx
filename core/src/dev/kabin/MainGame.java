@@ -38,14 +38,17 @@ public class MainGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-		stage.act(stateTime);
-		stage.draw();
+
 
 		EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> e.render(batch, stateTime));
 
 		//bundle.renderFrameByIndex(0);
 		//bundle.renderNextAnimationFrame(stateTime);
 		//System.out.println(bundle.getCurrentImageAssetPath());
+
+		// Drawing stage last ensures that it occurs before entities.
+		stage.act(stateTime);
+		stage.draw();
 	}
 
 	@Override

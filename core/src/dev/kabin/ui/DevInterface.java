@@ -140,6 +140,10 @@ public class DevInterface {
             dialog.getContentTable().defaults().pad(10);
             dialog.getContentTable().add(selectBox);
             dialog.setSize(200, 200);
+            dialog.getTitleTable().add(new TextButton("x", skin, "default"))
+                    .size(20, 20)
+                    .padRight(0).padTop(0);
+            dialog.setModal(true);
             backingGroup.addActor(dialog);
             dialog.addListener(new ChangeListener() {
                 @Override
