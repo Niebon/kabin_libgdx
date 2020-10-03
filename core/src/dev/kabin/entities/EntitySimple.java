@@ -96,10 +96,11 @@ public class EntitySimple implements Entity {
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                             // Find all entities scheduled for removal.
-                            Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
-
-                            if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().contains(EntitySimple.this)) {
-                                entitiesScheduledForRemoval.addAll(DeveloperUI.getEntitySelection().getCurrentlySelectedEntities());
+                            final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
+                            final Set<Entity> currentlySelectedEntities = DeveloperUI.getEntitySelection()
+                                    .getCurrentlySelectedEntities();
+                            if (currentlySelectedEntities.contains(EntitySimple.this)) {
+                                entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
                             } else {
                                 entitiesScheduledForRemoval.add(EntitySimple.this);
                             }
