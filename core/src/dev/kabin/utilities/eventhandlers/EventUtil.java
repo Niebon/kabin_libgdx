@@ -41,7 +41,7 @@ public class EventUtil {
             keyEventUtil.addListener(KeyEventUtil.KeyCode.F, true, () -> Player.getInstance().ifPresent(Player::triggerFlashLight));
             keyEventUtil.addListener(KeyEventUtil.KeyCode.SHIFT_LEFT, false, () -> Player.getInstance().ifPresent(Player::toggleRunSpeed));
             keyEventUtil.addListener(KeyEventUtil.KeyCode.SHIFT_LEFT, true, () -> Player.getInstance().ifPresent(Player::toggleWalkSpeed));
-            keyEventUtil.addListener(KeyEventUtil.KeyCode.E, true, () -> Player.getInstance().ifPresent(Player::interactWithNearestInteractable));
+            keyEventUtil.addListener(KeyEventUtil.KeyCode.E, true, () -> Player.getInstance().ifPresent(Player::interactWithNearestIntractable));
 
             keyEventUtil.addChangeListener(EventListener.doNothing());
 

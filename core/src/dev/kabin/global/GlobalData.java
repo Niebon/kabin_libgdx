@@ -1,7 +1,9 @@
 package dev.kabin.global;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointDouble;
 import dev.kabin.utilities.eventhandlers.InputEventDistributor;
@@ -16,6 +18,9 @@ public class GlobalData {
     public static boolean developerMode = true;
 
     private static final PointDouble scale = Point.of(1.0, 1.0);
+    public static Stage stage;
+    public static SpriteBatch batch;
+    public static float stateTime;
 
     public static void setScale(double x, double y) {
         scale.setX(x);
@@ -24,7 +29,7 @@ public class GlobalData {
 
     public static PointDouble getScale() {
         return scale;
-	}
+    }
 
 	public static TextureAtlas getAtlas() {
         return atlas;
@@ -40,5 +45,5 @@ public class GlobalData {
 
 
     public static int screenWidth = 800, screenHeight = 600;
-    public static float scaleFactor;
+    public static float scaleFactor = 1.0f;
 }

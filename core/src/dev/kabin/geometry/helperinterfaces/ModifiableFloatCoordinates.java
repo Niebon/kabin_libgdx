@@ -10,4 +10,9 @@ public interface ModifiableFloatCoordinates {
 
     void setY(float y);
 
+    default void setPos(float x, float y) {
+        setX(x);
+        setY(y);
+    }
+
 }

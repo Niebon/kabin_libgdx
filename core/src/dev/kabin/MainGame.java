@@ -6,54 +6,52 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DevInterface;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 
+import static dev.kabin.global.GlobalData.stateTime;
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 
 public class MainGame extends ApplicationAdapter {
 
-	float stateTime;
-	SpriteBatch batch;
-	Stage stage;
-	Skin skin;
+    static void renderEntityGlobalStateTime(Entity e) {
+        e.render(GlobalData.batch, GlobalData.stateTime);
+    }
 
-	@Override
-	public void create() {
-		stage = new Stage(new ScreenViewport());
-		DevInterface.init(stage);
-		InputMultiplexer imp = new InputMultiplexer();
-		imp.setProcessors(GlobalData.getInputProcessor(), stage);
-		Gdx.input.setInputProcessor(imp);
-		logger.setLevel(GlobalData.getLogLevel());
-		EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
-		batch = new SpriteBatch();
-	}
+    @Override
+    public void create() {
+        GlobalData.stage = new Stage(new ScreenViewport());
+        DevInterface.init(GlobalData.stage);
+        InputMultiplexer imp = new InputMultiplexer();
+        imp.setProcessors(GlobalData.getInputProcessor(), GlobalData.stage);
+        Gdx.input.setInputProcessor(imp);
+        logger.setLevel(GlobalData.getLogLevel());
+        EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
+        GlobalData.batch = new SpriteBatch();
+    }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
+    @Override
+    public void render() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+        GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
+        EntityGroupProvider.actionForEachEntityOrderedByGroup(MainGame::renderEntityGlobalStateTime);
 
+        //bundle.renderFrameByIndex(0);
+        //bundle.renderNextAnimationFrame(stateTime);
+        //System.out.println(bundle.getCurrentImageAssetPath());
 
-		EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> e.render(batch, stateTime));
+        // Drawing stage last ensures that it occurs before entities.
+        GlobalData.stage.act(stateTime);
+        GlobalData.stage.draw();
+    }
 
-		//bundle.renderFrameByIndex(0);
-		//bundle.renderNextAnimationFrame(stateTime);
-		//System.out.println(bundle.getCurrentImageAssetPath());
-
-		// Drawing stage last ensures that it occurs before entities.
-		stage.act(stateTime);
-		stage.draw();
-	}
-
-	@Override
-	public void dispose () {
-		batch.dispose();
-	}
+    @Override
+    public void dispose() {
+        GlobalData.batch.dispose();
+    }
 
 }

@@ -41,6 +41,7 @@ public class EntityGroupProvider {
         groupMap.put(Type.SKY, sky);
     }
 
+
     public enum Type {
         SKY(-5),
         CLOUDS_LAYER_2(-4),
@@ -71,6 +72,11 @@ public class EntityGroupProvider {
     public static void registerEntity(Entity e) {
         groupMap.get(e.getType().groupType).add(e);
     }
+
+    public static void unregisterEntity(Entity e) {
+        groupMap.get(e.getType().groupType).remove(e);
+    }
+
 
     public static void actionForEachEntityInGroup(Type groupType, Consumer<Entity> action) {
         List<Entity> entities = groupMap.get(groupType);

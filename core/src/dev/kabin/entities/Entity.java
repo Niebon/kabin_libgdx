@@ -1,10 +1,13 @@
 package dev.kabin.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.geometry.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.geometry.helperinterfaces.Scalable;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable<Entity>, ImageAnalysisPool.Analysis.Analyzable {
 
@@ -23,5 +26,9 @@ public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable
     }
 
     EntityFactory.EntityType getType();
+
+    default Optional<Actor> getActor() {
+        return Optional.empty();
+    }
 
 }

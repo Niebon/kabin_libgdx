@@ -10,22 +10,22 @@ import java.util.List;
 
 public class CollisionEntity extends EntitySimple implements CollisionData {
 
-	public CollisionEntity(JSONObject jsonObject) {
-		super(jsonObject);
-	}
+    CollisionEntity(JSONObject jsonObject) {
+        super(jsonObject);
+    }
 
-	public CollisionEntity(float x, float y, String atlasPath, float scale) {
-		super(x, y, atlasPath, scale);
-	}
+    CollisionEntity(EntityParameters parameters) {
+        super(parameters);
+    }
 
-	@Override
-	public @NotNull List<PrimitivePointInt> getCollisionProfile() {
-		return CollisionPool.findCollisionProfile(animationBundle.getCurrentImageAssetPath(),
-				animationBundle.getCurrentImageAssetIndex());
-	}
+    @Override
+    public @NotNull List<PrimitivePointInt> getCollisionProfile() {
+        return CollisionPool.findCollisionProfile(animationBundle.getCurrentImageAssetPath(),
+                animationBundle.getCurrentImageAssetIndex());
+    }
 
-	@Override
-	public @NotNull List<PrimitivePointInt> getSurfaceContourProfile() {
+    @Override
+    public @NotNull List<PrimitivePointInt> getSurfaceContourProfile() {
 		return CollisionPool.findSurfaceContourProfile(animationBundle.getCurrentImageAssetPath(),
 				animationBundle.getCurrentImageAssetIndex());
 	}

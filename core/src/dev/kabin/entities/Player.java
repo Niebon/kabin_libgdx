@@ -1,6 +1,5 @@
 package dev.kabin.entities;
 
-import dev.kabin.utilities.GameData;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -12,17 +11,16 @@ public class Player extends EntitySimple {
     static Player instance;
 
 
-    public Player(@NotNull JSONObject o) {
-        this(o.getFloat("x") * GameData.scaleFactor, o.getFloat("y") * GameData.scaleFactor,
-                o.getString("imageResource"), GameData.scaleFactor);
+    Player(@NotNull JSONObject o) {
+        this(new EntityParameters.Builder(o).build());
+    }
+
+    Player(EntityParameters parameters) {
+        super(parameters);
     }
 
     public static Optional<Player> getInstance() {
         return Optional.ofNullable(instance);
-    }
-
-    public Player(float x, float y, String imageResource, float scale) {
-        super(x, y, imageResource, scale);
     }
 
     @Override
@@ -43,11 +41,11 @@ public class Player extends EntitySimple {
     public void toggleWalkSpeed() {
     }
 
-    public void interactWithNearestInteractable() {
+    public void interactWithNearestIntractable() {
     }
 
     public Optional<Object> getHeldEntity() {
-        return null;
+        return Optional.empty();
     }
 
     public void releaseHeldEntity() {

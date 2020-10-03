@@ -1,29 +1,109 @@
 package dev.kabin.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import dev.kabin.global.GlobalData;
 import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
-import dev.kabin.utilities.GameData;
+import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.json.JSONObject;
 
+import java.util.Optional;
+import java.util.logging.Logger;
+
 public class EntitySimple implements Entity {
+
+    private static final Logger logger = Logger.getLogger(EntitySimple.class.getName());
 
     protected final AnimationBundle animationBundle;
     private final String atlasPath;
+    private final int layer;
+    private final Actor actor = new Actor();
     private float x, y, scale;
 
-    public EntitySimple(JSONObject jsonObject) {
-        this(jsonObject.getFloat("x") * GameData.scaleFactor, jsonObject.getFloat("y") * GameData.scaleFactor,
-                jsonObject.getString("atlasPath"), GameData.scaleFactor);
+    EntitySimple(JSONObject o) {
+        this(new EntityParameters.Builder(o).build());
     }
 
-    public EntitySimple(float x, float y, String atlasPath, float scale) {
-        this.x = x;
-        this.y = y;
-        this.scale = scale;
-        this.atlasPath = atlasPath;
+    EntitySimple(EntityParameters parameters) {
+        this.x = parameters.x();
+        this.y = parameters.y();
+        this.scale = parameters.scale();
+        this.atlasPath = parameters.atlasPath();
+        this.layer = parameters.layer();
         this.animationBundle = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+        actor.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return EntitySimple.this.touchDown(button);
+            }
+        });
+    }
+
+    public boolean touchDown(int button) {
+        logger.warning(() -> "Click registered.");
+        switch (button) {
+            case Input.Buttons.RIGHT -> handleMouseClickRight();
+            case Input.Buttons.LEFT -> handleMouseClickLeft();
+        }
+        return true;
+    }
+
+    private void handleMouseClickLeft() {
+    }
+
+    private void handleMouseClickRight() {
+        if (GlobalData.developerMode) {
+            final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+            var dialog = new Dialog("Actions", skin);
+            float width = 200;
+            float height = 200;
+            dialog.setBounds(
+                    MouseEventUtil.getMouseX() + width * 0.1f,
+                    MouseEventUtil.getMouseY() + height * 0.1f,
+                    width, height
+            );
+            dialog.getContentTable().defaults().pad(10);
+
+            // Remove button.
+            var removeButton = new TextButton("Remove", skin, "default");
+            removeButton.addListener(
+                    new ClickListener() {
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                            EntityGroupProvider.unregisterEntity(EntitySimple.this);
+                            EntitySimple.this.getActor().ifPresent(Actor::remove);
+                            dialog.remove();
+                            return true;
+                        }
+                    }
+            );
+            dialog.getContentTable().add(removeButton).size(100, 30);
+
+            // Exit button.
+            var exitButton = new TextButton("x", skin, "default");
+            exitButton.addListener(
+                    new ClickListener() {
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                            return dialog.remove();
+                        }
+                    }
+            );
+            dialog.getTitleTable().add(exitButton)
+                    .size(20, 20)
+                    .padRight(0).padTop(0);
+            dialog.setModal(true);
+            GlobalData.stage.addActor(dialog);
+        }
     }
 
     @Override
@@ -32,6 +112,11 @@ public class EntitySimple implements Entity {
         animationBundle.setY(y);
         animationBundle.setScale(scale);
         animationBundle.renderNextAnimationFrame(batch, stateTime);
+        actor.setBounds(
+                x, y,
+                animationBundle.getWidth(),
+                animationBundle.getHeight()
+        );
     }
 
     @Override
@@ -41,7 +126,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public int getLayer() {
-        return 0;
+        return layer;
     }
 
     @Override
@@ -51,6 +136,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public void setX(float x) {
+        actor.setX(x);
         this.x = x;
     }
 
@@ -61,6 +147,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public void setY(float y) {
+        actor.setY(y);
         this.y = y;
     }
 
@@ -87,5 +174,10 @@ public class EntitySimple implements Entity {
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
         return ImageAnalysisPool.findAnalysis(animationBundle.getCurrentImageAssetPath(), animationBundle.getCurrentImageAssetIndex());
+    }
+
+    @Override
+    public Optional<Actor> getActor() {
+        return Optional.of(actor);
     }
 }

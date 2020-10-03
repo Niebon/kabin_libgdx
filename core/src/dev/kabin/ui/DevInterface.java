@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.entities.EntityParameters;
+import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
 
@@ -97,13 +99,18 @@ public class DevInterface {
         }
 
         public void addEntity() {
-            float x = MouseEventUtil.getMouseX();
-            float y = MouseEventUtil.getMouseY();
-            System.out.println(x + "," + y);
+            EntityParameters parameters = new EntityParameters.Builder()
+                    .setX(MouseEventUtil.getMouseX())
+                    .setY(MouseEventUtil.getMouseY())
+                    .setLayer(layer)
+                    .setScale(GlobalData.scaleFactor)
+                    .setAtlasPath(currentlySelectedAsset)
+                    .build();
+
             try {
-                System.out.println(currentlySelectedAsset);
-                Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(x, y, currentlySelectedAsset, 1f);
+                Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(parameters);
                 EntityGroupProvider.registerEntity(e);
+                e.getActor().ifPresent(GlobalData.stage::addActor);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -179,4 +186,5 @@ public class DevInterface {
         public static void removeGroundTileAtCurrentMousePosition() {
         }
     }
+
 }

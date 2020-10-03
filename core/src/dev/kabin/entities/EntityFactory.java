@@ -64,7 +64,7 @@ public class EntityFactory {
 
     @FunctionalInterface
     public interface MouseClickConstructor {
-        Entity construct(float mouseClickX, float mouseClickY, String atlasPath, float scale);
+        Entity construct(EntityParameters parameters);
     }
 
 }

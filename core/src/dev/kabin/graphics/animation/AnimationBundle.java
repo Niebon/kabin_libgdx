@@ -4,14 +4,16 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.utilities.Direction;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AnimationBundle implements Animations {
+public class AnimationBundle implements Animations, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
@@ -19,7 +21,6 @@ public class AnimationBundle implements Animations {
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, scale;
     private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
-
     private TextureAtlas.AtlasRegion cachedTextureRegion;
 
     public AnimationBundle(
@@ -52,7 +53,9 @@ public class AnimationBundle implements Animations {
 
     @Override
     public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
-        if (!animations.containsKey(currentAnimationType)) return;
+        if (!animations.containsKey(currentAnimationType)) {
+            return;
+        }
 
         cachedTextureRegion = animations.get(currentAnimationType)
                 .getKeyFrame(stateTime, currentAnimationType.isLooping());
@@ -127,4 +130,11 @@ public class AnimationBundle implements Animations {
         this.scale = scale;
     }
 
+    @Override
+    public void dispose() {
+        // Is this redundant?
+        animations.forEach((type, animation) -> Arrays.stream(animation.getKeyFrames())
+                .forEach(r -> r.getTexture().dispose()));
+        regions.forEach(r -> r.getTexture().dispose());
+    }
 }

@@ -41,7 +41,7 @@ public class ImageAnalysisPool {
 		private final int pixelMassCenterYInt;
 		private final int pixelsX;
 		private final int pixelsY;
-		double
+		private final float
 				pixelMassCenterX,
 				pixelMassCenterY;
 		private int lowestPixelFromAbove;
@@ -116,10 +116,10 @@ public class ImageAnalysisPool {
 			this.rightmostPixel = rightmostPixel;
 			this.leftmostPixel = leftmostPixel;
 
-			pixelMassCenterX = (double) sumx / nx;
-			pixelMassCenterY = Functions.transformY((double) sumy / ny, height);
-			pixelMassCenterXInt = (int) Math.round(pixelMassCenterX);
-			pixelMassCenterYInt = Functions.transformY((int) Math.round(pixelMassCenterY), height);
+			pixelMassCenterX = (float) sumx / nx;
+			pixelMassCenterY = Functions.transformY((float) sumy / ny, height);
+			pixelMassCenterXInt = Math.round(pixelMassCenterX);
+			pixelMassCenterYInt = Functions.transformY(Math.round(pixelMassCenterY), height);
 
 			pixelHeight = lowestPixel - highestPixel;
 			pixelWidth = rightmostPixel - leftmostPixel;
@@ -163,11 +163,11 @@ public class ImageAnalysisPool {
 			return pixelWidth;
 		}
 
-		public double getPixelMassCenterX() {
+		public float getPixelMassCenterX() {
 			return pixelMassCenterX;
 		}
 
-		public double getPixelMassCenterY() {
+		public float getPixelMassCenterY() {
 			return pixelMassCenterY;
 		}
 
@@ -218,11 +218,11 @@ public class ImageAnalysisPool {
 				return getPixelAnalysis().getRightmostPixel();
 			}
 
-			default double getPixelMassCenterX() {
+			default float getPixelMassCenterX() {
 				return getPixelAnalysis().getPixelMassCenterX();
 			}
 
-			default double getPixelMassCenterY() {
+			default float getPixelMassCenterY() {
 				return getPixelAnalysis().getPixelMassCenterY();
 			}
 

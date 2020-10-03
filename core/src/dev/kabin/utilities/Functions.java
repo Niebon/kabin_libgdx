@@ -272,15 +272,25 @@ public class Functions {
     }
 
 	/**
-	 * <p>A transform from a coordinate system where y points downwards to one where y points upwards; also
-	 * it is translated by a "height" parameter.</p>
-	 * <pre>
-	 *              ----> x                y
-	 *              | .p                   ^ .p
-	 *              |           ->         |
-	 *              v                      |____> x
-	 *              y
+     * A transform from a coordinate system where y points downwards to one where y points upwards; also
+     * it is translated by a "height" parameter.
+     * <pre>
+     *              ----> x                y
+     *              | .p                   ^ .p
+     *              |           ->         |
+     *              v                      |____> x
+     *              y
      * </pre>
+     * For example {@link com.badlogic.gdx.scenes.scene2d.utils.ClickListener ClickListener}
+     * uses the coordinate system to the left where the origin is the top left corner.
+     * <p>
+     * The same is true for {@link java.awt.image.BufferedImage BufferedImage}s.
+     * <p>
+     * Other classes such as {@link com.badlogic.gdx.graphics.g2d.SpriteBatch SpriteBatch} and {@link com.badlogic.gdx.graphics.g2d.Sprite Sprite}
+     * use the coordinate system to the right.
+     * <p>
+     * This function allows to transition from a <strong>TLC-coordinate system</strong> to a
+     * <strong>BLC-coordinate system</strong>.
      *
      * @param y      coordinate.
      * @param height height of the given image.
@@ -291,13 +301,13 @@ public class Functions {
     }
 
     /**
-     * Similar as {@link #transformY(double y, int height)}, but the y parameter is a {@code double}.
+     * Similar as {@link #transformY(int y, int height)}, but the y parameter is a {@code float}.
      *
      * @param y      coordinate.
      * @param height height parameter.
      * @return new y-coordinate.
      */
-    public static double transformY(double y, int height) {
+    public static float transformY(float y, int height) {
         return -y + height;
     }
 }

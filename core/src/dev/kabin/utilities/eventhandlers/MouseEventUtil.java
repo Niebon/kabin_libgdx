@@ -38,10 +38,11 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 	}
 
 	public void registerMouseMoved(float x, float y) {
-		logger.info(() -> "Registered mouse wherabouts: " + x + ", " + y);
-		//EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
+		EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
 		MouseEventUtil.x = x;
-		MouseEventUtil.y = (float) Functions.transformY(y, GlobalData.screenHeight);
+		MouseEventUtil.y = Functions.transformY(y, GlobalData.screenHeight);
+		logger.info(() -> "\n" + "BLC: " + MouseEventUtil.x + ", " + MouseEventUtil.y + "\n"
+				+ "TLC: " + x + "," + y);
 	}
 
 	@NotNull
