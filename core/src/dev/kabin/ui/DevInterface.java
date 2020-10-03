@@ -12,21 +12,67 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.entities.EntityParameters;
 import dev.kabin.global.GlobalData;
+import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class DevInterface {
+
+    private static final List<DraggedEntity> currentlyDraggedEntities = new ArrayList<>();
+
+    public static void init(Stage stage) {
+        stage.addListener(new DragListener() {
+            @Override
+            public void dragStop(InputEvent event, float x, float y, int pointer) {
+                DevInterface.clearDraggedEntities();
+            }
+        });
+        DevInterface.visible(GlobalData.developerMode);
+    }
+
+    public static void addEntityToDraggedEntities(Entity e) {
+        currentlyDraggedEntities.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY(), e));
+    }
+
+    public static void clearDraggedEntities() {
+        currentlyDraggedEntities.clear();
+    }
+
+    public static void updatePositionsOfDraggedEntities() {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, n = currentlyDraggedEntities.size(); i < n; i++) {
+            final DraggedEntity de = currentlyDraggedEntities.get(i);
+            final Entity e = de.getEntity();
+
+
+            // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
+            e.setX(Functions.snapToPixel(de.getOriginalX() + MouseEventUtil.getMouseX() - de.getInitialMouseX()));
+            e.setY(Functions.snapToPixel((de.getOriginalY() + MouseEventUtil.getMouseY() - de.getInitialMouseY())));
+        }
+    }
+
+    public static void visible(boolean b) {
+        if (b) {
+            GlobalData.stage.addActor(getEntitySelectionWidget().backingGroup);
+        } else {
+            getEntitySelectionWidget().backingGroup.remove();
+        }
+    }
+
 
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
@@ -48,11 +94,37 @@ public class DevInterface {
     public static void redoChange() {
     }
 
-    public static void visible(boolean b) {
-        if (b) {
-            getEntitySelectionWidget().backingGroup.remove();
-        } else {
-            GlobalData.stage.addActor(getEntitySelectionWidget().backingGroup);
+    private static class DraggedEntity {
+        private final float originalX, originalY;
+        private final float initialMouseX, getInitialMouseY;
+        private final Entity entity;
+
+        private DraggedEntity(float originalX, float originalY, float initialMouseX, float getInitialMouseY, Entity entity) {
+            this.originalX = originalX;
+            this.originalY = originalY;
+            this.initialMouseX = initialMouseX;
+            this.getInitialMouseY = getInitialMouseY;
+            this.entity = entity;
+        }
+
+        public float getOriginalX() {
+            return originalX;
+        }
+
+        public float getOriginalY() {
+            return originalY;
+        }
+
+        public Entity getEntity() {
+            return entity;
+        }
+
+        public float getInitialMouseX() {
+            return initialMouseX;
+        }
+
+        public float getInitialMouseY() {
+            return getInitialMouseY;
         }
     }
 
@@ -108,6 +180,9 @@ public class DevInterface {
             try {
                 Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(parameters);
                 EntityGroupProvider.registerEntity(e);
+                float offsetX = e.getPixelMassCenterX() * e.getScale();
+                float offsetY = e.getPixelMassCenterY() * e.getScale();
+                e.setPos(e.getX() - offsetX, e.getY() - offsetY);
                 e.getActor().ifPresent(GlobalData.stage::addActor);
             } catch (Exception e) {
                 e.printStackTrace();

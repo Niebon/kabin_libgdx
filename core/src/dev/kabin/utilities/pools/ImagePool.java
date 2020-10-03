@@ -1,7 +1,5 @@
 package dev.kabin.utilities.pools;
 
-import dev.kabin.utilities.FileUtility;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,11 +20,10 @@ public class ImagePool {
      */
     public static BufferedImage findBufferedImage(String imagePath) {
         if (!bufferedImages.containsKey(imagePath)) {
-            final String pathName = FileUtility.RESOURCES_ROOT_FOLDER + '/' + imagePath;
             try {
-                bufferedImages.put(imagePath, ImageIO.read(new File(pathName)));
+                bufferedImages.put(imagePath, ImageIO.read(new File(imagePath)));
             } catch (IOException e) {
-                throw new RuntimeException("Caught exception while reading image from the path '" + pathName
+                throw new RuntimeException("Caught exception while reading image from the path '" + imagePath
                         + "'.", e.getCause());
             }
         }

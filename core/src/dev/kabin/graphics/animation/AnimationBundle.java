@@ -36,6 +36,7 @@ public class AnimationBundle implements Animations, Disposable {
         ));
         this.width = regions.get(0).originalWidth;
         this.height = regions.get(0).originalHeight;
+        this.cachedTextureRegion = regions.get(0);
     }
 
     private Animation<TextureAtlas.AtlasRegion> generateAnimation(List<Integer> indices) {

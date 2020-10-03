@@ -49,9 +49,8 @@ public class ImageAnalysisPool {
 
 		public Analysis(@NotNull String path, int index) {
 			final int width, height;
-			final TextureAtlas.AtlasRegion atlasRegion = Arrays.stream(GlobalData.getAtlas().getRegions().items).filter(
-					a -> path.equals(a.getTexture().toString()) && index == a.index
-			).findFirst().orElseThrow();
+			final TextureAtlas.AtlasRegion atlasRegion = Optional.ofNullable(GlobalData.getAtlas().getRegions()
+					.select(a -> path.equals(a.toString()) && index == a.index).iterator().next()).orElseThrow();
 			int minX = atlasRegion.getRegionX();
 			int minY = atlasRegion.getRegionY();
 			width = atlasRegion.getRegionWidth();

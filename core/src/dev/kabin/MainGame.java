@@ -10,9 +10,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
+import dev.kabin.ui.DevInterface;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 
-import static dev.kabin.global.GlobalData.stateTime;
+import static dev.kabin.global.GlobalData.*;
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 
 public class MainGame extends ApplicationAdapter {
@@ -35,6 +36,9 @@ public class MainGame extends ApplicationAdapter {
         logger.setLevel(GlobalData.getLogLevel());
         EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
         GlobalData.batch = new SpriteBatch();
+
+
+        DevInterface.init(stage);
     }
 
     @Override
@@ -50,6 +54,10 @@ public class MainGame extends ApplicationAdapter {
         // Drawing stage last ensures that it occurs before entities.
         GlobalData.stage.act(stateTime);
         GlobalData.stage.draw();
+
+        if (developerMode) {
+            DevInterface.updatePositionsOfDraggedEntities();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import dev.kabin.geometry.points.PointDouble;
 import dev.kabin.geometry.points.PointInt;
 import dev.kabin.geometry.shapes.AbstractRectBoxed;
 import dev.kabin.geometry.shapes.RectBoxed;
+import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -46,8 +47,8 @@ public class Functions {
         return false;
     }
 
-    public static double snapToPixel(double x) {
-        return Math.round(x / GameData.scaleFactor) * GameData.scaleFactor;
+    public static float snapToPixel(float x) {
+        return Math.round(x / GlobalData.scaleFactor) * GlobalData.scaleFactor;
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {

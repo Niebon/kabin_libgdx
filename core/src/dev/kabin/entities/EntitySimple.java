@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.global.GlobalData;
 import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
+import dev.kabin.ui.DevInterface;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.json.JSONObject;
@@ -49,9 +50,8 @@ public class EntitySimple implements Entity {
         });
         actor.addListener(new DragListener() {
             @Override
-            public void drag(InputEvent event, float x, float y, int pointer) {
-                setX(x);
-                setY(y);
+            public void dragStart(InputEvent event, float x, float y, int pointer) {
+                DevInterface.addEntityToDraggedEntities(EntitySimple.this);
             }
         });
     }
