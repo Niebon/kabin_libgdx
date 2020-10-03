@@ -3,7 +3,7 @@ package dev.kabin.utilities.eventhandlers;
 
 import dev.kabin.entities.Player;
 import dev.kabin.global.GlobalData;
-import dev.kabin.ui.DevInterface;
+import dev.kabin.ui.DeveloperUI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +58,7 @@ public class EventUtil {
             keyEventUtil.addListener(KeyEventUtil.KeyCode.F12, true, () -> {
                 developerMode = !developerMode;
                 // TODO
-                DevInterface.visible(GlobalData.developerMode);
+                DeveloperUI.setVisible(GlobalData.developerMode);
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });
         }
@@ -69,26 +69,26 @@ public class EventUtil {
             // Mouse events
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
                 if (KeyEventUtil.isShiftDown()) {
-                    DevInterface.getEntitySelectionWidget().addEntity();
+                    DeveloperUI.getEntityLoadingWidget().addEntity();
                 }
                 if (KeyEventUtil.isAltDown()) {
-                    DevInterface.TileSelectionWidget.addGroundTile();
+                    DeveloperUI.TileSelectionWidget.addGroundTile();
                 }
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, (x, y) -> {
-                if (KeyEventUtil.isAltDown()) DevInterface.TileSelectionWidget.addGroundTile();
+                if (KeyEventUtil.isAltDown()) DeveloperUI.TileSelectionWidget.addGroundTile();
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, (x, y) -> {
                 if (KeyEventUtil.isAltDown()) {
-                    DevInterface.TileSelectionWidget.removeGroundTileAtCurrentMousePosition();
+                    DeveloperUI.TileSelectionWidget.removeGroundTileAtCurrentMousePosition();
                 }
             });
 
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
                 if (KeyEventUtil.isControlDown()) {
-                    DevInterface.addDevCue();
+                    DeveloperUI.addDevCue();
                 }
             });
 
@@ -96,17 +96,17 @@ public class EventUtil {
             // Keyboard events
             keyEventUtil.addListener(KeyEventUtil.KeyCode.S, true, () -> {
                 if (KeyEventUtil.isControlDown() && developerMode) {
-                    DevInterface.saveMap();
+                    DeveloperUI.saveMap();
                 }
             });
             keyEventUtil.addListener(KeyEventUtil.KeyCode.Z, true, () -> {
                 if (KeyEventUtil.isControlDown() && developerMode) {
-                    DevInterface.undoChange();
+                    DeveloperUI.undoChange();
                 }
             });
             keyEventUtil.addListener(KeyEventUtil.KeyCode.Y, true, () -> {
                 if (KeyEventUtil.isControlDown() && developerMode) {
-                    DevInterface.redoChange();
+                    DeveloperUI.redoChange();
                 }
             });
         }

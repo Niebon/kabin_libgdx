@@ -2,6 +2,7 @@ package dev.kabin.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,6 +18,9 @@ import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.entities.EntityParameters;
+import dev.kabin.geometry.points.Point;
+import dev.kabin.geometry.points.PointFloat;
+import dev.kabin.geometry.shapes.RectFloat;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
@@ -24,62 +28,81 @@ import dev.kabin.utilities.pools.FontPool;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class DevInterface {
+public class DeveloperUI {
 
-    private static final List<DraggedEntity> currentlyDraggedEntities = new ArrayList<>();
+    private static final Set<DraggedEntity> CURRENTLY_DRAGGED_ENTITIES = new HashSet<>();
+    private static final EntitySelection ENTITY_SELECTION = new EntitySelection();
+    private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
+    private static final EntityLoadingWidget ENTITY_LOADING_WIDGET = new EntityLoadingWidget();
+    private static final DragListener SELECTION_BEGIN = new DragListener() {
+        @Override
+        public void dragStart(InputEvent event, float x, float y, int pointer) {
+            ENTITY_SELECTION.begin();
+        }
+    };
+    private static final DragListener SELECTION_END = new DragListener() {
+        @Override
+        public void dragStop(InputEvent event, float x, float y, int pointer) {
+            ENTITY_SELECTION.end();
+        }
+    };
+
+    public static EntitySelection getEntitySelection() {
+        return ENTITY_SELECTION;
+    }
 
     public static void init(Stage stage) {
         stage.addListener(new DragListener() {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
-                DevInterface.clearDraggedEntities();
+                DeveloperUI.clearDraggedEntities();
             }
         });
-        DevInterface.visible(GlobalData.developerMode);
+        DeveloperUI.setVisible(GlobalData.developerMode);
     }
 
     public static void addEntityToDraggedEntities(Entity e) {
-        currentlyDraggedEntities.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY(), e));
+        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY(), e));
+    }
+
+    public static void render() {
+        ENTITY_SELECTION.render();
     }
 
     public static void clearDraggedEntities() {
-        currentlyDraggedEntities.clear();
+        CURRENTLY_DRAGGED_ENTITIES.clear();
     }
 
     public static void updatePositionsOfDraggedEntities() {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = currentlyDraggedEntities.size(); i < n; i++) {
-            final DraggedEntity de = currentlyDraggedEntities.get(i);
+        for (DraggedEntity de : CURRENTLY_DRAGGED_ENTITIES) {
             final Entity e = de.getEntity();
 
-
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getOriginalX() + MouseEventUtil.getMouseX() - de.getInitialMouseX()));
-            e.setY(Functions.snapToPixel((de.getOriginalY() + MouseEventUtil.getMouseY() - de.getInitialMouseY())));
+            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseX() - de.getInitialMouseX()));
+            e.setY(Functions.snapToPixel((de.getEntityOriginalY() + MouseEventUtil.getMouseY() - de.getInitialMouseY())));
         }
     }
 
-    public static void visible(boolean b) {
+    public static void setVisible(boolean b) {
         if (b) {
-            GlobalData.stage.addActor(getEntitySelectionWidget().backingGroup);
+            GlobalData.stage.addActor(getEntityLoadingWidget().backingGroup);
+            GlobalData.stage.addListener(SELECTION_BEGIN);
+            GlobalData.stage.addListener(SELECTION_END);
         } else {
-            getEntitySelectionWidget().backingGroup.remove();
+            getEntityLoadingWidget().backingGroup.remove();
         }
     }
 
-
-    private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-    private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
-    private static final EntitySelectionWidget ENTITY_SELECTION_WIDGET = new EntitySelectionWidget();
-
-    public static EntitySelectionWidget getEntitySelectionWidget() {
-        return ENTITY_SELECTION_WIDGET;
+    public static EntityLoadingWidget getEntityLoadingWidget() {
+        return ENTITY_LOADING_WIDGET;
     }
 
     public static void addDevCue() {
@@ -94,25 +117,77 @@ public class DevInterface {
     public static void redoChange() {
     }
 
+    public static class EntitySelection {
+
+        private final Set<Entity> currentlySelectedEntities = new HashSet<>();
+        private RectFloat backingRect;
+        private PointFloat begin;
+
+        void render() {
+            if (begin != null) {
+                float minX = Math.min(begin.x(), MouseEventUtil.getMouseX());
+                float minY = Math.min(begin.y(), MouseEventUtil.getMouseY());
+                float width = Math.abs(begin.x() - MouseEventUtil.getMouseX());
+                float height = Math.abs(begin.y() - MouseEventUtil.getMouseY());
+                backingRect = new RectFloat(minX, minY, width, height);
+                GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
+                GlobalData.shapeRenderer.rect(begin.x(), begin.y(), MouseEventUtil.getMouseX() - begin.x(),
+                        MouseEventUtil.getMouseY() - begin.y());
+                GlobalData.shapeRenderer.end();
+
+                // By abuse of the word "render" include this here...
+                EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> {
+                    if (backingRect.contains(e.getX(), e.getY())) {
+                        currentlySelectedEntities.add(e);
+                    } else {
+                        currentlySelectedEntities.remove(e);
+                    }
+                });
+            }
+        }
+
+        void begin() {
+            begin = Point.of(MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY());
+        }
+
+        void end() {
+            begin = null;
+            currentlySelectedEntities.clear();
+        }
+
+        public Set<Entity> getCurrentlySelectedEntities() {
+            return Collections.unmodifiableSet(currentlySelectedEntities);
+        }
+    }
+
+    /**
+     * Keeps a record of an entity, its current position (x,y), and a mouse position (x,y).
+     * Based on this data, we can calculate the new position of the given entity after a mouse drag.
+     * The update scheme is:
+     * <pre>
+     *     entity pos -> entity pos + delta mouse position
+     * </pre>
+     */
     private static class DraggedEntity {
-        private final float originalX, originalY;
+        private final float entityOriginalX, entityOriginalY;
         private final float initialMouseX, getInitialMouseY;
         private final Entity entity;
 
-        private DraggedEntity(float originalX, float originalY, float initialMouseX, float getInitialMouseY, Entity entity) {
-            this.originalX = originalX;
-            this.originalY = originalY;
+        private DraggedEntity(float originalX, float entityOriginalY, float initialMouseX, float getInitialMouseY, Entity entity) {
+            this.entityOriginalX = originalX;
+            this.entityOriginalY = entityOriginalY;
             this.initialMouseX = initialMouseX;
             this.getInitialMouseY = getInitialMouseY;
             this.entity = entity;
         }
 
-        public float getOriginalX() {
-            return originalX;
+        public float getEntityOriginalX() {
+            return entityOriginalX;
         }
 
-        public float getOriginalY() {
-            return originalY;
+        public float getEntityOriginalY() {
+            return entityOriginalY;
         }
 
         public Entity getEntity() {
@@ -128,14 +203,14 @@ public class DevInterface {
         }
     }
 
-    public static class EntitySelectionWidget {
+    public static class EntityLoadingWidget {
 
         private final Group backingGroup = new Group();
         private String currentlySelectedAsset;
         private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
         private int layer;
 
-        EntitySelectionWidget() {
+        EntityLoadingWidget() {
 
             final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
             final TextButton loadImageAssetButton = new TextButton("Asset", skin, "default");
@@ -232,10 +307,6 @@ public class DevInterface {
                     backingGroup.removeActor(dialog);
                 }
             });
-        }
-
-        void addToStage(Stage stage) {
-            stage.addActor(backingGroup);
         }
 
         public void setCurrentlySelectedAsset(String currentlySelectedAsset) {

@@ -3,6 +3,7 @@ package dev.kabin.global;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointDouble;
@@ -21,6 +22,7 @@ public class GlobalData {
     public static Stage stage;
     public static SpriteBatch batch;
     public static float stateTime;
+    public static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public static void setScale(double x, double y) {
         scale.setX(x);

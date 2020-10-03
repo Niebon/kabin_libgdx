@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
-import dev.kabin.ui.DevInterface;
+import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 
 import static dev.kabin.global.GlobalData.*;
@@ -38,7 +38,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.batch = new SpriteBatch();
 
 
-        DevInterface.init(stage);
+        DeveloperUI.init(stage);
     }
 
     @Override
@@ -56,7 +56,8 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.stage.draw();
 
         if (developerMode) {
-            DevInterface.updatePositionsOfDraggedEntities();
+            DeveloperUI.updatePositionsOfDraggedEntities();
+            DeveloperUI.render();
         }
     }
 

@@ -41,6 +41,27 @@ public class EntityGroupProvider {
         groupMap.put(Type.SKY, sky);
     }
 
+    public static void registerEntity(Entity e) {
+        groupMap.get(e.getType().groupType).add(e);
+    }
+
+    public static void unregisterEntity(Entity e) {
+        groupMap.get(e.getType().groupType).remove(e);
+    }
+
+    public static void actionForEachEntityInGroup(Type groupType, Consumer<Entity> action) {
+        List<Entity> entities = groupMap.get(groupType);
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, n = entities.size(); i < n; i++) {
+            action.accept(entities.get(i));
+        }
+    }
+
+    public static void actionForEachEntityOrderedByGroup(Consumer<Entity> action) {
+        for (Type type : GROUPS_ORDERED) {
+            actionForEachEntityInGroup(type, action);
+        }
+    }
 
     public enum Type {
         SKY(-5),
@@ -66,29 +87,6 @@ public class EntityGroupProvider {
         @Override
         public String toString() {
             return name();
-        }
-    }
-
-    public static void registerEntity(Entity e) {
-        groupMap.get(e.getType().groupType).add(e);
-    }
-
-    public static void unregisterEntity(Entity e) {
-        groupMap.get(e.getType().groupType).remove(e);
-    }
-
-
-    public static void actionForEachEntityInGroup(Type groupType, Consumer<Entity> action) {
-        List<Entity> entities = groupMap.get(groupType);
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = entities.size(); i < n; i++) {
-            action.accept(entities.get(i));
-        }
-    }
-
-    public static void actionForEachEntityOrderedByGroup(Consumer<Entity> action) {
-        for (Type type : GROUPS_ORDERED) {
-            actionForEachEntityInGroup(type, action);
         }
     }
 }

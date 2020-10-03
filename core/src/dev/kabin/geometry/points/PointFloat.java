@@ -48,11 +48,11 @@ public class PointFloat implements Point<Float> {
         return this;
     }
 
-    public double x() {
+    public float x() {
         return x;
     }
 
-    public double y() {
+    public float y() {
         return y;
     }
 
