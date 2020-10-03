@@ -2,6 +2,7 @@ package dev.kabin.utilities.eventhandlers;
 
 
 import dev.kabin.entities.Player;
+import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DevInterface;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class EventUtil {
             keyEventUtil.addListener(KeyEventUtil.KeyCode.SHIFT_LEFT, true, () -> Player.getInstance().ifPresent(Player::toggleWalkSpeed));
             keyEventUtil.addListener(KeyEventUtil.KeyCode.E, true, () -> Player.getInstance().ifPresent(Player::interactWithNearestIntractable));
 
-            keyEventUtil.addChangeListener(EventListener.doNothing());
+            keyEventUtil.addChangeListener(EventListener.empty());
 
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.RIGHT, true,
                     () -> Player.getInstance().ifPresent(p -> p.getHeldEntity().ifPresent(e -> p.releaseHeldEntity())));
@@ -57,7 +58,7 @@ public class EventUtil {
             keyEventUtil.addListener(KeyEventUtil.KeyCode.F12, true, () -> {
                 developerMode = !developerMode;
                 // TODO
-                //DevInterface.showDevMode(GlobalData.developerMode);
+                DevInterface.visible(GlobalData.developerMode);
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });
         }

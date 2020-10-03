@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.global.GlobalData;
 import dev.kabin.graphics.animation.AnimationBundle;
 import dev.kabin.graphics.animation.AnimationBundleFactory;
@@ -44,6 +45,13 @@ public class EntitySimple implements Entity {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return EntitySimple.this.touchDown(button);
+            }
+        });
+        actor.addListener(new DragListener() {
+            @Override
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                setX(x);
+                setY(y);
             }
         });
     }
@@ -180,4 +188,5 @@ public class EntitySimple implements Entity {
     public Optional<Actor> getActor() {
         return Optional.of(actor);
     }
+
 }

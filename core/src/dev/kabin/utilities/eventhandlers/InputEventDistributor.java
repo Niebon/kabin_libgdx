@@ -49,6 +49,7 @@ public class InputEventDistributor implements InputProcessor {
 			case Input.Keys.B -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.B, pressed);
 			case Input.Keys.N -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.N, pressed);
 			case Input.Keys.M -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.M, pressed);
+			case Input.Keys.F12 -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.F12, pressed);
 			case Input.Keys.CONTROL_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.CONTROL_LEFT, pressed);
 			case Input.Keys.SHIFT_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.SHIFT_LEFT, pressed);
 			case Input.Keys.ALT_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyEventUtil.KeyCode.ALT_LEFT, pressed);

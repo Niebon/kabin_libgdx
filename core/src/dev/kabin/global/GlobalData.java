@@ -45,5 +45,5 @@ public class GlobalData {
 
 
     public static int screenWidth = 800, screenHeight = 600;
-    public static float scaleFactor = 1.0f;
+    public static float scaleFactor = 2.0f;
 }

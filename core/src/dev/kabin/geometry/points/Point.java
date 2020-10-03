@@ -5,6 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface Point<T extends Number> {
 
+    @Contract("_, _ -> new")
+    static @NotNull PointFloat of(float x, float y) {
+        return new PointFloat(x, y);
+    }
 
     @Contract("_, _ -> new")
     static @NotNull PointDouble of(double x, double y) {
@@ -32,7 +36,7 @@ public interface Point<T extends Number> {
     @Contract("_->this")
 	Point<T> rotate(double angleRadians);
 
-    default boolean isNull(){
+    default boolean equalsOrigin() {
         return getX().doubleValue() == 0 && getY().doubleValue() == 0;
     }
 }

@@ -1,13 +1,12 @@
 package dev.kabin.utilities.eventhandlers;
 
+import dev.kabin.geometry.points.Point;
+import dev.kabin.geometry.points.PointFloat;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseButton> {
 
@@ -18,10 +17,16 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 	private static final Map<MouseButton, List<MouseDraggedEvent>> listenersMouseDrag = new EnumMap<>(MouseButton.class);
 	private static final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
 	private static final List<EventListener> defaultListeners = new ArrayList<>();
+	private static final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
 	private static MouseEventUtil instance;
 	private static float x, y;
 
 	protected MouseEventUtil() {
+		// Register last time the position that the mouse began dragging.
+		for (MouseButton b : MouseButton.values()) {
+			addListener(b, true, () -> dragStart.put(b, Point.of(x, y)));
+			addListener(b, false, () -> dragStart.remove(b));
+		}
 	}
 
 	@NotNull
@@ -35,6 +40,10 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
 	public static float getMouseY() {
 		return (float) (y / GlobalData.getScale().y());
+	}
+
+	public static Optional<PointFloat> getDragStart(MouseButton b) {
+		return Optional.ofNullable(dragStart.get(b));
 	}
 
 	public void registerMouseMoved(float x, float y) {

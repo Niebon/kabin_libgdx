@@ -58,6 +58,14 @@ public class DevInterface {
     public static void redoChange() {
     }
 
+    public static void visible(boolean b) {
+        if (b) {
+            getEntitySelectionWidget().backingGroup.remove();
+        } else {
+            GlobalData.stage.addActor(getEntitySelectionWidget().backingGroup);
+        }
+    }
+
     public static class EntitySelectionWidget {
 
         private final Group backingGroup = new Group();
