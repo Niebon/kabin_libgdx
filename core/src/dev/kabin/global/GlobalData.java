@@ -43,7 +43,11 @@ public class GlobalData {
         return Level.WARNING;
     }
 
+    public static int artWidth = 400;
+    public static int artHeight = 225;
 
-    public static int screenWidth = 800, screenHeight = 600;
-    public static float scaleFactor = 2.0f;
+    public static int screenWidth = 400;
+    public static int screenHeight = 225;
+
+    public static float scaleFactor = 1.0f;
 }

@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface Entity extends Scalable, ModifiableFloatCoordinates, Comparable<Entity>, ImageAnalysisPool.Analysis.Analyzable {
 
-
     void render(SpriteBatch batch, float stateTime);
 
     void updatePhysics();

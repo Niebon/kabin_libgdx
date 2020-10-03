@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
-import dev.kabin.ui.DevInterface;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 
 import static dev.kabin.global.GlobalData.stateTime;
@@ -24,8 +23,12 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+        GlobalData.screenWidth = Gdx.graphics.getWidth();
+        GlobalData.screenHeight = Gdx.graphics.getHeight();
+        GlobalData.scaleFactor = (float) GlobalData.screenWidth / GlobalData.artWidth;
+
+
         GlobalData.stage = new Stage(new ScreenViewport());
-        DevInterface.init(GlobalData.stage);
         InputMultiplexer imp = new InputMultiplexer();
         imp.setProcessors(GlobalData.getInputProcessor(), GlobalData.stage);
         Gdx.input.setInputProcessor(imp);

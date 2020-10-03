@@ -36,16 +36,6 @@ public class DevInterface {
         return ENTITY_SELECTION_WIDGET;
     }
 
-    /**
-     * Initiates the developer interface by activating buttons with respect to the given stage.
-     *
-     * @param stage a stage.
-     */
-    public static void init(Stage stage) {
-        ENTITY_SELECTION_WIDGET.addToStage(stage);
-    }
-
-
     public static void addDevCue() {
     }
 
