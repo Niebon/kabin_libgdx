@@ -18,7 +18,9 @@ import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class EntitySimple implements Entity {
@@ -92,8 +94,21 @@ public class EntitySimple implements Entity {
                     new ClickListener() {
                         @Override
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                            EntityGroupProvider.unregisterEntity(EntitySimple.this);
-                            EntitySimple.this.getActor().ifPresent(Actor::remove);
+
+                            // Find all entities scheduled for removal.
+                            Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
+
+                            if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().contains(EntitySimple.this)) {
+                                entitiesScheduledForRemoval.addAll(DeveloperUI.getEntitySelection().getCurrentlySelectedEntities());
+                            } else {
+                                entitiesScheduledForRemoval.add(EntitySimple.this);
+                            }
+
+                            entitiesScheduledForRemoval.forEach(e -> {
+                                EntityGroupProvider.unregisterEntity(e);
+                                e.getActor().ifPresent(Actor::remove);
+                            });
+
                             dialog.remove();
                             return true;
                         }

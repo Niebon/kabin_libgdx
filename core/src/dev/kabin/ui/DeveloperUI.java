@@ -45,7 +45,7 @@ public class DeveloperUI {
     private static final DragListener SELECTION_BEGIN = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
-            ENTITY_SELECTION.begin();
+            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty()) ENTITY_SELECTION.begin();
         }
     };
     private static final DragListener SELECTION_END = new DragListener() {
@@ -144,16 +144,18 @@ public class DeveloperUI {
                         currentlySelectedEntities.remove(e);
                     }
                 });
+                System.out.println(currentlySelectedEntities.size());
             }
         }
 
         void begin() {
+            currentlySelectedEntities.clear();
             begin = Point.of(MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY());
         }
 
+        // End, but only clear the selected entities after the begin() call.
         void end() {
             begin = null;
-            currentlySelectedEntities.clear();
         }
 
         public Set<Entity> getCurrentlySelectedEntities() {
