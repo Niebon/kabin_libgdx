@@ -47,9 +47,9 @@ public class EntityParameters {
         private int layer;
 
         public Builder(JSONObject o) {
-            scale = o.getFloat("scale");
-            x = o.getInt("x") * GlobalData.scaleFactor;
-            y = o.getInt("y") * GlobalData.scaleFactor;
+            scale = GlobalData.scaleFactor;
+            x = o.getInt("x") * scale;
+            y = o.getInt("y") * scale;
             atlasPath = o.getString("atlasPath");
             layer = o.getInt("layer");
         }

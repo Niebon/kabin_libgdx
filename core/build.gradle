@@ -10,6 +10,9 @@ sourceSets.test.java.srcDirs = ["src/test"]
 
 eclipse.project.name = appName + "-core"
 
+test {
+    useJUnitPlatform()
+}
 
 dependencies {
 

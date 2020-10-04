@@ -20,14 +20,14 @@ public class WorldStateRecorder {
         final List<Entity> allEntities = new ArrayList<>();
         EntityGroupProvider.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
-        o.put("dev/kabin/entities", allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
+        o.put("entities", allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
         return o;
     }
 
     public static void loadWorldState(JSONObject o) {
         final HashSet<String> set = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        o.getJSONArray("dev/kabin/entities").iterator().forEachRemaining(entry -> {
+        o.getJSONArray("entities").iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
             } else {
