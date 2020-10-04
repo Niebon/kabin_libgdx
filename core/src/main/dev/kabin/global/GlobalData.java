@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 public class GlobalData {
 
+    public static final String WORLDS_PATH = "core/assets/worlds/";
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     private static final TextureAtlas atlas = new TextureAtlas("textures.atlas");
     private static final InputProcessor inputProcessor = new InputEventDistributor();
@@ -23,6 +24,7 @@ public class GlobalData {
     public static SpriteBatch batch;
     public static float stateTime;
     public static ShapeRenderer shapeRenderer = new ShapeRenderer();
+    public static String currentWorld = "world_1.json";
 
     public static void setScale(double x, double y) {
         scale.setX(x);

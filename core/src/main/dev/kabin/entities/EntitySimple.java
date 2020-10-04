@@ -216,6 +216,7 @@ public class EntitySimple implements Entity {
                 .put("x", Math.round(getX() / getScale()))
                 .put("y", Math.round(getY() / getScale()))
                 .put("atlasPath", getAtlasPath())
-                .put("layer", getLayer());
+                .put("layer", getLayer())
+                .put("type", getType().name());
     }
 }

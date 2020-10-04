@@ -22,12 +22,17 @@ import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointFloat;
 import dev.kabin.geometry.shapes.RectFloat;
 import dev.kabin.global.GlobalData;
+import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,8 +40,11 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static dev.kabin.global.GlobalData.WORLDS_PATH;
+
 public class DeveloperUI {
 
+    private static JSONObject wordState;
     private static final Set<DraggedEntity> CURRENTLY_DRAGGED_ENTITIES = new HashSet<>();
     private static final EntitySelection ENTITY_SELECTION = new EntitySelection();
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
@@ -109,6 +117,12 @@ public class DeveloperUI {
     }
 
     public static void saveMap() {
+        wordState = WorldStateRecorder.recordWorldState();
+        try {
+            Files.write(Path.of(WORLDS_PATH + GlobalData.currentWorld), wordState.toString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void undoChange() {
