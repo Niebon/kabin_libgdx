@@ -9,20 +9,6 @@
     },
     {
       "atlasPath": "player",
-      "x": 212,
-      "y": 89,
-      "type": "PLAYER",
-      "layer": 0
-    },
-    {
-      "atlasPath": "player",
-      "x": 271,
-      "y": 63,
-      "type": "PLAYER",
-      "layer": 0
-    },
-    {
-      "atlasPath": "player",
       "x": 300,
       "y": 49,
       "type": "PLAYER",

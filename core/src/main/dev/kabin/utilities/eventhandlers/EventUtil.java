@@ -96,7 +96,7 @@ public class EventUtil {
             // Keyboard events
             keyEventUtil.addListener(KeyEventUtil.KeyCode.S, true, () -> {
                 if (KeyEventUtil.isControlDown() && developerMode) {
-                    DeveloperUI.saveMap();
+                    DeveloperUI.saveWorld();
                 }
             });
             keyEventUtil.addListener(KeyEventUtil.KeyCode.Z, true, () -> {

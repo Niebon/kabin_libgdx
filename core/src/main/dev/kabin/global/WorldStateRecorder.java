@@ -39,6 +39,7 @@ public class WorldStateRecorder {
                     logger.info(() -> "Loaded the entity: " + json);
                     Entity e = EntityFactory.EntityType.valueOf(type).getJsonConstructor().construct(json);
                     EntityGroupProvider.registerEntity(e);
+                    e.getActor().ifPresent(GlobalData.stage::addActor);
                 }
             }
         });

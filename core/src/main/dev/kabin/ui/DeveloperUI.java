@@ -116,7 +116,7 @@ public class DeveloperUI {
     public static void addDevCue() {
     }
 
-    public static void saveMap() {
+    public static void saveWorld() {
         wordState = WorldStateRecorder.recordWorldState();
         try {
             Files.write(Path.of(WORLDS_PATH + GlobalData.currentWorld), wordState.toString().getBytes());
@@ -129,6 +129,30 @@ public class DeveloperUI {
     }
 
     public static void redoChange() {
+    }
+
+    public static void loadWorld() {
+        EXECUTOR_SERVICE.execute(() -> {
+            final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
+                    + "core/assets/worlds/";
+            JFileChooser chooser = new JFileChooser(relativePath);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            JFrame f = new JFrame();
+            f.setVisible(true);
+            f.toFront();
+            f.setVisible(false);
+            int res = chooser.showOpenDialog(f);
+            f.dispose();
+            if (res == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = chooser.getSelectedFile();
+                GlobalData.currentWorld = selectedFile.getName();
+                try {
+                    WorldStateRecorder.loadWorldState(new JSONObject(Files.readString(selectedFile.toPath())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public static class EntitySelection {

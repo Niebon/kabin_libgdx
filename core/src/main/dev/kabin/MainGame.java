@@ -37,7 +37,6 @@ public class MainGame extends ApplicationAdapter {
         EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
         GlobalData.batch = new SpriteBatch();
 
-
         DeveloperUI.init(stage);
     }
 
