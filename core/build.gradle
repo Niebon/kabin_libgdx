@@ -5,7 +5,8 @@ targetCompatibility = '15'
 
 [compileJava , compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/main" ]
+sourceSets.test.java.srcDirs = ["src/test"]
 
 eclipse.project.name = appName + "-core"
 
@@ -16,7 +17,7 @@ dependencies {
     compile 'org.json:json:20200518'
     compile 'org.apache.commons:commons-collections4:4.4'
     compile 'com.google.guava:guava:29.0-jre'
-
+    compile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
 }
 
 compileJava

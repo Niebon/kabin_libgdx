@@ -7,7 +7,7 @@ targetCompatibility = '15'
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../core/assets"]
 
-project.ext.mainClassName = "dev.kabin.desktop.DesktopLauncher"
+project.ext.mainClassName = "main.dev.kabin.kabin.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../core/assets")
 
 task run(dependsOn: classes, type: JavaExec) {
