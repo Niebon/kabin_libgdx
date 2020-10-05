@@ -2,6 +2,7 @@ package dev.kabin.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -14,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import dev.kabin.animation.AnimationBundle;
+import dev.kabin.animation.AnimationBundleFactory;
+import dev.kabin.animation.Animations;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
@@ -44,7 +48,6 @@ import static dev.kabin.global.GlobalData.WORLDS_PATH;
 
 public class DeveloperUI {
 
-    private static JSONObject wordState;
     private static final Set<DraggedEntity> CURRENTLY_DRAGGED_ENTITIES = new HashSet<>();
     private static final EntitySelection ENTITY_SELECTION = new EntitySelection();
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
@@ -62,6 +65,7 @@ public class DeveloperUI {
             ENTITY_SELECTION.end();
         }
     };
+    private static JSONObject wordState;
 
     public static EntitySelection getEntitySelection() {
         return ENTITY_SELECTION;
@@ -81,8 +85,9 @@ public class DeveloperUI {
         CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY(), e));
     }
 
-    public static void render() {
+    public static void render(SpriteBatch batch, float stateTime) {
         ENTITY_SELECTION.render();
+        ENTITY_LOADING_WIDGET.render(batch, stateTime);
     }
 
     public static void clearDraggedEntities() {
@@ -245,19 +250,31 @@ public class DeveloperUI {
 
     public static class EntityLoadingWidget {
 
+        private static final int WIDTH = 600;
+        private static final int HEIGHT = 200;
+        private final Dialog dialog;
         private final Group backingGroup = new Group();
-        private String currentlySelectedAsset;
+        private AnimationBundle preview = null;
+        private String currentlySelectedAsset = "";
         private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
         private int layer;
 
         EntityLoadingWidget() {
+            var skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-            final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-            final TextButton loadImageAssetButton = new TextButton("Asset", skin, "default");
-            loadImageAssetButton.setWidth(150);
-            loadImageAssetButton.setHeight(30);
-            loadImageAssetButton.setX(0);
-            loadImageAssetButton.setY(0);
+            dialog = new Dialog("Entity loading widget", skin);
+            dialog.setBounds(
+                    0, 0,
+                    WIDTH, HEIGHT
+            );
+            refreshContentTableMessage();
+
+
+            var loadImageAssetButton = new TextButton("Asset", skin, "default");
+            loadImageAssetButton.setWidth(100);
+            loadImageAssetButton.setHeight(25);
+            loadImageAssetButton.setX(25);
+            loadImageAssetButton.setY(25);
             loadImageAssetButton.addListener(new ClickListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -265,22 +282,37 @@ public class DeveloperUI {
                     return true;
                 }
             });
-            backingGroup.addActor(loadImageAssetButton);
+            dialog.addActor(loadImageAssetButton);
 
-            final TextButton setEntityTypeButton = new TextButton("Type", skin, "default");
-            setEntityTypeButton.setWidth(150);
-            setEntityTypeButton.setHeight(30);
-            setEntityTypeButton.setX(0);
-            setEntityTypeButton.setY(30);
-            setEntityTypeButton.addListener(new ClickListener() {
+            var chooseEntityTypeButton = new TextButton("Type", skin, "default");
+            chooseEntityTypeButton.setWidth(100);
+            chooseEntityTypeButton.setHeight(25);
+            chooseEntityTypeButton.setX(25);
+            chooseEntityTypeButton.setY(50);
+            chooseEntityTypeButton.addListener(new ClickListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     showSelectEntityTypeBox();
                     return true;
                 }
             });
-            backingGroup.addActor(setEntityTypeButton);
+            dialog.addActor(chooseEntityTypeButton);
+            backingGroup.addActor(dialog);
+        }
 
+        void refreshContentTableMessage() {
+            final int maxLength = 10;
+            dialog.getContentTable().clear();
+            dialog.getContentTable().defaults();
+            dialog.getContentTable().add("asset:  " +
+                    (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
+                            : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
+                    '\n' +
+                    "type:  " +
+                    type.name() +
+                    '\n' +
+                    "layer: " +
+                    layer);
         }
 
         public void addEntity() {
@@ -293,7 +325,7 @@ public class DeveloperUI {
                     .build();
 
             try {
-                Entity e = EntityFactory.EntityType.PLAYER.getMouseClickConstructor().construct(parameters);
+                Entity e = type.getMouseClickConstructor().construct(parameters);
                 EntityGroupProvider.registerEntity(e);
                 float offsetX = e.getPixelMassCenterX() * e.getScale();
                 float offsetY = e.getPixelMassCenterY() * e.getScale();
@@ -320,14 +352,16 @@ public class DeveloperUI {
                     File selectedFile = chooser.getSelectedFile();
                     setCurrentlySelectedAsset(selectedFile.getAbsolutePath().replace("\\", "/")
                             .replace(relativePath, ""));
+                    preview = AnimationBundleFactory.loadFromAtlasPath(currentlySelectedAsset);
                 }
+                refreshContentTableMessage();
             });
         }
 
 
         void showSelectEntityTypeBox() {
-            final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-            final SelectBox<String> selectBox = new SelectBox<>(skin, "default");
+            var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+            var selectBox = new SelectBox<String>(skin, "default");
             selectBox.setItems(Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name).toArray(String[]::new));
             selectBox.setSelectedIndex(type.ordinal());
             var dialog = new Dialog("Setting", skin);
@@ -345,6 +379,7 @@ public class DeveloperUI {
                 public void changed(ChangeEvent event, Actor actor) {
                     type = EntityFactory.EntityType.valueOf(selectBox.getSelected());
                     backingGroup.removeActor(dialog);
+                    refreshContentTableMessage();
                 }
             });
         }
@@ -359,6 +394,15 @@ public class DeveloperUI {
 
         public void setLayer(int layer) {
             this.layer = layer;
+        }
+
+        public void render(SpriteBatch batch, float stateTime) {
+            if (preview != null) {
+                preview.setCurrentAnimation(Animations.AnimationType.DEFAULT_RIGHT);
+                preview.setScale(4.0f);
+                preview.setX(0.75f * WIDTH);
+                preview.renderNextAnimationFrame(batch, stateTime);
+            }
         }
     }
 

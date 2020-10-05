@@ -56,7 +56,7 @@ public class MainGame extends ApplicationAdapter {
 
         if (developerMode) {
             DeveloperUI.updatePositionsOfDraggedEntities();
-            DeveloperUI.render();
+            DeveloperUI.render(GlobalData.batch, GlobalData.stateTime);
         }
     }
 
