@@ -54,7 +54,8 @@ public class DeveloperUI {
     private static final DragListener SELECTION_BEGIN = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
-            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty()) ENTITY_SELECTION.begin();
+            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty() && !getEntityLoadingWidget().dialog.isDragging())
+                ENTITY_SELECTION.begin();
         }
     };
     private static final DragListener SELECTION_END = new DragListener() {
