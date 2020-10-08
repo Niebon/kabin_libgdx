@@ -8,13 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.utils.Align;
 import dev.kabin.animation.AnimationBundle;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.Animations;
@@ -65,7 +63,7 @@ public class DeveloperUI {
             ENTITY_SELECTION.end();
         }
     };
-    private static JSONObject wordState;
+    private static JSONObject worldState;
 
     public static EntitySelection getEntitySelection() {
         return ENTITY_SELECTION;
@@ -122,9 +120,9 @@ public class DeveloperUI {
     }
 
     public static void saveWorld() {
-        wordState = WorldStateRecorder.recordWorldState();
+        worldState = WorldStateRecorder.recordWorldState();
         try {
-            Files.write(Path.of(WORLDS_PATH + GlobalData.currentWorld), wordState.toString().getBytes());
+            Files.write(Path.of(WORLDS_PATH + GlobalData.currentWorld), worldState.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -258,6 +256,8 @@ public class DeveloperUI {
         private String currentlySelectedAsset = "";
         private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
         private int layer;
+        private Label infoMessage;
+        private Label contentTableMessage;
 
         EntityLoadingWidget() {
             var skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -267,7 +267,6 @@ public class DeveloperUI {
                     0, 0,
                     WIDTH, HEIGHT
             );
-            refreshContentTableMessage();
 
 
             var loadImageAssetButton = new TextButton("Asset", skin, "default");
@@ -298,13 +297,16 @@ public class DeveloperUI {
             });
             dialog.addActor(chooseEntityTypeButton);
             backingGroup.addActor(dialog);
+
+            refreshContentTableMessage();
         }
 
         void refreshContentTableMessage() {
             final int maxLength = 10;
             dialog.getContentTable().clear();
             dialog.getContentTable().defaults();
-            dialog.getContentTable().add("asset:  " +
+            dialog.removeActor(contentTableMessage);
+            contentTableMessage = new Label("asset:  " +
                     (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
                             : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
                     '\n' +
@@ -312,7 +314,10 @@ public class DeveloperUI {
                     type.name() +
                     '\n' +
                     "layer: " +
-                    layer);
+                    layer, dialog.getSkin());
+            contentTableMessage.setAlignment(Align.left);
+            contentTableMessage.setPosition(0, 100);
+            dialog.addActor(contentTableMessage);
         }
 
         public void addEntity() {
@@ -399,8 +404,9 @@ public class DeveloperUI {
         public void render(SpriteBatch batch, float stateTime) {
             if (preview != null) {
                 preview.setCurrentAnimation(Animations.AnimationType.DEFAULT_RIGHT);
-                preview.setScale(4.0f);
-                preview.setX(0.75f * WIDTH);
+                float scale = 4.0f * preview.getOriginalWidth() / 32;
+                preview.setScale(scale);
+                preview.setPos(0.75f * WIDTH + dialog.getX(), dialog.getY());
                 preview.renderNextAnimationFrame(batch, stateTime);
             }
         }
