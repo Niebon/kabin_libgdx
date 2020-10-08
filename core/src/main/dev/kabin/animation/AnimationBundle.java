@@ -23,6 +23,11 @@ public class AnimationBundle implements Animations, Disposable {
     private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
 
+
+    public AnimationType getCurrentAnimationType() {
+        return currentAnimationType;
+    }
+
     public AnimationBundle(
             Array<TextureAtlas.AtlasRegion> regions,
             Map<AnimationType, List<Integer>> animations

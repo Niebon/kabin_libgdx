@@ -64,6 +64,7 @@ public class DeveloperUI {
             ENTITY_SELECTION.end();
         }
     };
+
     private static JSONObject worldState;
 
     public static EntitySelection getEntitySelection() {
@@ -255,7 +256,8 @@ public class DeveloperUI {
         private final Group backingGroup = new Group();
         private AnimationBundle preview = null;
         private String currentlySelectedAsset = "";
-        private EntityFactory.EntityType type = EntityFactory.EntityType.ENTITY_SIMPLE;
+        private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
+        private Animations.AnimationType animationType = Animations.AnimationType.DEFAULT_RIGHT;
         private int layer;
         private Label infoMessage;
         private Label contentTableMessage;
@@ -284,7 +286,7 @@ public class DeveloperUI {
             });
             dialog.addActor(loadImageAssetButton);
 
-            var chooseEntityTypeButton = new TextButton("Type", skin, "default");
+            var chooseEntityTypeButton = new TextButton("Entity Type", skin, "default");
             chooseEntityTypeButton.setWidth(100);
             chooseEntityTypeButton.setHeight(25);
             chooseEntityTypeButton.setX(25);
@@ -297,8 +299,23 @@ public class DeveloperUI {
                 }
             });
             dialog.addActor(chooseEntityTypeButton);
-            backingGroup.addActor(dialog);
 
+            var chooseAnimationTypeButton = new TextButton("Animation", skin, "default");
+            chooseAnimationTypeButton.setWidth(100);
+            chooseAnimationTypeButton.setHeight(25);
+            chooseAnimationTypeButton.setX(150);
+            chooseAnimationTypeButton.setY(50);
+            chooseAnimationTypeButton.addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    showAnimationTypeBox();
+                    return true;
+                }
+            });
+            dialog.addActor(chooseAnimationTypeButton);
+
+
+            backingGroup.addActor(dialog);
             refreshContentTableMessage();
         }
 
@@ -307,17 +324,21 @@ public class DeveloperUI {
             dialog.getContentTable().clear();
             dialog.getContentTable().defaults();
             dialog.removeActor(contentTableMessage);
-            contentTableMessage = new Label("asset:  " +
-                    (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
-                            : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
-                    '\n' +
-                    "type:  " +
-                    type.name() +
-                    '\n' +
-                    "layer: " +
-                    layer, dialog.getSkin());
+            contentTableMessage = new Label(
+                    "Asset: " +
+                            (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
+                                    : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
+                            '\n' +
+                            "Entity type: " +
+                            entityType.name() +
+                            '\n' +
+                            "Layer: " +
+                            layer +
+                            '\n' +
+                            "Animation: " +
+                            animationType.name(), dialog.getSkin());
             contentTableMessage.setAlignment(Align.left);
-            contentTableMessage.setPosition(0, 100);
+            contentTableMessage.setPosition(25, 80);
             dialog.addActor(contentTableMessage);
         }
 
@@ -331,7 +352,7 @@ public class DeveloperUI {
                     .build();
 
             try {
-                Entity e = type.getMouseClickConstructor().construct(parameters);
+                Entity e = entityType.getMouseClickConstructor().construct(parameters);
                 EntityGroupProvider.registerEntity(e);
                 float offsetX = e.getPixelMassCenterX() * e.getScale();
                 float offsetY = e.getPixelMassCenterY() * e.getScale();
@@ -369,7 +390,7 @@ public class DeveloperUI {
             var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
             var selectBox = new SelectBox<String>(skin, "default");
             selectBox.setItems(Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name).toArray(String[]::new));
-            selectBox.setSelectedIndex(type.ordinal());
+            selectBox.setSelectedIndex(entityType.ordinal());
             var dialog = new Dialog("Setting", skin);
             dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
             dialog.getContentTable().defaults().pad(10);
@@ -383,9 +404,33 @@ public class DeveloperUI {
             dialog.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    type = EntityFactory.EntityType.valueOf(selectBox.getSelected());
+                    entityType = EntityFactory.EntityType.valueOf(selectBox.getSelected());
                     backingGroup.removeActor(dialog);
                     refreshContentTableMessage();
+                }
+            });
+        }
+
+        void showAnimationTypeBox() {
+            var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+            var selectBox = new SelectBox<String>(skin, "default");
+            selectBox.setItems(Arrays.stream(Animations.AnimationType.values()).map(Enum::name).toArray(String[]::new));
+            selectBox.setSelectedIndex(entityType.ordinal());
+            var dialog = new Dialog("Setting", skin);
+            dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
+            dialog.getContentTable().defaults().pad(10);
+            dialog.getContentTable().add(selectBox);
+            dialog.setSize(200, 200);
+            dialog.getTitleTable().add(new TextButton("x", skin, "default"))
+                    .size(20, 20)
+                    .padRight(0).padTop(0);
+            dialog.setModal(true);
+            backingGroup.addActor(dialog);
+            dialog.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    animationType = Animations.AnimationType.valueOf(selectBox.getSelected());
+                    backingGroup.removeActor(dialog);
                 }
             });
         }
@@ -394,8 +439,8 @@ public class DeveloperUI {
             this.currentlySelectedAsset = currentlySelectedAsset;
         }
 
-        public void setType(EntityFactory.EntityType type) {
-            this.type = type;
+        public void setEntityType(EntityFactory.EntityType entityType) {
+            this.entityType = entityType;
         }
 
         public void setLayer(int layer) {
@@ -404,7 +449,9 @@ public class DeveloperUI {
 
         public void render(SpriteBatch batch, float stateTime) {
             if (preview != null) {
-                preview.setCurrentAnimation(Animations.AnimationType.DEFAULT_RIGHT);
+                if (preview.getCurrentAnimationType() != animationType) {
+                    preview.setCurrentAnimation(animationType);
+                }
                 float scale = 4.0f * preview.getOriginalWidth() / 32;
                 preview.setScale(scale);
                 preview.setPos(0.75f * WIDTH + dialog.getX(), dialog.getY());
