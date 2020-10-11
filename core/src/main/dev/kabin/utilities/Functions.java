@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 /**
  * Class containing static methods which may be interpreted as mathematical function.
@@ -298,5 +299,15 @@ public class Functions {
 
     public static float requireNonNullElse(float val, float defaultVal) {
         return val == 0 ? defaultVal : val;
+    }
+
+    public static <T> boolean anyTrue(T[] array, Predicate<T> predicate) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, n = array.length; i < n; i++) {
+            if (predicate.test(array[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

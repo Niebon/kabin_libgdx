@@ -54,7 +54,7 @@ public class DeveloperUI {
     private static final DragListener SELECTION_BEGIN = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
-            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty() && !getEntityLoadingWidget().dialog.isDragging())
+            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty() && !getEntityLoadingWidget().widget.isDragging())
                 ENTITY_SELECTION.begin();
         }
     };
@@ -105,12 +105,13 @@ public class DeveloperUI {
     }
 
     public static void setVisible(boolean b) {
+        getEntityLoadingWidget().widget.setVisible(b);
         if (b) {
-            GlobalData.stage.addActor(getEntityLoadingWidget().backingGroup);
             GlobalData.stage.addListener(SELECTION_BEGIN);
             GlobalData.stage.addListener(SELECTION_END);
         } else {
-            getEntityLoadingWidget().backingGroup.remove();
+            GlobalData.stage.removeListener(SELECTION_BEGIN);
+            GlobalData.stage.removeListener(SELECTION_END);
         }
     }
 
@@ -252,23 +253,22 @@ public class DeveloperUI {
 
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
-        private final Dialog dialog;
-        private final Group backingGroup = new Group();
+        private final Widget widget;
         private AnimationBundle preview = null;
         private String currentlySelectedAsset = "";
         private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
         private Animations.AnimationType animationType = Animations.AnimationType.DEFAULT_RIGHT;
         private int layer;
-        private Label infoMessage;
         private Label contentTableMessage;
 
         EntityLoadingWidget() {
-            var skin = new Skin(Gdx.files.internal("uiskin.json"));
+            widget = new Widget.Builder()
+                    .setTitle("Entity loading widget")
+                    .setWidth(WIDTH)
+                    .setHeight(HEIGHT)
+                    .build();
 
-            dialog = new Dialog("Entity loading widget", skin);
-            dialog.setBounds(0, 0, WIDTH, HEIGHT);
-
-            var loadImageAssetButton = new TextButton("Asset", skin, "default");
+            var loadImageAssetButton = new TextButton("Asset", Widget.Builder.DEFAULT_SKIN, "default");
             loadImageAssetButton.setWidth(100);
             loadImageAssetButton.setHeight(25);
             loadImageAssetButton.setX(25);
@@ -280,9 +280,9 @@ public class DeveloperUI {
                     return true;
                 }
             });
-            dialog.addActor(loadImageAssetButton);
+            widget.addDialogActor(loadImageAssetButton);
 
-            var chooseEntityTypeButton = new TextButton("Entity Type", skin, "default");
+            var chooseEntityTypeButton = new TextButton("Entity Type", Widget.Builder.DEFAULT_SKIN, "default");
             chooseEntityTypeButton.setWidth(100);
             chooseEntityTypeButton.setHeight(25);
             chooseEntityTypeButton.setX(25);
@@ -294,9 +294,9 @@ public class DeveloperUI {
                     return true;
                 }
             });
-            dialog.addActor(chooseEntityTypeButton);
+            widget.addDialogActor(chooseEntityTypeButton);
 
-            var chooseAnimationTypeButton = new TextButton("Animation", skin, "default");
+            var chooseAnimationTypeButton = new TextButton("Animation", Widget.Builder.DEFAULT_SKIN, "default");
             chooseAnimationTypeButton.setWidth(100);
             chooseAnimationTypeButton.setHeight(25);
             chooseAnimationTypeButton.setX(150);
@@ -308,18 +308,13 @@ public class DeveloperUI {
                     return true;
                 }
             });
-            dialog.addActor(chooseAnimationTypeButton);
+            widget.addDialogActor(chooseAnimationTypeButton);
 
-
-            backingGroup.addActor(dialog);
             refreshContentTableMessage();
         }
 
         void refreshContentTableMessage() {
             final int maxLength = 10;
-            dialog.getContentTable().clear();
-            dialog.getContentTable().defaults();
-            dialog.removeActor(contentTableMessage);
             contentTableMessage = new Label(
                     "Asset: " +
                             (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
@@ -332,10 +327,10 @@ public class DeveloperUI {
                             layer +
                             '\n' +
                             "Animation: " +
-                            animationType.name(), dialog.getSkin());
+                            animationType.name(), Widget.Builder.DEFAULT_SKIN);
             contentTableMessage.setAlignment(Align.left);
             contentTableMessage.setPosition(25, 80);
-            dialog.addActor(contentTableMessage);
+            widget.refreshContentTableMessage(contentTableMessage);
         }
 
         public void addEntity() {
@@ -396,12 +391,12 @@ public class DeveloperUI {
                     .size(20, 20)
                     .padRight(0).padTop(0);
             dialog.setModal(true);
-            backingGroup.addActor(dialog);
+            widget.addActor(dialog);
             dialog.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     entityType = EntityFactory.EntityType.valueOf(selectBox.getSelected());
-                    backingGroup.removeActor(dialog);
+                    widget.removeActor(dialog);
                     refreshContentTableMessage();
                 }
             });
@@ -421,12 +416,12 @@ public class DeveloperUI {
                     .size(20, 20)
                     .padRight(0).padTop(0);
             dialog.setModal(true);
-            backingGroup.addActor(dialog);
+            widget.addActor(dialog);
             dialog.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     animationType = Animations.AnimationType.valueOf(selectBox.getSelected());
-                    backingGroup.removeActor(dialog);
+                    widget.removeActor(dialog);
                 }
             });
         }
@@ -450,7 +445,7 @@ public class DeveloperUI {
                 }
                 float scale = 4.0f * preview.getOriginalWidth() / 32;
                 preview.setScale(scale);
-                preview.setPos(0.75f * WIDTH + dialog.getX(), dialog.getY());
+                preview.setPos(0.75f * WIDTH + widget.getX(), widget.getY());
                 preview.renderNextAnimationFrame(batch, stateTime);
             }
         }
