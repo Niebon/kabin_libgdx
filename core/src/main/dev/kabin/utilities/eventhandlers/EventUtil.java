@@ -72,7 +72,7 @@ public class EventUtil {
                     DeveloperUI.getEntityLoadingWidget().addEntity();
                 }
                 if (KeyEventUtil.isAltDown()) {
-                    DeveloperUI.TileSelectionWidget.addGroundTile();
+                    DeveloperUI.getTileSelectionWidget().addGroundTile();
                 }
             });
 

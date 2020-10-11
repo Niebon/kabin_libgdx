@@ -3,9 +3,7 @@ package dev.kabin.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
@@ -17,18 +15,22 @@ import java.util.Objects;
 public class Widget implements ModifiableFloatCoordinates {
 
     private final Group backingGroup = new Group();
-    private final Dialog dialog;
-    private Dialog[] dialogsInGroup;
+    private final Window window;
+    private Window[] windowsInBackingGroupCached;
     private Label contentTableMessage;
 
     private Widget(
             float x, float y, float width, float height, String title, Skin skin,
             Label contentTableMessage
     ) {
-        dialog = new Dialog(title, skin);
-        dialog.setBounds(x, y, width, height);
-        backingGroup.addActor(dialog);
+        window = new Window(title, skin);
+        window.setBounds(x, y, width, height);
+        backingGroup.addActor(window);
         refreshContentTableMessage(contentTableMessage);
+
+
+        var collapseButton = new TextButton("x", Widget.Builder.DEFAULT_SKIN, "default");
+
     }
 
     public void setVisible(boolean b) {
@@ -40,20 +42,18 @@ public class Widget implements ModifiableFloatCoordinates {
     }
 
     public void addDialogActor(Actor a) {
-        dialog.addActor(a);
+        window.addActor(a);
     }
 
     public void refreshContentTableMessage(Label contentTableMessage) {
         if (contentTableMessage != null) {
-            dialog.getContentTable().clear();
-            dialog.getContentTable().defaults();
-            dialog.removeActor(this.contentTableMessage);
-            dialog.addActor(this.contentTableMessage = contentTableMessage);
+            window.removeActor(this.contentTableMessage);
+            window.addActor(this.contentTableMessage = contentTableMessage);
         }
     }
 
     public void removeDialogActor(Actor a) {
-        dialog.removeActor(a);
+        window.removeActor(a);
     }
 
 
@@ -68,34 +68,35 @@ public class Widget implements ModifiableFloatCoordinates {
     }
 
     private void updateDialogsInGroup() {
-        dialogsInGroup = Arrays.stream(backingGroup.getChildren().toArray())
-                .filter(c -> c instanceof Dialog)
-                .map(c -> (Dialog) c)
-                .toArray(Dialog[]::new);
+        windowsInBackingGroupCached = Arrays.stream(backingGroup.getChildren().toArray())
+                .filter(c -> c instanceof Window)
+                .map(c -> (Window) c)
+                .toArray(Window[]::new);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isDragging() {
-        return dialog.isDragging() || (dialogsInGroup != null && Functions.anyTrue(dialogsInGroup, Dialog::isDragging));
+        return window.isDragging() || (windowsInBackingGroupCached != null && Functions.anyTrue(windowsInBackingGroupCached, Window::isDragging));
     }
 
     @Override
     public float getX() {
-        return dialog.getX();
+        return window.getX();
     }
 
     @Override
     public void setX(float x) {
-        dialog.setX(x);
+        window.setX(x);
     }
 
     @Override
     public float getY() {
-        return dialog.getY();
+        return window.getY();
     }
 
     @Override
     public void setY(float y) {
-        dialog.setY(y);
+        window.setY(y);
     }
 
 

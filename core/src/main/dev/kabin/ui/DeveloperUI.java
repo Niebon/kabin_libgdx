@@ -475,6 +475,9 @@ public class DeveloperUI {
             widget = new Widget.Builder()
                     .setTitle("Tile selection widget")
                     .setX(Gdx.graphics.getWidth() - WIDTH)
+                    .setY(0)
+                    .setWidth(WIDTH)
+                    .setHeight(HEIGHT)
                     .build();
         }
 
