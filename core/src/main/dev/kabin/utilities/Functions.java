@@ -29,21 +29,21 @@ public class Functions {
 
     @SuppressWarnings({"unused", "RedundantSuppression"})
     @Contract(pure = true)
-    public static boolean oneTrue(@NotNull boolean... array) {
+    public static boolean anyTrue(@NotNull boolean... array) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, size = array.length; i < size; i++) if (array[i]) return true;
         return false;
     }
 
     @Contract(pure = true)
-    public static boolean oneFalse(@NotNull boolean... array) {
+    public static boolean anyFalse(@NotNull boolean... array) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, size = array.length; i < size; i++) if (!array[i]) return true;
         return false;
     }
 
     @Contract(pure = true)
-    public static boolean onePositive(@NotNull int... array) {
+    public static boolean anyPositive(@NotNull int... array) {
         for (int b : array) if (b > 0) return true;
         return false;
     }

@@ -33,10 +33,6 @@ public class EntitySimple implements Entity {
     private final Actor actor = new Actor();
     private float x, y, scale;
 
-    EntitySimple(JSONObject o) {
-        this(new EntityParameters.Builder(o).build());
-    }
-
     EntitySimple(EntityParameters parameters) {
         this.x = parameters.x();
         this.y = parameters.y();

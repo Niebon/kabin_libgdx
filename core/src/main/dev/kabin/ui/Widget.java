@@ -44,10 +44,12 @@ public class Widget implements ModifiableFloatCoordinates {
     }
 
     public void refreshContentTableMessage(Label contentTableMessage) {
-        dialog.getContentTable().clear();
-        dialog.getContentTable().defaults();
-        dialog.removeActor(this.contentTableMessage);
-        dialog.addActor(this.contentTableMessage = contentTableMessage);
+        if (contentTableMessage != null) {
+            dialog.getContentTable().clear();
+            dialog.getContentTable().defaults();
+            dialog.removeActor(this.contentTableMessage);
+            dialog.addActor(this.contentTableMessage = contentTableMessage);
+        }
     }
 
     public void removeDialogActor(Actor a) {

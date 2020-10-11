@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -51,11 +50,18 @@ public class DeveloperUI {
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
     private static final EntityLoadingWidget ENTITY_LOADING_WIDGET = new EntityLoadingWidget();
+    private static final TileSelectionWidget TILE_SELECTION_WIDGET = new TileSelectionWidget();
     private static final DragListener SELECTION_BEGIN = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
-            if (CURRENTLY_DRAGGED_ENTITIES.isEmpty() && !getEntityLoadingWidget().widget.isDragging())
+            if (
+                    CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
+                    !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
+                    !TILE_SELECTION_WIDGET.getWidget().isDragging()
+            ) {
                 ENTITY_SELECTION.begin();
+            }
+
         }
     };
     private static final DragListener SELECTION_END = new DragListener() {
@@ -105,7 +111,8 @@ public class DeveloperUI {
     }
 
     public static void setVisible(boolean b) {
-        getEntityLoadingWidget().widget.setVisible(b);
+        ENTITY_LOADING_WIDGET.getWidget().setVisible(b);
+        TILE_SELECTION_WIDGET.getWidget().setVisible(b);
         if (b) {
             GlobalData.stage.addListener(SELECTION_BEGIN);
             GlobalData.stage.addListener(SELECTION_END);
@@ -113,10 +120,6 @@ public class DeveloperUI {
             GlobalData.stage.removeListener(SELECTION_BEGIN);
             GlobalData.stage.removeListener(SELECTION_END);
         }
-    }
-
-    public static EntityLoadingWidget getEntityLoadingWidget() {
-        return ENTITY_LOADING_WIDGET;
     }
 
     public static void addDevCue() {
@@ -159,6 +162,14 @@ public class DeveloperUI {
                 }
             }
         });
+    }
+
+    public static EntityLoadingWidget getEntityLoadingWidget() {
+        return ENTITY_LOADING_WIDGET;
+    }
+
+    public static TileSelectionWidget getTileSelectionWidget() {
+        return TILE_SELECTION_WIDGET;
     }
 
     public static class EntitySelection {
@@ -259,7 +270,6 @@ public class DeveloperUI {
         private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
         private Animations.AnimationType animationType = Animations.AnimationType.DEFAULT_RIGHT;
         private int layer;
-        private Label contentTableMessage;
 
         EntityLoadingWidget() {
             widget = new Widget.Builder()
@@ -313,9 +323,13 @@ public class DeveloperUI {
             refreshContentTableMessage();
         }
 
+        public Widget getWidget() {
+            return widget;
+        }
+
         void refreshContentTableMessage() {
             final int maxLength = 10;
-            contentTableMessage = new Label(
+            var contentTableMessage = new Label(
                     "Asset: " +
                             (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
                                     : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
@@ -453,10 +467,25 @@ public class DeveloperUI {
 
     public static class TileSelectionWidget {
 
+        private final Widget widget;
+        private static final int WIDTH = 600;
+        private static final int HEIGHT = 200;
+
+        public TileSelectionWidget() {
+            widget = new Widget.Builder()
+                    .setTitle("Tile selection widget")
+                    .setX(Gdx.graphics.getWidth() - WIDTH)
+                    .build();
+        }
+
         public static void addGroundTile() {
         }
 
         public static void removeGroundTileAtCurrentMousePosition() {
+        }
+
+        public Widget getWidget() {
+            return widget;
         }
     }
 

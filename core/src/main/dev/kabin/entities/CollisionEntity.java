@@ -10,10 +10,6 @@ import java.util.List;
 
 public class CollisionEntity extends EntitySimple implements CollisionData {
 
-    CollisionEntity(JSONObject jsonObject) {
-        super(jsonObject);
-    }
-
     CollisionEntity(EntityParameters parameters) {
         super(parameters);
     }
