@@ -276,6 +276,7 @@ public class DeveloperUI {
                     .setTitle("Entity loading widget")
                     .setWidth(WIDTH)
                     .setHeight(HEIGHT)
+                    .setCollapsedWindowWidth(WIDTH)
                     .build();
 
             var loadImageAssetButton = new TextButton("Asset", Widget.Builder.DEFAULT_SKIN, "default");
@@ -478,6 +479,7 @@ public class DeveloperUI {
                     .setY(0)
                     .setWidth(WIDTH)
                     .setHeight(HEIGHT)
+                    .setCollapsedWindowWidth(WIDTH)
                     .build();
         }
 
