@@ -4,885 +4,871 @@ size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-player/player1
+player/CLIMB
   rotate: false
   xy: 1, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player29
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player30
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player39
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player40
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player41
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player42
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player43
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player44
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player45
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player48
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player49
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player50
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player66
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player67
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player68
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player7
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player70
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player81
-  rotate: false
-  xy: 1, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player10
-  rotate: false
-  xy: 100, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player101
-  rotate: false
-  xy: 562, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player102
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player103
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player104
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player105
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player106
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player107
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player108
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player109
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player110
-  rotate: false
-  xy: 595, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player11
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player17
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player51
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player52
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player53
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player54
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player55
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player58
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player59
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player60
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player76
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player77
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player78
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player80
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player91
-  rotate: false
-  xy: 67, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player111
-  rotate: false
-  xy: 628, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player112
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player113
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player114
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player115
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player116
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player117
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player118
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player119
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player120
-  rotate: false
-  xy: 595, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player12
-  rotate: false
-  xy: 100, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player121
-  rotate: false
-  xy: 628, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player122
-  rotate: false
-  xy: 661, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player123
-  rotate: false
-  xy: 628, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player126
-  rotate: false
-  xy: 628, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player124
-  rotate: false
-  xy: 661, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player125
-  rotate: false
-  xy: 694, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player13
-  rotate: false
-  xy: 133, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player14
-  rotate: false
-  xy: 100, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player15
-  rotate: false
-  xy: 133, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player16
-  rotate: false
-  xy: 166, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player18
-  rotate: false
-  xy: 133, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player19
-  rotate: false
-  xy: 166, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player2
+  index: 116
+player/CLIMB
   rotate: false
   xy: 1, 34
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player20
-  rotate: false
-  xy: 199, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player21
-  rotate: false
-  xy: 166, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player25
-  rotate: false
-  xy: 166, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player22
-  rotate: false
-  xy: 199, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player24
-  rotate: false
-  xy: 199, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player23
-  rotate: false
-  xy: 232, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player26
-  rotate: false
-  xy: 199, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player28
-  rotate: false
-  xy: 199, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player27
-  rotate: false
-  xy: 232, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player3
+  index: 117
+player/CLIMB
   rotate: false
   xy: 34, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player31
+  index: 118
+player/CLIMB
   rotate: false
-  xy: 265, 67
+  xy: 34, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player35
-  rotate: false
-  xy: 265, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player32
-  rotate: false
-  xy: 232, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player34
-  rotate: false
-  xy: 232, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player33
-  rotate: false
-  xy: 265, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player36
-  rotate: false
-  xy: 298, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player38
-  rotate: false
-  xy: 298, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player37
-  rotate: false
-  xy: 265, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player4
+  index: 121
+player/CLIMB
   rotate: false
   xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player46
-  rotate: false
-  xy: 298, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player47
-  rotate: false
-  xy: 298, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player69
-  rotate: false
-  xy: 298, 34
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player5
+  index: 119
+player/CLIMB
   rotate: false
   xy: 34, 34
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player56
-  rotate: false
-  xy: 331, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player57
-  rotate: false
-  xy: 331, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player79
-  rotate: false
-  xy: 331, 67
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player6
+  index: 120
+player/DEFAULT_LEFT
   rotate: false
   xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player61
+  index: 123
+player/STANDARD1_LEFT
   rotate: false
-  xy: 298, 1
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player62
+  index: 49
+player/STANDARD1_LEFT
   rotate: false
-  xy: 331, 34
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player63
+  index: 50
+player/STANDARD1_LEFT
   rotate: false
-  xy: 364, 67
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player64
+  index: 54
+player/STANDARD1_LEFT
   rotate: false
-  xy: 331, 1
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player65
+  index: 46
+player/STANDARD1_LEFT
   rotate: false
-  xy: 364, 34
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player71
+  index: 48
+player/STANDARD1_LEFT
   rotate: false
-  xy: 397, 67
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player72
+  index: 55
+player/STANDARD1_LEFT
   rotate: false
-  xy: 364, 1
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player73
+  index: 47
+player/STANDARD1_LEFT
   rotate: false
-  xy: 397, 34
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player74
+  index: 53
+player/STANDARD2_LEFT
   rotate: false
-  xy: 430, 67
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player75
+  index: 73
+player/STANDARD2_LEFT
   rotate: false
-  xy: 397, 1
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player8
+  index: 75
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 72
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 71
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 86
+player/WALK_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 16
+player/WALK_LEFT
+  rotate: false
+  xy: 67, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 10
+player/DEFAULT_RIGHT
   rotate: false
   xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player82
+  index: 122
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 430, 34
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player83
+  index: 37
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 463, 67
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player90
+  index: 40
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 463, 67
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player84
+  index: 38
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 430, 1
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player85
+  index: 43
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 463, 34
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player86
+  index: 44
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 496, 67
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player88
+  index: 39
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 496, 67
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player87
+  index: 36
+player/STANDARD1_RIGHT
   rotate: false
-  xy: 463, 1
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player89
+  index: 45
+player/STANDARD2_RIGHT
   rotate: false
-  xy: 496, 34
+  xy: 34, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player9
+  index: 61
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 65
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 63
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 62
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 76
+player/WALK_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 6
+player/WALK_RIGHT
+  rotate: false
+  xy: 34, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+player/JUMP_LEFT
   rotate: false
   xy: 67, 34
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player92
+  index: 106
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 107
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 109
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 113
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 108
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 110
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 114
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 111
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 112
+player/JUMP_LEFT
+  rotate: false
+  xy: 100, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 115
+player/JUMP_RIGHT
+  rotate: false
+  xy: 67, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 96
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 97
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 103
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 100
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 101
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 104
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 105
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 98
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 102
+player/JUMP_RIGHT
+  rotate: false
+  xy: 100, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 99
+player/RUN_LEFT
+  rotate: false
+  xy: 133, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 28
+player/RUN_LEFT
+  rotate: false
+  xy: 133, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 32
+player/RUN_LEFT
+  rotate: false
+  xy: 100, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 29
+player/RUN_LEFT
+  rotate: false
+  xy: 100, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 31
+player/RUN_LEFT
+  rotate: false
+  xy: 133, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 30
+player/RUN_LEFT
+  rotate: false
+  xy: 166, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 33
+player/RUN_LEFT
+  rotate: false
+  xy: 166, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 35
+player/RUN_LEFT
+  rotate: false
+  xy: 133, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 34
+player/RUN_RIGHT
+  rotate: false
+  xy: 166, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 20
+player/RUN_RIGHT
+  rotate: false
+  xy: 166, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 24
+player/RUN_RIGHT
+  rotate: false
+  xy: 199, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 21
+player/RUN_RIGHT
+  rotate: false
+  xy: 199, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 23
+player/RUN_RIGHT
+  rotate: false
+  xy: 166, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 22
+player/RUN_RIGHT
+  rotate: false
+  xy: 199, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 25
+player/RUN_RIGHT
+  rotate: false
+  xy: 199, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 27
+player/RUN_RIGHT
+  rotate: false
+  xy: 232, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 26
+player/STANDARD1_LEFT
+  rotate: false
+  xy: 199, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 51
+player/STANDARD1_LEFT
+  rotate: false
+  xy: 199, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 52
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 199, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 74
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 232, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 41
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 232, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 42
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 232, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 64
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 265, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 66
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 232, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 67
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 265, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 68
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 298, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 69
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 265, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 70
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 298, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 56
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 331, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 57
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 298, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 58
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 331, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 59
+player/STANDARD2_RIGHT
+  rotate: false
+  xy: 364, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 60
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 331, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 87
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 364, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 88
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 364, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 95
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 397, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 89
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 364, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 90
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 397, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 91
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 397, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 93
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 430, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 92
+player/STANDARD3_LEFT
+  rotate: false
+  xy: 397, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 94
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 430, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 77
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 463, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 78
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 463, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 85
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 430, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 79
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 463, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 80
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 496, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 81
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 496, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 83
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 463, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 82
+player/STANDARD3_RIGHT
+  rotate: false
+  xy: 496, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 84
+player/WALK_LEFT
   rotate: false
   xy: 529, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player93
+  index: 11
+player/WALK_LEFT
   rotate: false
   xy: 496, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player100
-  rotate: false
-  xy: 496, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player94
+  index: 12
+player/WALK_LEFT
   rotate: false
   xy: 529, 34
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player95
+  index: 13
+player/WALK_LEFT
   rotate: false
   xy: 562, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player96
+  index: 14
+player/WALK_LEFT
   rotate: false
   xy: 529, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player98
-  rotate: false
-  xy: 529, 1
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-player/player97
+  index: 15
+player/WALK_LEFT
   rotate: false
   xy: 562, 34
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
-player/player99
+  index: 17
+player/WALK_LEFT
   rotate: false
   xy: 595, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: -1
+  index: 18
+player/WALK_LEFT
+  rotate: false
+  xy: 562, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 19
+player/WALK_RIGHT
+  rotate: false
+  xy: 595, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+player/WALK_RIGHT
+  rotate: false
+  xy: 628, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+player/WALK_RIGHT
+  rotate: false
+  xy: 595, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+player/WALK_RIGHT
+  rotate: false
+  xy: 628, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 4
+player/WALK_RIGHT
+  rotate: false
+  xy: 661, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 5
+player/WALK_RIGHT
+  rotate: false
+  xy: 628, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 7
+player/WALK_RIGHT
+  rotate: false
+  xy: 661, 34
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 8
+player/WALK_RIGHT
+  rotate: false
+  xy: 694, 67
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 9
