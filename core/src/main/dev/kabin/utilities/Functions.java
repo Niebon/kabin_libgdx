@@ -203,21 +203,6 @@ public class Functions {
         return min + x * (max - min);
     }
 
-    /* What the hell does modular interval mean? Bad javadoc.*/
-
-    /**
-     * Does the "modular interval" [a,b] contain t.
-     *
-     * @param a from
-     * @param b to
-     * @param t to be questioned
-     * @return true or false
-     */
-    public static boolean modularIntervalContains(double a, double t, double b) {
-        // TODO: This can't be right. Figure out if in use, and modify. Otherwise, delete.
-        return (a < t && t < b || (b < a && (a < t || t < b)));
-    }
-
 
     public static boolean isBetweenDeg(int startDeg, int endDeg, int midDeg) {
         startDeg = Math.floorMod(startDeg, 360);
@@ -282,10 +267,8 @@ public class Functions {
      *              v                      |____> x
      *              y
      * </pre>
-     * For example {@link com.badlogic.gdx.scenes.scene2d.utils.ClickListener ClickListener}
+     * For example {@link java.awt.image.BufferedImage BufferedImage}
      * uses the coordinate system to the left where the origin is the top left corner.
-     * <p>
-     * The same is true for {@link java.awt.image.BufferedImage BufferedImage}s.
      * <p>
      * Other classes such as {@link com.badlogic.gdx.graphics.g2d.SpriteBatch SpriteBatch} and {@link com.badlogic.gdx.graphics.g2d.Sprite Sprite}
      * use the coordinate system to the right.
@@ -310,5 +293,10 @@ public class Functions {
      */
     public static float transformY(float y, int height) {
         return -y + height;
+    }
+
+
+    public static float requireNonNullElse(float val, float defaultVal) {
+        return val == 0 ? defaultVal : val;
     }
 }

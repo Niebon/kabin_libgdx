@@ -266,11 +266,7 @@ public class DeveloperUI {
             var skin = new Skin(Gdx.files.internal("uiskin.json"));
 
             dialog = new Dialog("Entity loading widget", skin);
-            dialog.setBounds(
-                    0, 0,
-                    WIDTH, HEIGHT
-            );
-
+            dialog.setBounds(0, 0, WIDTH, HEIGHT);
 
             var loadImageAssetButton = new TextButton("Asset", skin, "default");
             loadImageAssetButton.setWidth(100);
