@@ -31,8 +31,9 @@ public class Widget implements ModifiableFloatCoordinates {
             Label contentTableMessage
     ) {
         collapsedWindow = new Window(title, skin);
-        collapsedWindow.setBounds(x, y, width, 20);
+        collapsedWindow.setBounds(collapsedWindowX, collapsedWindowY, collapsedWindowWidth, collapsedWindowHeight);
         collapsedWindow.setMovable(false);
+
 
         mainWindow = new Window(title, skin);
         mainWindow.setBounds(x, y, width, height);
@@ -57,11 +58,15 @@ public class Widget implements ModifiableFloatCoordinates {
             }
         });
 
+        // Need this substitution to reference values from constructor parameters.
+        float mainWindowX = x, mainWindowY = y;
         collapsedWindow.addListener(new ClickListener() {
+
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 collapsedWindow.remove();
                 backingGroup.addActor(mainWindow);
+                mainWindow.setBounds(mainWindowX, mainWindowY, width, height);
                 return true;
             }
         });
@@ -150,56 +155,67 @@ public class Widget implements ModifiableFloatCoordinates {
         private float collapsedWindowWidth, collapsedWindowHeight, collapsedWindowX, collapsedWindowY;
         private Label contentTableMessage;
 
+        @SuppressWarnings("unused")
         public Builder setSkin(Skin skin) {
             this.skin = skin;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setCollapsedWindowWidth(float collapsedWindowWidth) {
             this.collapsedWindowWidth = collapsedWindowWidth;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setCollapsedWindowHeight(float collapsedWindowHeight) {
             this.collapsedWindowHeight = collapsedWindowHeight;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setCollapsedWindowX(float collapsedWindowX) {
             this.collapsedWindowX = collapsedWindowX;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setCollapsedWindowY(float collapsedWindowY) {
             this.collapsedWindowY = collapsedWindowY;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setContentTableMessage(Label contentTableMessage) {
             this.contentTableMessage = contentTableMessage;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setTitle(String title) {
             this.title = title;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setWidth(float width) {
             this.width = width;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setHeight(float height) {
             this.height = height;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setX(float x) {
             this.x = x;
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder setY(float y) {
             this.y = y;
             return this;

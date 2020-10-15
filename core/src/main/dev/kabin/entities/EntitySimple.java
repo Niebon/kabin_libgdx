@@ -207,6 +207,16 @@ public class EntitySimple implements Entity {
     }
 
     @Override
+    public int getRootX() {
+        return 0;
+    }
+
+    @Override
+    public int getRootY() {
+        return 0;
+    }
+
+    @Override
     public JSONObject toJSONObject() {
         return new JSONObject()
                 .put("x", Math.round(getX() / getScale()))

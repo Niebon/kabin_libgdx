@@ -28,12 +28,12 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 
 	@Override
 	public int getRootX() {
-		return 0;
+		return super.getRootX();
 	}
 
 	@Override
 	public int getRootY() {
-		return 0;
+		return super.getRootY();
 	}
 
 	@Override

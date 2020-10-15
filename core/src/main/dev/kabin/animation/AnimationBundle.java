@@ -30,7 +30,7 @@ public class AnimationBundle implements Animations, Disposable {
 
     public AnimationBundle(
             Array<TextureAtlas.AtlasRegion> regions,
-            Map<AnimationType, List<Integer>> animations
+            Map<AnimationType, int[]> animations
     ) {
         this.regions = regions;
         // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
@@ -52,8 +52,8 @@ public class AnimationBundle implements Animations, Disposable {
         return regions.get(0).originalHeight;
     }
 
-    private Animation<TextureAtlas.AtlasRegion> generateAnimation(List<Integer> indices) {
-        final Array<TextureAtlas.AtlasRegion> textureArray = new Array<>(indices.size());
+    private Animation<TextureAtlas.AtlasRegion> generateAnimation(int[] indices) {
+        final Array<TextureAtlas.AtlasRegion> textureArray = new Array<>(indices.length);
         for (int i : indices) {
             textureArray.add(regions.get(i));
         }

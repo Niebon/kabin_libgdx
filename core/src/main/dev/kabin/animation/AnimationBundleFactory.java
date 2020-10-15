@@ -21,7 +21,7 @@ public class AnimationBundleFactory {
         final File directory = new File(ASSETS_RAW_TEXTURES + assetPath);
         if (!directory.isDirectory()) throw new IllegalArgumentException("The provided assetPath '" + assetPath
                 + "'did not correspond to a directory.");
-        final Map<Animations.AnimationType, List<Integer>> animationTypeToIntListMap
+        final Map<Animations.AnimationType, int[]> animationTypeToIntListMap
                 = new EnumMap<>(Animations.AnimationType.class);
         for (Animations.AnimationType type : Animations.AnimationType.values()) {
             final File[] filesStartingWithTypeName = Arrays.stream(directory.listFiles())
@@ -34,8 +34,8 @@ public class AnimationBundleFactory {
                                 .map(File::getName)
                                 .map(s -> s.replace(type.name() + "_", ""))
                                 .map(s -> s.replace(".png", ""))
-                                .map(Integer::valueOf)
-                                .collect(Collectors.toList())
+                                .mapToInt(Integer::valueOf)
+                                .toArray()
                 );
             }
         }
@@ -45,14 +45,14 @@ public class AnimationBundleFactory {
         return new AnimationBundle(animations, animationTypeToIntListMap);
     }
 
-    private static Map<Animations.AnimationType, List<Integer>> findAnimationTypeToIntListMap(String atlasPath) {
-        return Arrays.stream(Animations.AnimationType.values())
+    public static <T extends Enum<T>> Map<T, int[]> findEnumTypeToIntArrayMapping(String atlasPath, T[] values) {
+        return Arrays.stream(values)
                 .filter(type -> GlobalData.getAtlas().findRegions(atlasPath + '/' + type.name()).size > 0)
                 .collect(Collectors.toMap(
                         Function.identity(),
                         type -> Arrays.stream(GlobalData.getAtlas().findRegions(atlasPath + '/' + type.name()).toArray())
-                                .map(reg -> reg.index)
-                                .collect(Collectors.toList())
+                                .mapToInt(reg -> reg.index)
+                                .toArray()
                 ));
     }
 
@@ -68,7 +68,7 @@ public class AnimationBundleFactory {
     }
 
     public static AnimationBundle loadFromAtlasPath(String atlasPath) {
-        final Map<Animations.AnimationType, List<Integer>> animationTypeToIntListMap = findAnimationTypeToIntListMap(atlasPath);
+        final Map<Animations.AnimationType, int[]> animationTypeToIntListMap = findEnumTypeToIntArrayMapping(atlasPath, Animations.AnimationType.values());
         final Array<TextureAtlas.AtlasRegion> animations = findAllAnimations(atlasPath);
         return new AnimationBundle(animations, animationTypeToIntListMap);
     }

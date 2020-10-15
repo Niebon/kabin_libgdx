@@ -9,6 +9,7 @@ public class EntityFactory {
         //BEAR(Bear::new, Bear::new, EntityGroupProvider.Type.FOCAL_POINT),
         //CAT(Cat::new, Cat::new, EntityGroupProvider.Type.FOCAL_POINT),
         COLLISION_ENTITY(CollisionEntity::new, EntityGroupProvider.Type.FOCAL_POINT),
+        COLLISION_TILE(CollisionEntity::new, EntityGroupProvider.Type.FOREGROUND),
         //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //ENTITY_BACKGROUND(EntityBackground::new, EntityBackground::newFromMouseClick, EntityGroupProvider.Type.BACKGROUND),

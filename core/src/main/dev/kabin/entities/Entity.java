@@ -36,4 +36,20 @@ public interface Entity extends
         return Optional.empty();
     }
 
+    default int getUnscaledX() {
+        return Math.round(getX() / getScale());
+    }
+
+    default int getUnscaledY() {
+        return Math.round(getX() / getScale());
+    }
+
+    default int getRootX(){
+        return getUnscaledX() - getPixelAnalysis().getPixelMassCenterXInt();
+    }
+
+    default int getRootY() {
+        return getUnscaledY() - getPixelAnalysis().getLowestPixel();
+    }
+
 }
