@@ -40,7 +40,7 @@ public class AnimationBundleFactory {
             }
         }
 
-        final Array<TextureAtlas.AtlasRegion> animations = findAllAnimations(assetPath);
+        final Array<TextureAtlas.AtlasRegion> animations = findAllAnimations(assetPath, Animations.AnimationType.values());
 
         return new AnimationBundle(animations, animationTypeToIntListMap);
     }
@@ -56,8 +56,21 @@ public class AnimationBundleFactory {
                 ));
     }
 
-    private static Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath) {
-        return new Array<>(Arrays.stream(Animations.AnimationType.values())
+    public static <T extends Enum<T>> Map<T, TextureAtlas.AtlasRegion[]> findTypeToAtlasRegionsMapping(String atlasRegionPath,
+                                                                                                       T[] values) {
+        return Arrays.stream(values).map(
+                type -> new AbstractMap.SimpleEntry<>(
+                        type,
+                        GlobalData.getAtlas().findRegions(atlasRegionPath + '/' + type.name())
+                ))
+                .filter(e -> e.getValue() != null && e.getValue().notEmpty())
+                .sorted(Comparator.comparing(e -> e.getValue().first().index))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), e.getValue().toArray()))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+    }
+
+    public static <T extends Enum<T>> Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath, T[] values) {
+        return new Array<>(Arrays.stream(values)
                 .map(type -> GlobalData.getAtlas().findRegions(atlasRegionPath + '/' + type.name()))
                 .filter(Objects::nonNull)
                 .filter(Array::notEmpty)
@@ -69,7 +82,7 @@ public class AnimationBundleFactory {
 
     public static AnimationBundle loadFromAtlasPath(String atlasPath) {
         final Map<Animations.AnimationType, int[]> animationTypeToIntListMap = findEnumTypeToIntArrayMapping(atlasPath, Animations.AnimationType.values());
-        final Array<TextureAtlas.AtlasRegion> animations = findAllAnimations(atlasPath);
+        final Array<TextureAtlas.AtlasRegion> animations = findAllAnimations(atlasPath, Animations.AnimationType.values());
         return new AnimationBundle(animations, animationTypeToIntListMap);
     }
 

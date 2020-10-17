@@ -14,15 +14,13 @@ public class CollisionTile extends CollisionEntity {
     CollisionTile(EntityParameters parameters) {
         super(parameters);
         final String atlasPath = parameters.atlasPath();
-        assetToFramesMap
-                .putIfAbsent(atlasPath, AnimationBundleFactory.findEnumTypeToIntArrayMapping(atlasPath, Type.values()));
-
+        assetToFramesMap.putIfAbsent(atlasPath, AnimationBundleFactory.findEnumTypeToIntArrayMapping(atlasPath, Type.values()));
         final Type type = parameters.get("type", Type.class).orElseThrow();
         final int index = parameters.get(FRAME_INDEX, Integer.class).orElseThrow();
     }
 
 
-    enum Type {
+    public enum Type {
         SURFACE,
         DIAGONAL_45,
         DIAGONAL_135,

@@ -3,6 +3,7 @@ package dev.kabin.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,10 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import dev.kabin.animation.AnimationBundle;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.Animations;
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityFactory;
-import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.entities.EntityParameters;
+import dev.kabin.entities.*;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointFloat;
 import dev.kabin.geometry.shapes.RectFloat;
@@ -27,6 +25,7 @@ import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -34,10 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -94,6 +90,7 @@ public class DeveloperUI {
     public static void render(SpriteBatch batch, float stateTime) {
         ENTITY_SELECTION.render();
         ENTITY_LOADING_WIDGET.render(batch, stateTime);
+        TILE_SELECTION_WIDGET.render(batch);
     }
 
     public static void clearDraggedEntities() {
@@ -266,7 +263,7 @@ public class DeveloperUI {
         private static final int HEIGHT = 200;
         private final Widget widget;
         private AnimationBundle preview = null;
-        private String currentlySelectedAsset = "";
+        private String selectedAsset = "";
         private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
         private Animations.AnimationType animationType = Animations.AnimationType.DEFAULT_RIGHT;
         private int layer;
@@ -332,8 +329,8 @@ public class DeveloperUI {
             final int maxLength = 10;
             var contentTableMessage = new Label(
                     "Asset: " +
-                            (currentlySelectedAsset.length() < maxLength ? currentlySelectedAsset
-                                    : (currentlySelectedAsset.substring(0, maxLength) + "...")) +
+                            (selectedAsset.length() < maxLength ? selectedAsset
+                                    : (selectedAsset.substring(0, maxLength) + "...")) +
                             '\n' +
                             "Entity type: " +
                             entityType.name() +
@@ -354,7 +351,7 @@ public class DeveloperUI {
                     .setY(MouseEventUtil.getMouseY())
                     .setLayer(layer)
                     .setScale(GlobalData.scaleFactor)
-                    .setAtlasPath(currentlySelectedAsset)
+                    .setAtlasPath(selectedAsset)
                     .build();
 
             try {
@@ -383,9 +380,11 @@ public class DeveloperUI {
                 f.dispose();
                 if (res == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = chooser.getSelectedFile();
-                    setCurrentlySelectedAsset(selectedFile.getAbsolutePath().replace("\\", "/")
-                            .replace(relativePath, ""));
-                    preview = AnimationBundleFactory.loadFromAtlasPath(currentlySelectedAsset);
+                    selectedAsset = selectedFile
+                            .getAbsolutePath()
+                            .replace("\\", "/")
+                            .replace(relativePath, "");
+                    preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset);
                 }
                 refreshContentTableMessage();
             });
@@ -441,10 +440,6 @@ public class DeveloperUI {
             });
         }
 
-        public void setCurrentlySelectedAsset(String currentlySelectedAsset) {
-            this.currentlySelectedAsset = currentlySelectedAsset;
-        }
-
         public void setEntityType(EntityFactory.EntityType entityType) {
             this.entityType = entityType;
         }
@@ -471,6 +466,10 @@ public class DeveloperUI {
         private final Widget widget;
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
+        private static Map<CollisionTile.Type, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
+        private CollisionTile.Type type;
+        private String selectedAsset;
+
 
         public TileSelectionWidget() {
             widget = new Widget.Builder()
@@ -481,6 +480,44 @@ public class DeveloperUI {
                     .setHeight(HEIGHT)
                     .setCollapsedWindowWidth(WIDTH)
                     .build();
+
+            var loadImageAssetButton = new TextButton("Asset", Widget.Builder.DEFAULT_SKIN, "default");
+            loadImageAssetButton.setWidth(100);
+            loadImageAssetButton.setHeight(25);
+            loadImageAssetButton.setX(25);
+            loadImageAssetButton.setY(25);
+            loadImageAssetButton.addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    loadAsset();
+                    return true;
+                }
+            });
+            widget.addDialogActor(loadImageAssetButton);
+        }
+
+        private void loadAsset() {
+            EXECUTOR_SERVICE.execute(() -> {
+                final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
+                        + "core/assets/raw_textures/";
+                final JFileChooser chooser = new JFileChooser(relativePath);
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                final JFrame f = new JFrame();
+                f.setVisible(true);
+                f.toFront();
+                f.setVisible(false);
+                int res = chooser.showOpenDialog(f);
+                f.dispose();
+                if (res == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = chooser.getSelectedFile();
+                    selectedAsset = selectedFile
+                        .getAbsolutePath()
+                        .replace("\\", "/")
+                        .replace(relativePath, "");
+                    typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, CollisionTile.Type.values());
+                }
+                //refreshContentTableMessage();
+            });
         }
 
         public static void addGroundTile() {
@@ -491,6 +528,32 @@ public class DeveloperUI {
 
         public Widget getWidget() {
             return widget;
+        }
+
+
+        public void render(SpriteBatch batch) {
+            if (typeToAtlasRegionsMapping != null) {
+
+                for (var entry : typeToAtlasRegionsMapping.entrySet()) {
+                    // Distance between displayed tiles.
+                    int separationOffsetFactor = entry.getKey().ordinal();
+
+                    float scale = 4.0f;
+                    float offsetSeparation = 1 * scale;
+                    float width = scale * 16;
+                    float height = scale * 16;
+                    float offsetX = 75;
+                    float offsetY = 75;
+
+                    batch.begin();
+                    batch.draw(entry.getValue()[0],
+                            widget.getX() + separationOffsetFactor * (width + offsetSeparation) + offsetX,
+                            widget.getY() + offsetY,
+                            width,
+                            height);
+                    batch.end();
+                }
+            }
         }
     }
 
