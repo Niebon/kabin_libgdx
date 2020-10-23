@@ -1,0 +1,1 @@
+"C:\Program Files\ImageMagick-7.0.10-Q16-HDRI\convert.exe" -crop 16x16 "original.png" "tile.png"

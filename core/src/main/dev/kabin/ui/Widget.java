@@ -24,6 +24,7 @@ public class Widget implements ModifiableFloatCoordinates {
     private final Window collapsedWindow;
     private Window[] popupWindows;
     private Label contentTableMessage;
+    private boolean visible, collapsed;
 
     private Widget(
             float x, float y, float width, float height, String title, Skin skin,
@@ -54,6 +55,7 @@ public class Widget implements ModifiableFloatCoordinates {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 mainWindow.remove();
                 backingGroup.addActor(collapsedWindow);
+                collapsed = true;
                 return true;
             }
         });
@@ -67,6 +69,7 @@ public class Widget implements ModifiableFloatCoordinates {
                 collapsedWindow.remove();
                 backingGroup.addActor(mainWindow);
                 mainWindow.setBounds(mainWindowX, mainWindowY, width, height);
+                collapsed = false;
                 return true;
             }
         });
@@ -74,11 +77,20 @@ public class Widget implements ModifiableFloatCoordinates {
 
 
     public void setVisible(boolean b) {
+        visible = b;
         if (b) {
             GlobalData.stage.addActor(backingGroup);
         } else {
             backingGroup.remove();
         }
+    }
+
+    public boolean isCollapsed(){
+        return collapsed;
+    }
+
+    public boolean isVisible(){
+        return visible;
     }
 
     public void addDialogActor(Actor a) {

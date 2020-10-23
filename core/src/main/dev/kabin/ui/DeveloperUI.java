@@ -52,8 +52,8 @@ public class DeveloperUI {
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
                     CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
-                    !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
-                    !TILE_SELECTION_WIDGET.getWidget().isDragging()
+                            !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
+                            !TILE_SELECTION_WIDGET.getWidget().isDragging()
             ) {
                 ENTITY_SELECTION.begin();
             }
@@ -449,7 +449,7 @@ public class DeveloperUI {
         }
 
         public void render(SpriteBatch batch, float stateTime) {
-            if (preview != null) {
+            if (widget.isVisible() && !widget.isCollapsed() && preview != null) {
                 if (preview.getCurrentAnimationType() != animationType) {
                     preview.setCurrentAnimation(animationType);
                 }
@@ -463,11 +463,11 @@ public class DeveloperUI {
 
     public static class TileSelectionWidget {
 
-        private final Widget widget;
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
         private static Map<CollisionTile.Type, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
-        private CollisionTile.Type type;
+        private static final Map<CollisionTile.Type, @NotNull Button> typeToButton = new HashMap<>();
+        private final Widget widget;
         private String selectedAsset;
 
 
@@ -496,6 +496,12 @@ public class DeveloperUI {
             widget.addDialogActor(loadImageAssetButton);
         }
 
+        public static void addGroundTile() {
+        }
+
+        public static void removeGroundTileAtCurrentMousePosition() {
+        }
+
         private void loadAsset() {
             EXECUTOR_SERVICE.execute(() -> {
                 final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
@@ -511,19 +517,51 @@ public class DeveloperUI {
                 if (res == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = chooser.getSelectedFile();
                     selectedAsset = selectedFile
-                        .getAbsolutePath()
-                        .replace("\\", "/")
-                        .replace(relativePath, "");
+                            .getAbsolutePath()
+                            .replace("\\", "/")
+                            .replace(relativePath, "");
                     typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, CollisionTile.Type.values());
+                    displaySelectTileButtons();
                 }
-                //refreshContentTableMessage();
             });
         }
 
-        public static void addGroundTile() {
-        }
+        private void displaySelectTileButtons() {
+            typeToButton.forEach((t,b) -> b.remove());
+            typeToButton.clear();
 
-        public static void removeGroundTileAtCurrentMousePosition() {
+            for (var entry : CollisionTile.Type.values()) {
+                // Distance between displayed tiles.
+                int separationOffsetFactor = entry.ordinal();
+
+                float scale = 4.0f;
+                float offsetSeparation = 1 * scale;
+                float width = scale * (16 + 2);
+                float height = scale * (16 + 2);
+                float offsetX = 75 - scale;
+                float offsetY = 75 - scale;
+                float x = separationOffsetFactor * (width + offsetSeparation - scale) + offsetX;
+                float y = offsetY;
+
+                var button = new TextButton("", Widget.Builder.DEFAULT_SKIN, "default");
+                button.setWidth(width);
+                button.setHeight(height);
+                button.setX(x);
+                button.setY(y);
+                button.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        System.out.println("Clicked: " + entry);
+                        return true;
+                    }
+                });
+                widget.addDialogActor(button);
+                widget.setVisible(true);
+
+
+                typeToButton.put(entry, button);
+            }
+
         }
 
         public Widget getWidget() {
@@ -532,23 +570,25 @@ public class DeveloperUI {
 
 
         public void render(SpriteBatch batch) {
-            if (typeToAtlasRegionsMapping != null) {
+            if (widget.isVisible() && !widget.isCollapsed() && typeToAtlasRegionsMapping != null) {
 
                 for (var entry : typeToAtlasRegionsMapping.entrySet()) {
                     // Distance between displayed tiles.
                     int separationOffsetFactor = entry.getKey().ordinal();
 
                     float scale = 4.0f;
-                    float offsetSeparation = 1 * scale;
+                    float offsetSeparation = 2 * scale;
                     float width = scale * 16;
                     float height = scale * 16;
                     float offsetX = 75;
                     float offsetY = 75;
+                    float x = widget.getX() + separationOffsetFactor * (width + offsetSeparation) + offsetX;
+                    float y = widget.getY() + offsetY;
 
                     batch.begin();
                     batch.draw(entry.getValue()[0],
-                            widget.getX() + separationOffsetFactor * (width + offsetSeparation) + offsetX,
-                            widget.getY() + offsetY,
+                            x,
+                            y,
                             width,
                             height);
                     batch.end();

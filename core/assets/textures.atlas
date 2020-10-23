@@ -11,6 +11,13 @@ ground/DIAGONAL_135
   orig: 16, 16
   offset: 0, 0
   index: 0
+ground/original/tile-3
+  rotate: false
+  xy: 1, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_135
   rotate: false
   xy: 694, 67
@@ -18,6 +25,13 @@ ground/DIAGONAL_135
   orig: 16, 16
   offset: 0, 0
   index: 1
+ground/original/tile-7
+  rotate: false
+  xy: 694, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_135
   rotate: false
   xy: 951, 100
@@ -25,6 +39,13 @@ ground/DIAGONAL_135
   orig: 16, 16
   offset: 0, 0
   index: 2
+ground/original/tile-11
+  rotate: false
+  xy: 951, 100
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_135
   rotate: false
   xy: 18, 1
@@ -32,6 +53,13 @@ ground/DIAGONAL_135
   orig: 16, 16
   offset: 0, 0
   index: 3
+ground/original/tile-15
+  rotate: false
+  xy: 18, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_45
   rotate: false
   xy: 694, 50
@@ -39,6 +67,13 @@ ground/DIAGONAL_45
   orig: 16, 16
   offset: 0, 0
   index: 0
+ground/original/tile-0
+  rotate: false
+  xy: 694, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_45
   rotate: false
   xy: 711, 67
@@ -46,6 +81,13 @@ ground/DIAGONAL_45
   orig: 16, 16
   offset: 0, 0
   index: 1
+ground/original/tile-4
+  rotate: false
+  xy: 711, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_45
   rotate: false
   xy: 968, 100
@@ -53,6 +95,13 @@ ground/DIAGONAL_45
   orig: 16, 16
   offset: 0, 0
   index: 2
+ground/original/tile-8
+  rotate: false
+  xy: 968, 100
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/DIAGONAL_45
   rotate: false
   xy: 35, 1
@@ -60,6 +109,13 @@ ground/DIAGONAL_45
   orig: 16, 16
   offset: 0, 0
   index: 3
+ground/original/tile-12
+  rotate: false
+  xy: 35, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/INNER
   rotate: false
   xy: 694, 33
@@ -67,6 +123,13 @@ ground/INNER
   orig: 16, 16
   offset: 0, 0
   index: 0
+ground/original/tile-17
+  rotate: false
+  xy: 694, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 ground/INNER
   rotate: false
   xy: 711, 50
@@ -74,165 +137,326 @@ ground/INNER
   orig: 16, 16
   offset: 0, 0
   index: 1
-ground/INNER_135
+ground/original/tile-18
+  rotate: false
+  xy: 711, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 728, 67
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-ground/INNER_45
+  index: 2
+ground/original/tile-21
+  rotate: false
+  xy: 728, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 985, 100
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-ground/SURFACE
+  index: 3
+ground/original/tile-22
+  rotate: false
+  xy: 985, 100
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 52, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-ground/SURFACE
+  index: 4
+ground/original/tile-25
+  rotate: false
+  xy: 52, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 711, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
-ground/SURFACE
+  index: 5
+ground/original/tile-26
+  rotate: false
+  xy: 711, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 728, 50
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 2
-ground/SURFACE
+  index: 6
+ground/original/tile-29
+  rotate: false
+  xy: 728, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER
   rotate: false
   xy: 745, 67
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
-ground/SURFACE
+  index: 7
+ground/original/tile-30
+  rotate: false
+  xy: 745, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER_135
   rotate: false
   xy: 1002, 100
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
-ground/SURFACE
+  index: 0
+ground/original/tile-16
+  rotate: false
+  xy: 1002, 100
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER_135
   rotate: false
   xy: 69, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 5
-ground/SURFACE
+  index: 1
+ground/original/tile-20
+  rotate: false
+  xy: 69, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER_135
   rotate: false
   xy: 728, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 6
-ground/SURFACE
+  index: 2
+ground/original/tile-24
+  rotate: false
+  xy: 728, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/INNER_135
   rotate: false
   xy: 745, 50
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 7
-ground/original
+  index: 3
+ground/original/tile-28
   rotate: false
-  xy: 1, 84
-  size: 256, 32
-  orig: 256, 32
+  xy: 745, 50
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-20
+ground/INNER_45
+  rotate: false
+  xy: 762, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+ground/original/tile-19
   rotate: false
   xy: 762, 67
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-21
+ground/INNER_45
+  rotate: false
+  xy: 86, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+ground/original/tile-23
   rotate: false
   xy: 86, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-22
+ground/INNER_45
+  rotate: false
+  xy: 745, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+ground/original/tile-27
   rotate: false
   xy: 745, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-23
+ground/INNER_45
+  rotate: false
+  xy: 762, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+ground/original/tile-31
   rotate: false
   xy: 762, 50
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-24
+ground/SURFACE
+  rotate: false
+  xy: 779, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+ground/original/tile-1
   rotate: false
   xy: 779, 67
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-25
+ground/SURFACE
+  rotate: false
+  xy: 103, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+ground/original/tile-2
   rotate: false
   xy: 103, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-26
+ground/SURFACE
+  rotate: false
+  xy: 762, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+ground/original/tile-5
   rotate: false
   xy: 762, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-27
+ground/SURFACE
+  rotate: false
+  xy: 779, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+ground/original/tile-6
   rotate: false
   xy: 779, 50
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-28
+ground/SURFACE
+  rotate: false
+  xy: 796, 67
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+ground/original/tile-9
   rotate: false
   xy: 796, 67
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-29
+ground/SURFACE
+  rotate: false
+  xy: 120, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+ground/original/tile-10
   rotate: false
   xy: 120, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-30
+ground/SURFACE
+  rotate: false
+  xy: 779, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+ground/original/tile-13
   rotate: false
   xy: 779, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-ground/tile-31
+ground/SURFACE
   rotate: false
   xy: 796, 50
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: 7
+ground/original/tile-14
+  rotate: false
+  xy: 796, 50
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ground/original/original
+  rotate: false
+  xy: 1, 84
+  size: 256, 32
+  orig: 256, 32
   offset: 0, 0
   index: -1
 player/CLIMB
@@ -290,7 +514,7 @@ player/STANDARD1_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 48
+  index: 47
 player/STANDARD1_LEFT
   rotate: false
   xy: 34, 18
@@ -318,7 +542,7 @@ player/STANDARD1_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 53
+  index: 50
 player/STANDARD1_LEFT
   rotate: false
   xy: 34, 18
@@ -332,21 +556,14 @@ player/STANDARD1_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 47
+  index: 48
 player/STANDARD1_LEFT
   rotate: false
   xy: 34, 18
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 50
-player/STANDARD2_LEFT
-  rotate: false
-  xy: 34, 18
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 72
+  index: 53
 player/STANDARD2_LEFT
   rotate: false
   xy: 34, 18
@@ -354,6 +571,13 @@ player/STANDARD2_LEFT
   orig: 32, 32
   offset: 0, 0
   index: 71
+player/STANDARD2_LEFT
+  rotate: false
+  xy: 34, 18
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 72
 player/STANDARD2_LEFT
   rotate: false
   xy: 34, 18
@@ -381,14 +605,14 @@ player/WALK_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 10
+  index: 16
 player/WALK_LEFT
   rotate: false
   xy: 34, 18
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 16
+  index: 10
 player/DEFAULT_RIGHT
   rotate: false
   xy: 67, 51
@@ -409,13 +633,6 @@ player/STANDARD1_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 36
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 67, 51
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 40
 player/STANDARD1_RIGHT
   rotate: false
@@ -424,6 +641,20 @@ player/STANDARD1_RIGHT
   orig: 32, 32
   offset: 0, 0
   index: 45
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 67, 51
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 38
+player/STANDARD1_RIGHT
+  rotate: false
+  xy: 67, 51
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 36
 player/STANDARD1_RIGHT
   rotate: false
   xy: 67, 51
@@ -444,13 +675,6 @@ player/STANDARD1_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 38
-player/STANDARD1_RIGHT
-  rotate: false
-  xy: 67, 51
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 43
 player/STANDARD2_RIGHT
   rotate: false
@@ -458,7 +682,7 @@ player/STANDARD2_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 65
+  index: 62
 player/STANDARD2_RIGHT
   rotate: false
   xy: 67, 51
@@ -472,7 +696,7 @@ player/STANDARD2_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 62
+  index: 65
 player/STANDARD2_RIGHT
   rotate: false
   xy: 67, 51
@@ -521,34 +745,6 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 111
-player/JUMP_LEFT
-  rotate: false
-  xy: 67, 18
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 114
-player/JUMP_LEFT
-  rotate: false
-  xy: 67, 18
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 113
-player/JUMP_LEFT
-  rotate: false
-  xy: 67, 18
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 115
-player/JUMP_LEFT
-  rotate: false
-  xy: 67, 18
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
   index: 110
 player/JUMP_LEFT
   rotate: false
@@ -563,7 +759,7 @@ player/JUMP_LEFT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 109
+  index: 113
 player/JUMP_LEFT
   rotate: false
   xy: 67, 18
@@ -571,6 +767,34 @@ player/JUMP_LEFT
   orig: 32, 32
   offset: 0, 0
   index: 112
+player/JUMP_LEFT
+  rotate: false
+  xy: 67, 18
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 109
+player/JUMP_LEFT
+  rotate: false
+  xy: 67, 18
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 111
+player/JUMP_LEFT
+  rotate: false
+  xy: 67, 18
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 115
+player/JUMP_LEFT
+  rotate: false
+  xy: 67, 18
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 114
 player/JUMP_RIGHT
   rotate: false
   xy: 100, 51
@@ -591,7 +815,7 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  index: 103
+  index: 102
 player/JUMP_RIGHT
   rotate: false
   xy: 357, 84
@@ -605,7 +829,21 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
+  index: 104
+player/JUMP_RIGHT
+  rotate: false
+  xy: 357, 84
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
   index: 99
+player/JUMP_RIGHT
+  rotate: false
+  xy: 357, 84
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 100
 player/JUMP_RIGHT
   rotate: false
   xy: 357, 84
@@ -619,28 +857,14 @@ player/JUMP_RIGHT
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
+  index: 103
+player/JUMP_RIGHT
+  rotate: false
+  xy: 357, 84
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
   index: 98
-player/JUMP_RIGHT
-  rotate: false
-  xy: 357, 84
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 104
-player/JUMP_RIGHT
-  rotate: false
-  xy: 357, 84
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 102
-player/JUMP_RIGHT
-  rotate: false
-  xy: 357, 84
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: 100
 player/RUN_LEFT
   rotate: false
   xy: 100, 18
