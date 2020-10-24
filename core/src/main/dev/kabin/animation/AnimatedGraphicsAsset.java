@@ -5,43 +5,42 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import dev.kabin.utilities.Direction;
 
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AnimationBundle implements Animations, Disposable {
+public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implements AnimationPlayer, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
-    private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animations;
+    private final Map<T, Animation<TextureAtlas.AtlasRegion>> animations;
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, scale;
-    private AnimationType currentAnimationType = AnimationType.DEFAULT_RIGHT;
+    private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
 
-
-    public AnimationType getCurrentAnimationType() {
-        return currentAnimationType;
-    }
-
-    public AnimationBundle(
+    public AnimatedGraphicsAsset(
             Array<TextureAtlas.AtlasRegion> regions,
-            Map<AnimationType, int[]> animations
+            Map<T, int[]> animations,
+            Class<T> tClass
     ) {
         this.regions = regions;
         // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
         // this is a bug with the eclipse compiler. Maybe libgdx compiles with the eclipse compiler underneath?
         //noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
-        this.animations = new EnumMap<AnimationType, Animation<TextureAtlas.AtlasRegion>>(animations.entrySet().stream().collect(
+        this.animations = new EnumMap<T, Animation<TextureAtlas.AtlasRegion>>(animations.entrySet().stream().collect(
                 Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue()))
         ));
-        this.width = regions.get(0).originalWidth;
-        this.height = regions.get(0).originalHeight;
-        this.cachedTextureRegion = regions.get(0);
+        width = regions.get(0).originalWidth;
+        height = regions.get(0).originalHeight;
+        cachedTextureRegion = regions.get(0);
+        currentAnimationClass = tClass.getEnumConstants()[0];
+    }
+
+    public AnimationClass getCurrentAnimationType() {
+        return currentAnimationClass;
     }
 
     public int getOriginalWidth() {
@@ -61,25 +60,24 @@ public class AnimationBundle implements Animations, Disposable {
     }
 
     @Override
-    public void setCurrentAnimation(AnimationType animationType) {
-        currentAnimationType = animationType;
+    public void setCurrentAnimation(AnimationClass animationClass) {
+        currentAnimationClass = animationClass;
     }
 
     @Override
     public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
-        if (!animations.containsKey(currentAnimationType)) {
+        if (!animations.containsKey(currentAnimationClass)) {
             return;
         }
 
-        cachedTextureRegion = animations.get(currentAnimationType)
-                .getKeyFrame(stateTime, currentAnimationType.isLooping());
+        cachedTextureRegion = animations.get(currentAnimationClass)
+                .getKeyFrame(stateTime, currentAnimationClass.isLooping());
 
         // Switch to default if last frame is not repeating
-        if (!currentAnimationType.isLastFrameRepeating() &&
-                !currentAnimationType.isLooping() &&
-                animations.get(currentAnimationType).isAnimationFinished(stateTime)) {
-            currentAnimationType = currentAnimationType.getDirection() == Direction.RIGHT ? AnimationType.DEFAULT_RIGHT
-                    : AnimationType.DEFAULT_LEFT;
+        if (!currentAnimationClass.isLastFrameRepeating() &&
+                !currentAnimationClass.isLooping() &&
+                animations.get(currentAnimationClass).isAnimationFinished(stateTime)) {
+            currentAnimationClass = currentAnimationClass.transitionToDefault();
         }
         batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());

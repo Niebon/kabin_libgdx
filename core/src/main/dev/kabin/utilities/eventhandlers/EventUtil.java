@@ -72,12 +72,12 @@ public class EventUtil {
                     DeveloperUI.getEntityLoadingWidget().addEntity();
                 }
                 if (KeyEventUtil.isAltDown()) {
-                    DeveloperUI.getTileSelectionWidget().addGroundTile();
+                    DeveloperUI.getTileSelectionWidget().addCollisionTile();
                 }
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, (x, y) -> {
-                if (KeyEventUtil.isAltDown()) DeveloperUI.TileSelectionWidget.addGroundTile();
+                if (KeyEventUtil.isAltDown()) DeveloperUI.getTileSelectionWidget().addCollisionTile();
             });
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, (x, y) -> {

@@ -85,6 +85,7 @@ public class Widget implements ModifiableFloatCoordinates {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isCollapsed(){
         return collapsed;
     }

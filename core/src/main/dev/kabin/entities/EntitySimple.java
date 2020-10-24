@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.animation.AnimationBundle;
+import dev.kabin.animation.AnimatedGraphicsAsset;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DeveloperUI;
@@ -27,19 +27,19 @@ public class EntitySimple implements Entity {
 
     private static final Logger logger = Logger.getLogger(EntitySimple.class.getName());
 
-    protected final AnimationBundle animationBundle;
+    protected final AnimatedGraphicsAsset<?> animatedGraphicsAsset;
     private final String atlasPath;
     private final int layer;
     private final Actor actor = new Actor();
     private float x, y, scale;
 
     EntitySimple(EntityParameters parameters) {
-        this.x = parameters.x();
-        this.y = parameters.y();
-        this.scale = parameters.scale();
-        this.atlasPath = parameters.atlasPath();
-        this.layer = parameters.layer();
-        this.animationBundle = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+        x = parameters.x();
+        y = parameters.y();
+        scale = parameters.scale();
+        atlasPath = parameters.atlasPath();
+        layer = parameters.layer();
+        animatedGraphicsAsset = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -133,14 +133,14 @@ public class EntitySimple implements Entity {
 
     @Override
     public void render(SpriteBatch batch, float stateTime) {
-        animationBundle.setX(x);
-        animationBundle.setY(y);
-        animationBundle.setScale(scale);
-        animationBundle.renderNextAnimationFrame(batch, stateTime);
+        animatedGraphicsAsset.setX(x);
+        animatedGraphicsAsset.setY(y);
+        animatedGraphicsAsset.setScale(scale);
+        animatedGraphicsAsset.renderNextAnimationFrame(batch, stateTime);
         actor.setBounds(
                 x, y,
-                animationBundle.getWidth(),
-                animationBundle.getHeight()
+                animatedGraphicsAsset.getWidth(),
+                animatedGraphicsAsset.getHeight()
         );
     }
 
@@ -198,7 +198,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return ImageAnalysisPool.findAnalysis(animationBundle.getCurrentImageAssetPath(), animationBundle.getCurrentImageAssetIndex());
+        return ImageAnalysisPool.findAnalysis(animatedGraphicsAsset.getCurrentImageAssetPath(), animatedGraphicsAsset.getCurrentImageAssetIndex());
     }
 
     @Override
@@ -223,6 +223,6 @@ public class EntitySimple implements Entity {
                 .put("y", Math.round(getY() / getScale()))
                 .put("atlasPath", getAtlasPath())
                 .put("layer", getLayer())
-                .put("type", getType().name());
+                .put("tileType", getType().name());
     }
 }

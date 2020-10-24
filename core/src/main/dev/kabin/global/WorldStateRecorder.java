@@ -32,12 +32,12 @@ public class WorldStateRecorder {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
             } else {
                 JSONObject json = (JSONObject) entry;
-                String type = json.getString("type");
-                if (!set.contains(type)) {
+                String tileType = json.getString("tileType");
+                if (!set.contains(tileType)) {
                     logger.warning(() -> "A recorded entity was not saved as a JSON object." + json);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(type).getJsonConstructor().construct(json);
+                    Entity e = EntityFactory.EntityType.valueOf(tileType).getJsonConstructor().construct(json);
                     EntityGroupProvider.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }

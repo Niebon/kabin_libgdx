@@ -29,10 +29,6 @@ public class EntityParameters {
         this.backingMap = backingMap;
     }
 
-    public boolean containEnumAsKey(Enum<?> e) {
-        return backingMap.containsKey(e.name());
-    }
-
     public <T> Optional<T> get(String key, @SuppressWarnings("unused") Class<T> type) {
         //noinspection unchecked
         return Optional.ofNullable((T) backingMap.get(key));

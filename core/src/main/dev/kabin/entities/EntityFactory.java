@@ -51,6 +51,7 @@ public class EntityFactory {
         public EntityGroupProvider.Type groupType() {
             return groupType;
         }
+
     }
 
     @FunctionalInterface

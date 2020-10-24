@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
-import dev.kabin.animation.AnimationBundle;
+import dev.kabin.animation.AnimatedGraphicsAsset;
 import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.Animations;
+import dev.kabin.animation.AnimationClass;
 import dev.kabin.entities.*;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointFloat;
@@ -262,10 +262,10 @@ public class DeveloperUI {
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
         private final Widget widget;
-        private AnimationBundle preview = null;
+        private AnimatedGraphicsAsset preview = null;
         private String selectedAsset = "";
         private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
-        private Animations.AnimationType animationType = Animations.AnimationType.DEFAULT_RIGHT;
+        private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;
         private int layer;
 
         EntityLoadingWidget() {
@@ -332,7 +332,7 @@ public class DeveloperUI {
                             (selectedAsset.length() < maxLength ? selectedAsset
                                     : (selectedAsset.substring(0, maxLength) + "...")) +
                             '\n' +
-                            "Entity type: " +
+                            "Entity tileType: " +
                             entityType.name() +
                             '\n' +
                             "Layer: " +
@@ -354,16 +354,14 @@ public class DeveloperUI {
                     .setAtlasPath(selectedAsset)
                     .build();
 
-            try {
-                Entity e = entityType.getMouseClickConstructor().construct(parameters);
-                EntityGroupProvider.registerEntity(e);
-                float offsetX = e.getPixelMassCenterX() * e.getScale();
-                float offsetY = e.getPixelMassCenterY() * e.getScale();
-                e.setPos(e.getX() - offsetX, e.getY() - offsetY);
-                e.getActor().ifPresent(GlobalData.stage::addActor);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+            Entity e = entityType.getMouseClickConstructor().construct(parameters);
+            EntityGroupProvider.registerEntity(e);
+            float offsetX = e.getPixelMassCenterX() * e.getScale();
+            float offsetY = e.getPixelMassCenterY() * e.getScale();
+            e.setPos(e.getX() - offsetX, e.getY() - offsetY);
+            e.getActor().ifPresent(GlobalData.stage::addActor);
+
         }
 
         public void loadAsset() {
@@ -419,7 +417,7 @@ public class DeveloperUI {
         void showAnimationTypeBox() {
             var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
             var selectBox = new SelectBox<String>(skin, "default");
-            selectBox.setItems(Arrays.stream(Animations.AnimationType.values()).map(Enum::name).toArray(String[]::new));
+            selectBox.setItems(Arrays.stream(AnimationClass.Animate.values()).map(Enum::name).toArray(String[]::new));
             selectBox.setSelectedIndex(entityType.ordinal());
             var dialog = new Dialog("Setting", skin);
             dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
@@ -434,7 +432,7 @@ public class DeveloperUI {
             dialog.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    animationType = Animations.AnimationType.valueOf(selectBox.getSelected());
+                    animationType = AnimationClass.Animate.valueOf(selectBox.getSelected());
                     widget.removeActor(dialog);
                 }
             });
@@ -465,8 +463,8 @@ public class DeveloperUI {
 
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
-        private static Map<CollisionTile.Type, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
-        private static final Map<CollisionTile.Type, @NotNull Button> typeToButton = new HashMap<>();
+        private static final Map<AnimationClass.Tile, @NotNull Button> typeToButton = new HashMap<>();
+        private static Map<AnimationClass.Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
         private final Widget widget;
         private String selectedAsset;
 
@@ -496,10 +494,24 @@ public class DeveloperUI {
             widget.addDialogActor(loadImageAssetButton);
         }
 
-        public static void addGroundTile() {
+        public static void removeGroundTileAtCurrentMousePosition() {
         }
 
-        public static void removeGroundTileAtCurrentMousePosition() {
+        public void addCollisionTile() {
+            EntityParameters parameters = new EntityParameters.Builder()
+                    .setX(MouseEventUtil.getMouseX())
+                    .setY(MouseEventUtil.getMouseY())
+                    .setLayer(0)
+                    .setScale(GlobalData.scaleFactor)
+                    .setAtlasPath(selectedAsset)
+                    .build();
+
+            Entity e = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
+            EntityGroupProvider.registerEntity(e);
+            float offsetX = e.getPixelMassCenterX() * e.getScale();
+            float offsetY = e.getPixelMassCenterY() * e.getScale();
+            e.setPos(e.getX() - offsetX, e.getY() - offsetY);
+            e.getActor().ifPresent(GlobalData.stage::addActor);
         }
 
         private void loadAsset() {
@@ -520,17 +532,17 @@ public class DeveloperUI {
                             .getAbsolutePath()
                             .replace("\\", "/")
                             .replace(relativePath, "");
-                    typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, CollisionTile.Type.values());
+                    typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, AnimationClass.Tile.class);
                     displaySelectTileButtons();
                 }
             });
         }
 
         private void displaySelectTileButtons() {
-            typeToButton.forEach((t,b) -> b.remove());
+            typeToButton.forEach((t, b) -> b.remove());
             typeToButton.clear();
 
-            for (var entry : CollisionTile.Type.values()) {
+            for (var entry : AnimationClass.Tile.values()) {
                 // Distance between displayed tiles.
                 int separationOffsetFactor = entry.ordinal();
 
