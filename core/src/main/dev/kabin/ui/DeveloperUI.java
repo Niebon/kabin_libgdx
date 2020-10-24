@@ -23,6 +23,7 @@ import dev.kabin.geometry.shapes.RectFloat;
 import dev.kabin.global.GlobalData;
 import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
+import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
 import org.jetbrains.annotations.NotNull;
@@ -467,6 +468,7 @@ public class DeveloperUI {
         private static Map<AnimationClass.Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
         private final Widget widget;
         private String selectedAsset;
+        private AnimationClass.Tile currentType;
 
 
         public TileSelectionWidget() {
@@ -504,6 +506,8 @@ public class DeveloperUI {
                     .setLayer(0)
                     .setScale(GlobalData.scaleFactor)
                     .setAtlasPath(selectedAsset)
+                    .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
+                    .put(CollisionTile.TYPE, currentType)
                     .build();
 
             Entity e = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
@@ -564,6 +568,7 @@ public class DeveloperUI {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         System.out.println("Clicked: " + entry);
+                        currentType = entry;
                         return true;
                     }
                 });

@@ -1,26 +1,47 @@
 package dev.kabin.entities;
 
-import dev.kabin.animation.AnimationBundleFactory;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.animation.AnimationClass;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CollisionTile extends CollisionEntity {
 
-    private static final Map<String, Map<AnimationClass.Tile, int[]>> STRING_MAP_HASH_MAP = new HashMap<>();
     public static final String FRAME_INDEX = "frameIndex";
     public static final String TYPE = "type";
-
+    public static final int TILE_SIZE = 16;
+    private final AnimationClass.Tile tile;
+    private final int index;
 
     CollisionTile(EntityParameters parameters) {
         super(parameters);
-        final String atlasPath = parameters.atlasPath();
-        STRING_MAP_HASH_MAP.putIfAbsent(atlasPath, AnimationBundleFactory.findEnumTypeToIntArrayMapping(atlasPath, AnimationClass.Tile.class));
-        final AnimationClass.Tile tile = parameters.get(TYPE, AnimationClass.Tile.class).orElseThrow();
-        final int index = parameters.get(FRAME_INDEX, Integer.class).orElseThrow();
-
+        tile = parameters.get(TYPE, AnimationClass.Tile.class).orElseThrow();
+        index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animatedGraphicsAsset.currentAnimationSize());
     }
 
+    @Override
+    public void render(SpriteBatch batch, float stateTime) {
+        animatedGraphicsAsset.setX(getX());
+        animatedGraphicsAsset.setY(getY());
+        animatedGraphicsAsset.setScale(getScale());
+        animatedGraphicsAsset.setCurrentAnimation(tile);
+        animatedGraphicsAsset.renderFrameByIndex(batch, index);
+        actor().setBounds(
+                getX(), getY(),
+                animatedGraphicsAsset.getWidth(),
+                animatedGraphicsAsset.getHeight()
+        );
+    }
 
+    @Override
+    public void setY(float y) {
+        super.setY(snapToCollisionTileGrid(y, getScale()));
+    }
+
+    @Override
+    public void setX(float x) {
+        super.setX(snapToCollisionTileGrid(x, getScale()));
+    }
+
+    public static float snapToCollisionTileGrid(float input, float scale){
+        return Math.round(input / (TILE_SIZE * scale)) * (TILE_SIZE * scale);
+    }
 }

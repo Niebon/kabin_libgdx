@@ -33,9 +33,11 @@ public class EntitySimple implements Entity {
     private final Actor actor = new Actor();
     private float x, y, scale;
 
+    protected Actor actor(){
+        return actor;
+    }
+
     EntitySimple(EntityParameters parameters) {
-        x = parameters.x();
-        y = parameters.y();
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
@@ -57,6 +59,7 @@ public class EntitySimple implements Entity {
                 }
             }
         });
+        setPos(parameters.x(), parameters.y());
     }
 
     public boolean touchDown(int button) {

@@ -39,6 +39,10 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
         currentAnimationClass = tClass.getEnumConstants()[0];
     }
 
+    public int currentAnimationSize(){
+        return animations.get(currentAnimationClass).getKeyFrames().length;
+    }
+
     public AnimationClass getCurrentAnimationType() {
         return currentAnimationClass;
     }

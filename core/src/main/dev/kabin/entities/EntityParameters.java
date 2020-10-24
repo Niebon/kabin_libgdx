@@ -3,6 +3,7 @@ package dev.kabin.entities;
 import dev.kabin.global.GlobalData;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -110,7 +111,10 @@ public class EntityParameters {
         }
 
         public Builder put(String key, Object value) {
-            backingMap.put(key, value);
+            Optional.ofNullable(backingMap).or(() -> {
+                backingMap = new HashMap<>();
+                return Optional.of(backingMap);
+            }).orElseThrow().put(key, value);
             return this;
         }
 
