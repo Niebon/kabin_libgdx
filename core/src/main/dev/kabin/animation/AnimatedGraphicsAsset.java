@@ -11,7 +11,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implements AnimationPlayer, Disposable {
+public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implements AnimationPlayback, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
@@ -29,18 +29,19 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
         this.regions = regions;
         // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
         // this is a bug with the eclipse compiler. Maybe libgdx compiles with the eclipse compiler underneath?
-        //noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
-        this.animations = new EnumMap<T, Animation<TextureAtlas.AtlasRegion>>(animations.entrySet().stream().collect(
-                Collectors.toMap(Map.Entry::getKey, e -> generateAnimation(e.getValue()))
-        ));
+        ////noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
+        this.animations = animations.entrySet().stream().collect(
+                Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> generateAnimation(e.getValue()),
+                        (i,j) -> i,
+                        () -> new EnumMap<>(tClass)
+                )
+        );
         width = regions.get(0).originalWidth;
         height = regions.get(0).originalHeight;
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
-    }
-
-    public int currentAnimationSize(){
-        return animations.get(currentAnimationClass).getKeyFrames().length;
     }
 
     public AnimationClass getCurrentAnimationType() {

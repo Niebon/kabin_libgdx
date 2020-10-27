@@ -5,7 +5,7 @@ import dev.kabin.utilities.helperinterfaces.FloatArea;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
 
-public interface AnimationPlayer extends ModifiableFloatCoordinates, FloatArea, Scalable {
+public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea, Scalable {
 
     void setCurrentAnimation(AnimationClass animationClass);
 

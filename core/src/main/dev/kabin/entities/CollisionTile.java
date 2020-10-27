@@ -9,12 +9,12 @@ public class CollisionTile extends CollisionEntity {
     public static final String TYPE = "type";
     public static final int TILE_SIZE = 16;
     private final AnimationClass.Tile tile;
-    private final int index;
+    private final int index = 0;
 
     CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = parameters.get(TYPE, AnimationClass.Tile.class).orElseThrow();
-        index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animatedGraphicsAsset.currentAnimationSize());
+        //index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animatedGraphicsAsset.getCurrentAnimation().getKeyFrames().length);
     }
 
     @Override
