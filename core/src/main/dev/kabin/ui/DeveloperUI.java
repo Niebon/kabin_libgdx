@@ -24,6 +24,7 @@ import dev.kabin.global.GlobalData;
 import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
+import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.FontPool;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,7 @@ public class DeveloperUI {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
+                    ! KeyEventUtil.isAltDown() &&
                     CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
                             !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
                             !TILE_SELECTION_WIDGET.getWidget().isDragging()

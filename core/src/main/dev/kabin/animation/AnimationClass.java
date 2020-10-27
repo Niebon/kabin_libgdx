@@ -18,6 +18,8 @@ public interface AnimationClass {
 
     AnimationClass transitionToDefault();
 
+    int ordinal();
+
     enum Animate implements AnimationClass {
 
         DEFAULT_LEFT(true, false, Direction.LEFT), DEFAULT_RIGHT(true, false, Direction.RIGHT),

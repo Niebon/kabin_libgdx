@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import dev.kabin.utilities.collections.IntToIntFunction;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -20,6 +21,7 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
     float x, y, scale;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
+    private final IntToIntFunction animationClassIndexToAnimationLength;
 
     public AnimatedGraphicsAsset(
             Array<TextureAtlas.AtlasRegion> regions,
@@ -42,6 +44,12 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
         height = regions.get(0).originalHeight;
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
+        animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
+        animations.forEach((animClass, ints) -> animationClassIndexToAnimationLength.put(animClass.ordinal(), ints.length));
+    }
+
+    public int getCurrentAnimationLength(){
+        return animationClassIndexToAnimationLength.eval(currentAnimationClass.ordinal());
     }
 
     public AnimationClass getCurrentAnimationType() {
