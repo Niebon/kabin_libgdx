@@ -104,7 +104,6 @@ public class Component implements Id {
             throw new IllegalArgumentException("Received invalid parameters: " + parameters.toString());
         }
 
-
         underlyingRectInt = new RectInt(parameters.getX(), parameters.getY(), parameters.getWidth() - 1,
                 parameters.getHeight() - 1);
         scaleFactor = parameters.getScaleFactor();
