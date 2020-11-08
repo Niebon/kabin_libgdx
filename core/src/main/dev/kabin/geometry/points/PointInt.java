@@ -1,5 +1,6 @@
 package dev.kabin.geometry.points;
 
+import dev.kabin.geometry.shapes.RectFloat;
 import dev.kabin.utilities.functioninterfaces.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 

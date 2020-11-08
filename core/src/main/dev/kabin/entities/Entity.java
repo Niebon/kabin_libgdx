@@ -2,11 +2,16 @@ package dev.kabin.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import dev.kabin.collections.Id;
+import dev.kabin.geometry.shapes.RectFloat;
+import dev.kabin.geometry.shapes.RectInt;
+import dev.kabin.geometry.topology.Neighborhood;
 import dev.kabin.utilities.helperinterfaces.JSONRecordable;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.css.Rect;
 
 import java.util.Optional;
 
@@ -15,7 +20,9 @@ public interface Entity extends
         ModifiableFloatCoordinates,
         Comparable<Entity>,
         ImageAnalysisPool.Analysis.Analyzable,
-        JSONRecordable {
+        JSONRecordable,
+        Id
+{
 
     void render(SpriteBatch batch, float stateTime);
 
@@ -51,5 +58,11 @@ public interface Entity extends
     default int getRootY() {
         return getUnscaledY() - getPixelAnalysis().getLowestPixel();
     }
+
+    RectInt graphicsNbd();
+
+    RectInt positionNbd();
+
+
 
 }

@@ -10,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.animation.AnimationBundleFactory;
+import dev.kabin.animation.AnimationPlaybackImpl;
+import dev.kabin.geometry.shapes.RectFloat;
+import dev.kabin.geometry.shapes.RectInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
@@ -25,17 +27,16 @@ import java.util.logging.Logger;
 
 public class EntitySimple implements Entity {
 
-    private static final Logger logger = Logger.getLogger(EntitySimple.class.getName());
-
+    private static final Logger LOGGER = Logger.getLogger(EntitySimple.class.getName());
+    private static int createdInstances = 0;
     protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
     private final String atlasPath;
     private final int layer;
     private final Actor actor = new Actor();
+    private final int id;
+    private final RectInt positionNbd;
+    private final RectInt graphicsNbd;
     private float x, y, scale;
-
-    protected Actor actor(){
-        return actor;
-    }
 
     EntitySimple(EntityParameters parameters) {
         scale = parameters.scale();
@@ -60,10 +61,27 @@ public class EntitySimple implements Entity {
             }
         });
         setPos(parameters.x(), parameters.y());
+
+        // TODO: will the pathfinder algorithm suffer if position nbd is too big?
+        positionNbd = RectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+        graphicsNbd = RectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+        updateNeighborhood();
+        id = createdInstances++;
+    }
+
+    private void updateNeighborhood() {
+        positionNbd.translate(
+                getUnscaledX() - (int) Math.round(positionNbd.getCenterX()),
+                getUnscaledY() - (int) Math.round(positionNbd.getCenterY())
+        );
+    }
+
+    protected Actor actor() {
+        return actor;
     }
 
     public boolean touchDown(int button) {
-        logger.warning(() -> "Click registered.");
+        LOGGER.warning(() -> "Click registered.");
         switch (button) {
             case Input.Buttons.RIGHT -> handleMouseClickRight();
             case Input.Buttons.LEFT -> handleMouseClickLeft();
@@ -220,6 +238,16 @@ public class EntitySimple implements Entity {
     }
 
     @Override
+    public RectInt graphicsNbd() {
+        return graphicsNbd;
+    }
+
+    @Override
+    public RectInt positionNbd() {
+        return positionNbd;
+    }
+
+    @Override
     public JSONObject toJSONObject() {
         return new JSONObject()
                 .put("x", Math.round(getX() / getScale()))
@@ -228,4 +256,10 @@ public class EntitySimple implements Entity {
                 .put("layer", getLayer())
                 .put("tileType", getType().name());
     }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
 }

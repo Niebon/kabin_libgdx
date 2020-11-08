@@ -1,5 +1,6 @@
 package dev.kabin.entities;
 
+import dev.kabin.components.Component;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointInt;
 import dev.kabin.geometry.points.PrimitivePointInt;
@@ -35,9 +36,9 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
                 .map(p -> Point.of(p.getX() + rootX, p.getY() + rootY));
     }
 
-//    default void initCollisionData(final Component component) {
-//        actionEachCollisionPoint(component::increaseCollisionAt);
-//    }
+    default void initCollisionData(final Component component) {
+        actionEachCollisionPoint(component::increaseCollisionAt);
+    }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer action) {
         final int rootX = getRootX(), rootY = getRootY();

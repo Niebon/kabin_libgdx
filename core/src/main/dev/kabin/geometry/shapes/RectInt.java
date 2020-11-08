@@ -22,6 +22,10 @@ public class RectInt {
         maxY = y + height;
     }
 
+    public static RectInt centeredAt(int x, int y, int width, int height) {
+        return new RectInt(x - Math.round(width * 0.5f), y - Math.round(height * 0.5f), width, height);
+    }
+
     public int getWidth() {
         return maxX - minX;
     }
