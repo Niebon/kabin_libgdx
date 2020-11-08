@@ -14,21 +14,21 @@ public class CollisionTile extends CollisionEntity {
     CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = parameters.get(TYPE, AnimationClass.Tile.class).orElseThrow();
-        animatedGraphicsAsset.setCurrentAnimation(tile);
-        index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animatedGraphicsAsset.getCurrentAnimationLength());
+        animationPlaybackImpl.setCurrentAnimation(tile);
+        index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
     }
 
     @Override
     public void render(SpriteBatch batch, float stateTime) {
-        animatedGraphicsAsset.setX(getX());
-        animatedGraphicsAsset.setY(getY());
-        animatedGraphicsAsset.setScale(getScale());
-        animatedGraphicsAsset.setCurrentAnimation(tile);
-        animatedGraphicsAsset.renderFrameByIndex(batch, index);
+        animationPlaybackImpl.setX(getX());
+        animationPlaybackImpl.setY(getY());
+        animationPlaybackImpl.setScale(getScale());
+        animationPlaybackImpl.setCurrentAnimation(tile);
+        animationPlaybackImpl.renderFrameByIndex(batch, index);
         actor().setBounds(
                 getX(), getY(),
-                animatedGraphicsAsset.getWidth(),
-                animatedGraphicsAsset.getHeight()
+                animationPlaybackImpl.getWidth(),
+                animationPlaybackImpl.getHeight()
         );
     }
 

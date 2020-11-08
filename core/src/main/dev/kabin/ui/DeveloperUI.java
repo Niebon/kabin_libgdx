@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
-import dev.kabin.animation.AnimatedGraphicsAsset;
+import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.entities.*;
@@ -265,7 +265,7 @@ public class DeveloperUI {
         private static final int WIDTH = 600;
         private static final int HEIGHT = 200;
         private final Widget widget;
-        private AnimatedGraphicsAsset preview = null;
+        private AnimationPlaybackImpl<?> preview = null;
         private String selectedAsset = "";
         private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
         private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;

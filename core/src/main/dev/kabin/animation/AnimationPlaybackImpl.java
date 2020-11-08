@@ -1,5 +1,6 @@
 package dev.kabin.animation;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,27 +13,28 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implements AnimationPlayback, Disposable {
+public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implements AnimationPlayback, Disposable {
 
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
-    private final Map<T, Animation<TextureAtlas.AtlasRegion>> animations;
+    private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final Array<TextureAtlas.AtlasRegion> regions;
     float x, y, scale;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private final IntToIntFunction animationClassIndexToAnimationLength;
+    private final Map<T, int[]> animationBlueprint;
 
-    public AnimatedGraphicsAsset(
+    public AnimationPlaybackImpl(
             Array<TextureAtlas.AtlasRegion> regions,
-            Map<T, int[]> animations,
+            Map<T, int[]> animationBlueprint,
             Class<T> tClass
     ) {
         this.regions = regions;
         // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
         // this is a bug with the eclipse compiler. Maybe libgdx compiles with the eclipse compiler underneath?
         ////noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
-        this.animations = animations.entrySet().stream().collect(
+        this.animationsMap = animationBlueprint.entrySet().stream().collect(
                 Collectors.toMap(
                         Map.Entry::getKey,
                         e -> generateAnimation(e.getValue()),
@@ -40,12 +42,13 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
                         () -> new EnumMap<>(tClass)
                 )
         );
+        this.animationBlueprint = animationBlueprint;
         width = regions.get(0).originalWidth;
         height = regions.get(0).originalHeight;
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
         animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
-        animations.forEach((animClass, ints) -> animationClassIndexToAnimationLength.put(animClass.ordinal(), ints.length));
+        animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
     }
 
     public int getCurrentAnimationLength(){
@@ -79,17 +82,17 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
-        if (!animations.containsKey(currentAnimationClass)) {
+        if (!animationsMap.containsKey(currentAnimationClass)) {
             return;
         }
 
-        cachedTextureRegion = animations.get(currentAnimationClass)
+        cachedTextureRegion = animationsMap.get(currentAnimationClass)
                 .getKeyFrame(stateTime, currentAnimationClass.isLooping());
 
         // Switch to default if last frame is not repeating
         if (!currentAnimationClass.isLastFrameRepeating() &&
                 !currentAnimationClass.isLooping() &&
-                animations.get(currentAnimationClass).isAnimationFinished(stateTime)) {
+                animationsMap.get(currentAnimationClass).isAnimationFinished(stateTime)) {
             currentAnimationClass = currentAnimationClass.transitionToDefault();
         }
         batch.begin();
@@ -99,8 +102,9 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void renderFrameByIndex(SpriteBatch batch, int index) {
+        cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
         batch.begin();
-        batch.draw(regions.get(index), getX(), getY(), getWidth(), getHeight());
+        batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
         batch.end();
     }
 
@@ -158,7 +162,7 @@ public class AnimatedGraphicsAsset<T extends Enum<T> & AnimationClass> implement
     @Override
     public void dispose() {
         // Is this redundant?
-        animations.forEach((type, animation) -> Arrays.stream(animation.getKeyFrames())
+        animationsMap.forEach((type, animation) -> Arrays.stream(animation.getKeyFrames())
                 .forEach(r -> r.getTexture().dispose()));
         regions.forEach(r -> r.getTexture().dispose());
     }

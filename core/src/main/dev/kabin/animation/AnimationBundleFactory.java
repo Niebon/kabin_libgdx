@@ -11,8 +11,9 @@ import java.util.stream.Stream;
 
 public class AnimationBundleFactory {
 
-    public static <T extends Enum<T>> Map<T, int[]> findEnumTypeToIntArrayMapping(String atlasPath, Class<T> clazz) {
+    public static Map<Enum<?>, int[]> findEnumTypeToIntArrayMapping(String atlasPath, Class<?> clazz) {
         return Arrays.stream(clazz.getEnumConstants())
+                .map(constant -> (Enum<?>) constant)
                 .filter(type -> GlobalData.getAtlas().findRegions(atlasPath + '/' + type.name()).size > 0)
                 .collect(Collectors.toMap(
                         Function.identity(),
@@ -35,8 +36,9 @@ public class AnimationBundleFactory {
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    public static <T extends Enum<T>> Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath, Class<T> clazz) {
+    public static Array<TextureAtlas.AtlasRegion> findAllAnimations(String atlasRegionPath, Class<?> clazz) {
         return new Array<>(Arrays.stream(clazz.getEnumConstants())
+                .map(constant -> (Enum<?>) constant)
                 .map(type -> GlobalData.getAtlas().findRegions(atlasRegionPath + '/' + type.name()))
                 .filter(Objects::nonNull)
                 .filter(Array::notEmpty)
@@ -46,9 +48,8 @@ public class AnimationBundleFactory {
                 .toArray(TextureAtlas.AtlasRegion[]::new));
     }
 
-    @SuppressWarnings("unchecked")
-    public static AnimatedGraphicsAsset<? extends AnimationClass> loadFromAtlasPath(String atlasPath) {
-        for (var clazz : new Class[]{
+    public static AnimationPlaybackImpl<?> loadFromAtlasPath(String atlasPath) {
+        for (var clazz : new Class<?>[]{
                 AnimationClass.Tile.class,
                 AnimationClass.Animate.class,
                 AnimationClass.Inanimate.class
@@ -56,7 +57,7 @@ public class AnimationBundleFactory {
             var regions = findAllAnimations(atlasPath, clazz);
             if (regions.isEmpty()) continue;
             var animations = findEnumTypeToIntArrayMapping(atlasPath, clazz);
-            return new AnimatedGraphicsAsset<>(regions, animations, clazz);
+            return new AnimationPlaybackImpl(regions, animations, clazz);
         }
         throw new RuntimeException();
     }

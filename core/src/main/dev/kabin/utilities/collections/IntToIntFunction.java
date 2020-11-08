@@ -23,16 +23,15 @@ public class IntToIntFunction {
         coDomain = new int[capacity];
     }
 
-    public void put(int input, int output) {
-        int searchResult = searchDomain(input);
-        int insertIndex;
+    public void define(int input, int output) {
+        final int searchResult = searchDomain(input);
+        final int insertIndex;
         if (0 <= searchResult && searchResult < size) {
             insertIndex = searchResult;
             coDomain[insertIndex] = output;
-        }
-        else {
-            insertIndex = - searchResult - 1;
-            int newSize = size + 1;
+        } else {
+            insertIndex = -searchResult - 1;
+            final int newSize = size + 1;
             ensureCapacity(newSize);
             shiftByOne(insertIndex);
             domain[insertIndex] = input;
@@ -42,9 +41,10 @@ public class IntToIntFunction {
     }
 
     private void ensureCapacity(int upToIndex) {
-        if (upToIndex >= domain.length) {
-            final int[] newDomain = new int[2 * domain.length];
-            final int[] newCoDomain = new int[2 * coDomain.length];
+        final int domainLength = domain.length;
+        if (upToIndex >= domainLength) {
+            final int[] newDomain = new int[2 * domainLength];
+            final int[] newCoDomain = new int[2 * domainLength];
             for (int i = 0, n = size; i < n; i++) {
                 newDomain[i] = domain[i];
                 newCoDomain[i] = coDomain[i];
@@ -56,8 +56,8 @@ public class IntToIntFunction {
 
     private void shiftByOne(int atIndex) {
         for (int i = size; i > atIndex; i--) {
-            domain[i] = domain[i-1];
-            coDomain[i] = coDomain[i-1];
+            domain[i] = domain[i - 1];
+            coDomain[i] = coDomain[i - 1];
         }
     }
 

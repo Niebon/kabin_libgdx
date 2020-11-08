@@ -15,14 +15,14 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 
     @Override
     public @NotNull List<PrimitivePointInt> getCollisionProfile() {
-        return CollisionPool.findCollisionProfile(animatedGraphicsAsset.getCurrentImageAssetPath(),
-                animatedGraphicsAsset.getCurrentImageAssetIndex());
+        return CollisionPool.findCollisionProfile(animationPlaybackImpl.getCurrentImageAssetPath(),
+                animationPlaybackImpl.getCurrentImageAssetIndex());
     }
 
     @Override
     public @NotNull List<PrimitivePointInt> getSurfaceContourProfile() {
-		return CollisionPool.findSurfaceContourProfile(animatedGraphicsAsset.getCurrentImageAssetPath(),
-				animatedGraphicsAsset.getCurrentImageAssetIndex());
+		return CollisionPool.findSurfaceContourProfile(animationPlaybackImpl.getCurrentImageAssetPath(),
+				animationPlaybackImpl.getCurrentImageAssetIndex());
 	}
 
 	@Override
@@ -37,8 +37,8 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 
 	@Override
 	public ImageAnalysisPool.Analysis getPixelAnalysis() {
-		return ImageAnalysisPool.findAnalysis(animatedGraphicsAsset.getCurrentImageAssetPath(),
-				animatedGraphicsAsset.getCurrentImageAssetIndex());
+		return ImageAnalysisPool.findAnalysis(animationPlaybackImpl.getCurrentImageAssetPath(),
+				animationPlaybackImpl.getCurrentImageAssetIndex());
 	}
 
 	@Override

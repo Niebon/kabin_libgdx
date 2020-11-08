@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.animation.AnimatedGraphicsAsset;
+import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DeveloperUI;
@@ -27,7 +27,7 @@ public class EntitySimple implements Entity {
 
     private static final Logger logger = Logger.getLogger(EntitySimple.class.getName());
 
-    protected final AnimatedGraphicsAsset<?> animatedGraphicsAsset;
+    protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
     private final String atlasPath;
     private final int layer;
     private final Actor actor = new Actor();
@@ -41,7 +41,7 @@ public class EntitySimple implements Entity {
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
-        animatedGraphicsAsset = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+        animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -136,14 +136,14 @@ public class EntitySimple implements Entity {
 
     @Override
     public void render(SpriteBatch batch, float stateTime) {
-        animatedGraphicsAsset.setX(x);
-        animatedGraphicsAsset.setY(y);
-        animatedGraphicsAsset.setScale(scale);
-        animatedGraphicsAsset.renderNextAnimationFrame(batch, stateTime);
+        animationPlaybackImpl.setX(x);
+        animationPlaybackImpl.setY(y);
+        animationPlaybackImpl.setScale(scale);
+        animationPlaybackImpl.renderNextAnimationFrame(batch, stateTime);
         actor.setBounds(
                 x, y,
-                animatedGraphicsAsset.getWidth(),
-                animatedGraphicsAsset.getHeight()
+                animationPlaybackImpl.getWidth(),
+                animationPlaybackImpl.getHeight()
         );
     }
 
@@ -201,7 +201,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return ImageAnalysisPool.findAnalysis(animatedGraphicsAsset.getCurrentImageAssetPath(), animatedGraphicsAsset.getCurrentImageAssetIndex());
+        return ImageAnalysisPool.findAnalysis(animationPlaybackImpl.getCurrentImageAssetPath(), animationPlaybackImpl.getCurrentImageAssetIndex());
     }
 
     @Override
