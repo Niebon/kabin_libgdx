@@ -41,7 +41,7 @@ public interface Entity extends
     }
 
     default int getUnscaledY() {
-        return Math.round(getX() / getScale());
+        return Math.round(getY() / getScale());
     }
 
     default int getRootX(){

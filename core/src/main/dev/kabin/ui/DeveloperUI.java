@@ -502,6 +502,8 @@ public class DeveloperUI {
         }
 
         public void addCollisionTile() {
+            if (selectedAsset == null) return;
+            if (currentType == null) return;
             EntityParameters parameters = new EntityParameters.Builder()
                     .setX(MouseEventUtil.getMouseX())
                     .setY(MouseEventUtil.getMouseY())
@@ -512,12 +514,16 @@ public class DeveloperUI {
                     .put(CollisionTile.TYPE, currentType)
                     .build();
 
+            System.out.println("Position: " + MouseEventUtil.getPosition());
+
             Entity e = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
             EntityGroupProvider.registerEntity(e);
-            float offsetX = e.getPixelMassCenterX() * e.getScale();
-            float offsetY = e.getPixelMassCenterY() * e.getScale();
-            e.setPos(e.getX() - offsetX, e.getY() - offsetY);
+            float offsetX = e.getPixelsX() * e.getScale() * 0.5f;
+            float offsetY = e.getPixelsY() * e.getScale() * 0.5f;
+            e.setPos(e.getX() + offsetX, e.getY() + offsetY);
             e.getActor().ifPresent(GlobalData.stage::addActor);
+
+            System.out.println("Position: " + e.getPosition());
         }
 
         private void loadAsset() {

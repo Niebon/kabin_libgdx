@@ -34,15 +34,15 @@ public class CollisionTile extends CollisionEntity {
 
     @Override
     public void setY(float y) {
-        super.setY(snapToCollisionTileGrid(y, getScale()));
+        super.setY(snapToCollisionTileGrid(Math.round(y / getScale())) * getScale());
     }
 
     @Override
     public void setX(float x) {
-        super.setX(snapToCollisionTileGrid(x, getScale()));
+        super.setX(snapToCollisionTileGrid(Math.round(x / getScale())) * getScale());
     }
 
-    public static float snapToCollisionTileGrid(float input, float scale){
-        return Math.round(input / (TILE_SIZE * scale)) * (TILE_SIZE * scale);
+    public static int snapToCollisionTileGrid(int input){
+        return (input / TILE_SIZE) * TILE_SIZE;
     }
 }

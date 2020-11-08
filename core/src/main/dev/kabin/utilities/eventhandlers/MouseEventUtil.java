@@ -34,6 +34,10 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 		return (instance != null) ? instance : (instance = new MouseEventUtil());
 	}
 
+	public static PointFloat getPosition(){
+		return Point.of(getMouseX(), getMouseY());
+	}
+
 	public static float getMouseX() {
 		return (float) (x / GlobalData.getScale().x());
 	}
