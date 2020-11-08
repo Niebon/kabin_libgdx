@@ -1,6 +1,5 @@
 package dev.kabin.animation;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -31,9 +30,6 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
             Class<T> tClass
     ) {
         this.regions = regions;
-        // According to https://stackoverflow.com/questions/47449635/cannot-infer-type-arguments-for-hashmap?rq=1
-        // this is a bug with the eclipse compiler. Maybe libgdx compiles with the eclipse compiler underneath?
-        ////noinspection Convert2Diamond: The compiler wants to know the parameter types ¯\_(ツ)_/¯
         this.animationsMap = animationBlueprint.entrySet().stream().collect(
                 Collectors.toMap(
                         Map.Entry::getKey,
@@ -63,6 +59,8 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         return regions.get(0).originalWidth;
     }
 
+    // For symmetry...
+    @SuppressWarnings("unused")
     public int getOriginalHeight() {
         return regions.get(0).originalHeight;
     }
@@ -82,6 +80,8 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
+        //noinspection unchecked
+        final T currentAnimationClass = (T) this.currentAnimationClass;
         if (!animationsMap.containsKey(currentAnimationClass)) {
             return;
         }
@@ -93,7 +93,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         if (!currentAnimationClass.isLastFrameRepeating() &&
                 !currentAnimationClass.isLooping() &&
                 animationsMap.get(currentAnimationClass).isAnimationFinished(stateTime)) {
-            currentAnimationClass = currentAnimationClass.transitionToDefault();
+            this.currentAnimationClass = currentAnimationClass.transitionToDefault();
         }
         batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
@@ -102,6 +102,8 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void renderFrameByIndex(SpriteBatch batch, int index) {
+        //noinspection unchecked
+        final T currentAnimationClass = (T) this.currentAnimationClass;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
         batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
