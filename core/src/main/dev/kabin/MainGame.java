@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -36,12 +37,19 @@ public class MainGame extends ApplicationAdapter {
         logger.setLevel(GlobalData.getLogLevel());
         EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
         GlobalData.batch = new SpriteBatch();
+        GlobalData.userInterfaceBatch = new SpriteBatch();
 
+
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         DeveloperUI.init(stage);
     }
 
     @Override
     public void render() {
+        GlobalData.camera.translate(1, 0);
+        GlobalData.camera.update();
+        GlobalData.batch.setProjectionMatrix(camera.combined);
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
         EntityGroupProvider.actionForEachEntityOrderedByGroup(MainGame::renderEntityGlobalStateTime);
@@ -56,12 +64,17 @@ public class MainGame extends ApplicationAdapter {
 
         if (developerMode) {
             DeveloperUI.updatePositionsOfDraggedEntities();
-            DeveloperUI.render(GlobalData.batch, GlobalData.stateTime);
+            DeveloperUI.render(GlobalData.userInterfaceBatch, GlobalData.stateTime);
         }
+
+
+
+
     }
 
     @Override
     public void dispose() {
+        GlobalData.userInterfaceBatch.dispose();
         GlobalData.batch.dispose();
     }
 

@@ -1,6 +1,7 @@
 package dev.kabin.global;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +24,7 @@ public class GlobalData {
     public static boolean developerMode = true;
     public static Stage stage;
     public static SpriteBatch batch;
+    public static SpriteBatch userInterfaceBatch;
     public static float stateTime;
     public static ShapeRenderer shapeRenderer = new ShapeRenderer();
     public static String currentWorld = "world_1.json";
@@ -33,6 +35,8 @@ public class GlobalData {
     public static int screenHeight = 225;
     public static float scaleFactor = 1.0f;
     public static Component rootComponent;
+    public static OrthographicCamera camera;
+
 
     public static void setScale(double x, double y) {
         scale.setX(x);
