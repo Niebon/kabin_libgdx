@@ -1,7 +1,6 @@
 package dev.kabin.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
-import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
+import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.entities.*;
 import dev.kabin.geometry.points.Point;
 import dev.kabin.geometry.points.PointFloat;
@@ -54,8 +53,8 @@ public class DeveloperUI {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
-                    ! KeyEventUtil.isAltDown() &&
-                    CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
+                    !KeyEventUtil.isAltDown() &&
+                            CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
                             !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
                             !TILE_SELECTION_WIDGET.getWidget().isDragging()
             ) {
@@ -88,7 +87,7 @@ public class DeveloperUI {
     }
 
     public static void addEntityToDraggedEntities(Entity e) {
-        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY(), e));
+        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld(), e));
     }
 
     public static void render(SpriteBatch batch, float stateTime) {
@@ -106,8 +105,8 @@ public class DeveloperUI {
             final Entity e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseX() - de.getInitialMouseX()));
-            e.setY(Functions.snapToPixel((de.getEntityOriginalY() + MouseEventUtil.getMouseY() - de.getInitialMouseY())));
+            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX()));
+            e.setY(Functions.snapToPixel((de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY())));
         }
     }
 
@@ -181,15 +180,15 @@ public class DeveloperUI {
 
         void render() {
             if (begin != null) {
-                float minX = Math.min(begin.x(), MouseEventUtil.getMouseX());
-                float minY = Math.min(begin.y(), MouseEventUtil.getMouseY());
-                float width = Math.abs(begin.x() - MouseEventUtil.getMouseX());
-                float height = Math.abs(begin.y() - MouseEventUtil.getMouseY());
+                float minX = Math.min(begin.x(), MouseEventUtil.getXRelativeToUI());
+                float minY = Math.min(begin.y(), MouseEventUtil.getYRelativeToUI());
+                float width = Math.abs(begin.x() - MouseEventUtil.getXRelativeToUI());
+                float height = Math.abs(begin.y() - MouseEventUtil.getYRelativeToUI());
                 backingRect = new RectFloat(minX, minY, width, height);
                 GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
-                GlobalData.shapeRenderer.rect(begin.x(), begin.y(), MouseEventUtil.getMouseX() - begin.x(),
-                        MouseEventUtil.getMouseY() - begin.y());
+                GlobalData.shapeRenderer.rect(begin.x(), begin.y(), MouseEventUtil.getXRelativeToUI() - begin.x(),
+                        MouseEventUtil.getYRelativeToUI() - begin.y());
                 GlobalData.shapeRenderer.end();
 
                 // By abuse of the word "render" include this here...
@@ -206,7 +205,7 @@ public class DeveloperUI {
 
         void begin() {
             currentlySelectedEntities.clear();
-            begin = Point.of(MouseEventUtil.getMouseX(), MouseEventUtil.getMouseY());
+            begin = Point.of(MouseEventUtil.getXRelativeToUI(), MouseEventUtil.getYRelativeToUI());
         }
 
         // End, but only clear the selected dev.kabin.entities after the begin() call.
@@ -351,8 +350,8 @@ public class DeveloperUI {
 
         public void addEntity() {
             EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(MouseEventUtil.getMouseX())
-                    .setY(MouseEventUtil.getMouseY())
+                    .setX(MouseEventUtil.getMouseXRelativeToWorld())
+                    .setY(MouseEventUtil.getMouseYRelativeToWorld())
                     .setLayer(layer)
                     .setScale(GlobalData.scaleFactor)
                     .setAtlasPath(selectedAsset)
@@ -506,8 +505,8 @@ public class DeveloperUI {
             if (selectedAsset == null) return;
             if (currentType == null) return;
             EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(MouseEventUtil.getMouseX())
-                    .setY(MouseEventUtil.getMouseY())
+                    .setX(MouseEventUtil.getMouseXRelativeToWorld())
+                    .setY(MouseEventUtil.getMouseYRelativeToWorld())
                     .setLayer(0)
                     .setScale(GlobalData.scaleFactor)
                     .setAtlasPath(selectedAsset)

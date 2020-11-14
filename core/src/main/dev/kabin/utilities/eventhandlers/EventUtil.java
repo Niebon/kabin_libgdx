@@ -76,11 +76,11 @@ public class EventUtil {
                 }
             });
 
-            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, (x, y) -> {
+            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
                 if (KeyEventUtil.isAltDown()) DeveloperUI.getTileSelectionWidget().addCollisionTile();
             });
 
-            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, (x, y) -> {
+            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
                 if (KeyEventUtil.isAltDown()) {
                     DeveloperUI.TileSelectionWidget.removeGroundTileAtCurrentMousePosition();
                 }

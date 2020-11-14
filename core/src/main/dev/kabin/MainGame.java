@@ -46,7 +46,7 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        GlobalData.camera.translate(1, 0);
+        GlobalData.camera.translate(1, 1);
         GlobalData.camera.update();
         GlobalData.batch.setProjectionMatrix(camera.combined);
 

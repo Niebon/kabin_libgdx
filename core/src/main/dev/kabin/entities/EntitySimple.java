@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationPlaybackImpl;
-import dev.kabin.geometry.shapes.RectFloat;
 import dev.kabin.geometry.shapes.RectInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DeveloperUI;
@@ -99,8 +98,8 @@ public class EntitySimple implements Entity {
             float width = 200;
             float height = 200;
             dialog.setBounds(
-                    MouseEventUtil.getMouseX() + width * 0.1f,
-                    MouseEventUtil.getMouseY() + height * 0.1f,
+                    MouseEventUtil.getMouseXRelativeToWorld() + width * 0.1f,
+                    MouseEventUtil.getMouseYRelativeToWorld() + height * 0.1f,
                     width, height
             );
             dialog.getContentTable().defaults().pad(10);
