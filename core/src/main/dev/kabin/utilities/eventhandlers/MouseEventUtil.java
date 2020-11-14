@@ -52,8 +52,8 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
 	public void registerMouseMoved(float x, float y) {
 		EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
-		MouseEventUtil.x = x;
-		MouseEventUtil.y = Functions.transformY(y, GlobalData.screenHeight);
+		MouseEventUtil.x = x + GlobalData.camera.position.x - GlobalData.screenWidth * 0.5f;
+		MouseEventUtil.y = Functions.transformY(y, GlobalData.screenHeight) + GlobalData.camera.position.y - GlobalData.screenHeight * 0.5f;
 		logger.info(() -> "\n" + "BLC: " + MouseEventUtil.x + ", " + MouseEventUtil.y + "\n"
 				+ "TLC: " + x + "," + y);
 	}

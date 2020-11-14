@@ -67,9 +67,6 @@ public class MainGame extends ApplicationAdapter {
             DeveloperUI.render(GlobalData.userInterfaceBatch, GlobalData.stateTime);
         }
 
-
-
-
     }
 
     @Override
