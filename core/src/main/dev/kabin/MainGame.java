@@ -11,8 +11,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.global.GlobalData;
+import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
+import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
 import static dev.kabin.global.GlobalData.*;
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
@@ -46,7 +48,20 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        GlobalData.camera.translate(1, 1);
+
+
+        // Admit camera free mode movement if in developer mode.
+        if (GlobalData.developerMode) {
+            var keyEventUtil = KeyEventUtil.getInstance();
+            camera.translate(
+                    keyEventUtil.isPressed(KeyEventUtil.KeyCode.A) == keyEventUtil.isPressed(KeyEventUtil.KeyCode.D) ? 0 :
+                            keyEventUtil.isPressed(KeyEventUtil.KeyCode.A) ? -scaleFactor : scaleFactor,
+                    keyEventUtil.isPressed(KeyEventUtil.KeyCode.S) == keyEventUtil.isPressed(KeyEventUtil.KeyCode.W) ? 0 :
+                            keyEventUtil.isPressed(KeyEventUtil.KeyCode.S) ? -scaleFactor : scaleFactor
+            );
+        }
+
+
         GlobalData.camera.update();
         GlobalData.batch.setProjectionMatrix(camera.combined);
 
@@ -66,6 +81,8 @@ public class MainGame extends ApplicationAdapter {
             DeveloperUI.updatePositionsOfDraggedEntities();
             DeveloperUI.render(GlobalData.userInterfaceBatch, GlobalData.stateTime);
         }
+
+        PhysicsEngine.render(stateTime);
 
     }
 
