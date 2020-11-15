@@ -184,7 +184,11 @@ public class DeveloperUI {
                 float minY = Math.min(begin.y(), MouseEventUtil.getYRelativeToUI());
                 float width = Math.abs(begin.x() - MouseEventUtil.getXRelativeToUI());
                 float height = Math.abs(begin.y() - MouseEventUtil.getYRelativeToUI());
-                backingRect = new RectFloat(minX, minY, width, height);
+
+                float offsetX = GlobalData.camera.position.x - GlobalData.screenWidth * 0.5f;
+                float offsetY = GlobalData.camera.position.y - GlobalData.screenHeight * 0.5f;
+                backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
+
                 GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                 GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
                 GlobalData.shapeRenderer.rect(begin.x(), begin.y(), MouseEventUtil.getXRelativeToUI() - begin.x(),
