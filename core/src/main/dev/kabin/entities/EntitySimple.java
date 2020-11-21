@@ -98,8 +98,8 @@ public class EntitySimple implements Entity {
             float width = 200;
             float height = 200;
             dialog.setBounds(
-                    MouseEventUtil.getMouseXRelativeToWorld() + width * 0.1f,
-                    MouseEventUtil.getMouseYRelativeToWorld() + height * 0.1f,
+                    MouseEventUtil.getXRelativeToUI() + width * 0.1f,
+                    MouseEventUtil.getYRelativeToUI() + height * 0.1f,
                     width, height
             );
             dialog.getContentTable().defaults().pad(10);
@@ -157,6 +157,10 @@ public class EntitySimple implements Entity {
         animationPlaybackImpl.setY(y);
         animationPlaybackImpl.setScale(scale);
         animationPlaybackImpl.renderNextAnimationFrame(batch, stateTime);
+        float offsetX = GlobalData.camera.position.x - GlobalData.screenWidth * 0.5f;
+        float offsetY = GlobalData.camera.position.y - GlobalData.screenHeight * 0.5f;
+        float x = this.x - offsetX;
+        float y = this.y - offsetY;
         actor.setBounds(
                 x, y,
                 animationPlaybackImpl.getWidth(),
