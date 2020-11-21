@@ -16,17 +16,18 @@ import com.badlogic.gdx.utils.Align;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
+import dev.kabin.components.Component;
 import dev.kabin.entities.*;
-import dev.kabin.utilities.points.Point;
-import dev.kabin.utilities.points.PointFloat;
-import dev.kabin.utilities.shapes.RectFloat;
 import dev.kabin.global.GlobalData;
 import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointFloat;
 import dev.kabin.utilities.pools.FontPool;
+import dev.kabin.utilities.shapes.RectFloat;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -502,7 +503,21 @@ public class DeveloperUI {
             widget.addDialogActor(loadImageAssetButton);
         }
 
+        /**
+         * Finds any entity on screen. Deletes any of type {@link CollisionTile} with position matching
+         * the current mouse position.
+         */
         public static void removeGroundTileAtCurrentMousePosition() {
+            int mousePosXUnscaled = Functions.toInt(MouseEventUtil.getMouseXRelativeToWorld(), GlobalData.scaleFactor);
+            int mousePosYUnscaled = Functions.toInt(MouseEventUtil.getMouseYRelativeToWorld(), GlobalData.scaleFactor);
+            float x = CollisionTile.snapToCollisionTileGrid(mousePosXUnscaled) * GlobalData.scaleFactor;
+            float y = CollisionTile.snapToCollisionTileGrid(mousePosYUnscaled) * GlobalData.scaleFactor;
+            Component.getEntityInCameraNeighborhoodCached().forEach(e -> {
+                if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
+                    EntityGroupProvider.unregisterEntity(e);
+                    ((CollisionTile) e).removeCollisionData();
+                }
+            });
         }
 
         public void addCollisionTile() {
