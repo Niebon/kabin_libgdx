@@ -29,8 +29,6 @@ public class WorldStateRecorder {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
         GlobalData.setMapSize(o.getInt("mapSizeX"), o.getInt("mapSizeY"));
-
-
         o.getJSONArray("entities").iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);

@@ -1,3 +1,5 @@
 {
+  "mapSizeY": 5000,
+  "mapSizeX": 10000,
   "entities": []
 }

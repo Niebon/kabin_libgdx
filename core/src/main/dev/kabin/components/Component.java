@@ -241,13 +241,13 @@ public class Component implements Id {
 
     @NotNull
     @Contract("_, _ -> new")
-    public static Component getComponentRepresentation(int width, int height) {
+    public static Component representationOf(int width, int height) {
         int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
         while (x < width * 2 || y < height * 2) {
             x *= 2;
             y *= 2;
         }
-        logger.log(Level.WARNING, "Creating components with dimensions {" + x + " ," + y + "}");
+        logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
         return new Component(new ComponentParameters().setWidth(x).setHeight(y).setScaleFactor(GlobalData.scaleFactor));
     }
 

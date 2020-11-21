@@ -68,6 +68,6 @@ public class GlobalData {
     public static void setMapSize(int mapX, int mapY) {
         GlobalData.mapX = mapX;
         GlobalData.mapY = mapY;
-        rootComponent = Component.getComponentRepresentation(mapX, mapY);
+        rootComponent = Component.representationOf(mapX, mapY);
     }
 }
