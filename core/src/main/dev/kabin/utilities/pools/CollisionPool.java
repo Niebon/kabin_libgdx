@@ -1,8 +1,8 @@
 package dev.kabin.utilities.pools;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.geometry.points.PrimitivePointInt;
-import dev.kabin.geometry.points.UnmodifiablePointInt;
+import dev.kabin.utilities.points.PrimitivePointInt;
+import dev.kabin.utilities.points.UnmodifiablePointInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;

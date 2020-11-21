@@ -42,7 +42,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         DeveloperUI.init(stage);
     }
 

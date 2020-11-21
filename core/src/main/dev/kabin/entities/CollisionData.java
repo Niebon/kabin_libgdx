@@ -1,9 +1,10 @@
 package dev.kabin.entities;
 
 import dev.kabin.components.Component;
-import dev.kabin.geometry.points.Point;
-import dev.kabin.geometry.points.PointInt;
-import dev.kabin.geometry.points.PrimitivePointInt;
+import dev.kabin.global.GlobalData;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.points.PrimitivePointInt;
 import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +16,11 @@ import java.util.stream.Stream;
 public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
     default void initCollisionData() {
-        //initCollisionData(GameData.getRootComponent());
+        initCollisionData(GlobalData.getRootComponent());
     }
 
     default void removeCollisionData() {
-        //removeCollisionData(GameData.getRootComponent());
+        removeCollisionData(GlobalData.getRootComponent());
     }
 
     @NotNull
@@ -32,12 +33,11 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
     default Stream<PointInt> getSurfaceContourRelativeToOrigin() {
         final int rootX = getRootX(), rootY = getRootY();
         return getSurfaceContourProfile().stream()
-                // Using p.x, p.y returns unboxed primitives.
                 .map(p -> Point.of(p.getX() + rootX, p.getY() + rootY));
     }
 
     default void initCollisionData(final Component component) {
-        actionEachCollisionPoint(component::increaseCollisionAt);
+        actionEachCollisionPoint(component::incrementCollisionAt);
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer action) {
@@ -75,13 +75,17 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
         }
     }
 
+    /**
+     * The current orientation.
+     * @return
+     */
     default double angleRad() {
         return 0;
     }
 
-//    default void removeCollisionData(final Component component) {
-//        actionEachCollisionPoint(component::decreaseCollisionAt);
-//    }
+    default void removeCollisionData(final Component component) {
+        actionEachCollisionPoint(component::decrementCollisionAt);
+    }
 
     int getRootX();
 

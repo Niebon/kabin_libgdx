@@ -3,7 +3,7 @@ package dev.kabin.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.collections.Id;
-import dev.kabin.geometry.shapes.RectInt;
+import dev.kabin.utilities.shapes.RectInt;
 import dev.kabin.utilities.helperinterfaces.JSONRecordable;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;

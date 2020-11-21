@@ -17,9 +17,9 @@ import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.entities.*;
-import dev.kabin.geometry.points.Point;
-import dev.kabin.geometry.points.PointFloat;
-import dev.kabin.geometry.shapes.RectFloat;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointFloat;
+import dev.kabin.utilities.shapes.RectFloat;
 import dev.kabin.global.GlobalData;
 import dev.kabin.global.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
@@ -339,7 +339,7 @@ public class DeveloperUI {
                             (selectedAsset.length() < maxLength ? selectedAsset
                                     : (selectedAsset.substring(0, maxLength) + "...")) +
                             '\n' +
-                            "Entity tileType: " +
+                            "Entity type: " +
                             entityType.name() +
                             '\n' +
                             "Layer: " +

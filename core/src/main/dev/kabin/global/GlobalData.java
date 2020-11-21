@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.Component;
-import dev.kabin.geometry.points.Point;
-import dev.kabin.geometry.points.PointDouble;
-import dev.kabin.geometry.shapes.RectInt;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointDouble;
+import dev.kabin.utilities.shapes.RectInt;
 import dev.kabin.utilities.eventhandlers.InputEventDistributor;
 
 import java.util.logging.Level;
@@ -36,6 +36,8 @@ public class GlobalData {
     public static float scaleFactor = 1.0f;
     public static Component rootComponent;
     public static OrthographicCamera camera;
+    private static int mapX;
+    private static int mapY;
 
 
     public static void setScale(double x, double y) {
@@ -57,5 +59,15 @@ public class GlobalData {
 
     public static Level getLogLevel() {
         return Level.WARNING;
+    }
+
+    public static Component getRootComponent() {
+        return rootComponent;
+    }
+
+    public static void setMapSize(int mapX, int mapY) {
+        GlobalData.mapX = mapX;
+        GlobalData.mapY = mapY;
+        rootComponent = Component.getComponentRepresentation(mapX, mapY);
     }
 }

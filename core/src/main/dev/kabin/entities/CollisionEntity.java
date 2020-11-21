@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.geometry.points.PrimitivePointInt;
+import dev.kabin.utilities.points.PrimitivePointInt;
 import dev.kabin.utilities.pools.CollisionPool;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
@@ -15,14 +15,18 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 
     @Override
     public @NotNull List<PrimitivePointInt> getCollisionProfile() {
-        return CollisionPool.findCollisionProfile(animationPlaybackImpl.getCurrentImageAssetPath(),
-                animationPlaybackImpl.getCurrentImageAssetIndex());
+        return CollisionPool.findCollisionProfile(
+        		animationPlaybackImpl.getCurrentImageAssetPath(),
+                animationPlaybackImpl.getCurrentImageAssetIndex()
+		);
     }
 
     @Override
     public @NotNull List<PrimitivePointInt> getSurfaceContourProfile() {
-		return CollisionPool.findSurfaceContourProfile(animationPlaybackImpl.getCurrentImageAssetPath(),
-				animationPlaybackImpl.getCurrentImageAssetIndex());
+		return CollisionPool.findSurfaceContourProfile(
+				animationPlaybackImpl.getCurrentImageAssetPath(),
+				animationPlaybackImpl.getCurrentImageAssetIndex()
+		);
 	}
 
 	@Override
@@ -37,8 +41,10 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 
 	@Override
 	public ImageAnalysisPool.Analysis getPixelAnalysis() {
-		return ImageAnalysisPool.findAnalysis(animationPlaybackImpl.getCurrentImageAssetPath(),
-				animationPlaybackImpl.getCurrentImageAssetIndex());
+		return ImageAnalysisPool.findAnalysis(
+				animationPlaybackImpl.getCurrentImageAssetPath(),
+				animationPlaybackImpl.getCurrentImageAssetIndex()
+		);
 	}
 
 	@Override

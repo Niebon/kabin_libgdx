@@ -1,7 +1,7 @@
 package dev.kabin.utilities.helperinterfaces;
 
-import dev.kabin.geometry.points.Point;
-import dev.kabin.geometry.points.PointFloat;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 
 public interface ModifiableFloatCoordinates {

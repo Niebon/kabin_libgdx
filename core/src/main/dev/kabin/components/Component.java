@@ -6,19 +6,25 @@ import dev.kabin.collections.IndexedSet;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.geometry.shapes.RectFloat;
-import dev.kabin.geometry.shapes.RectInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.functioninterfaces.IntPrimitiveBiFunctionToDouble;
-import dev.kabin.utilities.functioninterfaces.IntPrimitiveBinaryOperator;
+import dev.kabin.utilities.functioninterfaces.BiIntToDoubleFunction;
+import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
+import dev.kabin.utilities.linalg.FloatMatrix;
+import dev.kabin.utilities.linalg.IntMatrix;
 import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
 import dev.kabin.utilities.pools.objectpool.OutputFromPool;
+import dev.kabin.utilities.shapes.RectFloat;
+import dev.kabin.utilities.shapes.RectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,22 +62,26 @@ import static dev.kabin.components.ComponentParameters.COARSENESS_PARAMETER;
 public class Component implements Id {
 
     public static final Logger logger = Logger.getLogger(Component.class.getName());
-    final static int MAXIMAL_COMPONENT_SIZE = 512;
-    final static int
+    public static final int
+            AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
+            MAXIMAL_COMPONENT_SIZE = 512,
             AVAILABLE_COMPONENT_HASHSETS = 10_000,
             AVAILABLE_ENTITY_HASHSETS = 10_000;
-    private final static Function<Integer, Integer> COMPONENT_INDEX_TO_X_MAPPING = integer -> integer % 2;
-    private final static Function<Integer, Integer> COMPONENT_INDEX_TO_Y_MAPPING = integer -> {
-        if (integer == 0 || integer == 1) return 0;
-        if (integer == 2 || integer == 3) return 1;
-        return null; // This should crash.
-    };
+    private final static Function<Integer, Integer>
+            COMPONENT_INDEX_TO_X_MAPPING = integer -> integer % 2,
+            COMPONENT_INDEX_TO_Y_MAPPING = integer -> {
+                if (integer == 0 || integer == 1) return 0;
+                if (integer == 2 || integer == 3) return 1;
+                return null; // This should crash.
+            };
+
     private static final IndexedSetPool<Component> COMPONENT_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
     private static final IndexedSetPool<Entity> ENTITY_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
     // Keep an object pool for ArrayList<Component> instances.
     private static final ComponentArrayListPool SEARCH_ALG_OBJECT_POOL = new ComponentArrayListPool(
-            200, i -> new ArrayList<>(), List::clear
+            AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
     );
+
     private static int instancesInitiated = 0;
     private static long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
     private static List<Entity> entitiesInCameraNeighborhoodCached;
@@ -80,18 +90,18 @@ public class Component implements Id {
     private static long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
     private static Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
     private static Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
-    final int depth; // The level above root.
+    private final int depth; // The level above root.
     private final ComponentParameters parameters;
     private final Component[] subComponents;
-    private final EnumMap<DataType, Object> data = new EnumMap<>(DataType.class);
+    private final EnumMap<Data, Object> data = new EnumMap<>(Data.class);
     private final int minX;
     private final int minY;
     private final RectInt underlyingRectInt;
     private final RectFloat underlyingRectFloat;
     private final float scaleFactor;
     // Functions of primitives.
-    private final EnumMap<DataType, IntPrimitiveBinaryOperator> intDataMapperByKey = new EnumMap<>(DataType.class);
-    private final EnumMap<DataType, IntPrimitiveBiFunctionToDouble> doubleDataMapperByKey = new EnumMap<>(DataType.class);
+    private final EnumMap<Data, IntBinaryOperator> intDataMapperByKey = new EnumMap<>(Data.class);
+    private final EnumMap<Data, BiIntToDoubleFunction> doubleDataMapperByKey = new EnumMap<>(Data.class);
     private final int id;
     private Status status = Status.DEACTIVATED;
 
@@ -138,39 +148,10 @@ public class Component implements Id {
             final int midPointX = minX + parameters.getWidth() / 2;
             final int midPointY = minY + parameters.getHeight() / 2;
 
-            for (DataType key : DataType.values()) {
-
-                // Glue together int-functions.
-                if (key.getType() == int[][].class) {
-                    intDataMapperByKey.put(key, (x, y) -> {
-
-                        if (!underlyingRectContains(x, y)) return 0;
-
-                        // See defn. of adjacency in javadoc of this class.
-                        if (x < midPointX) {
-                            if (y < midPointY) {
-                                // Upper left square
-                                return subComponents[0].getDataInt(x, y, key);
-                            } else {
-                                // Lower left square
-                                return subComponents[2].getDataInt(x, y, key);
-                            }
-                        } else {
-                            if (y < midPointY) {
-                                // Upper right square
-                                return subComponents[1].getDataInt(x, y, key);
-                            } else {
-                                // Lower right square
-                                return subComponents[3].getDataInt(x, y, key);
-                            }
-                        }
-
-                    });
-                }
-
-                // Glue together double-functions.
-                if (key.getType() == double[][].class) {
-                    doubleDataMapperByKey.put(key, (x, y) -> {
+            // Glue functions together on boundaries:
+            for (Data key : Data.values()) {
+                switch (key.getType()) {
+                    case FLOAT -> doubleDataMapperByKey.put(key, (x, y) -> {
                         if (!underlyingRectContains(x, y)) return 0;
 
                         // See defn. of adjacency in javadoc of this class.
@@ -192,26 +173,46 @@ public class Component implements Id {
                             }
                         }
                     });
-                }
+                    case INTEGER -> intDataMapperByKey.put(key, (x, y) -> {
+                        if (!underlyingRectContains(x, y)) return 0;
 
+                        // See defn. of adjacency in javadoc of this class.
+                        if (x < midPointX) {
+                            if (y < midPointY) {
+                                // Upper left square
+                                return subComponents[0].getDataInt(x, y, key);
+                            } else {
+                                // Lower left square
+                                return subComponents[2].getDataInt(x, y, key);
+                            }
+                        } else {
+                            if (y < midPointY) {
+                                // Upper right square
+                                return subComponents[1].getDataInt(x, y, key);
+                            } else {
+                                // Lower right square
+                                return subComponents[3].getDataInt(x, y, key);
+                            }
+                        }
+                    });
+                }
             }
         } else {
             subComponents = null;
-            for (DataType key : DataType.values()) {
-                if (key.getType().equals(int[][].class)) {
-                    intDataMapperByKey.put(key, (x, y) -> {
+            for (Data key : Data.values()) {
+                switch (key.getType()) {
+                    case INTEGER -> intDataMapperByKey.put(key, (x, y) -> {
                         if (underlyingRectInt.contains(x, y)) {
                             final int i = x - minX, j = y - minY;
-                            final int[][] dataForKey = (int[][]) data.get(key);
-                            return (dataForKey != null) ? dataForKey[i][j] : 0;
+                            final IntMatrix dataForKey = (IntMatrix) data.get(key);
+                            return (dataForKey != null) ? dataForKey.get(i, j) : 0;
                         } else return 0;
                     });
-                } else if (key.getType().equals(double[][].class)) {
-                    doubleDataMapperByKey.put(key, (x, y) -> {
+                    case FLOAT -> doubleDataMapperByKey.put(key, (x, y) -> {
                         if (underlyingRectFloat.contains(x, y)) {
                             final int i = x - minX, j = y - minY;
-                            final double[][] dataForKey = (double[][]) data.get(key);
-                            return (dataForKey != null) ? dataForKey[i][j] : 0.0d;
+                            final FloatMatrix dataForKey = (FloatMatrix) data.get(key);
+                            return (dataForKey != null) ? dataForKey.get(i, j) : 0.0d;
                         } else return 0.0d;
                     });
                 }
@@ -467,12 +468,12 @@ public class Component implements Id {
         return underlyingRectInt.contains(x, y);
     }
 
-    public double getDataDouble(int x, int y, @NotNull DataType key) {
+    public double getDataDouble(int x, int y, @NotNull Component.Data key) {
         return doubleDataMapperByKey.get(key).apply(x, y);
     }
 
-    public int getDataInt(int x, int y, @NotNull DataType key) {
-        return intDataMapperByKey.get(key).apply(x, y);
+    public int getDataInt(int x, int y, @NotNull Component.Data key) {
+        return intDataMapperByKey.get(key).eval(x, y);
     }
 
 
@@ -525,77 +526,57 @@ public class Component implements Id {
     }
 
     public int getCollision(int x, int y) {
-        return intDataMapperByKey.get(DataType.COLLISION).apply(x, y);
+        return intDataMapperByKey.get(Data.COLLISION).eval(x, y);
     }
 
     public int getLadder(int x, int y) {
-        return intDataMapperByKey.get(DataType.LADDER).apply(x, y);
+        return intDataMapperByKey.get(Data.LADDER).eval(x, y);
     }
 
     public double getVectorFieldX(int x, int y) {
-        return doubleDataMapperByKey.get(DataType.VECTOR_FIELD_X).apply(x, y);
+        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_X).apply(x, y);
     }
 
     public double getVectorFieldY(int x, int y) {
-        return doubleDataMapperByKey.get(DataType.VECTOR_FIELD_Y).apply(x, y);
+        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_Y).apply(x, y);
     }
 
-    public void modifyVectorFieldAt(int x, int y, UnaryOperator<Double> transformX, UnaryOperator<Double> transformY) {
+    public void modifyVectorFieldAt(int x, int y, FloatUnaryOperation transformX, FloatUnaryOperation transformY) {
         if (underlyingRectContains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
                     c.modifyVectorFieldAt(x, y, transformX, transformY);
                 }
             } else {
+                if (!data.containsKey(Data.VECTOR_FIELD_X)) {
+                    data.put(Data.VECTOR_FIELD_X, FloatArrayPool.getInstance().borrow());
+                }
+                if (!data.containsKey(Data.VECTOR_FIELD_Y)) {
+                    data.put(Data.VECTOR_FIELD_Y, FloatArrayPool.getInstance().borrow());
+                }
                 final int
                         i = x - minX,
                         j = y - minY;
-
-                if (!data.containsKey(DataType.VECTOR_FIELD_X)) {
-                    data.put(DataType.VECTOR_FIELD_X, DoubleArrayPool.getInstance().borrow());
-                }
-                if (!data.containsKey(DataType.VECTOR_FIELD_Y)) {
-                    data.put(DataType.VECTOR_FIELD_Y, DoubleArrayPool.getInstance().borrow());
-                }
-
-                final double[][] vectorFieldX = (double[][]) data.get(DataType.VECTOR_FIELD_X);
-                vectorFieldX[i][j] = transformX.apply(vectorFieldX[i][j]);
-
-                final double[][] vectorFieldY = (double[][]) data.get(DataType.VECTOR_FIELD_Y);
-                vectorFieldY[i][j] = transformY.apply(vectorFieldY[i][j]);
+                ((FloatMatrix) data.get(Data.VECTOR_FIELD_X)).modify(i, j, transformX);
+                ((FloatMatrix) data.get(Data.VECTOR_FIELD_Y)).modify(i, j, transformY);
             }
         }
     }
 
-    public void increaseAt(int x, int y, DataType key) {
+    public void increment(int x, int y, Data key) {
         if (underlyingRectContains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
-                    c.increaseAt(x, y, key);
+                    c.increment(x, y, key);
                 }
             } else {
+                if (!data.containsKey(key)) {
+                    data.put(key, IntArrayPool.getInstance().borrow());
+                }
                 final int
                         i = x - minX,
                         j = y - minY;
-
-                final boolean integerKeyType = key.getType().equals(int[][].class);
-                final boolean doubleKeyType = key.getType().equals(double[][].class);
-
-                if (!data.containsKey(key)) {
-                    if (integerKeyType) {
-                        data.put(key, IntArrayPool.getInstance().borrow());
-                    } else if (doubleKeyType) {
-                        data.put(key, DoubleArrayPool.getInstance().borrow());
-                    }
-                }
-
-                if (integerKeyType) {
-                    final int[][] dataUnderKey = (int[][]) data.get(key);
-                    dataUnderKey[i][j] = dataUnderKey[i][j] + 1;
-                } else if (doubleKeyType) {
-                    final double[][] dataUnderKey = (double[][]) data.get(key);
-                    dataUnderKey[i][j] = dataUnderKey[i][j] + 1;
-                }
+                ((IntMatrix) data.get(key)).increment(i, j);
             }
         }
     }
@@ -612,27 +593,27 @@ public class Component implements Id {
         } else {
             // Data which has been initialized (taken from the pool), is returned.
             {
-                Object o = data.get(DataType.COLLISION);
+                Object o = data.get(Data.COLLISION);
                 if (o != null) {
-                    IntArrayPool.getInstance().giveBack((int[][]) o);
+                    IntArrayPool.getInstance().giveBack((IntMatrix) o);
                 }
             }
             {
-                Object o = data.get(DataType.LADDER);
+                Object o = data.get(Data.LADDER);
                 if (o != null) {
-                    IntArrayPool.getInstance().giveBack((int[][]) o);
+                    IntArrayPool.getInstance().giveBack((IntMatrix) o);
                 }
             }
             {
-                Object o = data.get(DataType.VECTOR_FIELD_X);
+                Object o = data.get(Data.VECTOR_FIELD_X);
                 if (o != null) {
-                    DoubleArrayPool.getInstance().giveBack((double[][]) o);
+                    FloatArrayPool.getInstance().giveBack((FloatMatrix) o);
                 }
             }
             {
-                Object o = data.get(DataType.VECTOR_FIELD_Y);
+                Object o = data.get(Data.VECTOR_FIELD_Y);
                 if (o != null) {
-                    DoubleArrayPool.getInstance().giveBack((double[][]) o);
+                    FloatArrayPool.getInstance().giveBack((FloatMatrix) o);
                 }
             }
             data.clear();
@@ -645,28 +626,20 @@ public class Component implements Id {
                 ", y: " + underlyingRectInt.getMinY() / COARSENESS_PARAMETER + "}";
     }
 
-    public void decreaseAt(int x, int y, DataType key) {
+    public void decrement(int x, int y, Data key) {
         if (underlyingRectContains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
-                    c.decreaseAt(x, y, key);
+                    c.decrement(x, y, key);
                 }
             } else {
                 if (data.containsKey(key)) {
-                    final int
-                            i = x - minX,
-                            j = y - minY;
-
-                    if (key.getType().equals(int[][].class)) {
-                        final int[][] dataUnderKey = (int[][]) data.get(key);
-                        if (dataUnderKey != null) {
-                            dataUnderKey[i][j] = dataUnderKey[i][j] - 1;
-                        }
-                    } else if (key.getType().equals(double[][].class)) {
-                        final double[][] dataUnderKey = (double[][]) data.get(key);
-                        if (dataUnderKey != null) {
-                            dataUnderKey[i][j] = dataUnderKey[i][j] - 1;
-                        }
+                    final IntMatrix dataUnderKey = (IntMatrix) data.get(key);
+                    if (dataUnderKey != null) {
+                        final int
+                                i = x - minX,
+                                j = y - minY;
+                        dataUnderKey.decrement(i, j);
                     }
                 } else
                     throw new RuntimeException(
@@ -676,53 +649,53 @@ public class Component implements Id {
         }
     }
 
-    public void increaseCollisionAt(int x, int y) {
-        increaseAt(x, y, DataType.COLLISION);
+    public void incrementCollisionAt(int x, int y) {
+        increment(x, y, Data.COLLISION);
     }
 
-    public void decreaseCollisionAt(int x, int y) {
-        decreaseAt(x, y, DataType.COLLISION);
+    public void decrementCollisionAt(int x, int y) {
+        decrement(x, y, Data.COLLISION);
     }
 
-    public boolean collisionAt(int x, int y) {
+    public boolean isCollisionAt(int x, int y) {
         return getCollision(x, y) > 0;
     }
 
-    public boolean ladderAt(int x, int y) {
+    public boolean isLadderAt(int x, int y) {
         return getLadder(x, y) > 0;
     }
 
-    public boolean collisionIfNotLadderData(int x, int y) {
-        if (ladderAt(x, y)) return false;
-        else return (collisionAt(x, y));
+    public boolean isCollisionIfNotLadderData(int x, int y) {
+        if (isLadderAt(x, y)) return false;
+        else return (isCollisionAt(x, y));
     }
 
-    public boolean collisionForScaledCoordinatesAt(double x, double y) {
-        return collisionAt(Functions.toInt(x, scaleFactor), Functions.toInt(y, scaleFactor));
+    public boolean collisionForScaledCoordinatesAt(float x, float y) {
+        return isCollisionAt(Functions.toInt(x, scaleFactor), Functions.toInt(y, scaleFactor));
     }
 
     public void increaseVectorFieldXAt(int x, int y) {
-        increaseAt(x, y, DataType.VECTOR_FIELD_X);
+        increment(x, y, Data.VECTOR_FIELD_X);
     }
 
     public void decreaseVectorFieldXAt(int x, int y) {
-        decreaseAt(x, y, DataType.VECTOR_FIELD_X);
+        decrement(x, y, Data.VECTOR_FIELD_X);
     }
 
     public void increaseVectorFieldYAt(int x, int y) {
-        increaseAt(x, y, DataType.VECTOR_FIELD_Y);
+        increment(x, y, Data.VECTOR_FIELD_Y);
     }
 
     public void decreaseVectorFieldYAt(int x, int y) {
-        decreaseAt(x, y, DataType.VECTOR_FIELD_Y);
+        decrement(x, y, Data.VECTOR_FIELD_Y);
     }
 
     public void increaseLadderAt(int x, int y) {
-        increaseAt(x, y, DataType.LADDER);
+        increment(x, y, Data.LADDER);
     }
 
     public void decreaseLadderAt(int x, int y) {
-        decreaseAt(x, y, DataType.LADDER);
+        decrement(x, y, Data.LADDER);
     }
 
     public int getDepth() {
@@ -747,21 +720,40 @@ public class Component implements Id {
         return id;
     }
 
-    public enum DataType {
-        COLLISION(int[][].class),
-        LADDER(int[][].class),
-        VECTOR_FIELD_X(double[][].class),
-        VECTOR_FIELD_Y(double[][].class);
+    /**
+     * Helper enum to classify the types of each data that we encounter for the worlds.
+     * As it stands, for each {@code int} pair,  we see;
+     * <ul>
+     *     <li>Collision data (represented by {@code int} values.)</li>
+     *     <li>Ladder data (represented by {@code int} values.)</li>
+     *     <li>Vector field X data (represented by {@code float} values.)</li>
+     *     <li>Vector field Y data (represented by {@code float} values.)</li>
+     * </ul>
+     */
+    public enum Data {
+        COLLISION(Type.INTEGER),
+        LADDER(Type.INTEGER),
+        VECTOR_FIELD_X(Type.FLOAT),
+        VECTOR_FIELD_Y(Type.FLOAT);
 
-        private final Class<?> type;
+        private final Type type;
 
-        DataType(Class<?> type) {
+        Data(Type type) {
             this.type = type;
         }
 
-        public Class<?> getType() {
+        public Type getType() {
             return type;
         }
+
+        /**
+         * To further help with classification, to each primitive types we encounter associate a constant.
+         */
+        enum Type {
+            INTEGER,
+            FLOAT
+        }
+
     }
 
     enum Status {LOADING, ACTIVE, DEACTIVATED}
@@ -784,20 +776,15 @@ public class Component implements Id {
     /**
      * Makes sure that int data objects are re-used, instead of being garbage collected.
      */
-    static class IntArrayPool extends AbstractObjectPool<int[][]> {
+    static class IntArrayPool extends AbstractObjectPool<IntMatrix> {
 
         final static int OBJECTS_AVAILABLE = 64 * 2; // 2 because Ladder data & Collision data.
 
         private static final IntArrayPool instance
-                = new IntArrayPool(OBJECTS_AVAILABLE, i -> new int[COARSENESS_PARAMETER][COARSENESS_PARAMETER]);
+                = new IntArrayPool(OBJECTS_AVAILABLE, i -> new IntMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
 
-        IntArrayPool(int objectsAvailable, IntFunction<int[][]> mapper) {
-            super(objectsAvailable, mapper, doubleIntArray -> {
-                //noinspection ForLoopReplaceableByForEach
-                for (int i = 0, n = doubleIntArray.length; i < n; i++) {
-                    Arrays.fill(doubleIntArray[i], 0);
-                }
-            });
+        IntArrayPool(int objectsAvailable, IntFunction<IntMatrix> mapper) {
+            super(objectsAvailable, mapper, m -> Arrays.fill(m.data(), 0));
         }
 
         public static IntArrayPool getInstance() {
@@ -806,25 +793,20 @@ public class Component implements Id {
     }
 
     /**
-     * Makes sure that double data objects are re-used, instead of being garbage collected.
+     * Makes sure that float data objects are re-used, instead of being garbage collected.
      */
-    static class DoubleArrayPool extends AbstractObjectPool<double[][]> {
+    static class FloatArrayPool extends AbstractObjectPool<FloatMatrix> {
 
         final static int OBJECTS_AVAILABLE = 64 * 2;  // 2 because vector field X & Y.
 
-        private static final DoubleArrayPool instance
-                = new DoubleArrayPool(OBJECTS_AVAILABLE, i -> new double[COARSENESS_PARAMETER][COARSENESS_PARAMETER]);
+        private static final FloatArrayPool instance
+                = new FloatArrayPool(OBJECTS_AVAILABLE, i -> new FloatMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
 
-        DoubleArrayPool(int objectsAvailable, IntFunction<double[][]> mapper) {
-            super(objectsAvailable, mapper, doubleArray2D -> {
-                //noinspection ForLoopReplaceableByForEach
-                for (int i = 0, n = doubleArray2D.length; i < n; i++) {
-                    Arrays.fill(doubleArray2D[i], 0);
-                }
-            });
+        FloatArrayPool(int objectsAvailable, IntFunction<FloatMatrix> mapper) {
+            super(objectsAvailable, mapper, m -> Arrays.fill(m.data(), 0));
         }
 
-        public static DoubleArrayPool getInstance() {
+        public static FloatArrayPool getInstance() {
             return instance;
         }
     }

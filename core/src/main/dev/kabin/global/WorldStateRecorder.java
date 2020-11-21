@@ -1,5 +1,6 @@
 package dev.kabin.global;
 
+import dev.kabin.components.Component;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
@@ -25,19 +26,22 @@ public class WorldStateRecorder {
     }
 
     public static void loadWorldState(JSONObject o) {
-        final HashSet<String> set = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
+        final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
+        GlobalData.setMapSize(o.getInt("mapSizeX"), o.getInt("mapSizeY"));
+
+
         o.getJSONArray("entities").iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
             } else {
                 JSONObject json = (JSONObject) entry;
-                String tileType = json.getString("tileType");
-                if (!set.contains(tileType)) {
+                String type = json.getString("type");
+                if (!admissibleEntityTypes.contains(type)) {
                     logger.warning(() -> "A recorded entity was not saved as a JSON object." + json);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(tileType).getJsonConstructor().construct(json);
+                    Entity e = EntityFactory.EntityType.valueOf(type).getJsonConstructor().construct(json);
                     EntityGroupProvider.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }

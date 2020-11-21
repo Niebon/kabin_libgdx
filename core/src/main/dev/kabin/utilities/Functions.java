@@ -1,11 +1,11 @@
 package dev.kabin.utilities;
 
 import dev.kabin.entities.Entity;
-import dev.kabin.geometry.points.Point;
-import dev.kabin.geometry.points.PointDouble;
-import dev.kabin.geometry.points.PointInt;
-import dev.kabin.geometry.shapes.AbstractRectBoxed;
-import dev.kabin.geometry.shapes.RectBoxed;
+import dev.kabin.utilities.points.Point;
+import dev.kabin.utilities.points.PointDouble;
+import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.shapes.AbstractRectBoxed;
+import dev.kabin.utilities.shapes.RectBoxed;
 import dev.kabin.global.GlobalData;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import org.jetbrains.annotations.Contract;
@@ -161,7 +161,7 @@ public class Functions {
         for (int i = 0, circleSize = circle.length; i < circleSize; i++) {
             int x_ = circle[i][0];
             int y_ = circle[i][1];
-            if (collisionPredicate.test(x_, y_)) {
+            if (collisionPredicate.eval(x_, y_)) {
                 sumX = sumX + x_;
                 sumY = sumY + y_;
                 termsInSum++;

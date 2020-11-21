@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationPlaybackImpl;
-import dev.kabin.geometry.shapes.RectInt;
+import dev.kabin.utilities.shapes.RectInt;
 import dev.kabin.global.GlobalData;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
@@ -257,7 +257,7 @@ public class EntitySimple implements Entity {
                 .put("y", Math.round(getY() / getScale()))
                 .put("atlasPath", getAtlasPath())
                 .put("layer", getLayer())
-                .put("tileType", getType().name());
+                .put("type", getType().name());
     }
 
     @Override
