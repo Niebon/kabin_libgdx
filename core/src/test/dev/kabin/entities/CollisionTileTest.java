@@ -19,19 +19,21 @@ class CollisionTileTest {
                 .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                 .put(CollisionTile.TILE, AnimationClass.Tile.SURFACE.name())
                 .setContext(EntityParameters.Context.TEST)
+                .setScale(scale)
                 .build();
     }
 
     @Test
     void recordLoad() {
         float scale = 4.8f;
-        Procedures.forEachIntInRange(0, 100_000, i -> {
+        Procedures.forEachIntInRange(0, 1_000_000, i -> {
+
+            int x = (int) Math.round((Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE);
+            int y = (int) Math.round((Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE);
 
             CollisionTile collisionTileBefore;
             {
-                int x = (int) Math.round(Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE;
-                int y = (int) Math.round(Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE;
-                var parameters = generateParameters(x, y, scale);
+                EntityParameters parameters = generateParameters(x, y, scale);
                 collisionTileBefore = new CollisionTile(parameters);
             }
 
@@ -44,7 +46,11 @@ class CollisionTileTest {
             CollisionTile collisionTileAfter;
             {
                 JSONObject o = collisionTileBefore.toJSONObject();
-                var parametersAfterRecordAndLoad = generateParameters(o.getInt("x"), o.getInt("y"), scale);
+                EntityParameters parametersAfterRecordAndLoad = generateParameters(
+                        o.getInt("x"),
+                        o.getInt("y"),
+                        scale
+                );
                 collisionTileAfter = new CollisionTile(parametersAfterRecordAndLoad);
             }
 

@@ -104,7 +104,7 @@ public final class FloatMatrix {
     public String toString() {
         int max = 10;
         var content = IntStream.range(0, Math.min(height, max)).mapToObj(
-                j -> IntStream.range(0, Math.min(height, max)).mapToObj(
+                j -> IntStream.range(0, Math.min(width, max)).mapToObj(
                         i -> {
                             // i = j = 10.
                             if (i == max - 1 && j == max - 1) {

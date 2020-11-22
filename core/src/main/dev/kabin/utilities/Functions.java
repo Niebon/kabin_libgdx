@@ -68,11 +68,11 @@ public class Functions {
         return (value >= 0) ?
 
                 // The cast maps 4.9 to 4 with grid size 2, as per contract.
-                ((int) value / gridSize) * gridSize
+                ((int) Math.floor(value / gridSize)) * gridSize
 
                 // The cast alone maps -4.9 to -4 with grid size 2, defying the contract.
                 // Hence the minus 1.
-                : (((int) value / gridSize) - 1) * gridSize;
+                : ((int) Math.floor(value / gridSize)) * gridSize;
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {
