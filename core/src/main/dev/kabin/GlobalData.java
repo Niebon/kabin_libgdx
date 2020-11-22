@@ -1,4 +1,4 @@
-package dev.kabin.global;
+package dev.kabin;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;

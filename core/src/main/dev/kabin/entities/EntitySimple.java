@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.utilities.shapes.RectInt;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;

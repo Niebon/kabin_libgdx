@@ -2,7 +2,7 @@ package dev.kabin.physics;
 
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 
 /**
  * In order to make rendering deterministic,

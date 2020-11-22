@@ -18,6 +18,10 @@ public class CollisionTile extends CollisionEntity {
         index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
     }
 
+    public static int snapToCollisionTileGrid(int input) {
+        return (input / TILE_SIZE) * TILE_SIZE;
+    }
+
     @Override
     public void render(SpriteBatch batch, float stateTime) {
         animationPlaybackImpl.setX(getX());
@@ -40,9 +44,5 @@ public class CollisionTile extends CollisionEntity {
     @Override
     public void setX(float x) {
         super.setX(snapToCollisionTileGrid(Math.round(x / getScale())) * getScale());
-    }
-
-    public static int snapToCollisionTileGrid(int input){
-        return (input / TILE_SIZE) * TILE_SIZE;
     }
 }

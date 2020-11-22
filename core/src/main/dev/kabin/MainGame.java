@@ -10,13 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.global.GlobalData;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
-import static dev.kabin.global.GlobalData.*;
+import static dev.kabin.GlobalData.*;
 import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
 
 public class MainGame extends ApplicationAdapter {

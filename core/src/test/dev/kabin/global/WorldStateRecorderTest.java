@@ -1,5 +1,6 @@
 package dev.kabin.global;
 
+import dev.kabin.WorldStateRecorder;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

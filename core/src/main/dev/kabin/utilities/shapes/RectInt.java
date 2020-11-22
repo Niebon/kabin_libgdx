@@ -43,12 +43,12 @@ public class RectInt {
         return this;
     }
 
-    public double getCenterX() {
-        return 0.5 * (minX + maxX);
+    public float getCenterX() {
+        return 0.5f * (minX + maxX);
     }
 
-    public double getCenterY() {
-        return 0.5 * (minY + maxY);
+    public float getCenterY() {
+        return 0.5f * (minY + maxY);
     }
 
     public boolean contains(int x, int y) {

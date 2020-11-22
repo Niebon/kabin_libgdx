@@ -6,7 +6,7 @@ import dev.kabin.collections.IndexedSet;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntToDoubleFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;

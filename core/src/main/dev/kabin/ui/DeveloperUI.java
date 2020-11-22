@@ -18,8 +18,8 @@ import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.components.Component;
 import dev.kabin.entities.*;
-import dev.kabin.global.GlobalData;
-import dev.kabin.global.WorldStateRecorder;
+import dev.kabin.GlobalData;
+import dev.kabin.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import static dev.kabin.global.GlobalData.WORLDS_PATH;
+import static dev.kabin.GlobalData.WORLDS_PATH;
 
 public class DeveloperUI {
 

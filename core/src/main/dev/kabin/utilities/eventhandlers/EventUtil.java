@@ -2,12 +2,12 @@ package dev.kabin.utilities.eventhandlers;
 
 
 import dev.kabin.entities.Player;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.ui.DeveloperUI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import static dev.kabin.global.GlobalData.developerMode;
+import static dev.kabin.GlobalData.developerMode;
 
 
 public class EventUtil {
@@ -80,7 +80,7 @@ public class EventUtil {
                 if (KeyEventUtil.isAltDown()) DeveloperUI.getTileSelectionWidget().addCollisionTile();
             });
 
-            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
+            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
                 if (KeyEventUtil.isAltDown()) {
                     DeveloperUI.TileSelectionWidget.removeGroundTileAtCurrentMousePosition();
                 }

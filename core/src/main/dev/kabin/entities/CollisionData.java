@@ -1,7 +1,7 @@
 package dev.kabin.entities;
 
 import dev.kabin.components.Component;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.points.PrimitivePointInt;

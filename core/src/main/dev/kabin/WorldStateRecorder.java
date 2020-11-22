@@ -1,6 +1,5 @@
-package dev.kabin.global;
+package dev.kabin;
 
-import dev.kabin.components.Component;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityGroupProvider;
@@ -45,6 +44,9 @@ public class WorldStateRecorder {
                 }
             }
         });
+
+        // Now that a world is loaded, begin threads!
+        Threads.init();
     }
 
 

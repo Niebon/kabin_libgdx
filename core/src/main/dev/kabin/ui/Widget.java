@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 

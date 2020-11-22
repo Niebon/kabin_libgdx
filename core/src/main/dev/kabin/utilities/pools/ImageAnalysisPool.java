@@ -3,14 +3,14 @@ package dev.kabin.utilities.pools;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointInt;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
 
-import static dev.kabin.global.GlobalData.TEXTURES_PATH;
+import static dev.kabin.GlobalData.TEXTURES_PATH;
 
 public class ImageAnalysisPool {
 

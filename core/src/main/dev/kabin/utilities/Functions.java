@@ -6,7 +6,7 @@ import dev.kabin.utilities.points.PointDouble;
 import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.shapes.AbstractRectBoxed;
 import dev.kabin.utilities.shapes.RectBoxed;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

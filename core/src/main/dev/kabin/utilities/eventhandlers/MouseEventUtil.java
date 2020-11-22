@@ -2,7 +2,7 @@ package dev.kabin.utilities.eventhandlers;
 
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointFloat;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
 

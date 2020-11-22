@@ -2,7 +2,7 @@ package dev.kabin.animation;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 
 import java.util.*;
 import java.util.function.Function;

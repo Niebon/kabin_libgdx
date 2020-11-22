@@ -92,7 +92,12 @@ public class InputEventDistributor implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
-		MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.LEFT, x, y);
+		if (MouseEventUtil.getInstance().isPressed(MouseEventUtil.MouseButton.LEFT)) {
+			MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.LEFT, x, y);
+		}
+		if (MouseEventUtil.getInstance().isPressed(MouseEventUtil.MouseButton.RIGHT)) {
+			MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.RIGHT, x, y);
+		}
 		return false;
 	}
 

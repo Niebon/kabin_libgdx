@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.global.GlobalData;
+import dev.kabin.GlobalData;
 import org.json.JSONObject;
 
 import java.util.HashMap;
