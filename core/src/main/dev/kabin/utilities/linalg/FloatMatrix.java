@@ -102,11 +102,27 @@ public final class FloatMatrix {
 
     @Override
     public String toString() {
-        var content = IntStream.range(0, height).mapToObj(
-                j -> IntStream.range(0, width)
-                        .mapToObj(i -> get(i, j))
-                        .map(f -> String.format("%.2f", f))
-                        .collect(Collectors.joining(","))
+        int max = 10;
+        var content = IntStream.range(0, Math.min(height, max)).mapToObj(
+                j -> IntStream.range(0, Math.min(height, max)).mapToObj(
+                        i -> {
+                            // i = j = 10.
+                            if (i == max - 1 && j == max - 1) {
+                                return "  \u22F1";
+                            }
+
+                            // i != 10 and j != 10
+                            if (i != max - 1 && j != max - 1) {
+                                return String.format("%.2f", get(i, j));
+                            }
+
+                            if (i == max - 1) {
+                                return "\u2026";
+                            }
+
+                            return "\u22EE   ";
+                        }
+                ).collect(Collectors.joining("  "))
         ).collect(Collectors.joining("\n"));
         return "FloatMatrix{\n" + content + "\n}";
     }

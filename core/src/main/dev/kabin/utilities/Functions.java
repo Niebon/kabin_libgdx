@@ -1,6 +1,7 @@
 package dev.kabin.utilities;
 
 import dev.kabin.entities.Entity;
+import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointDouble;
 import dev.kabin.utilities.points.PointInt;
@@ -230,7 +231,7 @@ public class Functions {
 
     @NotNull
     @Contract(pure = true)
-    public static BiFunction<Integer, Integer, Boolean> indexValidator(
+    public static BiIntPredicate indexValidator(
             final int minX,
             final int maxX,
             final int minY,

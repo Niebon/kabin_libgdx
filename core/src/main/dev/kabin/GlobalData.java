@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.Component;
+import dev.kabin.utilities.Functions;
+import dev.kabin.utilities.eventhandlers.InputEventDistributor;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointDouble;
 import dev.kabin.utilities.shapes.RectInt;
-import dev.kabin.utilities.eventhandlers.InputEventDistributor;
 
 import java.util.logging.Level;
 
@@ -18,6 +19,8 @@ public class GlobalData {
 
     public static final String WORLDS_PATH = "core/assets/worlds/";
     public static final String TEXTURES_PATH = "core/assets/textures.png";
+    public static final int artWidth = 400;
+    public static final int artHeight = 225;
     private static final TextureAtlas atlas = new TextureAtlas("textures.atlas");
     private static final InputProcessor inputProcessor = new InputEventDistributor();
     private static final PointDouble scale = Point.of(1.0, 1.0);
@@ -28,11 +31,9 @@ public class GlobalData {
     public static float stateTime;
     public static ShapeRenderer shapeRenderer = new ShapeRenderer();
     public static String currentWorld = "world_1.json";
-    public static RectInt currentCameraBounds;
-    public static int artWidth = 400;
-    public static int artHeight = 225;
     public static int screenWidth = 400;
     public static int screenHeight = 225;
+    public static RectInt currentCameraBounds = RectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
     public static Component rootComponent;
     public static OrthographicCamera camera;
@@ -69,5 +70,13 @@ public class GlobalData {
         GlobalData.mapX = mapX;
         GlobalData.mapY = mapY;
         rootComponent = Component.representationOf(mapX, mapY);
+    }
+
+    static void updateCameraLocation() {
+        // Find new camera position:
+        GlobalData.currentCameraBounds.translate(
+                Math.round(Functions.toInt(camera.position.x, scaleFactor) - currentCameraBounds.getCenterX()),
+                Math.round(Functions.toInt(camera.position.y, scaleFactor) - currentCameraBounds.getCenterY())
+        );
     }
 }

@@ -6,7 +6,7 @@ public class MainGameDeveloper extends MainGame {
 
     @Override
     public void create() {
-        DeveloperUI.loadWorld();
         super.create();
+        DeveloperUI.loadWorld();
     }
 }

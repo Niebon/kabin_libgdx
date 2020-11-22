@@ -12,6 +12,7 @@ import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
+import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
@@ -49,6 +50,7 @@ public class MainGame extends ApplicationAdapter {
     public void render() {
 
 
+
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
             var keyEventUtil = KeyEventUtil.getInstance();
@@ -59,9 +61,11 @@ public class MainGame extends ApplicationAdapter {
                             keyEventUtil.isPressed(KeyEventUtil.KeyCode.S) ? -scaleFactor : scaleFactor
             );
         }
+        camera.update();
 
 
-        GlobalData.camera.update();
+
+        GlobalData.updateCameraLocation();
         GlobalData.batch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.

@@ -354,6 +354,13 @@ public class DeveloperUI {
         }
 
         public void addEntity() {
+
+            // Early exit, no asset selected.
+            if (selectedAsset == null || selectedAsset.equals("")) {
+                return;
+            }
+            
+
             EntityParameters parameters = new EntityParameters.Builder()
                     .setX(MouseEventUtil.getMouseXRelativeToWorld())
                     .setY(MouseEventUtil.getMouseYRelativeToWorld())
@@ -514,8 +521,8 @@ public class DeveloperUI {
             float y = CollisionTile.snapToCollisionTileGrid(mousePosYUnscaled) * GlobalData.scaleFactor;
             Component.getEntityInCameraNeighborhoodCached().forEach(e -> {
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
-                    EntityGroupProvider.unregisterEntity(e);
                     ((CollisionTile) e).removeCollisionData();
+                    EntityGroupProvider.unregisterEntity(e);
                 }
             });
         }
@@ -537,6 +544,8 @@ public class DeveloperUI {
 
             Entity e = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
             EntityGroupProvider.registerEntity(e);
+            ((CollisionTile) e).initCollisionData();
+
             float offsetX = e.getPixelsX() * e.getScale() * 0.5f;
             float offsetY = e.getPixelsY() * e.getScale() * 0.5f;
             e.setPos(e.getX() + offsetX, e.getY() + offsetY);

@@ -30,14 +30,14 @@ class FloatMatrixTest {
         System.out.println(identityMatrix);
 
         // Diagonal
-        Assertions.assertEquals(1, identityMatrix.get(0,0));
-        Assertions.assertEquals(1, identityMatrix.get(1,1));
+        Assertions.assertEquals(1, identityMatrix.get(0, 0));
+        Assertions.assertEquals(1, identityMatrix.get(1, 1));
 
         // Off diagonal
-        Assertions.assertEquals(0, identityMatrix.get(1,0));
-        Assertions.assertEquals(0, identityMatrix.get(2,0));
-        Assertions.assertEquals(0, identityMatrix.get(0,1));
-        Assertions.assertEquals(0, identityMatrix.get(2,1));
+        Assertions.assertEquals(0, identityMatrix.get(1, 0));
+        Assertions.assertEquals(0, identityMatrix.get(2, 0));
+        Assertions.assertEquals(0, identityMatrix.get(0, 1));
+        Assertions.assertEquals(0, identityMatrix.get(2, 1));
     }
 
     @Test
@@ -49,12 +49,12 @@ class FloatMatrixTest {
     }
 
     @Test
-    void identityMatrixIsIdentityMatrix(){
+    void identityMatrixIsIdentityMatrix() {
         var A = FloatMatrix.nullMatrix(6, 6);
         Procedures.forEachIntPairIn(
                 0, 6,
                 0, 6,
-                (i,j) -> A.set(i,j, (float) Math.random()));
+                (i, j) -> A.set(i, j, (float) Math.random()));
         System.out.println(A);
         Assertions.assertEquals(A, FloatMatrix.multiplicationResult(A, FloatMatrix.identityMatrix(6, 6)));
         Assertions.assertEquals(A, FloatMatrix.multiplicationResult(FloatMatrix.identityMatrix(6, 6), A));
@@ -69,6 +69,26 @@ class FloatMatrixTest {
     }
 
 
+    @Test
+    void print() {
+        var A = FloatMatrix.identityMatrix(12, 11);
+        Assertions.assertEquals(
+                """
+                        FloatMatrix{
+                        1.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  …
+                        0.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  …
+                        0.00  0.00  1.00  0.00  0.00  0.00  0.00  0.00  0.00  …
+                        0.00  0.00  0.00  1.00  0.00  0.00  0.00  0.00  0.00  …
+                        0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00  0.00  …
+                        0.00  0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00  …
+                        0.00  0.00  0.00  0.00  0.00  0.00  1.00  0.00  0.00  …
+                        0.00  0.00  0.00  0.00  0.00  0.00  0.00  1.00  0.00  …
+                        0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  1.00  …
+                        ⋮     ⋮     ⋮     ⋮     ⋮     ⋮     ⋮     ⋮     ⋮       ⋱
+                        }""",
+                A.toString()
+        );
+    }
 
 
 }

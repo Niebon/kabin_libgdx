@@ -30,18 +30,10 @@ public class Threads {
     }
 
     private static void handle() {
-
-        // Find new camera position:
-        var camera = GlobalData.camera.position;
-        cameraRectangle.translate(
-                Math.round(Functions.toInt(camera.x, GlobalData.scaleFactor) - cameraRectangle.getCenterX()),
-                Math.round(Functions.toInt(camera.y, GlobalData.scaleFactor) - cameraRectangle.getCenterY())
-        );
-
         // Load & unload data.
         Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-        Component.clearUnusedData(cameraRectangle);
-        Component.loadNearbyData(cameraRectangle);
+        Component.clearUnusedData(GlobalData.currentCameraBounds);
+        Component.loadNearbyData(GlobalData.currentCameraBounds);
     }
 
 }
