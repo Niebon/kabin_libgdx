@@ -16,8 +16,8 @@ public interface Point<T extends Number> {
     }
 
     @Contract("_, _ -> new")
-    static @NotNull PointInt of(int x, int y) {
-        return new PointInt(x, y);
+    static @NotNull ModifiablePointInt of(int x, int y) {
+        return new ModifiablePointInt(x, y);
     }
 
     T getX();

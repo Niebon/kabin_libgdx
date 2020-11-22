@@ -2,7 +2,7 @@ package dev.kabin.utilities.pools;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.utilities.points.Point;
-import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.points.ModifiablePointInt;
 import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,35 @@ public class ImageAnalysisPool {
 
 	public static class Analysis {
 
-		final List<PointInt> pixelProfile = new ArrayList<>();
+		public static final MockAnalysis MOCK_ANALYSIS = new MockAnalysis();
+
+		/**
+		 * A mock instance for unit tests.
+		 */
+		public static Analysis getMockInstance(){
+			return MOCK_ANALYSIS;
+		}
+
+		public static class MockAnalysis extends Analysis{
+			public MockAnalysis() {}
+		}
+
+		private Analysis(){
+			lowestPixel = 0;
+			highestPixel = 0;
+			leftmostPixel = 0;
+			rightmostPixel = 0;
+			pixelHeight = 0;
+			pixelWidth = 0;
+			pixelMassCenterXInt = 0;
+			pixelMassCenterYInt = 0;
+			pixelsX = 0;
+			pixelsY = 0;
+			pixelMassCenterX = 0;
+			pixelMassCenterY = 0;
+		}
+
+		final List<ModifiablePointInt> pixelProfile = new ArrayList<>();
 		private final int lowestPixel;
 		private final int highestPixel;
 		private final int leftmostPixel;
@@ -126,7 +154,7 @@ public class ImageAnalysisPool {
 			pixelsY = height;
 		}
 
-		public List<PointInt> getPixelProfile() {
+		public List<ModifiablePointInt> getPixelProfile() {
 			return new ArrayList<>(pixelProfile);
 		}
 

@@ -93,8 +93,8 @@ public class PointFloat implements Point<Float> {
     }
 
 
-    public PointInt toPointInt() {
-        return new PointInt(Math.round(x), Math.round(y));
+    public ModifiablePointInt toPointInt() {
+        return new ModifiablePointInt(Math.round(x), Math.round(y));
     }
 
     @Override

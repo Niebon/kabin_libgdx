@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public class EntityParameters {
 
+    private final Context context;
     private final Map<String, Object> backingMap;
     private final float x;
     private final float y;
@@ -21,7 +22,9 @@ public class EntityParameters {
                              String atlasPath,
                              float scale,
                              int layer,
-                             Map<String, Object> backingMap) {
+                             Map<String, Object> backingMap,
+                             Context context) {
+        this.context = context;
         this.x = x;
         this.y = y;
         this.atlasPath = atlasPath;
@@ -55,9 +58,15 @@ public class EntityParameters {
         return atlasPath;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
     int layer() {
         return layer;
     }
+
+    enum Context {TEST, PRODUCTION}
 
     public static class Builder {
         private float x;
@@ -65,7 +74,8 @@ public class EntityParameters {
         private String atlasPath;
         private float scale;
         private int layer;
-        private Map<String, Object> backingMap;
+        private Map<String, Object> backingMap = new HashMap<>();
+        private Context context = Context.PRODUCTION;
 
         public Builder(JSONObject o) {
             scale = GlobalData.scaleFactor;
@@ -73,6 +83,9 @@ public class EntityParameters {
             y = o.getInt("y") * scale;
             atlasPath = o.getString("atlasPath");
             layer = o.getInt("layer");
+
+            // Miscellaneous:
+            backingMap.putAll(o.toMap());
         }
 
         public Builder() {
@@ -89,6 +102,10 @@ public class EntityParameters {
             return this;
         }
 
+        public Builder setContext(Context context) {
+            this.context = context;
+            return this;
+        }
 
         public Builder setAtlasPath(String atlasPath) {
             this.atlasPath = atlasPath;
@@ -120,7 +137,7 @@ public class EntityParameters {
 
         public EntityParameters build() {
             return new EntityParameters(
-                    x, y, atlasPath, scale, layer, backingMap
+                    x, y, atlasPath, scale, layer, backingMap, context
             );
         }
 

@@ -21,7 +21,7 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int artWidth = 400;
     public static final int artHeight = 225;
-    private static final TextureAtlas atlas = new TextureAtlas("textures.atlas");
+    public static TextureAtlas atlas;
     private static final InputProcessor inputProcessor = new InputEventDistributor();
     private static final PointDouble scale = Point.of(1.0, 1.0);
     public static boolean developerMode = true;
@@ -29,7 +29,7 @@ public class GlobalData {
     public static SpriteBatch batch;
     public static SpriteBatch userInterfaceBatch;
     public static float stateTime;
-    public static ShapeRenderer shapeRenderer = new ShapeRenderer();
+    public static ShapeRenderer shapeRenderer;
     public static String currentWorld = "world_1.json";
     public static int screenWidth = 400;
     public static int screenHeight = 225;
@@ -37,8 +37,8 @@ public class GlobalData {
     public static float scaleFactor = 1.0f;
     public static Component rootComponent;
     public static OrthographicCamera camera;
-    private static int mapX;
-    private static int mapY;
+    public static int worldSizeX;
+    public static int worldSizeY;
 
 
     public static void setScale(double x, double y) {
@@ -66,10 +66,10 @@ public class GlobalData {
         return rootComponent;
     }
 
-    public static void setMapSize(int mapX, int mapY) {
-        GlobalData.mapX = mapX;
-        GlobalData.mapY = mapY;
-        rootComponent = Component.representationOf(mapX, mapY);
+    public static void setMapSize(int worldSizeX, int worldSizeY) {
+        GlobalData.worldSizeX = worldSizeX;
+        GlobalData.worldSizeY = worldSizeY;
+        rootComponent = Component.representationOf(worldSizeX, worldSizeY);
     }
 
     static void updateCameraLocation() {

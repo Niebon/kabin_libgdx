@@ -6,13 +6,14 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
-import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
@@ -44,11 +45,13 @@ public class MainGame extends ApplicationAdapter {
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         DeveloperUI.init(stage);
+
+        GlobalData.atlas = new TextureAtlas("textures.atlas");
+        GlobalData.shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     public void render() {
-
 
 
         // Admit camera free mode movement if in developer mode.
@@ -62,7 +65,6 @@ public class MainGame extends ApplicationAdapter {
             );
         }
         camera.update();
-
 
 
         GlobalData.updateCameraLocation();

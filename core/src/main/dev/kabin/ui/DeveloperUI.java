@@ -41,7 +41,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
-import static dev.kabin.GlobalData.stage;
 
 public class DeveloperUI {
 
@@ -537,7 +536,7 @@ public class DeveloperUI {
                     .setScale(GlobalData.scaleFactor)
                     .setAtlasPath(selectedAsset)
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
-                    .put(CollisionTile.TYPE, currentType)
+                    .put(CollisionTile.TILE, currentType.name())
                     .build();
 
             System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());

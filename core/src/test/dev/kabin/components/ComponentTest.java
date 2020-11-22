@@ -1,7 +1,7 @@
 package dev.kabin.components;
 
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
-import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.points.ModifiablePointInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -74,11 +74,11 @@ class ComponentTest {
         );
 
         final Random r = new Random();
-        final List<PointInt> points = IntStream.range(0, 100000)
-                .mapToObj(i -> new PointInt(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
+        final List<ModifiablePointInt> points = IntStream.range(0, 100000)
+                .mapToObj(i -> new ModifiablePointInt(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
 
         for (Component.Data type : Component.Data.values()) {
-            for (PointInt pointInt : points) {
+            for (ModifiablePointInt pointInt : points) {
                 final int x = pointInt.x(), y = pointInt.y();
                 {
 

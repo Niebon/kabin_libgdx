@@ -10,19 +10,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.AnimationPlaybackImpl;
-import dev.kabin.utilities.shapes.RectInt;
 import dev.kabin.GlobalData;
+import dev.kabin.animation.AnimationBundleFactory;
+import dev.kabin.animation.AnimationPlayback;
+import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
+import dev.kabin.utilities.shapes.RectInt;
 import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static dev.kabin.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
 
 public class EntitySimple implements Entity {
 
@@ -41,7 +44,11 @@ public class EntitySimple implements Entity {
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
-        animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+        switch (parameters.getContext()) {
+            case TEST -> animationPlaybackImpl = MOCK_ANIMATION_PLAYBACK;
+            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+            default -> throw new IllegalStateException("Unexpected value: " + parameters.getContext());
+        }
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -222,7 +229,7 @@ public class EntitySimple implements Entity {
 
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return ImageAnalysisPool.findAnalysis(animationPlaybackImpl.getCurrentImageAssetPath(), animationPlaybackImpl.getCurrentImageAssetIndex());
+        return animationPlaybackImpl.getPixelAnalysis();
     }
 
     @Override
@@ -253,8 +260,8 @@ public class EntitySimple implements Entity {
     @Override
     public JSONObject toJSONObject() {
         return new JSONObject()
-                .put("x", Math.round(getX() / getScale()))
-                .put("y", Math.round(getY() / getScale()))
+                .put("x", getUnscaledX())
+                .put("y", getUnscaledY())
                 .put("atlasPath", getAtlasPath())
                 .put("layer", getLayer())
                 .put("type", getType().name());

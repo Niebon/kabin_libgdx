@@ -15,27 +15,34 @@ import java.util.stream.Collectors;
 public class WorldStateRecorder {
 
     private static final Logger logger = Logger.getLogger(WorldStateRecorder.class.getName());
+    public static final String WORLD_SIZE_X = "worldSizeX";
+    public static final String WORLD_SIZE_Y = "worldSizeY";
+    public static final String ENTITIES = "entities";
 
     public static JSONObject recordWorldState() {
         final List<Entity> allEntities = new ArrayList<>();
         EntityGroupProvider.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
-        o.put("entities", allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
+        o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
+        o.put(WORLD_SIZE_X, GlobalData.worldSizeX);
+        o.put(WORLD_SIZE_Y, GlobalData.worldSizeY);
         return o;
     }
 
     public static void loadWorldState(JSONObject o) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        GlobalData.setMapSize(o.getInt("mapSizeX"), o.getInt("mapSizeY"));
-        o.getJSONArray("entities").iterator().forEachRemaining(entry -> {
+        GlobalData.setMapSize(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y));
+        o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
+                System.exit(1);
             } else {
                 JSONObject json = (JSONObject) entry;
                 String type = json.getString("type");
                 if (!admissibleEntityTypes.contains(type)) {
-                    logger.warning(() -> "A recorded entity was not saved as a JSON object." + json);
+                    logger.warning(() -> "A recorded entity type was inadmissible." + json);
+                    System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
                     Entity e = EntityFactory.EntityType.valueOf(type).getJsonConstructor().construct(json);

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.utilities.helperinterfaces.FloatArea;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
+import dev.kabin.utilities.pools.ImageAnalysisPool;
 
 public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea, Scalable {
 
@@ -16,4 +17,6 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea
     String getCurrentImageAssetPath();
 
     int getCurrentImageAssetIndex();
+
+    ImageAnalysisPool.Analysis getPixelAnalysis();
 }

@@ -14,5 +14,7 @@ class FunctionsTest {
         Assertions.assertEquals(2, Functions.snapToGrid(3.9f, partition));
         Assertions.assertEquals(4, Functions.snapToGrid(4f, partition));
         Assertions.assertEquals(-2, Functions.snapToGrid(-0.5f, partition));
+        Assertions.assertEquals(0, Functions.snapToGrid(0f, partition));
+        Assertions.assertEquals(-2, Functions.snapToGrid(-0.1f, partition));
     }
 }

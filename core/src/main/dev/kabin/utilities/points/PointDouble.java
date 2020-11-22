@@ -95,8 +95,8 @@ public class PointDouble implements Point<Double> {
     }
 
 
-    public PointInt toPointInt() {
-        return new PointInt((int) Math.round(x), (int) Math.round(y));
+    public ModifiablePointInt toPointInt() {
+        return new ModifiablePointInt((int) Math.round(x), (int) Math.round(y));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class PointDouble implements Point<Double> {
     }
 
     @Contract("->new")
-    public PointInt round(){
+    public ModifiablePointInt round(){
         return Point.of((int) Math.round(x), (int) Math.round(y));
     }
 

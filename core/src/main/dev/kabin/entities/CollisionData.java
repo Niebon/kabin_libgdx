@@ -1,11 +1,11 @@
 package dev.kabin.entities;
 
-import dev.kabin.components.Component;
 import dev.kabin.GlobalData;
+import dev.kabin.components.Component;
+import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
+import dev.kabin.utilities.points.ModifiablePointInt;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointInt;
-import dev.kabin.utilities.points.PrimitivePointInt;
-import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,21 +16,23 @@ import java.util.stream.Stream;
 public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
     default void initCollisionData() {
-        initCollisionData(GlobalData.getRootComponent());
+        if (GlobalData.getRootComponent() != null)
+            initCollisionData(GlobalData.getRootComponent());
     }
 
     default void removeCollisionData() {
-        removeCollisionData(GlobalData.getRootComponent());
+        if (GlobalData.getRootComponent() != null)
+            removeCollisionData(GlobalData.getRootComponent());
     }
 
     @NotNull
-    List<PrimitivePointInt> getCollisionProfile();
+    List<PointInt> getCollisionProfile();
 
     @NotNull
-    List<PrimitivePointInt> getSurfaceContourProfile();
+    List<PointInt> getSurfaceContourProfile();
 
     @NotNull
-    default Stream<PointInt> getSurfaceContourRelativeToOrigin() {
+    default Stream<ModifiablePointInt> getSurfaceContourRelativeToOrigin() {
         final int rootX = getRootX(), rootY = getRootY();
         return getSurfaceContourProfile().stream()
                 .map(p -> Point.of(p.getX() + rootX, p.getY() + rootY));
@@ -42,7 +44,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer action) {
         final int rootX = getRootX(), rootY = getRootY();
-        final List<PrimitivePointInt> profile = getCollisionProfile();
+        final List<PointInt> profile = getCollisionProfile();
 
         if (angleRad() == 0) {
             //noinspection ForLoopReplaceableByForEach
@@ -77,6 +79,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
     /**
      * The current orientation.
+     *
      * @return
      */
     default double angleRad() {

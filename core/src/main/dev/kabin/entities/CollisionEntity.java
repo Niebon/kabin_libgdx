@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.utilities.points.PrimitivePointInt;
+import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.pools.CollisionPool;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
     }
 
     @Override
-    public @NotNull List<PrimitivePointInt> getCollisionProfile() {
+    public @NotNull List<PointInt> getCollisionProfile() {
         return CollisionPool.findCollisionProfile(
         		animationPlaybackImpl.getCurrentImageAssetPath(),
                 animationPlaybackImpl.getCurrentImageAssetIndex()
@@ -22,7 +22,7 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
     }
 
     @Override
-    public @NotNull List<PrimitivePointInt> getSurfaceContourProfile() {
+    public @NotNull List<PointInt> getSurfaceContourProfile() {
 		return CollisionPool.findSurfaceContourProfile(
 				animationPlaybackImpl.getCurrentImageAssetPath(),
 				animationPlaybackImpl.getCurrentImageAssetIndex()
@@ -37,14 +37,6 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 	@Override
 	public int getRootY() {
 		return super.getRootY();
-	}
-
-	@Override
-	public ImageAnalysisPool.Analysis getPixelAnalysis() {
-		return ImageAnalysisPool.findAnalysis(
-				animationPlaybackImpl.getCurrentImageAssetPath(),
-				animationPlaybackImpl.getCurrentImageAssetIndex()
-		);
 	}
 
 	@Override

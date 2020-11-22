@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.utilities.collections.IntToIntFunction;
+import dev.kabin.utilities.pools.ImageAnalysisPool;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -14,15 +15,28 @@ import java.util.stream.Collectors;
 
 public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implements AnimationPlayback, Disposable {
 
+    public static final AnimationPlaybackImpl<?> MOCK_ANIMATION_PLAYBACK = new MockAnimationPlaybackImpl();
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     final int width, height;
     private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final Array<TextureAtlas.AtlasRegion> regions;
+    private final IntToIntFunction animationClassIndexToAnimationLength;
+    private final Map<T, int[]> animationBlueprint;
     float x, y, scale;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
-    private final IntToIntFunction animationClassIndexToAnimationLength;
-    private final Map<T, int[]> animationBlueprint;
+
+    /**
+     * A constructor for a mock instance.
+     */
+    private AnimationPlaybackImpl() {
+        width = 0;
+        height = 0;
+        animationsMap = null;
+        regions = null;
+        animationClassIndexToAnimationLength = null;
+        animationBlueprint = null;
+    }
 
     public AnimationPlaybackImpl(
             Array<TextureAtlas.AtlasRegion> regions,
@@ -34,7 +48,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
                 Collectors.toMap(
                         Map.Entry::getKey,
                         e -> generateAnimation(e.getValue()),
-                        (i,j) -> i,
+                        (i, j) -> i,
                         () -> new EnumMap<>(tClass)
                 )
         );
@@ -47,7 +61,11 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
     }
 
-    public int getCurrentAnimationLength(){
+    static AnimationPlaybackImpl<?> getMockAnimationPlaybackImpl() {
+        return MOCK_ANIMATION_PLAYBACK;
+    }
+
+    public int getCurrentAnimationLength() {
         return animationClassIndexToAnimationLength.eval(currentAnimationClass.ordinal());
     }
 
@@ -112,7 +130,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public String getCurrentImageAssetPath() {
-        return cachedTextureRegion.toString();
+        return String.valueOf(cachedTextureRegion);
     }
 
     @Override
@@ -121,10 +139,14 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
+    public ImageAnalysisPool.Analysis getPixelAnalysis() {
+        return ImageAnalysisPool.findAnalysis(getCurrentImageAssetPath(), getCurrentImageAssetIndex());
+    }
+
+    @Override
     public float getWidth() {
         return width * getScale();
     }
-
 
     @Override
     public float getHeight() {
@@ -167,5 +189,24 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationsMap.forEach((type, animation) -> Arrays.stream(animation.getKeyFrames())
                 .forEach(r -> r.getTexture().dispose()));
         regions.forEach(r -> r.getTexture().dispose());
+    }
+
+    static class MockAnimationPlaybackImpl extends AnimationPlaybackImpl {
+
+
+        @Override
+        public int getCurrentImageAssetIndex() {
+            return 0;
+        }
+
+        @Override
+        public ImageAnalysisPool.Analysis getPixelAnalysis() {
+            return ImageAnalysisPool.Analysis.getMockInstance();
+        }
+
+        @Override
+        public int getCurrentAnimationLength() {
+            return 1;
+        }
     }
 }

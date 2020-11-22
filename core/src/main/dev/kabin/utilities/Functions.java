@@ -5,7 +5,7 @@ import dev.kabin.entities.Entity;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointDouble;
-import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.points.ModifiablePointInt;
 import dev.kabin.utilities.shapes.AbstractRectBoxed;
 import dev.kabin.utilities.shapes.RectBoxed;
 import org.jetbrains.annotations.Contract;
@@ -65,7 +65,7 @@ public class Functions {
      * @return the lower endpoint of the half open interval containing value from the partition determined by the grid.
      */
     public static int snapToGrid(float value, int gridSize) {
-        return (value > 0) ?
+        return (value >= 0) ?
 
                 // The cast maps 4.9 to 4 with grid size 2, as per contract.
                 ((int) value / gridSize) * gridSize
@@ -122,7 +122,7 @@ public class Functions {
     }
 
     @Contract(pure = true)
-    public static double distance(@NotNull PointInt p1, @NotNull PointInt p2) {
+    public static double distance(@NotNull ModifiablePointInt p1, @NotNull ModifiablePointInt p2) {
         return distance(p1.x, p1.y, p2.x, p2.y);
     }
 

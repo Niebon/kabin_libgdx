@@ -1,11 +1,11 @@
 package dev.kabin.utilities.shapes;
 
-import dev.kabin.utilities.points.PointInt;
+import dev.kabin.utilities.points.ModifiablePointInt;
 import org.jetbrains.annotations.NotNull;
 
 public class GrowingDirectedIndexedRectBoxedInt extends GrowingDirectedIndexedRectBoxed<Integer> {
 
-    public GrowingDirectedIndexedRectBoxedInt(@NotNull PointInt pointInt) {
+    public GrowingDirectedIndexedRectBoxedInt(@NotNull ModifiablePointInt pointInt) {
         this(pointInt.x, pointInt.y, 0, 0);
     }
 
