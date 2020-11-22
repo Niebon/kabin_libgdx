@@ -481,7 +481,7 @@ public class Component implements Id {
      * Finds list of entities currently occupying the screen.
      */
     @NotNull
-    private List<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
+    public List<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
         ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 GlobalData.rootComponent,
                 c -> c.underlyingRectInt.meets(neighborhood)

@@ -21,7 +21,7 @@ public class EntityFactory {
         //ENTITY_THROWABLE(EntityThrowable::new, EntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //FOX(Fox::new, Fox::new, EntityGroupProvider.Type.FOCAL_POINT),
         //GROUND(Ground::new, Ground::new, null),
-        GROUND_TILE(GroundTile::new,  EntityGroupProvider.Type.GROUND),
+        //GROUND_TILE(GroundTile::new,  EntityGroupProvider.Type.GROUND),
         //LADDER(Ladder::new, Ladder::new, EntityGroupProvider.Type.FOCAL_POINT),
         //MAP_CONNECTOR(MapConnector::new, MapConnector::new, null),
         //OON(Moon::new, Moon::new, EntityGroupProvider.Type.SKY),

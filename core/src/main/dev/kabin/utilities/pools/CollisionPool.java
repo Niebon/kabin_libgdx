@@ -4,14 +4,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
-import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import dev.kabin.utilities.points.PrimitivePointInt;
 import dev.kabin.utilities.points.UnmodifiablePointInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class CollisionPool {
 
@@ -20,10 +18,10 @@ public class CollisionPool {
     private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToCollisionProfile = new HashMap<>();
     private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToCollisionProfileBoundary = new HashMap<>();
     private static final Map<String, Map<Integer, List<PrimitivePointInt>>> pathIndexPairToSurfaceContourMapping = new HashMap<>();
-    private static final Map<String, Map<Integer, IntPrimitivePairPredicate>> pathIndexPairToCollisionCheck = new HashMap<>();
+    private static final Map<String, Map<Integer, BiIntPredicate>> pathIndexPairToCollisionCheck = new HashMap<>();
 
 
-    public static IntPrimitivePairPredicate findCollisionCheck(String path, int index) {
+    public static BiIntPredicate findCollisionCheck(String path, int index) {
 
         if (!pathIndexPairToCollisionCheck.containsKey(path)) {
             pathIndexPairToCollisionCheck.put(path, new HashMap<>());

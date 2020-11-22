@@ -1,5 +1,6 @@
 package dev.kabin.utilities;
 
+import dev.kabin.GlobalData;
 import dev.kabin.entities.Entity;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
 import dev.kabin.utilities.points.Point;
@@ -7,14 +8,11 @@ import dev.kabin.utilities.points.PointDouble;
 import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.shapes.AbstractRectBoxed;
 import dev.kabin.utilities.shapes.RectBoxed;
-import dev.kabin.GlobalData;
-import dev.kabin.utilities.functioninterfaces.IntPrimitivePairPredicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 /**
@@ -51,6 +49,30 @@ public class Functions {
 
     public static float snapToPixel(float x) {
         return Math.round(x / GlobalData.scaleFactor) * GlobalData.scaleFactor;
+    }
+
+
+    /**
+     * Snaps the given value to the grid. More precisely, given the partition:
+     * <p>
+     * [a1,a2) u [a2,a2) u [a3,a3)...
+     * <p>
+     * where |ai-aj| = grid size if i - j = 1. If x is contained in the interval starting at ai, then x is snapped to
+     * ai.
+     *
+     * @param value    the value x to be snapped.
+     * @param gridSize the grid size.
+     * @return the lower endpoint of the half open interval containing value from the partition determined by the grid.
+     */
+    public static int snapToGrid(float value, int gridSize) {
+        return (value > 0) ?
+
+                // The cast maps 4.9 to 4 with grid size 2, as per contract.
+                ((int) value / gridSize) * gridSize
+
+                // The cast alone maps -4.9 to -4 with grid size 2, defying the contract.
+                // Hence the minus 1.
+                : (((int) value / gridSize) - 1) * gridSize;
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {
@@ -153,7 +175,7 @@ public class Functions {
      */
     @NotNull
     @Contract("_, _, _, _ -> new")
-    public static PointDouble normalVectorAt(int x, int y, int radius, IntPrimitivePairPredicate collisionPredicate) {
+    public static PointDouble normalVectorAt(int x, int y, int radius, BiIntPredicate collisionPredicate) {
         int termsInSum = 0;
         double sumY = 0, sumX = 0;
         final int[][] circle = intCircleCenteredAt(x, y, radius);
@@ -162,7 +184,7 @@ public class Functions {
         for (int i = 0, circleSize = circle.length; i < circleSize; i++) {
             int x_ = circle[i][0];
             int y_ = circle[i][1];
-            if (collisionPredicate.eval(x_, y_)) {
+            if (collisionPredicate.test(x_, y_)) {
                 sumX = sumX + x_;
                 sumY = sumY + y_;
                 termsInSum++;
@@ -259,7 +281,7 @@ public class Functions {
         }
     }
 
-	/**
+    /**
      * A transform from a coordinate system where y points downwards to one where y points upwards; also
      * it is translated by a "height" parameter.
      * <pre>

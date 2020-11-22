@@ -13,13 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
+import dev.kabin.GlobalData;
+import dev.kabin.WorldStateRecorder;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.components.Component;
 import dev.kabin.entities.*;
-import dev.kabin.GlobalData;
-import dev.kabin.WorldStateRecorder;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
@@ -41,6 +41,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
+import static dev.kabin.GlobalData.stage;
 
 public class DeveloperUI {
 
@@ -359,7 +360,7 @@ public class DeveloperUI {
             if (selectedAsset == null || selectedAsset.equals("")) {
                 return;
             }
-            
+
 
             EntityParameters parameters = new EntityParameters.Builder()
                     .setX(MouseEventUtil.getMouseXRelativeToWorld())
@@ -515,14 +516,13 @@ public class DeveloperUI {
          * the current mouse position.
          */
         public static void removeGroundTileAtCurrentMousePosition() {
-            int mousePosXUnscaled = Functions.toInt(MouseEventUtil.getMouseXRelativeToWorld(), GlobalData.scaleFactor);
-            int mousePosYUnscaled = Functions.toInt(MouseEventUtil.getMouseYRelativeToWorld(), GlobalData.scaleFactor);
-            float x = CollisionTile.snapToCollisionTileGrid(mousePosXUnscaled) * GlobalData.scaleFactor;
-            float y = CollisionTile.snapToCollisionTileGrid(mousePosYUnscaled) * GlobalData.scaleFactor;
+            float x = Functions.snapToGrid(MouseEventUtil.getMouseXRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
+            float y = Functions.snapToGrid(MouseEventUtil.getMouseYRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
             Component.getEntityInCameraNeighborhoodCached().forEach(e -> {
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
                     ((CollisionTile) e).removeCollisionData();
                     EntityGroupProvider.unregisterEntity(e);
+                    e.getActor().ifPresent(Actor::remove);
                 }
             });
         }
@@ -540,18 +540,13 @@ public class DeveloperUI {
                     .put(CollisionTile.TYPE, currentType)
                     .build();
 
-            System.out.println("Position: " + MouseEventUtil.getPosition());
+            System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());
+            Entity newCollisionTile = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
+            newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
+            EntityGroupProvider.registerEntity(newCollisionTile);
+            ((CollisionTile) newCollisionTile).initCollisionData();
 
-            Entity e = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
-            EntityGroupProvider.registerEntity(e);
-            ((CollisionTile) e).initCollisionData();
-
-            float offsetX = e.getPixelsX() * e.getScale() * 0.5f;
-            float offsetY = e.getPixelsY() * e.getScale() * 0.5f;
-            e.setPos(e.getX() + offsetX, e.getY() + offsetY);
-            e.getActor().ifPresent(GlobalData.stage::addActor);
-
-            System.out.println("Position: " + e.getPosition());
+            System.out.println("Position: " + newCollisionTile.getPosition());
         }
 
         private void loadAsset() {
