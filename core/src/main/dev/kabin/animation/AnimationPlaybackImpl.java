@@ -144,6 +144,11 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
+    public void reset() {
+        this.currentAnimationClass = currentAnimationClass.transitionToDefault();
+    }
+
+    @Override
     public float getWidth() {
         return width * getScale();
     }

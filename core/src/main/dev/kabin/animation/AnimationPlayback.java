@@ -19,4 +19,6 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea
     int getCurrentImageAssetIndex();
 
     ImageAnalysisPool.Analysis getPixelAnalysis();
+
+    void reset();
 }

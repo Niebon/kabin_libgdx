@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class CollisionTileTest {
 
     private EntityParameters generateParameters(int x, int y, float scale) {
-        return new EntityParameters.Builder()
+        return EntityParameters.Builder.testParameters()
                 .setX(x * scale)
                 .setY(y * scale)
                 .setLayer(0)
@@ -18,7 +18,6 @@ class CollisionTileTest {
                 .setAtlasPath("raw_textures/ground")
                 .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                 .put(CollisionTile.TILE, AnimationClass.Tile.SURFACE.name())
-                .setContext(EntityParameters.Context.TEST)
                 .setScale(scale)
                 .build();
     }

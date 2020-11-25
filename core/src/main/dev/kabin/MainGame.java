@@ -18,7 +18,7 @@ import dev.kabin.utilities.eventhandlers.EventUtil;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
 import static dev.kabin.GlobalData.*;
-import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.logger;
+import static dev.kabin.utilities.eventhandlers.EnumWithBoolHandler.LOGGER;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -37,7 +37,7 @@ public class MainGame extends ApplicationAdapter {
         InputMultiplexer imp = new InputMultiplexer();
         imp.setProcessors(GlobalData.getInputProcessor(), GlobalData.stage);
         Gdx.input.setInputProcessor(imp);
-        logger.setLevel(GlobalData.getLogLevel());
+        LOGGER.setLevel(GlobalData.getLogLevel());
         EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
         GlobalData.batch = new SpriteBatch();
         GlobalData.userInterfaceBatch = new SpriteBatch();

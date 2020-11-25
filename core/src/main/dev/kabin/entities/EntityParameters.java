@@ -92,6 +92,10 @@ public class EntityParameters {
 
         }
 
+        public static Builder testParameters(){
+            return new Builder().setContext(Context.TEST);
+        }
+
         public Builder setX(float x) {
             this.x = x;
             return this;

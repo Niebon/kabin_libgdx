@@ -1,7 +1,6 @@
 package dev.kabin;
 
 import dev.kabin.components.Component;
-import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.shapes.RectInt;
 
 import java.util.concurrent.Executors;
@@ -25,6 +24,10 @@ public class Threads {
                 System.exit(1);
             }
         }
+        Component.registerEntityWhereabouts(GlobalData.getRootComponent());
+        GlobalData.getRootComponent().clearData();
+        Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+
         periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
         periodicBackgroundTasks.scheduleWithFixedDelay(Threads::handle, 0, 1, TimeUnit.SECONDS);
     }
@@ -32,8 +35,8 @@ public class Threads {
     private static void handle() {
         // Load & unload data.
         Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-        Component.clearUnusedData(GlobalData.currentCameraBounds);
-        Component.loadNearbyData(GlobalData.currentCameraBounds);
+        Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+        Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
     }
 
 }

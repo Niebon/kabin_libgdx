@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public interface EnumWithBoolHandler<T extends Enum<T>> {
 
-    Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
+    Logger LOGGER = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
     @NotNull Map<T, Boolean> getCurrentStates();
 
@@ -54,7 +54,7 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
     private void makeCallToListeners(@NotNull T value, boolean pressed, boolean oldValue) {
         makeCallToListeners(getDefaultListeners());
 
-        logger.info(() -> "Making call to listeners " + value + ", " + pressed + ".");
+        LOGGER.info(() -> "Making call to listeners " + value + ", " + pressed + ".");
 
         if (pressed != oldValue) {
             makeCallToListeners(getChangeListeners());

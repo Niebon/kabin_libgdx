@@ -8,7 +8,7 @@ import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
 import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.functioninterfaces.BiIntToDoubleFunction;
+import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import dev.kabin.utilities.linalg.FloatMatrix;
@@ -101,7 +101,7 @@ public class Component implements Id {
     private final float scaleFactor;
     // Functions of primitives.
     private final EnumMap<Data, IntBinaryOperator> intDataMapperByKey = new EnumMap<>(Data.class);
-    private final EnumMap<Data, BiIntToDoubleFunction> doubleDataMapperByKey = new EnumMap<>(Data.class);
+    private final EnumMap<Data, BiIntToFloatFunction> doubleDataMapperByKey = new EnumMap<>(Data.class);
     private final int id;
     private Status status = Status.DEACTIVATED;
 
@@ -158,18 +158,18 @@ public class Component implements Id {
                         if (x < midPointX) {
                             if (y < midPointY) {
                                 // Upper left square
-                                return subComponents[0].getDataDouble(x, y, key);
+                                return subComponents[0].getDataFloat(x, y, key);
                             } else {
                                 // Lower left square
-                                return subComponents[2].getDataDouble(x, y, key);
+                                return subComponents[2].getDataFloat(x, y, key);
                             }
                         } else {
                             if (y < midPointY) {
                                 // Upper right square
-                                return subComponents[1].getDataDouble(x, y, key);
+                                return subComponents[1].getDataFloat(x, y, key);
                             } else {
                                 // Lower right square
-                                return subComponents[3].getDataDouble(x, y, key);
+                                return subComponents[3].getDataFloat(x, y, key);
                             }
                         }
                     });
@@ -212,8 +212,8 @@ public class Component implements Id {
                         if (underlyingRectFloat.contains(x, y)) {
                             final int i = x - minX, j = y - minY;
                             final FloatMatrix dataForKey = (FloatMatrix) data.get(key);
-                            return (dataForKey != null) ? dataForKey.get(i, j) : 0.0d;
-                        } else return 0.0d;
+                            return (dataForKey != null) ? dataForKey.get(i, j) : 0.0f;
+                        } else return 0.0f;
                     });
                 }
             }
@@ -391,9 +391,9 @@ public class Component implements Id {
     }
 
 
-    public static void clearUnusedData(@NotNull RectInt rect) {
+    public static void clearUnusedData(Component component, @NotNull RectInt rect) {
         final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
-                GlobalData.rootComponent,
+                component,
                 c -> c.underlyingRectInt.meets(rect)
         );
         //noinspection ForLoopReplaceableByForEach
@@ -407,9 +407,9 @@ public class Component implements Id {
         SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
     }
 
-    public static void loadNearbyData(@NotNull RectInt rect) {
+    public static void loadNearbyData(Component component, @NotNull RectInt rect) {
         final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
-                GlobalData.rootComponent,
+                component,
                 c -> c.underlyingRectInt.meets(rect)
         );
         //noinspection ForLoopReplaceableByForEach
@@ -468,8 +468,8 @@ public class Component implements Id {
         return underlyingRectInt.contains(x, y);
     }
 
-    public double getDataDouble(int x, int y, @NotNull Component.Data key) {
-        return doubleDataMapperByKey.get(key).apply(x, y);
+    public float getDataFloat(int x, int y, @NotNull Component.Data key) {
+        return doubleDataMapperByKey.get(key).eval(x, y);
     }
 
     public int getDataInt(int x, int y, @NotNull Component.Data key) {
@@ -533,12 +533,12 @@ public class Component implements Id {
         return intDataMapperByKey.get(Data.LADDER).eval(x, y);
     }
 
-    public double getVectorFieldX(int x, int y) {
-        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_X).apply(x, y);
+    public float getVectorFieldX(int x, int y) {
+        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_X).eval(x, y);
     }
 
-    public double getVectorFieldY(int x, int y) {
-        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_Y).apply(x, y);
+    public float getVectorFieldY(int x, int y) {
+        return doubleDataMapperByKey.get(Data.VECTOR_FIELD_Y).eval(x, y);
     }
 
     public void modifyVectorFieldAt(int x, int y, FloatUnaryOperation transformX, FloatUnaryOperation transformY) {

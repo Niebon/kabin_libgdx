@@ -42,14 +42,14 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
         actionEachCollisionPoint(component::incrementCollisionAt);
     }
 
-    default void actionEachCollisionPoint(PrimitiveIntPairConsumer action) {
+    default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
         final int rootX = getRootX(), rootY = getRootY();
         final List<PointInt> profile = getCollisionProfile();
 
         if (angleRad() == 0) {
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = profile.size(); i < n; i++) {
-                action.action(profile.get(i).getX() + rootX, profile.get(i).getY() + rootY);
+                consumer.accept(profile.get(i).getX() + rootX, profile.get(i).getY() + rootY);
             }
         } else {
             // TODO: Test the below code.
@@ -72,7 +72,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
                 int xRotRelOrigin = (int) Math.round(rootX + cs * xRelPixelMc - sn * yRelPixelMc);
                 int yRotRelOrigin = (int) Math.round(rootY + sn * xRelPixelMc + sn * yRelPixelMc);
 
-                action.action(xRotRelOrigin, yRotRelOrigin);
+                consumer.accept(xRotRelOrigin, yRotRelOrigin);
             }
         }
     }

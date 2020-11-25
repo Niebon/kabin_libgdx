@@ -204,7 +204,6 @@ public class DeveloperUI {
                         currentlySelectedEntities.remove(e);
                     }
                 });
-                System.out.println(currentlySelectedEntities.size());
             }
         }
 
