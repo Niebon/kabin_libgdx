@@ -1,1 +1,5 @@
-{"entities":[{"frameIndex":2,"atlasPath":"ground","x":-64,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0},{"frameIndex":6,"atlasPath":"ground","x":-48,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0},{"frameIndex":7,"atlasPath":"ground","x":-32,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0},{"frameIndex":1,"atlasPath":"ground","x":-16,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0},{"frameIndex":3,"atlasPath":"ground","x":0,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0},{"frameIndex":7,"atlasPath":"ground","x":16,"tile":"SURFACE","y":-32,"type":"COLLISION_TILE","layer":0}],"worldSizeY":5000,"worldSizeX":10000}
+{
+  "entities": [],
+  "worldSizeY": 5000,
+  "worldSizeX": 10000
+}

@@ -42,6 +42,7 @@ class CollisionTileTest {
             int unscaledYPrev = collisionTileBefore.getUnscaledY();
 
             // Record and load:
+            CollisionTile.clearAt(collisionTileBefore.getUnscaledX(), collisionTileBefore.getUnscaledY());
             CollisionTile collisionTileAfter;
             {
                 JSONObject o = collisionTileBefore.toJSONObject();
@@ -59,6 +60,9 @@ class CollisionTileTest {
 
             Assertions.assertEquals(unscaledXPrev, unscaledX);
             Assertions.assertEquals(unscaledYPrev, unscaledY);
+
+            // Clean up before the next iteration.
+            CollisionTile.clearAt(collisionTileAfter.getUnscaledX(), collisionTileAfter.getUnscaledY());
         });
     }
 

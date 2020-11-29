@@ -94,8 +94,8 @@ class ComponentTest {
                         FloatUnaryOperation operateX = type == Component.Data.VECTOR_FIELD_X ? f -> f + 1f : FloatUnaryOperation.TRIVIAL;
                         FloatUnaryOperation operateY = type == Component.Data.VECTOR_FIELD_Y ? f -> f + 1f : FloatUnaryOperation.TRIVIAL;
                         mainComponent.modifyVectorFieldAt(x, y, operateX, operateY);
-                        final Object expected = 1.0;
-                        Assertions.assertEquals(expected, mainComponent.getDataFloat(pointInt.x(), pointInt.y(), type),
+                        final float expected = 1.0f;
+                        Assertions.assertEquals(expected, mainComponent.getDataFloat(pointInt.x(), pointInt.y(), type), 0.01f,
                                 "Got error while retrieving x, y = " + x + ", " + y + ", of type " + type.name());
                     }
                 }
@@ -113,8 +113,8 @@ class ComponentTest {
                         FloatUnaryOperation operateX = type == Component.Data.VECTOR_FIELD_X ? f -> f - 1f : FloatUnaryOperation.TRIVIAL;
                         FloatUnaryOperation operateY = type == Component.Data.VECTOR_FIELD_Y ? f -> f - 1f : FloatUnaryOperation.TRIVIAL;
                         mainComponent.modifyVectorFieldAt(x, y, operateX, operateY);
-                        final Object expected = 0.0;
-                        Assertions.assertEquals(expected, mainComponent.getDataFloat(pointInt.x(), pointInt.y(), type),
+                        final float expected = 0.0f;
+                        Assertions.assertEquals(expected, mainComponent.getDataFloat(pointInt.x(), pointInt.y(), type), 0.01f,
                                 "Got error while retrieving x, y = " + x + ", " + y + ", of type " + type.name());
                     }
                 }

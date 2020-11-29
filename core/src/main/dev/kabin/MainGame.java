@@ -3,6 +3,7 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -88,6 +89,20 @@ public class MainGame extends ApplicationAdapter {
         }
 
         PhysicsEngine.render(stateTime);
+
+        // Render collision
+        if (rootComponent != null) {
+            for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
+                for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
+                    if (GlobalData.getRootComponent().isCollisionAt(i, j)) {
+                        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                        shapeRenderer.setColor(Color.RED);
+                        shapeRenderer.rect(i * scaleFactor, j * scaleFactor, scaleFactor, scaleFactor);
+                        shapeRenderer.end();
+                    }
+                }
+            }
+        }
 
     }
 

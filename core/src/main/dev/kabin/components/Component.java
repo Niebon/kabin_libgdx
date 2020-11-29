@@ -1,18 +1,19 @@
 package dev.kabin.components;
 
 
+import dev.kabin.GlobalData;
 import dev.kabin.collections.Id;
 import dev.kabin.collections.IndexedSet;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityGroupProvider;
-import dev.kabin.GlobalData;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import dev.kabin.utilities.linalg.FloatMatrix;
 import dev.kabin.utilities.linalg.IntMatrix;
+import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
 import dev.kabin.utilities.pools.objectpool.OutputFromPool;
 import dev.kabin.utilities.shapes.RectFloat;
@@ -240,15 +241,15 @@ public class Component implements Id {
     }
 
     @NotNull
-    @Contract("_, _ -> new")
-    public static Component representationOf(int width, int height) {
+    @Contract("_, _, _ -> new")
+    public static Component representationOf(int width, int height, float scaleFactor) {
         int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
         while (x < width * 2 || y < height * 2) {
             x *= 2;
             y *= 2;
         }
         logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
-        return new Component(new ComponentParameters().setWidth(x).setHeight(y).setScaleFactor(GlobalData.scaleFactor));
+        return new Component(new ComponentParameters().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
     }
 
     /**
@@ -421,7 +422,7 @@ public class Component implements Id {
                 for (int j = 0, m = entities.size(); j < m; j++) {
                     Entity entity = entities.get(j);
                     if (entity instanceof CollisionData) {
-                        ((CollisionData) entity).initCollisionData(c);
+                        ((CollisionData) entity).actionEachCollisionPoint(component::incrementCollisionAt);
                     }
 //                    if (entity instanceof LadderData) {
 //                        ((LadderData) entity).initLadderData(c);
@@ -571,12 +572,18 @@ public class Component implements Id {
                 }
             } else {
                 if (!data.containsKey(key)) {
-                    data.put(key, IntArrayPool.getInstance().borrow());
+                    data.put(key, IntMatrixPool.getInstance().borrow());
                 }
-                final int
-                        i = x - minX,
-                        j = y - minY;
-                ((IntMatrix) data.get(key)).increment(i, j);
+                ((IntMatrix) data.get(key)).increment(x - minX, y - minY);
+
+                // Debugging
+                {
+                    //System.out.println("Incremented at: " + Point.of(x, y));
+                    int val = ((IntMatrix) data.get(key)).get(x - minX, y - minY);
+                    if (val > 1) {
+                        System.out.println("A collision point was raised to :" + val);
+                    }
+                }
             }
         }
     }
@@ -595,13 +602,13 @@ public class Component implements Id {
             {
                 Object o = data.get(Data.COLLISION);
                 if (o != null) {
-                    IntArrayPool.getInstance().giveBack((IntMatrix) o);
+                    IntMatrixPool.getInstance().giveBack((IntMatrix) o);
                 }
             }
             {
                 Object o = data.get(Data.LADDER);
                 if (o != null) {
-                    IntArrayPool.getInstance().giveBack((IntMatrix) o);
+                    IntMatrixPool.getInstance().giveBack((IntMatrix) o);
                 }
             }
             {
@@ -776,18 +783,18 @@ public class Component implements Id {
     /**
      * Makes sure that int data objects are re-used, instead of being garbage collected.
      */
-    static class IntArrayPool extends AbstractObjectPool<IntMatrix> {
+    static class IntMatrixPool extends AbstractObjectPool<IntMatrix> {
 
         final static int OBJECTS_AVAILABLE = 64 * 2; // 2 because Ladder data & Collision data.
 
-        private static final IntArrayPool instance
-                = new IntArrayPool(OBJECTS_AVAILABLE, i -> new IntMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
+        private static final IntMatrixPool instance
+                = new IntMatrixPool(OBJECTS_AVAILABLE, i -> new IntMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
 
-        IntArrayPool(int objectsAvailable, IntFunction<IntMatrix> mapper) {
-            super(objectsAvailable, mapper, m -> Arrays.fill(m.data(), 0));
+        IntMatrixPool(int objectsAvailable, IntFunction<IntMatrix> mapper) {
+            super(objectsAvailable, mapper, IntMatrix::clear);
         }
 
-        public static IntArrayPool getInstance() {
+        public static IntMatrixPool getInstance() {
             return instance;
         }
     }

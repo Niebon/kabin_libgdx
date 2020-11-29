@@ -27,6 +27,7 @@ import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointFloat;
 import dev.kabin.utilities.pools.FontPool;
+import dev.kabin.utilities.pools.ImageAnalysisPool;
 import dev.kabin.utilities.shapes.RectFloat;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -39,8 +40,10 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
+import static dev.kabin.Threads.THREAD_LOCK;
 
 public class DeveloperUI {
 
@@ -514,37 +517,87 @@ public class DeveloperUI {
          * the current mouse position.
          */
         public static void removeGroundTileAtCurrentMousePosition() {
-            float x = Functions.snapToGrid(MouseEventUtil.getMouseXRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
-            float y = Functions.snapToGrid(MouseEventUtil.getMouseYRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
-            Component.getEntityInCameraNeighborhoodCached().forEach(e -> {
-                if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
-                    ((CollisionTile) e).removeCollisionData();
-                    EntityGroupProvider.unregisterEntity(e);
-                    e.getActor().ifPresent(Actor::remove);
-                }
-            });
+            synchronized (THREAD_LOCK) {
+                float x = Functions.snapToGrid(MouseEventUtil.getMouseXRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
+                float y = Functions.snapToGrid(MouseEventUtil.getMouseYRelativeToWorld() / GlobalData.scaleFactor, CollisionTile.TILE_SIZE) * GlobalData.scaleFactor;
+                Component.getEntityInCameraNeighborhoodCached().forEach(e -> {
+                    if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
+                        CollisionTile c = (CollisionTile) e;
+                        Component component = GlobalData.getRootComponent();
+                        c.actionEachCollisionPoint(component::decrementCollisionAt);
+                        EntityGroupProvider.unregisterEntity(e);
+                        e.getActor().ifPresent(Actor::remove);
+                    }
+                });
+            }
         }
 
         public void addCollisionTile() {
-            if (selectedAsset == null) return;
-            if (currentType == null) return;
-            EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(MouseEventUtil.getMouseXRelativeToWorld())
-                    .setY(MouseEventUtil.getMouseYRelativeToWorld())
-                    .setLayer(0)
-                    .setScale(GlobalData.scaleFactor)
-                    .setAtlasPath(selectedAsset)
-                    .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
-                    .put(CollisionTile.TILE, currentType.name())
-                    .build();
+            synchronized (THREAD_LOCK) {
+                if (selectedAsset == null) return;
+                if (currentType == null) return;
+                EntityParameters parameters = new EntityParameters.Builder()
+                        .setX(MouseEventUtil.getMouseXRelativeToWorld())
+                        .setY(MouseEventUtil.getMouseYRelativeToWorld())
+                        .setLayer(0)
+                        .setScale(GlobalData.scaleFactor)
+                        .setAtlasPath(selectedAsset)
+                        .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
+                        .put(CollisionTile.TILE, currentType.name())
+                        .build();
 
-            System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());
-            Entity newCollisionTile = EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
-            newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
-            EntityGroupProvider.registerEntity(newCollisionTile);
-            ((CollisionTile) newCollisionTile).initCollisionData();
+                //System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());
 
-            System.out.println("Position: " + newCollisionTile.getPosition());
+                // Clear any collision tile resting at the new location.
+                AtomicReference<CollisionTile> old = new AtomicReference<>();
+                CollisionTile.clearAt(parameters.x(), parameters.y(), parameters.scale()).ifPresent(
+                        c -> {
+                            EntityGroupProvider.unregisterEntity(c);
+                            c.getActor().ifPresent(Actor::remove);
+                            Component component = GlobalData.getRootComponent();
+                            c.actionEachCollisionPoint(component::decrementCollisionAt);
+                            old.set(c);
+                        }
+                );
+
+                // Get the new instance.
+                CollisionTile newCollisionTile = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
+
+                // Init the data.
+                newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
+                EntityGroupProvider.registerEntity(newCollisionTile);
+                Component component = GlobalData.getRootComponent();
+                newCollisionTile.actionEachCollisionPoint(component::incrementCollisionAt);
+
+                // debug
+                if (false){
+                    CollisionTile oldCollisionTile = old.get();
+                    if (oldCollisionTile != null) {
+
+                        if (oldCollisionTile.getX() != newCollisionTile.getX()) {
+                            System.out.println("FAIL: getX(), delta: " + (oldCollisionTile.getX() - newCollisionTile.getX()));
+                        }
+                        if (oldCollisionTile.getY() != newCollisionTile.getY()) {
+                            System.out.println("FAIL: getY()" + (oldCollisionTile.getY() - newCollisionTile.getY()));
+                        }
+                        if (oldCollisionTile.getRootX() != newCollisionTile.getRootX()) {
+                            System.out.println("FAIL: getRootX(), delta:" + (oldCollisionTile.getRootX() - newCollisionTile.getRootX()));
+                        }
+                        if (oldCollisionTile.getRootY() != newCollisionTile.getRootY()) {
+                            System.out.println("FAIL: getRootY(), delta:" + (oldCollisionTile.getRootY() - newCollisionTile.getRootY()));
+                        }
+                        if (!new HashSet<>(oldCollisionTile.getCollisionProfile()).equals(new HashSet<>(newCollisionTile.getCollisionProfile()))) {
+                            System.out.println("FAIL: profile. ");
+                            System.out.println(oldCollisionTile.toJSONObject());
+                            System.out.println(newCollisionTile.toJSONObject());
+                        }
+
+                    }
+                }
+
+
+                //System.out.println("Position: " + newCollisionTile.getPosition());
+            }
         }
 
         private void loadAsset() {

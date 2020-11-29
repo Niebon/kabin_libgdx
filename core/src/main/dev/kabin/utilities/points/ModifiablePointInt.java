@@ -22,13 +22,6 @@ public class ModifiablePointInt implements PointInt {
 		y = p.y;
 	}
 
-	public boolean equals(Object p) {
-		if (p instanceof ModifiablePointInt) {
-			ModifiablePointInt other = (ModifiablePointInt) p;
-			return (x == other.x && y == other.y);
-		} else return false;
-	}
-
 	public ModifiablePointInt setX(int x) {
 		this.x = x;
 		return this;
@@ -71,8 +64,18 @@ public class ModifiablePointInt implements PointInt {
 		return this;
 	}
 
+
 	@Override
-	public int hashCode() {
+	final public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PointInt)) return false;
+		PointInt that = (PointInt) o;
+		return x == that.getX() &&
+				y == that.getY();
+	}
+
+	@Override
+	final public int hashCode() {
 		return Objects.hash(x, y);
 	}
 

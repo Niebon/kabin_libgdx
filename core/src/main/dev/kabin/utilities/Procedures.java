@@ -1,6 +1,7 @@
 package dev.kabin.utilities;
 
 import dev.kabin.utilities.functioninterfaces.BiIntConsumer;
+import dev.kabin.utilities.shapes.RectInt;
 
 import java.util.function.IntConsumer;
 
@@ -10,6 +11,10 @@ public class Procedures {
         for (int i = from; i < to; i++) {
             consumer.accept(i);
         }
+    }
+
+    public static void forEachIntPairIn(RectInt rect, BiIntConsumer biIntConsumer) {
+        forEachIntPairIn(rect.getMinX(), rect.getMaxX(), rect.getMinY(), rect.getMaxY(), biIntConsumer);
     }
 
     public static void forEachIntPairIn(int imin, int imax, int jmin, int jmax, BiIntConsumer biIntConsumer) {

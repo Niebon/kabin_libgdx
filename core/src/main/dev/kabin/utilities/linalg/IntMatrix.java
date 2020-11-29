@@ -3,6 +3,7 @@ package dev.kabin.utilities.linalg;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import org.jetbrains.annotations.Contract;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -144,4 +145,10 @@ public final class IntMatrix {
     public int[] data(){
         return data;
     }
+
+    public void clear(){
+        Arrays.fill(data, 0);
+    }
+
+
 }

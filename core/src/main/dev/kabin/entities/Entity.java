@@ -63,8 +63,6 @@ public interface Entity extends
 
     RectInt positionNbd();
 
-
-
     /**
      * Acts on an entity with the present vector field and returns the vector of the action.
      *

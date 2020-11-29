@@ -68,5 +68,19 @@ class IntMatrixTest {
         Assertions.assertEquals(IntMatrix.nullMatrix(A.getHeight(), B.getWidth()), multiplicationResult);
     }
 
+    @Test
+    void increment(){
+        var A = IntMatrix.nullMatrix(3, 2);
+        A.increment(1, 2);
+        Assertions.assertEquals(1, A.get(1, 2));
+    }
+
+    @Test
+    void decrement(){
+        var A = IntMatrix.nullMatrix(3, 2);
+        A.decrement(1, 2);
+        Assertions.assertEquals(-1, A.get(1, 2));
+    }
+
 
 }

@@ -93,6 +93,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void setCurrentAnimation(AnimationClass animationClass) {
+        // TODO: (bug) this does not set the cached cachedTextureRegion correctly.
         currentAnimationClass = animationClass;
     }
 

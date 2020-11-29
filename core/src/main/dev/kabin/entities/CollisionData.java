@@ -1,7 +1,5 @@
 package dev.kabin.entities;
 
-import dev.kabin.GlobalData;
-import dev.kabin.components.Component;
 import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.points.ModifiablePointInt;
 import dev.kabin.utilities.points.Point;
@@ -15,16 +13,6 @@ import java.util.stream.Stream;
 
 public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
-    default void initCollisionData() {
-        if (GlobalData.getRootComponent() != null)
-            initCollisionData(GlobalData.getRootComponent());
-    }
-
-    default void removeCollisionData() {
-        if (GlobalData.getRootComponent() != null)
-            removeCollisionData(GlobalData.getRootComponent());
-    }
-
     @NotNull
     List<PointInt> getCollisionProfile();
 
@@ -36,10 +24,6 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
         final int rootX = getRootX(), rootY = getRootY();
         return getSurfaceContourProfile().stream()
                 .map(p -> Point.of(p.getX() + rootX, p.getY() + rootY));
-    }
-
-    default void initCollisionData(final Component component) {
-        actionEachCollisionPoint(component::incrementCollisionAt);
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
@@ -84,10 +68,6 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
      */
     default double angleRad() {
         return 0;
-    }
-
-    default void removeCollisionData(final Component component) {
-        actionEachCollisionPoint(component::decrementCollisionAt);
     }
 
     int getRootX();

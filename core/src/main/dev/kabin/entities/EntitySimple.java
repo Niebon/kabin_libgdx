@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
 import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.AnimationPlayback;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
@@ -21,6 +20,7 @@ import dev.kabin.utilities.shapes.RectInt;
 import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -77,8 +77,8 @@ public class EntitySimple implements Entity {
 
     private void updateNeighborhood() {
         positionNbd.translate(
-                getUnscaledX() - (int) Math.round(positionNbd.getCenterX()),
-                getUnscaledY() - (int) Math.round(positionNbd.getCenterY())
+                getUnscaledX() - Math.round(positionNbd.getCenterX()),
+                getUnscaledY() - Math.round(positionNbd.getCenterY())
         );
     }
 
@@ -239,12 +239,12 @@ public class EntitySimple implements Entity {
 
     @Override
     public int getRootX() {
-        return 0;
+        return getUnscaledX() - getPixelAnalysis().getPixelMassCenterXInt();
     }
 
     @Override
     public int getRootY() {
-        return 0;
+        return getUnscaledY() - getPixelAnalysis().getPixelMassCenterYInt();
     }
 
     @Override
@@ -272,4 +272,20 @@ public class EntitySimple implements Entity {
         return id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntitySimple that = (EntitySimple) o;
+        return id == that.id &&
+                Float.compare(that.x, x) == 0 &&
+                Float.compare(that.y, y) == 0 &&
+                Float.compare(that.scale, scale) == 0 &&
+                Objects.equals(atlasPath, that.atlasPath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(atlasPath, id, x, y, scale);
+    }
 }

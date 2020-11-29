@@ -55,7 +55,7 @@ public class Functions {
     /**
      * Snaps the given value to the grid. More precisely, given the partition:
      * <p>
-     * [a1,a2) u [a2,a2) u [a3,a3)...
+     * [a1,a2) u [a2,a2) u [a3,a3) u ...
      * <p>
      * where |ai-aj| = grid size if i - j = 1. If x is contained in the interval starting at ai, then x is snapped to
      * ai.
@@ -65,14 +65,7 @@ public class Functions {
      * @return the lower endpoint of the half open interval containing value from the partition determined by the grid.
      */
     public static int snapToGrid(float value, int gridSize) {
-        return (value >= 0) ?
-
-                // The cast maps 4.9 to 4 with grid size 2, as per contract.
-                ((int) Math.floor(value / gridSize)) * gridSize
-
-                // The cast alone maps -4.9 to -4 with grid size 2, defying the contract.
-                // Hence the minus 1.
-                : ((int) Math.floor(value / gridSize)) * gridSize;
+        return ((int) Math.floor(value / gridSize)) * gridSize;
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {

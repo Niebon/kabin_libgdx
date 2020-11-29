@@ -1,22 +1,22 @@
 package dev.kabin.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.points.UnmodifiablePointInt;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CollisionTile extends CollisionEntity {
 
     public static final String FRAME_INDEX = "frameIndex";
     public static final String TILE = "tile";
     public static final int TILE_SIZE = 16;
-    private static final Map<UnmodifiablePointInt, CollisionTile> objectPool = new HashMap<>();
+    private static final Map<UnmodifiablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
     private final AnimationClass.Tile tile;
     private final int index;
     private int unscaledX;
@@ -33,17 +33,37 @@ public class CollisionTile extends CollisionEntity {
         tile = AnimationClass.Tile.valueOf(parameters.get(TILE, String.class).orElseThrow());
         animationPlaybackImpl.setCurrentAnimation(tile);
         index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
-        overwriteCollisionTileAt(getUnscaledX(), getUnscaledY());
+        if (objectPool.containsKey(PointInt.unmodifiableOf(unscaledX, unscaledY))) {
+            //System.out.println("Already contained: " + unscaledX + ", " + unscaledY);
+            throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
+        }
+        //System.out.println("Adding: " + unscaledX + ", " + unscaledY);
+        objectPool.put(PointInt.unmodifiableOf(unscaledX, unscaledY), this);
     }
 
-    private void overwriteCollisionTileAt(int x, int y) {
-        if (objectPool.containsKey(PointInt.unmodifiableOf(x, y))) {
-            final CollisionTile removed = objectPool.remove(PointInt.unmodifiableOf(x, y));
-            removed.removeCollisionData();
-            EntityGroupProvider.unregisterEntity(removed);
-            removed.getActor().ifPresent(Actor::remove);
-        }
-        objectPool.put(PointInt.unmodifiableOf(getUnscaledX(), getUnscaledY()), this);
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * Clears any {@link CollisionTile} with unscaled coordinates x,y.
+     *
+     * @param x horizontal coordinate.
+     * @param y vertical coordinate.
+     * @return if the position was occupied, clears it and returns the occupant.
+     */
+    public static Optional<CollisionTile> clearAt(int x, int y) {
+        //System.out.println("Now cleaning: " + x + ", " + y);
+        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(x, y)));
+    }
+
+    public static Optional<CollisionTile> clearAt(float x, float y, float scaleFactor) {
+        int xInt = Functions.snapToGrid(x / scaleFactor, TILE_SIZE);
+        int yInt = Functions.snapToGrid(y / scaleFactor, TILE_SIZE);
+        //System.out.println("Now cleaning: " + xInt + ", " + yInt);
+        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(
+                xInt, yInt
+        )));
     }
 
 
@@ -66,6 +86,9 @@ public class CollisionTile extends CollisionEntity {
         unscaledX = Functions.snapToGrid(x / getScale(), TILE_SIZE);
         super.setX(unscaledX * getScale());
     }
+
+
+
 
     @Override
     public int getUnscaledX() {
@@ -94,4 +117,17 @@ public class CollisionTile extends CollisionEntity {
                 .put(FRAME_INDEX, index)
                 .put(TILE, tile.name());
     }
+
+
+    @Override
+    public int getRootX() {
+        return getUnscaledX() - TILE_SIZE / 2;
+    }
+
+    @Override
+    public int getRootY() {
+        return getUnscaledY() - TILE_SIZE / 2;
+    }
+
+
 }

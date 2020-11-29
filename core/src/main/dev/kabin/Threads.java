@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 public class Threads {
 
+    // A lock for order sensitive operations.
+    public static final Object THREAD_LOCK = new Object();
     private static final Logger LOGGER = Logger.getLogger(Threads.class.getName());
     private static final RectInt cameraRectangle = RectInt.centeredAt(0, 0, GlobalData.artWidth, GlobalData.artHeight);
     private static ScheduledExecutorService periodicBackgroundTasks;
@@ -33,10 +35,12 @@ public class Threads {
     }
 
     private static void handle() {
-        // Load & unload data.
-        Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-        Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
-        Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+        synchronized (THREAD_LOCK) {
+            // Load & unload data.
+            Component.registerEntityWhereabouts(GlobalData.getRootComponent());
+            Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+            Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+        }
     }
 
 }

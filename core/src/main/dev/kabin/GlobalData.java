@@ -69,7 +69,7 @@ public class GlobalData {
     public static void setMapSize(int worldSizeX, int worldSizeY) {
         GlobalData.worldSizeX = worldSizeX;
         GlobalData.worldSizeY = worldSizeY;
-        rootComponent = Component.representationOf(worldSizeX, worldSizeY);
+        rootComponent = Component.representationOf(worldSizeX, worldSizeY, scaleFactor);
     }
 
     static void updateCameraLocation() {
