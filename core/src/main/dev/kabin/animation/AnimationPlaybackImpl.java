@@ -93,8 +93,10 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void setCurrentAnimation(AnimationClass animationClass) {
-        // TODO: (bug) this does not set the cached cachedTextureRegion correctly.
-        currentAnimationClass = animationClass;
+        this.currentAnimationClass = animationClass;
+        //noinspection unchecked
+        final T currentAnimationClass = (T) this.currentAnimationClass;
+        cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[0]);
     }
 
     @Override
