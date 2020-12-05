@@ -44,7 +44,7 @@ public class EntityFactory {
             return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject).build());
         }
 
-        public EntityConstructor getMouseClickConstructor() {
+        public EntityConstructor getParameterConstructor() {
             return entityConstructor;
         }
 

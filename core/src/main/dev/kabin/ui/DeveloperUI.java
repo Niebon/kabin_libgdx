@@ -24,6 +24,7 @@ import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
+import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointFloat;
 import dev.kabin.utilities.pools.FontPool;
@@ -370,7 +371,7 @@ public class DeveloperUI {
                     .build();
 
 
-            Entity e = entityType.getMouseClickConstructor().construct(parameters);
+            Entity e = entityType.getParameterConstructor().construct(parameters);
             EntityCollectionProvider.registerEntity(e);
             float offsetX = e.getPixelMassCenterX() * e.getScale();
             float offsetY = e.getPixelMassCenterY() * e.getScale();
@@ -528,7 +529,19 @@ public class DeveloperUI {
                     throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                 }
                 matchingCt.getActor().ifPresent(Actor::remove);
-                matchingCt.actionEachCollisionPoint(GlobalData.getRootComponent()::decrementCollisionAt);
+                matchingCt.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
+                                                        @Override
+                                                        public void accept(int x, int y) {
+                                                            GlobalData.getRootComponent().decrementCollisionAt(x, y);
+                                                        }
+
+                                                        @Override
+                                                        public String toString() {
+                                                            return "GlobalData.getRootComponent().decrementCollisionAt";
+                                                        }
+                                                    }
+
+                );
                 Component.getEntityInCameraNeighborhoodCached().remove(matchingCt);
             } else {
                 final Iterator<Entity> entityIterator = Component.getEntityInCameraNeighborhoodCached().iterator();
@@ -542,7 +555,19 @@ public class DeveloperUI {
                         CollisionTile.clearAt(ct.getUnscaledX(), ct.getUnscaledY()).orElseThrow();
                         ct.getActor().ifPresent(Actor::remove);
 
-                        ct.actionEachCollisionPoint(GlobalData.getRootComponent()::decrementCollisionAt);
+                        ct.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
+                                                        @Override
+                                                        public void accept(int x, int y) {
+                                                            GlobalData.getRootComponent().decrementCollisionAt(x, y);
+                                                        }
+
+                                                        @Override
+                                                        public String toString() {
+                                                            return "GlobalData.getRootComponent().decrementCollisionAt";
+                                                        }
+                                                    }
+
+                        );
                         // Finally remove from cache, so that the next time this method is called, the same entity is not erased twice.
                         entityIterator.remove();
                     }
@@ -561,7 +586,7 @@ public class DeveloperUI {
             }
         }
 
-        public void replaceCollisionTileAtCurrentMousePosition() {
+        public void overrideCollisionTileAtCurrentMousePosition() {
             synchronized (THREAD_LOCK) {
                 if (selectedAsset == null) return;
                 if (currentType == null) return;
@@ -581,14 +606,25 @@ public class DeveloperUI {
                 removeGroundTileAtCurrentMousePosition(parameters.x(), parameters.y());
 
                 // Get the new instance.
-                final CollisionTile newCollisionTile = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getMouseClickConstructor().construct(parameters);
+                final CollisionTile newCollisionTile = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
 
                 // Init the data.
                 newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
                 EntityCollectionProvider.registerEntity(newCollisionTile);
-                newCollisionTile.actionEachCollisionPoint(GlobalData.getRootComponent()::incrementCollisionAt);
+                newCollisionTile.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
+                                                              @Override
+                                                              public void accept(int x, int y) {
+                                                                  GlobalData.getRootComponent().incrementCollisionAt(x, y);
+                                                              }
+
+                                                              @Override
+                                                              public String toString() {
+                                                                  return "GlobalData.getRootComponent().incrementCollisionAt";
+                                                              }
+                                                          }
+
+                );
                 Component.updateLocation(newCollisionTile, GlobalData.getRootComponent());
-                Component.getEntityInCameraNeighborhoodCached().add(newCollisionTile);
 
                 //System.out.println("Position: " + newCollisionTile.getPosition());
             }

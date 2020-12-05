@@ -28,6 +28,7 @@ public class Threads {
         }
         Component.registerEntityWhereabouts(GlobalData.getRootComponent());
         GlobalData.getRootComponent().clearData();
+        System.out.println("init:");
         Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
 
         periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
@@ -38,6 +39,7 @@ public class Threads {
         synchronized (THREAD_LOCK) {
             // Load & unload data.
             Component.registerEntityWhereabouts(GlobalData.getRootComponent());
+            System.out.println("handle");
             Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
             Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
         }

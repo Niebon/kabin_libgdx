@@ -11,6 +11,7 @@ import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
+import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.linalg.FloatMatrix;
 import dev.kabin.utilities.linalg.IntMatrix;
 import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
@@ -415,7 +416,17 @@ public class Component implements Id {
                 for (int j = 0, m = entities.size(); j < m; j++) {
                     Entity entity = entities.get(j);
                     if (entity instanceof CollisionData) {
-                        ((CollisionData) entity).actionEachCollisionPoint(component::incrementCollisionAt);
+                        ((CollisionData) entity).actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
+                            @Override
+                            public void accept(int x, int y) {
+                                GlobalData.getRootComponent().incrementCollisionAt(x, y);
+                            }
+
+                            @Override
+                            public String toString() {
+                                return "loadNearbyData: GlobalData.getRootComponent().incrementCollisionAt";
+                            }
+                        });
                     }
 //                    if (entity instanceof LadderData) {
 //                        ((LadderData) entity).initLadderData(c);
@@ -570,7 +581,7 @@ public class Component implements Id {
                 ((IntMatrix) data.get(key)).increment(x - minX, y - minY);
 
                 // Debugging
-                {
+                if (false) {
                     //System.out.println("Incremented at: " + Point.of(x, y));
                     int val = ((IntMatrix) data.get(key)).get(x - minX, y - minY);
                     if (val > 1) {
