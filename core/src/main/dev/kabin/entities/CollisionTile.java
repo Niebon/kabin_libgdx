@@ -75,8 +75,8 @@ public class CollisionTile extends CollisionEntity {
 
     @Override
     public void render(SpriteBatch batch, float stateTime) {
-        animationPlaybackImpl.setX(getX());
-        animationPlaybackImpl.setY(getY());
+        animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
+        animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
         animationPlaybackImpl.setScale(getScale());
         animationPlaybackImpl.setCurrentAnimation(tile);
         animationPlaybackImpl.renderFrameByIndex(batch, index);

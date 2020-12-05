@@ -414,7 +414,7 @@ public class Component implements Id {
 
                 final IndexedSet<Entity> entities = indivisibleComponentToEntityMapping.get(c);
                 for (int j = 0, m = entities.size(); j < m; j++) {
-                    Entity entity = entities.get(j);
+                    final Entity entity = entities.get(j);
                     if (entity instanceof CollisionData) {
                         ((CollisionData) entity).actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
                             @Override

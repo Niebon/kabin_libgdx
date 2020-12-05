@@ -13,26 +13,27 @@ public class Threads {
     // A lock for order sensitive operations.
     public static final Object THREAD_LOCK = new Object();
     private static final Logger LOGGER = Logger.getLogger(Threads.class.getName());
-    private static final RectInt cameraRectangle = RectInt.centeredAt(0, 0, GlobalData.artWidth, GlobalData.artHeight);
     private static ScheduledExecutorService periodicBackgroundTasks;
 
     public static void init() {
-        if (periodicBackgroundTasks != null) {
-            try {
-                periodicBackgroundTasks.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                LOGGER.warning(() -> "Periodic background tasks could not be shut down.");
-                e.printStackTrace();
-                System.exit(1);
+        synchronized (THREAD_LOCK) {
+            if (periodicBackgroundTasks != null) {
+                try {
+                    if (periodicBackgroundTasks.awaitTermination(10, TimeUnit.SECONDS)) {
+                        LOGGER.warning(() ->  "Terminated periodic background tasks successfully.");
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.warning(() -> "Periodic background tasks could not be shut down.");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
-        }
-        Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-        GlobalData.getRootComponent().clearData();
-        System.out.println("init:");
-        Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+            GlobalData.getRootComponent().clearData();
+            handle();
 
-        periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
-        periodicBackgroundTasks.scheduleWithFixedDelay(Threads::handle, 0, 1, TimeUnit.SECONDS);
+            periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
+            periodicBackgroundTasks.scheduleWithFixedDelay(Threads::handle, 0, 1, TimeUnit.SECONDS);
+        }
     }
 
     private static void handle() {
