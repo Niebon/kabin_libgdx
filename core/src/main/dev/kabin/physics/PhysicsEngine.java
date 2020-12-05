@@ -2,7 +2,7 @@ package dev.kabin.physics;
 
 import dev.kabin.GlobalData;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.entities.EntityCollectionProvider;
 
 /**
  * In order to make rendering deterministic,
@@ -33,7 +33,7 @@ public class PhysicsEngine {
     }
 
     static void renderFrame() {
-        EntityGroupProvider.actionForEachEntityOrderedByGroup(Entity::updatePhysics);
+        EntityCollectionProvider.actionForEachEntityOrderedByGroup(Entity::updatePhysics);
     }
 
 }

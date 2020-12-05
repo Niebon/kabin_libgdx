@@ -126,11 +126,21 @@ public class CollisionPool {
         */
         pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
-
-        // Finally, transform to game coordinates: positive y-direction points upwards.
+        // Finally, transform to game coordinates: positive y-direction points upwards ...
         pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
         pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
         pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
+
+
+        // ... and make collections unmodifiable:
+        {
+            pathIndexPairToCollisionProfile.get(path)
+                    .put(index, Collections.unmodifiableList(pathIndexPairToCollisionProfile.get(path).get(index)));
+            pathIndexPairToCollisionProfileBoundary.get(path)
+                    .put(index, Collections.unmodifiableList(pathIndexPairToCollisionProfileBoundary.get(path).get(index)));
+            pathIndexPairToSurfaceContourMapping.get(path)
+                    .put(index, Collections.unmodifiableList(pathIndexPairToSurfaceContourMapping.get(path).get(index)));
+        }
     }
 
     /*

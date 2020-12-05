@@ -255,8 +255,8 @@ public class Functions {
         return (x, y) -> minX <= x && x < maxX && minY <= y && y < maxY;
     }
 
-    public static int toInt(float d, float scale) {
-        return (int) Math.round(d / scale);
+    public static int toIntDivideBy(float d, float divideBy) {
+        return Math.round(d / divideBy);
     }
 
 

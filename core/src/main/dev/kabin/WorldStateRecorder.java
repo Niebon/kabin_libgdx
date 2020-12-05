@@ -2,7 +2,7 @@ package dev.kabin;
 
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
-import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.entities.EntityCollectionProvider;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class WorldStateRecorder {
 
     public static JSONObject recordWorldState() {
         final List<Entity> allEntities = new ArrayList<>();
-        EntityGroupProvider.populateCollection(allEntities, e -> true);
+        EntityCollectionProvider.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
         o.put(WORLD_SIZE_X, GlobalData.worldSizeX);
@@ -39,14 +39,14 @@ public class WorldStateRecorder {
                 System.exit(1);
             } else {
                 JSONObject json = (JSONObject) entry;
-                String type = json.getString("type");
-                if (!admissibleEntityTypes.contains(type)) {
-                    logger.warning(() -> "A recorded entity type was inadmissible." + json);
+                String primitiveType = json.getString("primitiveType");
+                if (!admissibleEntityTypes.contains(primitiveType)) {
+                    logger.warning(() -> "A recorded entity primitiveType was inadmissible." + json);
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(type).getJsonConstructor().construct(json);
-                    EntityGroupProvider.registerEntity(e);
+                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor().construct(json);
+                    EntityCollectionProvider.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }
             }

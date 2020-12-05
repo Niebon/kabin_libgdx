@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class EntityGroupProvider {
+public class EntityCollectionProvider {
 
     private static final Map<Type, List<Entity>> groupMap = new EnumMap<>(Type.class);
 
@@ -46,8 +46,8 @@ public class EntityGroupProvider {
         groupMap.get(e.getType().groupType).add(e);
     }
 
-    public static void unregisterEntity(Entity e) {
-        groupMap.get(e.getType().groupType).remove(e);
+    public static boolean unregisterEntity(Entity e) {
+        return groupMap.get(e.getType().groupType).remove(e);
     }
 
     public static void actionForEachEntityInGroup(Type groupType, Consumer<Entity> action) {

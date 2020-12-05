@@ -6,9 +6,8 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 /**
- * This class uses primitives instead of boxed values for doubles.
- * Preferably, use this class instead of the boxed version {@link RectBoxedDouble} if utilized in the main loop.
- * For the boxed version, see {@link RectBoxedDouble}.
+ * This class uses primitives instead of boxed values for ints.
+ * Preferably, use this class instead of the boxed version {@link RectBoxedInt} if utilized in the main loop.
  */
 public class RectInt {
 

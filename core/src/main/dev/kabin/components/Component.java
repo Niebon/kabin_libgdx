@@ -6,16 +6,15 @@ import dev.kabin.collections.Id;
 import dev.kabin.collections.IndexedSet;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import dev.kabin.utilities.linalg.FloatMatrix;
 import dev.kabin.utilities.linalg.IntMatrix;
-import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
-import dev.kabin.utilities.pools.objectpool.OutputFromPool;
+import dev.kabin.utilities.pools.objectpool.Borrowed;
 import dev.kabin.utilities.shapes.RectFloat;
 import dev.kabin.utilities.shapes.RectInt;
 import org.jetbrains.annotations.Contract;
@@ -30,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static dev.kabin.components.ComponentParameters.COARSENESS_PARAMETER;
 
@@ -129,15 +127,14 @@ public class Component implements Id {
 
         this.parameters = parameters;
 
-        final Stream<ComponentParameters> componentParameterStream = IntStream.range(0, 4).mapToObj(
+        final List<ComponentParameters> componentParametersList = IntStream.range(0, 4).mapToObj(
                 integer -> new ComponentParameters()
                         .setX(parameters.getX() + COMPONENT_INDEX_TO_X_MAPPING.apply(integer) * parameters.getWidth() / 2)
                         .setY(parameters.getY() + COMPONENT_INDEX_TO_Y_MAPPING.apply(integer) * parameters.getHeight() / 2)
                         .setWidth(parameters.getWidth() / 2)
                         .setHeight(parameters.getHeight() / 2)
                         .setScaleFactor(scaleFactor)
-        );
-        final List<ComponentParameters> componentParametersList = componentParameterStream.collect(Collectors.toList());
+        ).collect(Collectors.toList());
 
         // One has subcomponents <=> all have subcomponents.
         if (componentParametersList.get(0).hasSubcomponents()) {
@@ -155,7 +152,7 @@ public class Component implements Id {
                     case FLOAT -> doubleDataMapperByKey.put(key, (x, y) -> {
                         if (!underlyingRectContains(x, y)) return 0;
 
-                        // See defn. of adjacency in javadoc of this class.
+                        // See definition of adjacency in javadoc of this class.
                         if (x < midPointX) {
                             if (y < midPointY) {
                                 // Upper left square
@@ -177,7 +174,7 @@ public class Component implements Id {
                     case INTEGER -> intDataMapperByKey.put(key, (x, y) -> {
                         if (!underlyingRectContains(x, y)) return 0;
 
-                        // See defn. of adjacency in javadoc of this class.
+                        // See definition of adjacency in javadoc of this class.
                         if (x < midPointX) {
                             if (y < midPointY) {
                                 // Upper left square
@@ -231,10 +228,6 @@ public class Component implements Id {
         this.depth = depth;
     }
 
-    public static void clearEntityMapping() {
-        entityToIndivisibleComponentMapping.clear();
-    }
-
     public static void updateLocation(@NotNull Entity entity, @NotNull Component component) {
         updateLocation(Component.entityToIndivisibleComponentMapping, Component.indivisibleComponentToEntityMapping,
                 entity, entity.graphicsNbd(), component);
@@ -253,7 +246,7 @@ public class Component implements Id {
     }
 
     /**
-     * If the image view neighborhood of the given entity intersects this component,
+     * If the neighborhood of the given entity intersects this component,
      * then the entity will be added to this components entity list. Otherwise, it is removed.
      * A recursive call is made to all of this components sub-components method.
      *
@@ -300,27 +293,27 @@ public class Component implements Id {
 
     	/*
     	Free resources from previous iteration.
-
-    	Freeing resources right before the next iteration as opposed to at the end of the previous iteration,
-    	is in order to let potential unfinished JavaFX threads finish with their List<Entity> instances
-    	without the data being cleared while they are busy.
     	 */
         {
 
             // Give back data to pools.
             COMPONENT_INDEXED_SET_POOL.giveBackAll();
-            if (COMPONENT_INDEXED_SET_POOL.taken() > 0)
-                throw new RuntimeException("There were so many: " + COMPONENT_INDEXED_SET_POOL.taken());
+            if (COMPONENT_INDEXED_SET_POOL.taken() > 0) {
+                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + COMPONENT_INDEXED_SET_POOL.taken());
+            }
+
 
             ENTITY_INDEXED_SET_POOL.giveBackAll();
-            if (ENTITY_INDEXED_SET_POOL.taken() > 0) throw new RuntimeException();
+            if (ENTITY_INDEXED_SET_POOL.taken() > 0) {
+                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + ENTITY_INDEXED_SET_POOL.taken());
+            }
         }
 
 
         final Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
         final Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-        EntityGroupProvider.actionForEachEntityOrderedByGroup(e -> updateLocation(entityToIndivisibleComponentMapping,
+        EntityCollectionProvider.actionForEachEntityOrderedByGroup(e -> updateLocation(entityToIndivisibleComponentMapping,
                 indivisibleComponentToEntityMapping,
                 e,
                 e.graphicsNbd(),
@@ -351,7 +344,7 @@ public class Component implements Id {
         return entitiesInCameraBoundsCached;
     }
 
-    @OutputFromPool(pool = "SEARCH_ALG_OBJECT_POOL")
+    @Borrowed(origin = "SEARCH_ALG_OBJECT_POOL")
     public static @NotNull ArrayList<Component> treeSearchFindIndivisibleComponentsMatching(
             Component root,
             Predicate<Component> condition
@@ -678,7 +671,7 @@ public class Component implements Id {
     }
 
     public boolean collisionForScaledCoordinatesAt(float x, float y) {
-        return isCollisionAt(Functions.toInt(x, scaleFactor), Functions.toInt(y, scaleFactor));
+        return isCollisionAt(Functions.toIntDivideBy(x, scaleFactor), Functions.toIntDivideBy(y, scaleFactor));
     }
 
     public void increaseVectorFieldXAt(int x, int y) {
@@ -738,25 +731,25 @@ public class Component implements Id {
      * </ul>
      */
     public enum Data {
-        COLLISION(Type.INTEGER),
-        LADDER(Type.INTEGER),
-        VECTOR_FIELD_X(Type.FLOAT),
-        VECTOR_FIELD_Y(Type.FLOAT);
+        COLLISION(PrimitiveType.INTEGER),
+        LADDER(PrimitiveType.INTEGER),
+        VECTOR_FIELD_X(PrimitiveType.FLOAT),
+        VECTOR_FIELD_Y(PrimitiveType.FLOAT);
 
-        private final Type type;
+        private final PrimitiveType primitiveType;
 
-        Data(Type type) {
-            this.type = type;
+        Data(PrimitiveType primitiveType) {
+            this.primitiveType = primitiveType;
         }
 
-        public Type getType() {
-            return type;
+        public PrimitiveType getType() {
+            return primitiveType;
         }
 
         /**
          * To further help with classification, to each primitive types we encounter associate a constant.
          */
-        enum Type {
+        enum PrimitiveType {
             INTEGER,
             FLOAT
         }

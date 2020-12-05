@@ -12,7 +12,7 @@ public class ComponentParameters {
     private float scaleFactor;
     private boolean hasSubcomponents = true;
 
-    public static final int COARSENESS_PARAMETER = 256;
+    public static final int COARSENESS_PARAMETER = 64; // 256;
 
     @Contract("_ -> this")
     ComponentParameters setX(int x) {

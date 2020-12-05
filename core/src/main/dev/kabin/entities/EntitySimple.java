@@ -129,7 +129,7 @@ public class EntitySimple implements Entity {
                             }
 
                             entitiesScheduledForRemoval.forEach(e -> {
-                                EntityGroupProvider.unregisterEntity(e);
+                                EntityCollectionProvider.unregisterEntity(e);
                                 e.getActor().ifPresent(Actor::remove);
                             });
 
@@ -264,7 +264,7 @@ public class EntitySimple implements Entity {
                 .put("y", getUnscaledY())
                 .put("atlasPath", getAtlasPath())
                 .put("layer", getLayer())
-                .put("type", getType().name());
+                .put("primitiveType", getType().name());
     }
 
     @Override

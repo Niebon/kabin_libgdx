@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityGroupProvider;
+import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
@@ -73,7 +73,7 @@ public class MainGame extends ApplicationAdapter {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-        EntityGroupProvider.actionForEachEntityOrderedByGroup(MainGame::renderEntityGlobalStateTime);
+        EntityCollectionProvider.actionForEachEntityOrderedByGroup(MainGame::renderEntityGlobalStateTime);
 
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
@@ -97,7 +97,9 @@ public class MainGame extends ApplicationAdapter {
                     if (GlobalData.getRootComponent().isCollisionAt(i, j)) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                         shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.rect(i * scaleFactor, j * scaleFactor, scaleFactor, scaleFactor);
+                        float x = (i - currentCameraBounds.getMinX()) * scaleFactor;
+                        float y = (j - currentCameraBounds.getMinY()) * scaleFactor;
+                        shapeRenderer.rect(x, y, scaleFactor, scaleFactor);
                         shapeRenderer.end();
                     }
                 }

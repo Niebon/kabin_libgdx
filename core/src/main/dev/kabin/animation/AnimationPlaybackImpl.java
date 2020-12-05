@@ -96,7 +96,9 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         this.currentAnimationClass = animationClass;
         //noinspection unchecked
         final T currentAnimationClass = (T) this.currentAnimationClass;
-        cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[0]);
+        cachedTextureRegion = regions != null ?
+                regions.get(animationBlueprint != null ? animationBlueprint.get(currentAnimationClass)[0] : 0) :
+                null;
     }
 
     @Override

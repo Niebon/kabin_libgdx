@@ -21,9 +21,9 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int artWidth = 400;
     public static final int artHeight = 225;
-    public static TextureAtlas atlas;
     private static final InputProcessor inputProcessor = new InputEventDistributor();
     private static final PointDouble scale = Point.of(1.0, 1.0);
+    public static TextureAtlas atlas;
     public static boolean developerMode = true;
     public static Stage stage;
     public static SpriteBatch batch;
@@ -72,11 +72,13 @@ public class GlobalData {
         rootComponent = Component.representationOf(worldSizeX, worldSizeY, scaleFactor);
     }
 
+
     static void updateCameraLocation() {
         // Find new camera position:
         GlobalData.currentCameraBounds.translate(
-                Math.round(Functions.toInt(camera.position.x, scaleFactor) - currentCameraBounds.getCenterX()),
-                Math.round(Functions.toInt(camera.position.y, scaleFactor) - currentCameraBounds.getCenterY())
+                Math.round(Functions.toIntDivideBy(camera.position.x, scaleFactor) - currentCameraBounds.getCenterX()),
+                Math.round(Functions.toIntDivideBy(camera.position.y, scaleFactor) - currentCameraBounds.getCenterY())
         );
+        //System.out.println("camera.position: " + Point.of(camera.position.x, camera.position.y) + "currentCameraBounds: " + Point.of(currentCameraBounds.getCenterX(), currentCameraBounds.getCenterY()));
     }
 }

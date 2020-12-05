@@ -6,6 +6,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Documented
-public @interface OutputFromPool {
-    String pool();
+public @interface Borrowed {
+    String origin();
 }

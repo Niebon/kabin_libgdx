@@ -57,13 +57,19 @@ public class CollisionTile extends CollisionEntity {
         return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(x, y)));
     }
 
+    /**
+     * Clears any {@link CollisionTile} which exists at the given position.
+     *
+     * @param x coordinate.
+     * @param y coordinate.
+     * @param scaleFactor scale-factor.
+     *
+     * @return returns the {@link CollisionTile} which was cleared at the given position (if it exists).
+     */
     public static Optional<CollisionTile> clearAt(float x, float y, float scaleFactor) {
         int xInt = Functions.snapToGrid(x / scaleFactor, TILE_SIZE);
         int yInt = Functions.snapToGrid(y / scaleFactor, TILE_SIZE);
-        //System.out.println("Now cleaning: " + xInt + ", " + yInt);
-        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(
-                xInt, yInt
-        )));
+        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(xInt, yInt)));
     }
 
 

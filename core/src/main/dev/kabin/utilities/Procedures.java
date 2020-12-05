@@ -5,6 +5,9 @@ import dev.kabin.utilities.shapes.RectInt;
 
 import java.util.function.IntConsumer;
 
+/**
+ * Helper procedures to iterate over integers without wrapper objects.
+ */
 public class Procedures {
 
     public static void forEachIntInRange(int from, int to, IntConsumer consumer) {

@@ -54,7 +54,7 @@ class ComponentTest {
                         .setScaleFactor(1)
         );
 
-        Arrays.stream(Component.Data.values()).filter(d -> d.getType() == Component.Data.Type.INTEGER).forEach(type ->
+        Arrays.stream(Component.Data.values()).filter(d -> d.getType() == Component.Data.PrimitiveType.INTEGER).forEach(type ->
                 Assertions.assertThrows(RuntimeException.class, () -> mainComponent.decrement(0, 0, type)));
     }
 
@@ -82,7 +82,7 @@ class ComponentTest {
                 final int x = pointInt.x(), y = pointInt.y();
                 {
 
-                    if (type.getType() == Component.Data.Type.INTEGER) {
+                    if (type.getType() == Component.Data.PrimitiveType.INTEGER) {
                         mainComponent.increment(x, y, type);
                         final Object expected = 1;
                         Assertions.assertEquals(expected, mainComponent.getDataInt(pointInt.x(), pointInt.y(), type),
@@ -101,7 +101,7 @@ class ComponentTest {
                 }
                 {
 
-                    if (type.getType() == Component.Data.Type.INTEGER) {
+                    if (type.getType() == Component.Data.PrimitiveType.INTEGER) {
                         mainComponent.decrement(x, y, type);
                         final Object expected = 0;
                         Assertions.assertEquals(expected, mainComponent.getDataInt(pointInt.x(), pointInt.y(), type),
