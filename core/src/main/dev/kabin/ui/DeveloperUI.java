@@ -52,6 +52,7 @@ public class DeveloperUI {
     private static final BitmapFont BITMAP_FONT_16 = FontPool.find(16);
     private static final EntityLoadingWidget ENTITY_LOADING_WIDGET = new EntityLoadingWidget();
     private static final TileSelectionWidget TILE_SELECTION_WIDGET = new TileSelectionWidget();
+    private static final SelectBox<Button> FILE_DROP_DOWN_MENU = new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default");
     private static final DragListener SELECTION_BEGIN = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
@@ -87,6 +88,37 @@ public class DeveloperUI {
             }
         });
         DeveloperUI.setVisible(GlobalData.developerMode);
+
+
+        var open = new Button();
+        open.setName("open");
+        var save = new Button();
+        save.setName("save");
+        var saveAs = new Button();
+        saveAs.setName("save as");
+        open.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                DeveloperUI.saveWorld();
+            }
+        });
+        save.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                DeveloperUI.loadWorld();
+            }
+        });
+        saveAs.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("TODO: save as");
+            }
+        });
+        FILE_DROP_DOWN_MENU.setItems(open, save, saveAs);
+        FILE_DROP_DOWN_MENU.setSelectedIndex(0);
+        FILE_DROP_DOWN_MENU.setPosition(0f, GlobalData.screenHeight - FILE_DROP_DOWN_MENU.getHeight());
+        FILE_DROP_DOWN_MENU.setName("File");
+        stage.addActor(FILE_DROP_DOWN_MENU);
     }
 
     public static void addEntityToDraggedEntities(Entity e) {
