@@ -40,7 +40,6 @@ public class Threads {
         synchronized (THREAD_LOCK) {
             // Load & unload data.
             Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-            System.out.println("handle");
             Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
             Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
         }

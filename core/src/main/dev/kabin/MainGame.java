@@ -9,7 +9,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
@@ -46,6 +51,21 @@ public class MainGame extends ApplicationAdapter {
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         DeveloperUI.init(stage);
+
+//        stage.addActor(new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default") {
+//            {
+//                setItems(new Button() {
+//                    {
+//                        addListener(new ClickListener() {
+//                            @Override
+//                            public void clicked(InputEvent event, float x, float y) {
+//                                System.out.println("hello");
+//                            }
+//                        });
+//                    }
+//                });
+//            }
+//        });
 
         GlobalData.atlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();

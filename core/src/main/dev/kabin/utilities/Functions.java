@@ -47,8 +47,8 @@ public class Functions {
         return false;
     }
 
-    public static float snapToPixel(float x) {
-        return Math.round(x / GlobalData.scaleFactor) * GlobalData.scaleFactor;
+    public static float snapToPixel(float input) {
+        return Math.round(input / GlobalData.scaleFactor) * GlobalData.scaleFactor;
     }
 
 

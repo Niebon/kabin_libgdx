@@ -73,6 +73,9 @@ public class DeveloperUI {
             ENTITY_SELECTION.end();
         }
     };
+    public static final String OPEN = "open";
+    public static final String SAVE = "save";
+    public static final String SAVE_AS = "save as";
 
     private static JSONObject worldState;
 
@@ -90,39 +93,56 @@ public class DeveloperUI {
         DeveloperUI.setVisible(GlobalData.developerMode);
 
 
-        var open = new Button();
-        open.setName("open");
-        var save = new Button();
-        save.setName("save");
-        var saveAs = new Button();
-        saveAs.setName("save as");
-        open.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                DeveloperUI.saveWorld();
-            }
-        });
-        save.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                DeveloperUI.loadWorld();
-            }
-        });
-        saveAs.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("TODO: save as");
-            }
-        });
-        FILE_DROP_DOWN_MENU.setItems(open, save, saveAs);
+        // Add drop down menu:
+        var buttonOpen = new Button();
+        buttonOpen.setName(OPEN);
+        var buttonSave = new Button();
+        buttonSave.setName(SAVE);
+        var buttonSaveAs = new Button();
+        buttonSaveAs.setName(SAVE_AS);
+        FILE_DROP_DOWN_MENU.setItems(buttonOpen, buttonSave, buttonSaveAs);
         FILE_DROP_DOWN_MENU.setSelectedIndex(0);
         FILE_DROP_DOWN_MENU.setPosition(0f, GlobalData.screenHeight - FILE_DROP_DOWN_MENU.getHeight());
         FILE_DROP_DOWN_MENU.setName("File");
+        FILE_DROP_DOWN_MENU.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+               switch (FILE_DROP_DOWN_MENU.getSelected().getName()) {
+                   case OPEN: DeveloperUI.loadWorld();
+                   case SAVE:  DeveloperUI.saveWorld();
+                   case SAVE_AS: DeveloperUI.saveWorldAs();
+                   default:
+               }
+            }
+        });
         stage.addActor(FILE_DROP_DOWN_MENU);
     }
 
+    private static void saveWorldAs() {
+        EXECUTOR_SERVICE.execute(() -> {
+            final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
+                    + "core/assets/worlds/";
+            JFileChooser chooser = new JFileChooser(relativePath);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            JFrame f = new JFrame();
+            f.setVisible(true);
+            f.toFront();
+            f.setVisible(false);
+            int res = chooser.showOpenDialog(f);
+            f.dispose();
+            if (res == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = chooser.getSelectedFile();
+                GlobalData.currentWorld = selectedFile.getName();
+                saveWorld(Path.of(WORLDS_PATH + GlobalData.currentWorld));
+            }
+        });
+    }
+
     public static void addEntityToDraggedEntities(Entity e) {
-        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(), e.getY(), MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld(), e));
+        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(),
+                e.getY(),
+                MouseEventUtil.getMouseXRelativeToWorld(),
+                MouseEventUtil.getMouseYRelativeToWorld(),
+                e));
     }
 
     public static void render(SpriteBatch batch, float stateTime) {
@@ -141,7 +161,7 @@ public class DeveloperUI {
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
             e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX()));
-            e.setY(Functions.snapToPixel((de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY())));
+            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY()));
         }
     }
 
@@ -161,9 +181,13 @@ public class DeveloperUI {
     }
 
     public static void saveWorld() {
-        worldState = WorldStateRecorder.recordWorldState();
+        saveWorld(Path.of(WORLDS_PATH + GlobalData.currentWorld));
+    }
+
+    public static void saveWorld(Path path) {
+        JSONObject worldState = WorldStateRecorder.recordWorldState();
         try {
-            Files.write(Path.of(WORLDS_PATH + GlobalData.currentWorld), worldState.toString().getBytes());
+            Files.write(path, worldState.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -328,6 +352,7 @@ public class DeveloperUI {
                     loadAsset();
                     return true;
                 }
+
             });
             widget.addDialogActor(loadImageAssetButton);
 
