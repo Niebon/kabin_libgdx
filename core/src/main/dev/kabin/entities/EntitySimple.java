@@ -101,9 +101,9 @@ public class EntitySimple implements Entity {
     private void handleMouseClickRight() {
         if (GlobalData.developerMode) {
             final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-            var dialog = new Dialog("Actions", skin);
-            float width = 200;
-            float height = 200;
+            final var dialog = new Dialog("Actions", skin);
+            final float width = 200;
+            final float height = 200;
             dialog.setBounds(
                     MouseEventUtil.getXRelativeToUI() + width * 0.1f,
                     MouseEventUtil.getYRelativeToUI() + height * 0.1f,
@@ -112,7 +112,7 @@ public class EntitySimple implements Entity {
             dialog.getContentTable().defaults().pad(10);
 
             // Remove button.
-            var removeButton = new TextButton("Remove", skin, "default");
+            final var removeButton = new TextButton("Remove", skin, "default");
             removeButton.addListener(
                     new ClickListener() {
                         @Override

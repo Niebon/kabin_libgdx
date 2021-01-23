@@ -2,7 +2,6 @@ package dev.kabin.entities;
 
 import dev.kabin.utilities.points.PointInt;
 import dev.kabin.utilities.pools.CollisionPool;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

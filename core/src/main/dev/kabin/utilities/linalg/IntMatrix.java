@@ -3,7 +3,6 @@ package dev.kabin.utilities.linalg;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import org.jetbrains.annotations.Contract;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;

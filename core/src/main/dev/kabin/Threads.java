@@ -1,7 +1,6 @@
 package dev.kabin;
 
 import dev.kabin.components.Component;
-import dev.kabin.utilities.shapes.RectInt;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
