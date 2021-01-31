@@ -179,6 +179,26 @@ public class BenchmarkUtil {
             return new NumberRepresentation(digits, zeros, digitsAndComma.charAt(0) == '-' ? Sign.NEGATIVE : Sign.POSITIVE);
         }
 
+        /**
+         * 1.0848323290354501E-7
+         * 0.0000000
+         *
+         * 1 * 10^-3
+         * 0.001
+         * zeros = -3
+         *
+         * exponent = 2
+         * 0.00001 * 10^2
+         *
+         * exponent
+         *
+         *
+         * 1 * 10^3
+         * 1 000.
+         * zeros = 3
+         * @param exponent
+         * @return
+         */
         public String coefficient(int exponent) {
             if (exponent == zeros) {
                 return Stream.builder()
