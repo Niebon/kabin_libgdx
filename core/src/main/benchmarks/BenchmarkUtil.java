@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -144,10 +143,7 @@ public class BenchmarkUtil {
     static class NumberRepresentation {
 
         private final List<Character> digits;
-
-        // If number = x.xxxxxx, then comma position = 0.
-        // If number = xxxxxx.x, then comma position = 5;
-        private final int zeros; // relative to first digit.
+        private final int zeros; // A negative if relative to first significant digit, or positive if relative to last significant digit.
         private final Sign sign;
 
         NumberRepresentation(List<Character> digits,
@@ -196,21 +192,50 @@ public class BenchmarkUtil {
          * 1 * 10^3
          * 1 000.
          * zeros = 3
+         *
+         *
          * @param exponent
          * @return
          */
         public String coefficient(int exponent) {
-            if (exponent == zeros) {
+            final int exponentialShift = zeros - exponent;
+            if (exponentialShift == 0) {
                 return Stream.builder()
                         .add(sign.getSymbol())
                         .add(String.valueOf(digits.get(0)))
-                        .add("")
+                        .add(".")
                         .add(digits.subList(1, digits.size()).stream().map(String::valueOf).collect(Collectors.joining()))
                         .build()
                         .map(String::valueOf)
                         .collect(Collectors.joining());
+            } else if (exponentialShift < 0) {
+                return Stream.builder().add(sign.getSymbol())
+                        .add("0")
+                        .add(".")
+                        .add(Strings.repeat("0", Math.abs(exponentialShift + 1)))
+                        .add(digits.stream().map(String::valueOf).collect(Collectors.joining()))
+                        .build()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining());
+            } else {
+                int zerosToAppend = Math.max(exponentialShift + 1 - digits.size(), 0);
+                if (zerosToAppend == 0) {
+                    return Stream.builder().add(sign.getSymbol())
+                            .add(digits.subList(0, exponentialShift + 1).stream().map(String::valueOf).collect(Collectors.joining()))
+                            .add(exponentialShift + 1 == digits.size() ? "" : ".")
+                            .add(digits.subList(exponentialShift + 1, digits.size()).stream().map(String::valueOf).collect(Collectors.joining()))
+                            .build()
+                            .map(String::valueOf)
+                            .collect(Collectors.joining());
+                } else {
+                    return Stream.builder().add(sign.getSymbol())
+                            .add(digits.stream().map(String::valueOf).collect(Collectors.joining()))
+                            .add(Strings.repeat("0", zerosToAppend))
+                            .build()
+                            .map(String::valueOf)
+                            .collect(Collectors.joining());
+                }
             }
-
 
 
 //            int newCommaPosition = zeros - exponent;

@@ -67,7 +67,6 @@ public class DeveloperUI {
             ) {
                 ENTITY_SELECTION.begin();
             }
-
         }
     };
     private static final DragListener SELECTION_END = new DragListener() {

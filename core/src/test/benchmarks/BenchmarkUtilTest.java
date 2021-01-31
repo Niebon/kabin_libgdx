@@ -58,29 +58,28 @@ class BenchmarkUtilTest {
 
     @Test
     void numberRepresentation_positiveNumber_negativeExponent() {
-//        Assertions.assertEquals("0.010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-9));
-//        Assertions.assertEquals("0.10848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-8));
-//        Assertions.assertEquals("1.0848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-7));
-//        Assertions.assertEquals("10.848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-6));
-//        Assertions.assertEquals("108.48323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-5));
-//        Assertions.assertEquals("1084.8323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-4));
-//        Assertions.assertEquals("10848.323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-3));
-//        Assertions.assertEquals("108483.23290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-2));
-//        Assertions.assertEquals("1084832.3290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-1));
+        Assertions.assertEquals("108.48323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-9));
+        Assertions.assertEquals("10.848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-8));
+        Assertions.assertEquals("1.0848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-7));
+        Assertions.assertEquals("0.10848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-6));
+        Assertions.assertEquals("0.010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-5));
+        Assertions.assertEquals("0.0010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-4));
+        Assertions.assertEquals("0.00010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-3));
+        Assertions.assertEquals("0.000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-2));
+        Assertions.assertEquals("0.0000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-1));
 
 
+        Assertions.assertEquals("0.00000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(0));
+        Assertions.assertEquals("0.0000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-1));
+        Assertions.assertEquals("0.000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-2));
+        Assertions.assertEquals("0.00010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-3));
+        Assertions.assertEquals("0.0010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-4));
+        Assertions.assertEquals("0.010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-5));
+        Assertions.assertEquals("0.10848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-6));
 
-//        Assertions.assertEquals("0.000000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(0));
-//        Assertions.assertEquals("0.00000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-1));
-//        Assertions.assertEquals("0.0000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-2));
-//        Assertions.assertEquals("0.000010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-3));
-//        Assertions.assertEquals("0.00010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-4));
-//        Assertions.assertEquals("0.0010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-5));
-//        Assertions.assertEquals("0.010848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-6));
 
-
-        Assertions.assertEquals("0.10848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-7));
-        Assertions.assertEquals("1.0848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-8));
+        Assertions.assertEquals("1.0848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-7));
+        Assertions.assertEquals("10.848323290354501", BenchmarkUtil.NumberRepresentation.parse("1.0848323290354501E-7").coefficient(-8));
     }
 
     @Test
