@@ -1,5 +1,6 @@
 package dev.kabin.utilities.points;
 
+import dev.kabin.utilities.HashCodeUtil;
 import dev.kabin.utilities.functioninterfaces.DoubleToDoubleFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +102,7 @@ public class PointDouble implements Point<Double> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return HashCodeUtil.hashCode(Double.hashCode(x), Double.hashCode(y));
     }
 
     @Override

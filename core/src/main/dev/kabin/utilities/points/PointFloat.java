@@ -1,5 +1,6 @@
 package dev.kabin.utilities.points;
 
+import dev.kabin.utilities.HashCodeUtil;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -99,7 +100,7 @@ public class PointFloat implements Point<Float> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return HashCodeUtil.hashCode(Float.hashCode(x), Float.hashCode(y));
     }
 
     @Override

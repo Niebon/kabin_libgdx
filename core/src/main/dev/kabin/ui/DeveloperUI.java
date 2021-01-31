@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
 import dev.kabin.GlobalData;
+import dev.kabin.Threads;
 import dev.kabin.WorldStateRecorder;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
@@ -42,10 +43,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
-import static dev.kabin.Threads.THREAD_LOCK;
 
 public class DeveloperUI {
 
+    public static final String OPEN = "open";
+    public static final String SAVE = "save";
+    public static final String SAVE_AS = "save as";
     private static final Set<DraggedEntity> CURRENTLY_DRAGGED_ENTITIES = new HashSet<>();
     private static final EntitySelection ENTITY_SELECTION = new EntitySelection();
     private static final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
@@ -73,10 +76,6 @@ public class DeveloperUI {
             ENTITY_SELECTION.end();
         }
     };
-    public static final String OPEN = "open";
-    public static final String SAVE = "save";
-    public static final String SAVE_AS = "save as";
-
     private static JSONObject worldState;
 
     public static EntitySelection getEntitySelection() {
@@ -106,12 +105,15 @@ public class DeveloperUI {
         FILE_DROP_DOWN_MENU.setName("File");
         FILE_DROP_DOWN_MENU.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-               switch (FILE_DROP_DOWN_MENU.getSelected().getName()) {
-                   case OPEN: DeveloperUI.loadWorld();
-                   case SAVE:  DeveloperUI.saveWorld();
-                   case SAVE_AS: DeveloperUI.saveWorldAs();
-                   default:
-               }
+                switch (FILE_DROP_DOWN_MENU.getSelected().getName()) {
+                    case OPEN:
+                        DeveloperUI.loadWorld();
+                    case SAVE:
+                        DeveloperUI.saveWorld();
+                    case SAVE_AS:
+                        DeveloperUI.saveWorldAs();
+                    default:
+                }
             }
         });
         stage.addActor(FILE_DROP_DOWN_MENU);
@@ -634,17 +636,21 @@ public class DeveloperUI {
 
 
         /**
-         * Finds any entity on screen. Deletes any of type {@link CollisionTile} with position matching
+         * Finds any entity on screen. Deletes any of type {@link CollisionTile collision tile} with position matching
          * the current mouse position.
          */
         public static void removeGroundTileAtCurrentMousePositionThreadLocked() {
-            synchronized (THREAD_LOCK) {
-                removeGroundTileAtCurrentMousePosition(MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld());
-            }
+            Threads.synchronize(
+                    () -> removeGroundTileAtCurrentMousePosition(MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld())
+            );
         }
 
-        public void overrideCollisionTileAtCurrentMousePosition() {
-            synchronized (THREAD_LOCK) {
+        /**
+         * This procedure remove any {@link CollisionTile collision tile} residing at the current mouse position.
+         * Afterwards, a new collision tile is added at the current mouse position.
+         */
+        public void replaceCollisionTileAtCurrentMousePositionWithCurrentSelection() {
+            Threads.synchronize(() -> {
                 if (selectedAsset == null) return;
                 if (currentType == null) return;
                 final EntityParameters parameters = new EntityParameters.Builder()
@@ -684,7 +690,7 @@ public class DeveloperUI {
                 Component.updateLocation(newCollisionTile, GlobalData.getRootComponent());
 
                 //System.out.println("Position: " + newCollisionTile.getPosition());
-            }
+            });
         }
 
         private void loadAsset() {

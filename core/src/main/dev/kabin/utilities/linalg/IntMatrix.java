@@ -1,5 +1,6 @@
 package dev.kabin.utilities.linalg;
 
+import dev.kabin.utilities.HashCodeUtil;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
 import org.jetbrains.annotations.Contract;
 
@@ -133,7 +134,7 @@ public final class IntMatrix {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(width, height);
+        int result = HashCodeUtil.hashCode(width, height);
         result = 31 * result + Arrays.hashCode(data);
         return result;
     }

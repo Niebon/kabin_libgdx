@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class Threads {
 
     // A lock for order sensitive operations.
-    public static final Object THREAD_LOCK = new Object();
+    private static final Object THREAD_LOCK = new Object();
     private static final Logger LOGGER = Logger.getLogger(Threads.class.getName());
     private static ScheduledExecutorService periodicBackgroundTasks;
 
@@ -41,6 +41,15 @@ public class Threads {
             Component.registerEntityWhereabouts(GlobalData.getRootComponent());
             Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
             Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+        }
+    }
+
+    /**
+     * @param r execute the given runnable in such a way that it goes in between periodic background tasks.
+     */
+    public static void synchronize(Runnable r) {
+        synchronized (THREAD_LOCK) {
+            r.run();
         }
     }
 

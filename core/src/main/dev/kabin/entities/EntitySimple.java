@@ -274,18 +274,11 @@ public class EntitySimple implements Entity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EntitySimple that = (EntitySimple) o;
-        return id == that.id &&
-                Float.compare(that.x, x) == 0 &&
-                Float.compare(that.y, y) == 0 &&
-                Float.compare(that.scale, scale) == 0 &&
-                Objects.equals(atlasPath, that.atlasPath);
+        return this == o;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(atlasPath, id, x, y, scale);
+        return id;
     }
 }

@@ -1,5 +1,6 @@
 package dev.kabin.utilities.shapes;
 
+import dev.kabin.utilities.HashCodeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -76,6 +77,6 @@ public abstract class AbstractRectBoxed<T extends Number & Comparable<T>> implem
 
     @Override
     public int hashCode() {
-        return Objects.hash(minX, maxX, minY, maxY);
+        return HashCodeUtil.hashCode(Objects.hashCode(minX), Objects.hashCode(maxX), Objects.hashCode(minY), Objects.hashCode(maxY));
     }
 }

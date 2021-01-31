@@ -1,7 +1,7 @@
 package dev.kabin.utilities.points;
 
 
-import java.util.Objects;
+import dev.kabin.utilities.HashCodeUtil;
 
 /**
  * An unmodifiable implementation of {@link PointInt}.
@@ -38,7 +38,7 @@ public final class UnmodifiablePointInt implements PointInt {
 
     @Override
     final public int hashCode() {
-        return Objects.hash(x, y);
+        return HashCodeUtil.hashCode(x, y);
     }
 
 	@Override

@@ -1,6 +1,7 @@
 package dev.kabin.utilities.shapes;
 
 
+import dev.kabin.utilities.HashCodeUtil;
 import org.json.JSONObject;
 
 import java.util.Objects;
@@ -86,7 +87,7 @@ public class RectFloat {
 
     @Override
     public int hashCode() {
-        return Objects.hash(minX, maxX, minY, maxY);
+        return HashCodeUtil.hashCode(Float.hashCode(minX), Float.hashCode(maxX), Float.hashCode(minY), Float.hashCode(maxY));
     }
 
     public float getMinX() {

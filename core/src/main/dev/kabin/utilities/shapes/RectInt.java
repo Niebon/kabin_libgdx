@@ -1,5 +1,6 @@
 package dev.kabin.utilities.shapes;
 
+import dev.kabin.utilities.HashCodeUtil;
 import org.jetbrains.annotations.Contract;
 import org.json.JSONObject;
 
@@ -88,7 +89,7 @@ public class RectInt {
 
     @Override
     public int hashCode() {
-        return Objects.hash(minX, maxX, minY, maxY);
+        return HashCodeUtil.hashCode(minX, maxX, minY, maxY);
     }
 
     public int getMinX() {

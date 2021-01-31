@@ -1,6 +1,7 @@
 package dev.kabin.utilities.shapes;
 
 
+import dev.kabin.utilities.HashCodeUtil;
 import org.json.JSONObject;
 
 import java.util.Objects;
@@ -84,7 +85,7 @@ public class RectDouble {
 
     @Override
     public int hashCode() {
-        return Objects.hash(minX, maxX, minY, maxY);
+        return HashCodeUtil.hashCode(Double.hashCode(minX), Double.hashCode(maxX), Double.hashCode(minY), Double.hashCode(maxY));
     }
 
     public double getMinX() {

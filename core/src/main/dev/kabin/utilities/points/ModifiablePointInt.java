@@ -1,5 +1,6 @@
 package dev.kabin.utilities.points;
 
+import dev.kabin.utilities.HashCodeUtil;
 import dev.kabin.utilities.functioninterfaces.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +77,7 @@ public class ModifiablePointInt implements PointInt {
 
 	@Override
 	final public int hashCode() {
-		return Objects.hash(x, y);
+		return HashCodeUtil.hashCode(x, y);
 	}
 
 	@Override
