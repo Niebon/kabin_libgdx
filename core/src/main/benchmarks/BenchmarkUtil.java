@@ -1,6 +1,7 @@
 package benchmarks;
 
 import com.google.common.base.Strings;
+import dev.kabin.utilities.Functions;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -92,20 +93,13 @@ public class BenchmarkUtil {
 
     private static String mean_std(double mean, double std) {
         String meanFormatted = String.valueOf(BigDecimal.valueOf(mean).round(MATH_CONTEXT));
-        String meanStd = String.valueOf(BigDecimal.valueOf(std).round(MATH_CONTEXT));
+        String stdFormatted = String.valueOf(BigDecimal.valueOf(std).round(MATH_CONTEXT));
 
-        int powerOfTen = 1;
-        int power = 0;
-//        while (Math.abs(mean) < 1 || Math.abs(std) < 1) {
-//            mean *= 10;
-//            std *= 10;
-//            powerOfTen *= 10;
-//            power++;
-//        }
+        DecadicPrefix prefix = DecadicPrefix.parse(Integer.parseInt(meanFormatted.split("E")[1]));
 
-
-        return powerOfTen > 1 ? "%sE%s ± %sE%s".formatted((long) mean, -power, (long) std, -power)
-                : "%s ± %s".formatted(mean, std);
+        return NumberRepresentation.parse(meanFormatted).coefficient(prefix.exponent) +
+                "±" +
+                NumberRepresentation.parse(stdFormatted).coefficient(prefix.exponent);
     }
 
 
@@ -139,6 +133,32 @@ public class BenchmarkUtil {
 
     }
 
+    enum DecadicPrefix {
+        NANO(-9, "n"),
+        MICRO(-6, "μ"),
+        MILLI(-3, "m"),
+        NONE(0, ""),
+        KILO(3, "k"),
+        MEGA(6, "M"),
+        GIGA(9, "g"),
+        TERRA(12, "T");
+
+        private final int exponent;
+        private final String symbol;
+
+        DecadicPrefix(int exponent, String symbol) {
+            this.exponent = exponent;
+            this.symbol = symbol;
+        }
+
+        static DecadicPrefix parse(int exponent) {
+            int index = Functions.snapToGrid(exponent, 3);
+            for (var decadicPrefix : DecadicPrefix.values()) {
+                if (index == exponent) return decadicPrefix;
+            }
+            throw new IllegalArgumentException();
+        }
+    }
 
     static class NumberRepresentation {
 
@@ -175,28 +195,6 @@ public class BenchmarkUtil {
             return new NumberRepresentation(digits, zeros, digitsAndComma.charAt(0) == '-' ? Sign.NEGATIVE : Sign.POSITIVE);
         }
 
-        /**
-         * 1.0848323290354501E-7
-         * 0.0000000
-         *
-         * 1 * 10^-3
-         * 0.001
-         * zeros = -3
-         *
-         * exponent = 2
-         * 0.00001 * 10^2
-         *
-         * exponent
-         *
-         *
-         * 1 * 10^3
-         * 1 000.
-         * zeros = 3
-         *
-         *
-         * @param exponent
-         * @return
-         */
         public String coefficient(int exponent) {
             final int exponentialShift = zeros - exponent;
             if (exponentialShift == 0) {
@@ -236,33 +234,6 @@ public class BenchmarkUtil {
                             .collect(Collectors.joining());
                 }
             }
-
-
-//            int newCommaPosition = zeros - exponent;
-//            var sb = new StringBuilder();
-//            sb.append(sign == Sign.POSITIVE ? "" : "-");
-//            if (newCommaPosition < 0) {
-//                if (newCommaPosition == -1) {
-//                    sb.append("0.0");
-//                }
-//                else {
-//                    sb.append("0.").append(Strings.repeat("0", Math.abs(newCommaPosition)));
-//                }
-//                digits.forEach(sb::append);
-//            }
-//            else {
-//                int digitsBeforeComma = Math.min(digits.size(), newCommaPosition) + 1;
-//                if (digitsBeforeComma < digits.size()) {
-//                    List<Character> digitsWithComma = new LinkedList<>(digits);
-//                    digitsWithComma.add(digitsBeforeComma, '.');
-//                    digitsWithComma.forEach(sb::append);
-//                }
-//                else {
-//                    digits.forEach(sb::append);
-//                    sb.append(Strings.repeat("0", newCommaPosition + 1 - digits.size()));
-//                }
-//            }
-//            return sb.toString();
         }
 
 
