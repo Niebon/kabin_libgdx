@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.physics.PhysicsEngine;
@@ -72,7 +73,7 @@ public class MainGame extends ApplicationAdapter {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-        EntityCollectionProvider.actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
+        GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
 
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);

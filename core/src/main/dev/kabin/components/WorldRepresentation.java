@@ -12,10 +12,8 @@ import dev.kabin.utilities.shapes.primitive.RectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +38,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
     private Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
     private Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
+    private final EntityCollectionProvider entityCollectionProvider = new EntityCollectionProvider();
 
 
 
@@ -55,6 +54,10 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
 
     public WorldRepresentation(int width, int height, float scaleFactor){
         rootComponent = makeRepresentationOf(width, height, scaleFactor);
+    }
+
+    public void actionForEachEntityOrderedByType(Consumer<Entity> renderEntityGlobalStateTime) {
+        entityCollectionProvider.actionForEachEntityOrderedByType(renderEntityGlobalStateTime);
     }
 
 
@@ -196,7 +199,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         final Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
         final Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-        EntityCollectionProvider.actionForEachEntityOrderedByType(e -> updateLocation(entityToIndivisibleComponentMapping,
+        entityCollectionProvider.actionForEachEntityOrderedByType(e -> updateLocation(entityToIndivisibleComponentMapping,
                 indivisibleComponentToEntityMapping,
                 e,
                 e.graphicsNbd(),
@@ -274,7 +277,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             final Component c = treeSearchResult.get(i);
             if (c.isActive() && indivisibleComponentToEntityMapping.containsKey(c)) {
                 c.clearData();
-                c.setActive(true);
+                c.setActive(false);
             }
         }
         componentArrayListPool.giveBack(treeSearchResult);
@@ -343,5 +346,17 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
 
     public int getCollision(int x, int y) {
         return rootComponent.getCollision(x, y);
+    }
+
+    public boolean unregisterEntity(Entity e) {
+       return entityCollectionProvider.unregisterEntity(e);
+    }
+
+    public boolean registerEntity(Entity e) {
+        return entityCollectionProvider.unregisterEntity(e);
+    }
+
+    public void populateCollection(Collection<Entity> allEntities, Predicate<Entity> criterion) {
+        entityCollectionProvider.populateCollection(allEntities, criterion);
     }
 }

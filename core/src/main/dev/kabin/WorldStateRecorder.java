@@ -21,7 +21,7 @@ public class WorldStateRecorder {
 
     public static JSONObject recordWorldState() {
         final List<Entity> allEntities = new ArrayList<>();
-        EntityCollectionProvider.populateCollection(allEntities, e -> true);
+        GlobalData.getWorldRepresentation().populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
         o.put(WORLD_SIZE_X, GlobalData.worldSizeX);
@@ -46,7 +46,7 @@ public class WorldStateRecorder {
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
                     Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor().construct(json);
-                    EntityCollectionProvider.registerEntity(e);
+                    GlobalData.getWorldRepresentation().registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }
             }

@@ -35,7 +35,7 @@ public class PhysicsEngine {
     }
 
     static void renderFrame(Entity.PhysicsParameters params) {
-        EntityCollectionProvider.actionForEachEntityOrderedByType(e -> e.updatePhysics(params));
+        GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(e -> e.updatePhysics(params));
     }
 
 }

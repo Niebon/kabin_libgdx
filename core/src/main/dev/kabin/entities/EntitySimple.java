@@ -139,7 +139,7 @@ public class EntitySimple implements Entity {
                             }
 
                             entitiesScheduledForRemoval.forEach(e -> {
-                                EntityCollectionProvider.unregisterEntity(e);
+                                GlobalData.getWorldRepresentation().unregisterEntity(e);
                                 e.getActor().ifPresent(Actor::remove);
                             });
 

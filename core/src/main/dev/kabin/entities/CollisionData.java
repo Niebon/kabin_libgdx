@@ -13,10 +13,6 @@ import java.util.stream.Stream;
 
 public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
-    class Helper {
-        private static int x = 0;
-    }
-
     @NotNull
     List<PointInt> getCollisionProfile();
 
@@ -31,7 +27,6 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
-        System.out.printf("Call number %s. Called by %s.%n", Helper.x++, consumer);
         final int rootX = getRootX(), rootY = getRootY();
         final List<PointInt> profile = getCollisionProfile();
 

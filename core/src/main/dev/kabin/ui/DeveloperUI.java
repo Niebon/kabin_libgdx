@@ -256,7 +256,7 @@ public class DeveloperUI {
                 GlobalData.shapeRenderer.end();
 
                 // By abuse of the word "render" include this here...
-                EntityCollectionProvider.actionForEachEntityOrderedByType(e -> {
+                GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(e -> {
                     if (backingRect.contains(e.getX(), e.getY())) {
                         currentlySelectedEntities.add(e);
                     } else {
@@ -430,7 +430,7 @@ public class DeveloperUI {
 
 
             Entity e = entityType.getParameterConstructor().construct(parameters);
-            EntityCollectionProvider.registerEntity(e);
+            GlobalData.getWorldRepresentation().registerEntity(e);
             float offsetX = e.getPixelMassCenterX() * e.getScale();
             float offsetY = e.getPixelMassCenterY() * e.getScale();
             e.setPos(e.getX() - offsetX, e.getY() - offsetY);
@@ -583,7 +583,7 @@ public class DeveloperUI {
             final float y = intY * GlobalData.scaleFactor;
             final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
             if (matchingCt != null) {
-                if (!EntityCollectionProvider.unregisterEntity(matchingCt)) {
+                if (!GlobalData.getWorldRepresentation().unregisterEntity(matchingCt)) {
                     throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                 }
                 matchingCt.getActor().ifPresent(Actor::remove);
@@ -607,7 +607,7 @@ public class DeveloperUI {
                     final Entity e = entityIterator.next();
                     if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
                         final var ct = (CollisionTile) e;
-                        if (!EntityCollectionProvider.unregisterEntity(e)) {
+                        if (!GlobalData.getWorldRepresentation().unregisterEntity(e)) {
                             throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                         }
                         CollisionTile.clearAt(ct.getUnscaledX(), ct.getUnscaledY()).orElseThrow();
@@ -672,7 +672,7 @@ public class DeveloperUI {
 
                 // Init the data.
                 newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
-                EntityCollectionProvider.registerEntity(newCollisionTile);
+                GlobalData.getWorldRepresentation().registerEntity(newCollisionTile);
 
                 // Add collision data.
                 GlobalData.getWorldRepresentation().activate(Math.round(parameters.x()), Math.round(parameters.y()));
