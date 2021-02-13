@@ -324,4 +324,14 @@ public class Functions {
         }
         return false;
     }
+
+    @SuppressWarnings("unused")
+    public static <T> T projectLeft(T left, T right) {
+        return left;
+    }
+
+    @SuppressWarnings("unused")
+    public static <T> T projectRight(T left, T right) {
+        return right;
+    }
 }

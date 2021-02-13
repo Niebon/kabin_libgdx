@@ -1,8 +1,12 @@
 package dev.kabin.entities;
 
+import dev.kabin.utilities.Functions;
+
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Keeps inaccessible collections for each {@link Type Type} at hand.
@@ -13,22 +17,20 @@ import java.util.function.Predicate;
  */
 public class EntityCollectionProvider {
 
-    private final Map<Type, List<Entity>> groupMap = new EnumMap<>(Type.class);
+    private final Map<Type, List<Entity>> groupMap;
 
     private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values())
             .sorted(Comparator.comparingInt(Type::getLayer))
             .toArray(Type[]::new);
 
     public EntityCollectionProvider() {
-        groupMap.put(Type.BACKGROUND, new ArrayList<>());
-        groupMap.put(Type.BACKGROUND_LAYER_2, new ArrayList<>());
-        groupMap.put(Type.GROUND, new ArrayList<>());
-        groupMap.put(Type.FOCAL_POINT, new ArrayList<>());
-        groupMap.put(Type.FOREGROUND, new ArrayList<>());
-        groupMap.put(Type.CLOUDS, new ArrayList<>());
-        groupMap.put(Type.CLOUDS_LAYER_2, new ArrayList<>());
-        groupMap.put(Type.STATIC_BACKGROUND, new ArrayList<>());
-        groupMap.put(Type.SKY, new ArrayList<>());
+        groupMap = Arrays.stream(Type.values())
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        val -> new ArrayList<>(),
+                        Functions::projectLeft,
+                        () -> new EnumMap<>(Type.class))
+                );
     }
 
     public void registerEntity(Entity e) {

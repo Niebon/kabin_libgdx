@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.collections.IntToIntFunction;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 
@@ -48,7 +49,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
                 Collectors.toMap(
                         Map.Entry::getKey,
                         e -> generateAnimation(e.getValue()),
-                        (i, j) -> i,
+                        Functions::projectLeft,
                         () -> new EnumMap<>(tClass)
                 )
         );
