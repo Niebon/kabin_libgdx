@@ -91,7 +91,9 @@ public class MainGame extends ApplicationAdapter {
 
         // Render collision
         if (GlobalData.getWorldRepresentation() != null) {
+
             PhysicsEngine.render(stateTime, GlobalData.getWorldRepresentation());
+
             for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
                 for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
                     if (GlobalData.getWorldRepresentation().isCollisionAt(i, j)) {
@@ -104,6 +106,7 @@ public class MainGame extends ApplicationAdapter {
                     }
                 }
             }
+
         }
 
     }

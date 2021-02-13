@@ -5,12 +5,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.collections.Id;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
-import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
-import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 import dev.kabin.utilities.helperinterfaces.JSONRecordable;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
+import dev.kabin.utilities.shapes.primitive.UnmodifiableRectIntView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -29,7 +28,11 @@ public interface Entity extends
 
     void updatePhysics(PhysicsParameters params);
 
+    /**
+     * Parameters for entities that undergo physical interactions with their surroundings.
+     */
     interface PhysicsParameters{
+
         boolean isCollisionAt(int x, int y);
         boolean isLadderAt(int x, int y);
 
@@ -74,9 +77,9 @@ public interface Entity extends
         return getUnscaledY() - getPixelAnalysis().getLowestPixel();
     }
 
-    MutableRectInt graphicsNbd();
+    UnmodifiableRectIntView graphicsNbd();
 
-    MutableRectInt positionNbd();
+    UnmodifiableRectIntView positionNbd();
 
     /**
      * Acts on an entity with the present vector field and returns the vector of the action.

@@ -6,7 +6,6 @@ import dev.kabin.components.worldmodel.IndexedSetPool;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
-import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.pools.objectpool.Borrowed;
 import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 import dev.kabin.utilities.shapes.primitive.RectInt;
@@ -30,7 +29,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             AVAILABLE_COMPONENT_HASHSETS = 10_000,
             AVAILABLE_ENTITY_HASHSETS = 10_000;
 
-    public static final Logger logger = Logger.getLogger(Component.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Component.class.getName());
 
 
 
@@ -45,10 +44,10 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
 
 
 
-    private final IndexedSetPool<Component> COMPONENT_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
-    private final IndexedSetPool<Entity> ENTITY_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
+    private final IndexedSetPool<Component> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
+    private final IndexedSetPool<Entity> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
     // Keep an object pool for ArrayList<Component> instances.
-    private final ComponentArrayListPool SEARCH_ALG_OBJECT_POOL = new ComponentArrayListPool(
+    private final ComponentArrayListPool componentArrayListPool = new ComponentArrayListPool(
             AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
     );
 
@@ -99,7 +98,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping,
             @NotNull Entity entity,
             /* Caching the below calculation makes a big difference.*/
-            @NotNull MutableRectInt cachedEntityNodeNeighborhood,
+            @NotNull RectInt cachedEntityNodeNeighborhood,
             @NotNull Component component
     ) {
         if (component.getUnderlyingRectInt().meets(cachedEntityNodeNeighborhood)) {
@@ -113,12 +112,12 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             } else {
                 entityToIndivisibleComponentMapping.computeIfAbsent(
                         entity,
-                        c -> COMPONENT_INDEXED_SET_POOL.borrow()
+                        c -> componentIndexedSetPool.borrow()
                 ).add(component);
 
                 indivisibleComponentToEntityMapping.computeIfAbsent(
                         component,
-                        c -> ENTITY_INDEXED_SET_POOL.borrow()
+                        c -> entityIndexedSetPool.borrow()
                 ).add(entity);
             }
         }
@@ -138,7 +137,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         final List<Entity> containedEntities = new ArrayList<>();
 
 
-        final IndexedSet<Entity> setOfEntitiesToReturn = ENTITY_INDEXED_SET_POOL.borrow();
+        final IndexedSet<Entity> setOfEntitiesToReturn = entityIndexedSetPool.borrow();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
 
@@ -158,11 +157,11 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             }
 
         }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
-        ENTITY_INDEXED_SET_POOL.giveBack(setOfEntitiesToReturn);
+        componentArrayListPool.giveBack(treeSearchResult);
+        entityIndexedSetPool.giveBack(setOfEntitiesToReturn);
 
 
-        logger.log(Level.FINE, "A call to getContainedEntities() returned " + containedEntities.size()
+        LOGGER.log(Level.FINE, "A call to getContainedEntities() returned " + containedEntities.size()
                 + " entities.");
         return containedEntities;
     }
@@ -181,15 +180,15 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         {
 
             // Give back data to pools.
-            COMPONENT_INDEXED_SET_POOL.giveBackAll();
-            if (COMPONENT_INDEXED_SET_POOL.taken() > 0) {
-                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + COMPONENT_INDEXED_SET_POOL.taken());
+            componentIndexedSetPool.giveBackAll();
+            if (componentIndexedSetPool.taken() > 0) {
+                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + componentIndexedSetPool.taken());
             }
 
 
-            ENTITY_INDEXED_SET_POOL.giveBackAll();
-            if (ENTITY_INDEXED_SET_POOL.taken() > 0) {
-                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + ENTITY_INDEXED_SET_POOL.taken());
+            entityIndexedSetPool.giveBackAll();
+            if (entityIndexedSetPool.taken() > 0) {
+                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + entityIndexedSetPool.taken());
             }
         }
 
@@ -219,7 +218,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             x *= 2;
             y *= 2;
         }
-        logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
+        LOGGER.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
         return new Component(new ComponentParameters().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
     }
 
@@ -230,13 +229,13 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     public @NotNull ArrayList<Component> treeSearchFindIndivisibleComponentsMatching(
             Predicate<Component> condition
     ) {
-        ArrayList<Component> matches = SEARCH_ALG_OBJECT_POOL.borrow();
-        ArrayList<Component> layer = SEARCH_ALG_OBJECT_POOL.borrow();
+        final ArrayList<Component> matches = componentArrayListPool.borrow();
+        final ArrayList<Component> layer = componentArrayListPool.borrow();
         layer.add(rootComponent);
         treeSearchRecursionStep(matches, layer, condition);
-        SEARCH_ALG_OBJECT_POOL.giveBackAllExcept(matches);
-        if (SEARCH_ALG_OBJECT_POOL.taken() != 1)
-            throw new RuntimeException("No of taken: " + SEARCH_ALG_OBJECT_POOL.taken());
+        componentArrayListPool.giveBackAllExcept(matches);
+        if (componentArrayListPool.taken() != 1)
+            throw new RuntimeException("No of taken: " + componentArrayListPool.taken());
         return matches;
     }
 
@@ -249,7 +248,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             return;
         }
         if (layer.get(0).hasSubComponents()) {
-            ArrayList<Component> newLayer = SEARCH_ALG_OBJECT_POOL.borrow();
+            final ArrayList<Component> newLayer = componentArrayListPool.borrow();
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = layer.size(); i < n; i++) {
                 for (Component child : layer.get(i).getSubComponents()) {
@@ -278,7 +277,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
                 c.setActive(true);
             }
         }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
+        componentArrayListPool.giveBack(treeSearchResult);
     }
 
     public void loadNearbyData(@NotNull MutableRectInt rect) {
@@ -294,24 +293,14 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
                 for (int j = 0, m = entities.size(); j < m; j++) {
                     final Entity entity = entities.get(j);
                     if (entity instanceof CollisionData) {
-                        ((CollisionData) entity).actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
-                            @Override
-                            public void accept(int x, int y) {
-                                c.incrementCollisionAt(x, y);
-                            }
-
-                            @Override
-                            public String toString() {
-                                return "loadNearbyData: GlobalData.getRootComponent().incrementCollisionAt";
-                            }
-                        });
+                        ((CollisionData) entity).actionEachCollisionPoint(c::incrementCollisionAt);
                     }
                 }
 
                 c.setActive(true);
             }
         }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
+        componentArrayListPool.giveBack(treeSearchResult);
     }
 
 
@@ -332,18 +321,22 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         rootComponent.decrementCollisionAt(x, y);
     }
 
+    @Override
     public boolean isCollisionAt(int x, int y) {
         return rootComponent.isCollisionAt(x, y);
     }
 
+    @Override
     public float getVectorFieldX(int x, int y) {
         return rootComponent.getVectorFieldX(x, y);
     }
 
+    @Override
     public float getVectorFieldY(int x, int y) {
         return rootComponent.getVectorFieldY(x, y);
     }
 
+    @Override
     public boolean isLadderAt(int x, int y) {
         return rootComponent.isLadderAt(x, y);
     }

@@ -17,11 +17,13 @@ import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
 import dev.kabin.utilities.shapes.primitive.MutableRectInt;
+import dev.kabin.utilities.shapes.primitive.UnmodifiableRectIntView;
 import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import static dev.kabin.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
@@ -29,14 +31,17 @@ import static dev.kabin.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
 public class EntitySimple implements Entity {
 
     private static final Logger LOGGER = Logger.getLogger(EntitySimple.class.getName());
-    private static int createdInstances = 0;
+    private static final AtomicInteger createdInstances = new AtomicInteger(1);
     protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
     private final String atlasPath;
     private final int layer;
     private final Actor actor = new Actor();
     private final int id;
     private final MutableRectInt positionNbd;
+    private final UnmodifiableRectIntView positionNbdView;
     private final MutableRectInt graphicsNbd;
+    private final UnmodifiableRectIntView graphicsNbdView;
+
     private float x, y, scale;
 
     EntitySimple(EntityParameters parameters) {
@@ -70,12 +75,18 @@ public class EntitySimple implements Entity {
         // TODO: will the pathfinder algorithm suffer if position nbd is too big?
         positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
         graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+        positionNbdView = new UnmodifiableRectIntView(positionNbd);
+        graphicsNbdView = new UnmodifiableRectIntView(graphicsNbd);
         updateNeighborhood();
-        id = createdInstances++;
+        id = createdInstances.incrementAndGet();
     }
 
     private void updateNeighborhood() {
         positionNbd.translate(
+                getUnscaledX() - Math.round(positionNbd.getCenterX()),
+                getUnscaledY() - Math.round(positionNbd.getCenterY())
+        );
+        graphicsNbd.translate(
                 getUnscaledX() - Math.round(positionNbd.getCenterX()),
                 getUnscaledY() - Math.round(positionNbd.getCenterY())
         );
@@ -247,13 +258,13 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public MutableRectInt graphicsNbd() {
-        return graphicsNbd;
+    public UnmodifiableRectIntView graphicsNbd() {
+        return graphicsNbdView;
     }
 
     @Override
-    public MutableRectInt positionNbd() {
-        return positionNbd;
+    public UnmodifiableRectIntView positionNbd() {
+        return positionNbdView;
     }
 
     @Override

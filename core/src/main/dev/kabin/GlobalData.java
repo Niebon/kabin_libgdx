@@ -46,9 +46,6 @@ public class GlobalData {
     private static WorldRepresentation worldRepresentation;
 
 
-
-
-
     public static void setScale(double x, double y) {
         scale.setX(x);
         scale.setY(y);

@@ -114,5 +114,13 @@ public class CollisionTile extends CollisionEntity {
         return getUnscaledY() - TILE_SIZE / 2;
     }
 
+    @Override
+    public float getPixelMassCenterX() {
+        return 0.5f * TILE_SIZE;
+    }
 
+    @Override
+    public float getPixelMassCenterY() {
+        return 0.5f * TILE_SIZE;
+    }
 }

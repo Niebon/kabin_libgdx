@@ -318,15 +318,6 @@ public class Component implements Id {
                 }
 
                 ((IntMatrix) data.get(key)).increment(x - minX, y - minY);
-
-                // Debugging
-                if (false) {
-                    //System.out.println("Incremented at: " + Point.of(x, y));
-                    int val = ((IntMatrix) data.get(key)).get(x - minX, y - minY);
-                    if (val > 1) {
-                        System.out.println("A collision point was raised to :" + val);
-                    }
-                }
             }
         }
     }
