@@ -1,6 +1,7 @@
-package dev.kabin.utilities.shapes;
+package dev.kabin.utilities.shapes.primitive;
 
 import dev.kabin.utilities.HashCodeUtil;
+import dev.kabin.utilities.shapes.RectBoxedInt;
 import org.jetbrains.annotations.Contract;
 import org.json.JSONObject;
 
@@ -10,11 +11,11 @@ import java.util.Objects;
  * This class uses primitives instead of boxed values for ints.
  * Preferably, use this class instead of the boxed version {@link RectBoxedInt} if utilized in the main loop.
  */
-public class RectInt {
+public class MutableRectInt implements RectInt {
 
     private int minX, maxX, minY, maxY;
 
-    public RectInt(int x, int y, int width, int height) {
+    public MutableRectInt(int x, int y, int width, int height) {
         if (width < 0 || height < 0) throw new IllegalArgumentException();
         minX = x;
         minY = y;
@@ -22,20 +23,22 @@ public class RectInt {
         maxY = y + height;
     }
 
-    public static RectInt centeredAt(int x, int y, int width, int height) {
-        return new RectInt(x - Math.round(width * 0.5f), y - Math.round(height * 0.5f), width, height);
+    public static MutableRectInt centeredAt(int x, int y, int width, int height) {
+        return new MutableRectInt(x - Math.round(width * 0.5f), y - Math.round(height * 0.5f), width, height);
     }
 
+    @Override
     public int getWidth() {
         return maxX - minX;
     }
 
+    @Override
     public int getHeight() {
         return maxY - minY;
     }
 
     @Contract("_,_->this")
-    public RectInt translate(int dx, int dy) {
+    public MutableRectInt translate(int dx, int dy) {
         minX = minX + dx;
         minY = minY + dy;
         maxX = maxX + dx;
@@ -43,14 +46,17 @@ public class RectInt {
         return this;
     }
 
+    @Override
     public float getCenterX() {
         return 0.5f * (minX + maxX);
     }
 
+    @Override
     public float getCenterY() {
         return 0.5f * (minY + maxY);
     }
 
+    @Override
     public boolean contains(int x, int y) {
         return minX <= x && x <= maxX && minY <= y && y <= maxY;
     }
@@ -80,7 +86,7 @@ public class RectInt {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RectInt that = (RectInt) o;
+        MutableRectInt that = (MutableRectInt) o;
         return Objects.equals(minX, that.minX) &&
                 Objects.equals(maxX, that.maxX) &&
                 Objects.equals(minY, that.minY) &&
@@ -125,9 +131,9 @@ public class RectInt {
     }
 
     public boolean meets(RectInt other) {
-        return (maxX - other.minX > 0 &&
-                minX - other.maxX < 0 &&
-                maxY - other.minY > 0 &&
-                minY - other.maxY < 0);
+        return (maxX - other.getMinX() > 0 &&
+                minX - other.getMaxX() < 0 &&
+                maxY - other.getMinY() > 0 &&
+                minY - other.getMaxY() < 0);
     }
 }

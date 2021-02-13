@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
 
     class Helper {
-        static int x = 0;
+        private static int x = 0;
     }
 
     @NotNull

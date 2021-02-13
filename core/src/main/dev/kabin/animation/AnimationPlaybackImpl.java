@@ -218,5 +218,6 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         public int getCurrentAnimationLength() {
             return 1;
         }
+
     }
 }

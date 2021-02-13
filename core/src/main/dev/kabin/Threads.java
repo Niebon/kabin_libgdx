@@ -1,6 +1,7 @@
 package dev.kabin;
 
 import dev.kabin.components.Component;
+import dev.kabin.components.WorldRepresentation;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,7 +28,7 @@ public class Threads {
                     System.exit(1);
                 }
             }
-            GlobalData.getRootComponent().clearData();
+            GlobalData.getWorldRepresentation().clearData();
             handle();
 
             periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
@@ -38,9 +39,11 @@ public class Threads {
     private static void handle() {
         synchronized (THREAD_LOCK) {
             // Load & unload data.
-            Component.registerEntityWhereabouts(GlobalData.getRootComponent());
-            Component.clearUnusedData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
-            Component.loadNearbyData(GlobalData.getRootComponent(), GlobalData.currentCameraBounds);
+
+
+            GlobalData.getWorldRepresentation().registerEntityWhereabouts();
+            GlobalData.getWorldRepresentation().clearUnusedData(GlobalData.currentCameraBounds);
+            GlobalData.getWorldRepresentation().loadNearbyData(GlobalData.currentCameraBounds);
         }
     }
 

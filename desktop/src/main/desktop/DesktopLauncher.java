@@ -25,4 +25,5 @@ public class DesktopLauncher {
         settings.edgePadding = true;
         application = new LwjglApplication(new MainGame(), config);
     }
+
 }

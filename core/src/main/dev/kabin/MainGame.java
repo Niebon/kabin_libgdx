@@ -72,7 +72,7 @@ public class MainGame extends ApplicationAdapter {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-        EntityCollectionProvider.actionForEachEntityOrderedByGroup(MainGame::renderEntityGlobalStateTime);
+        EntityCollectionProvider.actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
 
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
@@ -87,13 +87,14 @@ public class MainGame extends ApplicationAdapter {
             DeveloperUI.render(GlobalData.userInterfaceBatch, GlobalData.stateTime);
         }
 
-        PhysicsEngine.render(stateTime);
+
 
         // Render collision
-        if (rootComponent != null) {
+        if (GlobalData.getWorldRepresentation() != null) {
+            PhysicsEngine.render(stateTime, GlobalData.getWorldRepresentation());
             for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
                 for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
-                    if (GlobalData.getRootComponent().isCollisionAt(i, j)) {
+                    if (GlobalData.getWorldRepresentation().isCollisionAt(i, j)) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                         shapeRenderer.setColor(Color.RED);
                         float x = (i - currentCameraBounds.getMinX()) * scaleFactor;

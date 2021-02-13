@@ -4,6 +4,13 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ * Keeps inaccessible collections for each {@link Type Type} at hand.
+ * Instances of {@link Entity} may be {@link #registerEntity(Entity) registered} or {@link #unregisterEntity(Entity) unregistered}.
+ * <p>
+ * This class offers functions to perform procedure for each entity which is registered as a member of a collection.
+ * See {@link #actionForEachEntityOfType(Type, Consumer)} and {@link #actionForEachEntityOrderedByType(Consumer)}.
+ */
 public class EntityCollectionProvider {
 
     private static final Map<Type, List<Entity>> groupMap = new EnumMap<>(Type.class);
@@ -50,17 +57,17 @@ public class EntityCollectionProvider {
         return groupMap.get(e.getType().groupType).remove(e);
     }
 
-    public static void actionForEachEntityInGroup(Type groupType, Consumer<Entity> action) {
-        List<Entity> entities = groupMap.get(groupType);
+    public static void actionForEachEntityOfType(Type type, Consumer<Entity> action) {
+        List<Entity> entities = groupMap.get(type);
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = entities.size(); i < n; i++) {
             action.accept(entities.get(i));
         }
     }
 
-    public static void actionForEachEntityOrderedByGroup(Consumer<Entity> action) {
+    public static void actionForEachEntityOrderedByType(Consumer<Entity> action) {
         for (Type type : GROUPS_ORDERED) {
-            actionForEachEntityInGroup(type, action);
+            actionForEachEntityOfType(type, action);
         }
     }
 

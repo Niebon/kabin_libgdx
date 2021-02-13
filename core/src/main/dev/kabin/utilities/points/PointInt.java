@@ -1,6 +1,7 @@
 package dev.kabin.utilities.points;
 
 public interface PointInt {
+
     static UnmodifiablePointInt unmodifiableOf(int x, int y) {
         return new UnmodifiablePointInt(x, y);
     }

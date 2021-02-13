@@ -1,33 +1,22 @@
 package dev.kabin.components;
 
 
-import dev.kabin.GlobalData;
 import dev.kabin.collections.Id;
-import dev.kabin.collections.IndexedSet;
-import dev.kabin.entities.CollisionData;
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityCollectionProvider;
+import dev.kabin.components.worldmodel.FloatArrayPool;
+import dev.kabin.components.worldmodel.IntMatrixPool;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
-import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.linalg.FloatMatrix;
 import dev.kabin.utilities.linalg.IntMatrix;
-import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
-import dev.kabin.utilities.pools.objectpool.Borrowed;
 import dev.kabin.utilities.shapes.RectFloat;
-import dev.kabin.utilities.shapes.RectInt;
-import org.jetbrains.annotations.Contract;
+import dev.kabin.utilities.shapes.primitive.ImmutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -61,12 +50,8 @@ import static dev.kabin.components.ComponentParameters.COARSENESS_PARAMETER;
  */
 public class Component implements Id {
 
-    public static final Logger logger = Logger.getLogger(Component.class.getName());
-    public static final int
-            AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
-            MAXIMAL_COMPONENT_SIZE = 512,
-            AVAILABLE_COMPONENT_HASHSETS = 10_000,
-            AVAILABLE_ENTITY_HASHSETS = 10_000;
+    private static int instancesInitiated = 0;
+
     private final static Function<Integer, Integer>
             COMPONENT_INDEX_TO_X_MAPPING = integer -> integer % 2,
             COMPONENT_INDEX_TO_Y_MAPPING = integer -> {
@@ -75,35 +60,20 @@ public class Component implements Id {
                 return null; // This should crash.
             };
 
-    private static final IndexedSetPool<Component> COMPONENT_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
-    private static final IndexedSetPool<Entity> ENTITY_INDEXED_SET_POOL = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
-    // Keep an object pool for ArrayList<Component> instances.
-    private static final ComponentArrayListPool SEARCH_ALG_OBJECT_POOL = new ComponentArrayListPool(
-            AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
-    );
-
-    private static int instancesInitiated = 0;
-    private static long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
-    private static List<Entity> entitiesInCameraNeighborhoodCached;
-    private static long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
-    private static List<Entity> entitiesInCameraBoundsCached;
-    private static long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
-    private static Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-    private static Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
     private final int depth; // The level above root.
     private final ComponentParameters parameters;
     private final Component[] subComponents;
     private final EnumMap<Data, Object> data = new EnumMap<>(Data.class);
     private final int minX;
     private final int minY;
-    private final RectInt underlyingRectInt;
+    private final ImmutableRectInt underlyingRectInt;
     private final RectFloat underlyingRectFloat;
     private final float scaleFactor;
     // Functions of primitives.
     private final EnumMap<Data, IntBinaryOperator> intDataMapperByKey = new EnumMap<>(Data.class);
     private final EnumMap<Data, BiIntToFloatFunction> doubleDataMapperByKey = new EnumMap<>(Data.class);
     private final int id;
-    private Status status = Status.DEACTIVATED;
+    private boolean active = false;
 
     Component(@NotNull ComponentParameters parameters) {
 
@@ -114,7 +84,7 @@ public class Component implements Id {
             throw new IllegalArgumentException("Received invalid parameters: " + parameters.toString());
         }
 
-        underlyingRectInt = new RectInt(parameters.getX(), parameters.getY(), parameters.getWidth() - 1,
+        underlyingRectInt = new ImmutableRectInt(parameters.getX(), parameters.getY(), parameters.getWidth() - 1,
                 parameters.getHeight() - 1);
         scaleFactor = parameters.getScaleFactor();
         underlyingRectFloat = new RectFloat(
@@ -229,213 +199,9 @@ public class Component implements Id {
         this.depth = depth;
     }
 
-    public static void updateLocation(@NotNull Entity entity, @NotNull Component component) {
-        updateLocation(Component.entityToIndivisibleComponentMapping, Component.indivisibleComponentToEntityMapping,
-                entity, entity.graphicsNbd(), component);
-    }
 
-    @NotNull
-    @Contract("_, _, _ -> new")
-    public static Component representationOf(int width, int height, float scaleFactor) {
-        int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
-        while (x < width * 2 || y < height * 2) {
-            x *= 2;
-            y *= 2;
-        }
-        logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
-        return new Component(new ComponentParameters().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
-    }
-
-    /**
-     * If the neighborhood of the given entity intersects this component,
-     * then the entity will be added to this components entity list. Otherwise, it is removed.
-     * A recursive call is made to all of this components sub-components method.
-     *
-     * @param entity the entity whose whereabouts are stored.
-     */
-    private static void updateLocation(
-            Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping,
-            Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping,
-            @NotNull Entity entity,
-            /* Caching the below calculation makes a big difference.*/
-            @NotNull RectInt cachedEntityNodeNeighborhood,
-            @NotNull Component component
-    ) {
-        if (component.underlyingRectInt.meets(cachedEntityNodeNeighborhood)) {
-            if (component.hasSubComponents()) {
-                for (Component subComponent : component.getSubComponents()) {
-                    updateLocation(entityToIndivisibleComponentMapping,
-                            indivisibleComponentToEntityMapping,
-                            entity, cachedEntityNodeNeighborhood,
-                            subComponent);
-                }
-            } else {
-                entityToIndivisibleComponentMapping.computeIfAbsent(
-                        entity,
-                        c -> COMPONENT_INDEXED_SET_POOL.borrow()
-                ).add(component);
-
-                indivisibleComponentToEntityMapping.computeIfAbsent(
-                        component,
-                        c -> ENTITY_INDEXED_SET_POOL.borrow()
-                ).add(entity);
-            }
-        }
-    }
-
-    /**
-     * Registers the whereabouts of all entities from the given list.
-     * This updates the information returned by {@link #getContainedEntities(RectInt)}.
-     *
-     * @param component on which component to register the data to.
-     */
-    public static void registerEntityWhereabouts(@NotNull Component component) {
-
-
-    	/*
-    	Free resources from previous iteration.
-    	 */
-        {
-
-            // Give back data to pools.
-            COMPONENT_INDEXED_SET_POOL.giveBackAll();
-            if (COMPONENT_INDEXED_SET_POOL.taken() > 0) {
-                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + COMPONENT_INDEXED_SET_POOL.taken());
-            }
-
-
-            ENTITY_INDEXED_SET_POOL.giveBackAll();
-            if (ENTITY_INDEXED_SET_POOL.taken() > 0) {
-                throw new RuntimeException("After freeing resources, some were still marked as taken. There were so many: " + ENTITY_INDEXED_SET_POOL.taken());
-            }
-        }
-
-
-        final Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-        final Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
-
-        EntityCollectionProvider.actionForEachEntityOrderedByGroup(e -> updateLocation(entityToIndivisibleComponentMapping,
-                indivisibleComponentToEntityMapping,
-                e,
-                e.graphicsNbd(),
-                component
-        ));
-
-        // Update static references; keep the data ready to be cleared around until the beginning of the next iteration.
-        Component.entityToIndivisibleComponentMapping = entityToIndivisibleComponentMapping;
-        Component.indivisibleComponentToEntityMapping = indivisibleComponentToEntityMapping;
-        timeStampLastEntityWhereaboutsRegistered = System.currentTimeMillis();
-    }
-
-    public static List<Entity> getEntityInCameraNeighborhoodCached() {
-        if (entitiesInCameraNeighborhoodLastUpdated <= timeStampLastEntityWhereaboutsRegistered) {
-            entitiesInCameraNeighborhoodLastUpdated = System.currentTimeMillis();
-            return entitiesInCameraNeighborhoodCached = GlobalData.rootComponent
-                    .getContainedEntities(GlobalData.currentCameraBounds);
-        }
-        return entitiesInCameraNeighborhoodCached;
-    }
-
-    public static List<Entity> getEntitiesWithinCameraBoundsCached() {
-        if (entitiesInCameraBoundsLastUpdated <= timeStampLastEntityWhereaboutsRegistered) {
-            entitiesInCameraBoundsLastUpdated = System.currentTimeMillis();
-            return entitiesInCameraBoundsCached = GlobalData.rootComponent
-                    .getContainedEntities(GlobalData.currentCameraBounds);
-        }
-        return entitiesInCameraBoundsCached;
-    }
-
-    @Borrowed(origin = "SEARCH_ALG_OBJECT_POOL")
-    public static @NotNull ArrayList<Component> treeSearchFindIndivisibleComponentsMatching(
-            Component root,
-            Predicate<Component> condition
-    ) {
-        ArrayList<Component> matches = SEARCH_ALG_OBJECT_POOL.borrow();
-        ArrayList<Component> layer = SEARCH_ALG_OBJECT_POOL.borrow();
-        layer.add(root);
-        treeSearchRecursionStep(matches, layer, condition);
-        SEARCH_ALG_OBJECT_POOL.giveBackAllExcept(matches);
-        if (SEARCH_ALG_OBJECT_POOL.taken() != 1)
-            throw new RuntimeException("No of taken: " + SEARCH_ALG_OBJECT_POOL.taken());
-        return matches;
-    }
-
-    private static void treeSearchRecursionStep(
-            ArrayList<Component> matches,
-            @NotNull ArrayList<Component> layer,
-            Predicate<Component> condition
-    ) {
-        if (layer.isEmpty()) {
-            return;
-        }
-        if (layer.get(0).hasSubComponents()) {
-            ArrayList<Component> newLayer = SEARCH_ALG_OBJECT_POOL.borrow();
-            //noinspection ForLoopReplaceableByForEach
-            for (int i = 0, n = layer.size(); i < n; i++) {
-                for (Component child : layer.get(i).subComponents) {
-                    if (condition.test(child)) {
-                        newLayer.add(child);
-                    }
-                }
-            }
-            treeSearchRecursionStep(matches, newLayer, condition);
-        } else {
-            layer.removeIf(condition.negate());
-            matches.addAll(layer);
-        }
-    }
-
-
-    public static void clearUnusedData(Component component, @NotNull RectInt rect) {
-        final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
-                component,
-                c -> c.underlyingRectInt.meets(rect)
-        );
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
-            final Component c = treeSearchResult.get(i);
-            if (c.getStatus() == Status.DEACTIVATED && indivisibleComponentToEntityMapping.containsKey(c)) {
-                c.clearData();
-                c.setStatus(Status.DEACTIVATED);
-            }
-        }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
-    }
-
-    public static void loadNearbyData(Component component, @NotNull RectInt rect) {
-        final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
-                component,
-                c -> c.underlyingRectInt.meets(rect)
-        );
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
-            final Component c = treeSearchResult.get(i);
-            if (c.getStatus() == Status.DEACTIVATED && indivisibleComponentToEntityMapping.containsKey(c)) {
-
-                final IndexedSet<Entity> entities = indivisibleComponentToEntityMapping.get(c);
-                for (int j = 0, m = entities.size(); j < m; j++) {
-                    final Entity entity = entities.get(j);
-                    if (entity instanceof CollisionData) {
-                        ((CollisionData) entity).actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
-                            @Override
-                            public void accept(int x, int y) {
-                                GlobalData.getRootComponent().incrementCollisionAt(x, y);
-                            }
-
-                            @Override
-                            public String toString() {
-                                return "loadNearbyData: GlobalData.getRootComponent().incrementCollisionAt";
-                            }
-                        });
-                    }
-//                    if (entity instanceof LadderData) {
-//                        ((LadderData) entity).initLadderData(c);
-//                    }
-                }
-                c.setStatus(Status.ACTIVE);
-            }
-        }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
+    public ImmutableRectInt getUnderlyingRectInt() {
+        return underlyingRectInt;
     }
 
     public List<Component> getSubComponents() {
@@ -482,48 +248,6 @@ public class Component implements Id {
     }
 
 
-    /**
-     * Finds list of entities currently occupying the screen.
-     */
-    @NotNull
-    public List<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
-        ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
-                GlobalData.rootComponent,
-                c -> c.underlyingRectInt.meets(neighborhood)
-        );
-
-        // TODO: deal with this new.
-        final List<Entity> containedEntities = new ArrayList<>();
-
-
-        final IndexedSet<Entity> setOfEntitiesToReturn = ENTITY_INDEXED_SET_POOL.borrow();
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
-
-            if (treeSearchResult.get(i) == null) continue;
-
-            IndexedSet<Entity> entitiesInComponent = indivisibleComponentToEntityMapping.get(treeSearchResult.get(i));
-
-            // Goto next iteration
-            if (entitiesInComponent == null) continue;
-
-            for (int j = 0, m = entitiesInComponent.size(); j < m; j++) {
-                final Entity entityToAdd = entitiesInComponent.get(j);
-                // Finds unique entities to return.
-                if (setOfEntitiesToReturn.add(entityToAdd)) {
-                    containedEntities.add(entityToAdd);
-                }
-            }
-
-        }
-        SEARCH_ALG_OBJECT_POOL.giveBack(treeSearchResult);
-        ENTITY_INDEXED_SET_POOL.giveBack(setOfEntitiesToReturn);
-
-
-        logger.log(Level.FINE, "A call to getContainedEntities() returned " + containedEntities.size()
-                + " entities.");
-        return containedEntities;
-    }
 
     @Override
     public int getId() {
@@ -568,6 +292,20 @@ public class Component implements Id {
         }
     }
 
+    public void activate(int x, int y) {
+        if (underlyingRectContains(x, y)) {
+            if (hasSubComponents()) {
+                for (Component c : subComponents) {
+                    c.activate(x, y);
+                }
+            } else {
+                if (isInactive()) {
+                    setActive(true);
+                }
+            }
+        }
+    }
+
     public void increment(int x, int y, Data key) {
         if (underlyingRectContains(x, y)) {
             if (hasSubComponents()) {
@@ -578,6 +316,7 @@ public class Component implements Id {
                 if (!data.containsKey(key)) {
                     data.put(key, IntMatrixPool.getInstance().borrow());
                 }
+
                 ((IntMatrix) data.get(key)).increment(x - minX, y - minY);
 
                 // Debugging
@@ -633,7 +372,9 @@ public class Component implements Id {
 
     @Override
     public String toString() {
-        return "{x: " + underlyingRectInt.getMinX() / COARSENESS_PARAMETER +
+        return "{" +
+                "id: " + id +
+                ", x: " + underlyingRectInt.getMinX() / COARSENESS_PARAMETER +
                 ", y: " + underlyingRectInt.getMinY() / COARSENESS_PARAMETER + "}";
     }
 
@@ -713,12 +454,17 @@ public class Component implements Id {
         return depth;
     }
 
-    public Status getStatus() {
-        return status;
+
+    public boolean isActive(){
+        return active;
     }
 
-    private void setStatus(Status status) {
-        this.status = status;
+    public boolean isInactive(){
+        return !active;
+    }
+
+    public void setActive(boolean b) {
+        this.active = b;
     }
 
     @Override
@@ -767,58 +513,4 @@ public class Component implements Id {
 
     }
 
-    enum Status {LOADING, ACTIVE, DEACTIVATED}
-
-    private static class ComponentArrayListPool extends AbstractObjectPool<ArrayList<Component>> {
-
-        public ComponentArrayListPool(int objectsAvailable, IntFunction<ArrayList<Component>> mapper,
-                                      Consumer<ArrayList<Component>> clearDataProcedure) {
-            super(objectsAvailable, mapper, clearDataProcedure);
-        }
-
-    }
-
-    static class IndexedSetPool<Entry extends Id> extends AbstractObjectPool<IndexedSet<Entry>> {
-        public IndexedSetPool(int objectsAvailable, IntFunction<IndexedSet<Entry>> mapper) {
-            super(objectsAvailable, mapper, IndexedSet::clear);
-        }
-    }
-
-    /**
-     * Makes sure that int data objects are re-used, instead of being garbage collected.
-     */
-    static class IntMatrixPool extends AbstractObjectPool<IntMatrix> {
-
-        final static int OBJECTS_AVAILABLE = 64 * 2; // 2 because Ladder data & Collision data.
-
-        private static final IntMatrixPool instance
-                = new IntMatrixPool(OBJECTS_AVAILABLE, i -> new IntMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
-
-        IntMatrixPool(int objectsAvailable, IntFunction<IntMatrix> mapper) {
-            super(objectsAvailable, mapper, IntMatrix::clear);
-        }
-
-        public static IntMatrixPool getInstance() {
-            return instance;
-        }
-    }
-
-    /**
-     * Makes sure that float data objects are re-used, instead of being garbage collected.
-     */
-    static class FloatArrayPool extends AbstractObjectPool<FloatMatrix> {
-
-        final static int OBJECTS_AVAILABLE = 64 * 2;  // 2 because vector field X & Y.
-
-        private static final FloatArrayPool instance
-                = new FloatArrayPool(OBJECTS_AVAILABLE, i -> new FloatMatrix(COARSENESS_PARAMETER, COARSENESS_PARAMETER));
-
-        FloatArrayPool(int objectsAvailable, IntFunction<FloatMatrix> mapper) {
-            super(objectsAvailable, mapper, m -> Arrays.fill(m.data(), 0));
-        }
-
-        public static FloatArrayPool getInstance() {
-            return instance;
-        }
-    }
 }

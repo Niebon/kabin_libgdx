@@ -3,7 +3,7 @@ package dev.kabin;
 import dev.kabin.utilities.Procedures;
 import dev.kabin.utilities.functioninterfaces.BiIntConsumer;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
-import dev.kabin.utilities.shapes.RectInt;
+import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 
 public class DebugUtility {
 
@@ -15,7 +15,7 @@ public class DebugUtility {
      * @param collisionPredicate
      * @param renderSquare
      */
-    static void renderEachCollisionPoint(RectInt currentCameraBounds, BiIntPredicate collisionPredicate, BiIntConsumer renderSquare) {
+    static void renderEachCollisionPoint(MutableRectInt currentCameraBounds, BiIntPredicate collisionPredicate, BiIntConsumer renderSquare) {
         Procedures.forEachIntPairIn(currentCameraBounds, (i, j) -> {
             if (collisionPredicate.test(i,j)) renderSquare.accept(i,j);
         });

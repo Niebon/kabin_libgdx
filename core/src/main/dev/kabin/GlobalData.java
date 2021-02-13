@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.Component;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.InputEventDistributor;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointDouble;
-import dev.kabin.utilities.shapes.RectInt;
+import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 
+import java.util.Optional;
 import java.util.logging.Level;
 
 public class GlobalData {
@@ -33,12 +35,18 @@ public class GlobalData {
     public static String currentWorld = "world_1.json";
     public static int screenWidth = 400;
     public static int screenHeight = 225;
-    public static RectInt currentCameraBounds = RectInt.centeredAt(0, 0, screenWidth, screenHeight);
+    public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
-    public static Component rootComponent;
     public static OrthographicCamera camera;
     public static int worldSizeX;
     public static int worldSizeY;
+
+
+
+    private static WorldRepresentation worldRepresentation;
+
+
+
 
 
     public static void setScale(double x, double y) {
@@ -62,14 +70,10 @@ public class GlobalData {
         return Level.WARNING;
     }
 
-    public static Component getRootComponent() {
-        return rootComponent;
-    }
-
     public static void setMapSize(int worldSizeX, int worldSizeY) {
         GlobalData.worldSizeX = worldSizeX;
         GlobalData.worldSizeY = worldSizeY;
-        rootComponent = Component.representationOf(worldSizeX, worldSizeY, scaleFactor);
+        worldRepresentation = new WorldRepresentation(worldSizeX, worldSizeY, scaleFactor);
     }
 
 
@@ -81,4 +85,11 @@ public class GlobalData {
         );
         //System.out.println("camera.position: " + Point.of(camera.position.x, camera.position.y) + "currentCameraBounds: " + Point.of(currentCameraBounds.getCenterX(), currentCameraBounds.getCenterY()));
     }
+
+    public static WorldRepresentation getWorldRepresentation(){
+        return worldRepresentation;
+    }
+
+
+
 }

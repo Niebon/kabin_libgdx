@@ -256,7 +256,7 @@ public class DeveloperUI {
                 GlobalData.shapeRenderer.end();
 
                 // By abuse of the word "render" include this here...
-                EntityCollectionProvider.actionForEachEntityOrderedByGroup(e -> {
+                EntityCollectionProvider.actionForEachEntityOrderedByType(e -> {
                     if (backingRect.contains(e.getX(), e.getY())) {
                         currentlySelectedEntities.add(e);
                     } else {
@@ -590,7 +590,7 @@ public class DeveloperUI {
                 matchingCt.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
                                                         @Override
                                                         public void accept(int x, int y) {
-                                                            GlobalData.getRootComponent().decrementCollisionAt(x, y);
+                                                            GlobalData.getWorldRepresentation().decrementCollisionAt(x, y);
                                                         }
 
                                                         @Override
@@ -600,9 +600,9 @@ public class DeveloperUI {
                                                     }
 
                 );
-                Component.getEntityInCameraNeighborhoodCached().remove(matchingCt);
+                GlobalData.getWorldRepresentation().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).remove(matchingCt);
             } else {
-                final Iterator<Entity> entityIterator = Component.getEntityInCameraNeighborhoodCached().iterator();
+                final Iterator<Entity> entityIterator = GlobalData.getWorldRepresentation().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).iterator();
                 while (entityIterator.hasNext()) {
                     final Entity e = entityIterator.next();
                     if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
@@ -616,7 +616,7 @@ public class DeveloperUI {
                         ct.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
                                                         @Override
                                                         public void accept(int x, int y) {
-                                                            GlobalData.getRootComponent().decrementCollisionAt(x, y);
+                                                            GlobalData.getWorldRepresentation().decrementCollisionAt(x, y);
                                                         }
 
                                                         @Override
@@ -645,7 +645,7 @@ public class DeveloperUI {
         }
 
         /**
-         * This procedure remove any {@link CollisionTile collision tile} residing at the current mouse position.
+         * This procedure removes any {@link CollisionTile collision tile} residing at the current mouse position.
          * Afterwards, a new collision tile is added at the current mouse position.
          */
         public void replaceCollisionTileAtCurrentMousePositionWithCurrentSelection() {
@@ -673,10 +673,14 @@ public class DeveloperUI {
                 // Init the data.
                 newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
                 EntityCollectionProvider.registerEntity(newCollisionTile);
+
+                // Add collision data.
+                GlobalData.getWorldRepresentation().activate(Math.round(parameters.x()), Math.round(parameters.y()));
                 newCollisionTile.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
                                                               @Override
                                                               public void accept(int x, int y) {
-                                                                  GlobalData.getRootComponent().incrementCollisionAt(x, y);
+                                                                  GlobalData.getWorldRepresentation().activate(x, y);
+                                                                  GlobalData.getWorldRepresentation().incrementCollisionAt(x, y);
                                                               }
 
                                                               @Override
@@ -686,8 +690,7 @@ public class DeveloperUI {
                                                           }
 
                 );
-                Component.updateLocation(newCollisionTile, GlobalData.getRootComponent());
-
+                GlobalData.getWorldRepresentation().updateLocation(newCollisionTile);
                 //System.out.println("Position: " + newCollisionTile.getPosition());
             });
         }

@@ -2,10 +2,11 @@ package dev.kabin.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import dev.kabin.GlobalData;
 import dev.kabin.collections.Id;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.utilities.shapes.RectInt;
+import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
+import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
+import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 import dev.kabin.utilities.helperinterfaces.JSONRecordable;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
@@ -26,7 +27,21 @@ public interface Entity extends
 
     void render(SpriteBatch batch, float stateTime);
 
-    void updatePhysics();
+    void updatePhysics(PhysicsParameters params);
+
+    interface PhysicsParameters{
+        boolean isCollisionAt(int x, int y);
+        boolean isLadderAt(int x, int y);
+
+        default boolean isCollisionIfNotLadderData(int x, int y){
+            if (isLadderAt(x, y)) return false;
+            else return (isCollisionAt(x, y));
+        }
+
+        float getVectorFieldX(int x, int y);
+        float getVectorFieldY(int x, int y);
+
+    }
 
     int getLayer();
 
@@ -59,9 +74,9 @@ public interface Entity extends
         return getUnscaledY() - getPixelAnalysis().getLowestPixel();
     }
 
-    RectInt graphicsNbd();
+    MutableRectInt graphicsNbd();
 
-    RectInt positionNbd();
+    MutableRectInt positionNbd();
 
     /**
      * Acts on an entity with the present vector field and returns the vector of the action.
@@ -69,13 +84,14 @@ public interface Entity extends
      * @param entity the entity to be acted on.
      * @return the point representing the vector (vx,vy) which acted on the entity.
      */
-    default boolean routineActWithVectorFieldOn(@NotNull Entity entity) {
+    default boolean routineActWithVectorFieldOn(@NotNull Entity entity,
+                                                PhysicsParameters parameters) {
         final int x = entity.getUnscaledX();
         final int y = entity.getUnscaledY();
         for (int i = 0; i < 4; i++) {
             final float
-                    vx = GlobalData.getRootComponent().getVectorFieldX(x, y + i),
-                    vy = GlobalData.getRootComponent().getVectorFieldY(x, y + i);
+                    vx = parameters.getVectorFieldX(x, y + i),
+                    vy = parameters.getVectorFieldY(x, y + i);
             if (vx != 0 || vy != 0) {
                 entity.setX(entity.getX() + vx * PhysicsEngine.DT);
                 entity.setY(entity.getY() + vy * PhysicsEngine.DT);
@@ -92,12 +108,13 @@ public interface Entity extends
      * y - dy corresponds to the first point where the given entity is placed
      * strictly above the ground/collision surface.
      */
-    static float findLiftAboveGround(@NotNull Entity entity) {
+    static float findLiftAboveGround(@NotNull Entity entity,
+                                     @NotNull BiIntPredicate collisionPredicate) {
         final int
                 x = entity.getUnscaledX(),
                 y = entity.getUnscaledY();
         int j = 0;
-        while (GlobalData.getRootComponent().isCollisionIfNotLadderData(x, y + j)) j++;
+        while (collisionPredicate.test(x, y + j)) j++;
         return entity.getScale() * j;
     }
 

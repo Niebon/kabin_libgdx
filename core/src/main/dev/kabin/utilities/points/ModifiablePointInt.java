@@ -18,9 +18,9 @@ public class ModifiablePointInt implements PointInt {
 		this.y = y;
 	}
 
-	public ModifiablePointInt(@NotNull ModifiablePointInt p) {
-		x = p.x;
-		y = p.y;
+	public ModifiablePointInt(@NotNull PointInt p) {
+		x = p.getX();
+		y = p.getY();
 	}
 
 	public ModifiablePointInt setX(int x) {

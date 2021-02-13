@@ -34,10 +34,8 @@ public class CollisionTile extends CollisionEntity {
         animationPlaybackImpl.setCurrentAnimation(tile);
         index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
         if (objectPool.containsKey(PointInt.unmodifiableOf(unscaledX, unscaledY))) {
-            //System.out.println("Already contained: " + unscaledX + ", " + unscaledY);
             throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
         }
-        //System.out.println("Adding: " + unscaledX + ", " + unscaledY);
         objectPool.put(PointInt.unmodifiableOf(unscaledX, unscaledY), this);
     }
 
@@ -53,23 +51,7 @@ public class CollisionTile extends CollisionEntity {
      * @return if the position was occupied, clears it and returns the occupant.
      */
     public static Optional<CollisionTile> clearAt(int x, int y) {
-        //System.out.println("Now cleaning: " + x + ", " + y);
         return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(x, y)));
-    }
-
-    /**
-     * Clears any {@link CollisionTile} which exists at the given position.
-     *
-     * @param x coordinate.
-     * @param y coordinate.
-     * @param scaleFactor scale-factor.
-     *
-     * @return returns the {@link CollisionTile} which was cleared at the given position (if it exists).
-     */
-    public static Optional<CollisionTile> clearAt(float x, float y, float scaleFactor) {
-        int xInt = Functions.snapToGrid(x / scaleFactor, TILE_SIZE);
-        int yInt = Functions.snapToGrid(y / scaleFactor, TILE_SIZE);
-        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(xInt, yInt)));
     }
 
 
@@ -92,9 +74,6 @@ public class CollisionTile extends CollisionEntity {
         unscaledX = Functions.snapToGrid(x / getScale(), TILE_SIZE);
         super.setX(unscaledX * getScale());
     }
-
-
-
 
     @Override
     public int getUnscaledX() {

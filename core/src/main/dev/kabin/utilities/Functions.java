@@ -28,21 +28,21 @@ public class Functions {
 
     @SuppressWarnings({"unused", "RedundantSuppression"})
     @Contract(pure = true)
-    public static boolean anyTrue(@NotNull boolean... array) {
+    public static boolean anyTrue(boolean... array) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, size = array.length; i < size; i++) if (array[i]) return true;
         return false;
     }
 
     @Contract(pure = true)
-    public static boolean anyFalse(@NotNull boolean... array) {
+    public static boolean anyFalse(boolean... array) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, size = array.length; i < size; i++) if (!array[i]) return true;
         return false;
     }
 
     @Contract(pure = true)
-    public static boolean anyPositive(@NotNull int... array) {
+    public static boolean anyPositive(int... array) {
         for (int b : array) if (b > 0) return true;
         return false;
     }
@@ -82,13 +82,11 @@ public class Functions {
         return distance(entity1.getX(), entity1.getY(), entity2.getX(), entity2.getY());
     }
 
-    @NotNull
     @Contract("_, _ -> new")
     public static double[] getDisplacement(@NotNull Entity fromEntity, @NotNull Entity toEntity) {
         return new double[]{toEntity.getX() - fromEntity.getX(), toEntity.getY() - fromEntity.getY()};
     }
 
-    @NotNull
     @Contract("_, _ -> new")
     public static double[] getDisplacement(@NotNull RectBoxed<?> from, @NotNull RectBoxed<?> to) {
         return new double[]{to.getCenterX() - from.getCenterX(), to.getMinY().doubleValue() - from.getMinY().doubleValue()};

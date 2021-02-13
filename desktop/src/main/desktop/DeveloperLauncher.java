@@ -10,7 +10,6 @@ public class DeveloperLauncher {
 
     static LwjglApplication application;
 
-
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
@@ -29,5 +28,7 @@ public class DeveloperLauncher {
         TexturePacker.process(settings, "core/assets/raw_textures", "./core/assets/", "textures");
 
         application = new LwjglApplication(new MainGameDeveloper(), config);
+
     }
+
 }

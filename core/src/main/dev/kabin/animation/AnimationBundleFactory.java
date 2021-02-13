@@ -57,7 +57,7 @@ public class AnimationBundleFactory {
             var regions = findAllAnimations(atlasPath, clazz);
             if (regions.isEmpty()) continue;
             var animations = findEnumTypeToIntArrayMapping(atlasPath, clazz);
-            //noinspection rawtypes
+            //noinspection rawtypes,unchecked,unchecked
             return new AnimationPlaybackImpl(regions, animations, clazz);
         }
         throw new RuntimeException();

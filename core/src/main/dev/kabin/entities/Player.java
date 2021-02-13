@@ -100,16 +100,16 @@ public class Player extends EntitySimple {
     }
 
     @Override
-    public void updatePhysics() {
+    public void updatePhysics(PhysicsParameters params) {
         handlePlayerInputMovementKeyboard();
 
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
         final int yPrevUnscaled = getUnscaledY();
-        final boolean affectedByVectorField = routineActWithVectorFieldOn(this);
+        final boolean affectedByVectorField = routineActWithVectorFieldOn(this, params);
 
         // Ladder movement
-        if (GlobalData.getRootComponent().isLadderAt(xPrevUnscaled, yPrevUnscaled)) {
+        if (params.isCollisionAt(xPrevUnscaled, yPrevUnscaled)) {
             jumpFrame = 0;
             vx0 = 0f;
             vy0 = 0f;
@@ -122,7 +122,7 @@ public class Player extends EntitySimple {
 
             // KeyEventUtil.keyD == KeyEventUtil.keyA <=> dx = 0???
             if (dx == 0) {
-                dy = (dy < 0 && !GlobalData.getRootComponent().isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
+                dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
             }
 
             dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((getY() - 8) / getScale()));
@@ -171,10 +171,10 @@ public class Player extends EntitySimple {
                     vy0 = jumpVel;
                     if (affectedByVectorField) {
                         int i = 0;
-                        while (GlobalData.getRootComponent().getVectorFieldX(xPrevUnscaled, yPrevUnscaled + i) == 0 && i < 8)
+                        while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled + i) == 0 && i < 8)
                             i++;
-                        vx0 = GlobalData.getRootComponent().getVectorFieldX(xPrevUnscaled, yPrevUnscaled + i);
-                        vy0 += GlobalData.getRootComponent().getVectorFieldY(xPrevUnscaled, yPrevUnscaled + i);
+                        vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled + i);
+                        vy0 += params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled + i);
                     }
                 }
             }
@@ -190,15 +190,15 @@ public class Player extends EntitySimple {
         final int xNewUnscaled = Math.round((getX() + dx) / getScale());
         final int yNewUnscaled = Math.round((getY() + dy) / getScale());
 
-        final boolean collisionWithFloor = (dy > 0 && GlobalData.getRootComponent().isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
+        final boolean collisionWithFloor = (dy > 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(Entity.findLiftAboveGround(this), vAbs * PhysicsEngine.DT);
+            dy = Math.min(Entity.findLiftAboveGround(this, params::isCollisionAt), vAbs * PhysicsEngine.DT);
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
         }
 
-        final boolean collisionWithCeiling = (dy < 0 && GlobalData.getRootComponent().isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled - getPixelHeight()));
+        final boolean collisionWithCeiling = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled - getPixelHeight()));
         if (collisionWithCeiling) {
             dy = 0;
             vy0 = 0;
@@ -216,7 +216,7 @@ public class Player extends EntitySimple {
             {
                 boolean foundCollision = false;
                 for (int i = -8, len = (jumpFrame < 8) ? 8 : -8; i < len; i++) {
-                    if (GlobalData.getRootComponent().isCollisionIfNotLadderData(xNewUnscaled, yNewUnscaled + i)) {
+                    if (params.isCollisionIfNotLadderData(xNewUnscaled, yNewUnscaled + i)) {
                         foundCollision = true;
                         break;
                     }
@@ -229,7 +229,7 @@ public class Player extends EntitySimple {
 
                 boolean foundCollision = false;
                 for (int i = 4, len = getPixelHeight(); i < len; i++) {
-                    if (GlobalData.getRootComponent().isCollisionIfNotLadderData(xNewUnscaled, yNewUnscaled - i)) {
+                    if (params.isCollisionIfNotLadderData(xNewUnscaled, yNewUnscaled - i)) {
                         foundCollision = true;
                         break;
                     }
@@ -243,7 +243,10 @@ public class Player extends EntitySimple {
                 // If the path in the given direction is obstructed:
                 final double angle;
 
-                angle = CollisionTangentFinder.calculateCollisionSlope(xPrevUnscaled, yPrevUnscaled, Direction.valueOf(dx));
+                angle = CollisionTangentFinder.calculateCollisionSlope(xPrevUnscaled,
+                        yPrevUnscaled,
+                        Direction.valueOf(dx),
+                        params::isCollisionAt);
 
                 dy = (float) (vAbs * Math.sin(Math.toRadians(angle)) * PhysicsEngine.DT);
                 dx = (float) (vAbs * Math.cos(Math.toRadians(angle)) * PhysicsEngine.DT);
@@ -261,16 +264,16 @@ public class Player extends EntitySimple {
         // Check if player is in air.
         final int xUpdatedInt = getUnscaledX();
         final int yUpdatedInt = getUnscaledY();
-        final boolean onLadder = GlobalData.getRootComponent().isLadderAt(xUpdatedInt, yUpdatedInt);
+        final boolean onLadder = params.isLadderAt(xUpdatedInt, yUpdatedInt);
 
         final boolean willSoonInterceptCollisionData;
         if (inAir && dy > 0) {
             double angle = Functions.findAngleDeg(dx, dy);
             int dxInt = (int) Math.cos(Math.toRadians(angle)) * 8;
             int dyInt = (int) Math.sin(Math.toRadians(angle)) * 8;
-            willSoonInterceptCollisionData = GlobalData.getRootComponent().isCollisionIfNotLadderData(xUpdatedInt + dxInt, yUpdatedInt + dyInt);
+            willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt + dxInt, yUpdatedInt + dyInt);
         } else {
-            willSoonInterceptCollisionData = GlobalData.getRootComponent().isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt + 8);
+            willSoonInterceptCollisionData =params.isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt + 8);
         }
 
         if (willSoonInterceptCollisionData) {

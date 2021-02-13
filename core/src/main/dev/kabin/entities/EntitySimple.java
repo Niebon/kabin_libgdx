@@ -16,11 +16,10 @@ import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
 import dev.kabin.utilities.pools.ImageAnalysisPool;
-import dev.kabin.utilities.shapes.RectInt;
+import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -36,8 +35,8 @@ public class EntitySimple implements Entity {
     private final int layer;
     private final Actor actor = new Actor();
     private final int id;
-    private final RectInt positionNbd;
-    private final RectInt graphicsNbd;
+    private final MutableRectInt positionNbd;
+    private final MutableRectInt graphicsNbd;
     private float x, y, scale;
 
     EntitySimple(EntityParameters parameters) {
@@ -69,8 +68,8 @@ public class EntitySimple implements Entity {
         setPos(parameters.x(), parameters.y());
 
         // TODO: will the pathfinder algorithm suffer if position nbd is too big?
-        positionNbd = RectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
-        graphicsNbd = RectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+        positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+        graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
         updateNeighborhood();
         id = createdInstances++;
     }
@@ -176,7 +175,7 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public void updatePhysics() {
+    public void updatePhysics(PhysicsParameters params) {
         // Update x and y accordingly.
     }
 
@@ -248,12 +247,12 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public RectInt graphicsNbd() {
+    public MutableRectInt graphicsNbd() {
         return graphicsNbd;
     }
 
     @Override
-    public RectInt positionNbd() {
+    public MutableRectInt positionNbd() {
         return positionNbd;
     }
 

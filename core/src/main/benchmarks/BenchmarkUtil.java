@@ -1,14 +1,12 @@
 package benchmarks;
 
 import com.google.common.base.Strings;
-import dev.kabin.utilities.Functions;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,8 +19,6 @@ import java.util.stream.Stream;
 public class BenchmarkUtil {
 
     private static final Logger LOGGER = Logger.getLogger(BenchmarkUtil.class.getName());
-
-    private static final MathContext MATH_CONTEXT = new MathContext(3);
 
     protected static void benchMarkRunnable(Class<?> caller,
                                             Runnable r,
@@ -46,33 +42,33 @@ public class BenchmarkUtil {
             final long benchMarkTimeMinutes = durationBenchmark.getSeconds() / 60;
             LOGGER.info("Beginning benchmark. Will warmup for %s minutes.".formatted(benchMarkTimeMinutes));
 
-            final var now = System.nanoTime();
-            final var duration = durationBenchmark.toNanos();
+            final long now = System.nanoTime();
+            final long duration = durationBenchmark.toNanos();
             final var timePerPass = new Statistics();
             final var throughPut = new Statistics();
 
             long passes = 0;
             while (System.nanoTime() - now < duration) {
-                final var before = System.nanoTime();
+                final long before = System.nanoTime();
                 r.run();
                 timePerPass.add(System.nanoTime() - before);
                 passes++;
-                throughPut.add((double) passes / System.nanoTime());
+                throughPut.add((double) passes / (System.nanoTime() - now));
             }
 
 
             final String benchMarkResult = """
                     Here are the results from the benchmark:
-                    warmup time    [minutes] = %s
-                    benchmark time [minutes] = %s
-                    time/pass      [ns/pass] = %s
-                    throughput     [pass/ns] = %s
-                    passes         [pass]    = %s
+                    warmup     [minutes] = %s
+                    benchmark  [minutes] = %s
+                    time/pass  [ns/pass] = %s
+                    throughput [pass/ns] = %s
+                    passes     [pass]    = %s
                     """.formatted(
                     warmupTimeMinutes,
                     benchMarkTimeMinutes,
-                    mean_std(timePerPass.getMean(), timePerPass.getStd()),
-                    mean_std(throughPut.getMean(), throughPut.getStd()),
+                    formatMeanAndStd(timePerPass.getMean(), timePerPass.getStd()),
+                    formatMeanAndStd(throughPut.getMean(), throughPut.getStd()),
                     passes);
 
             LOGGER.info(benchMarkResult);
@@ -91,15 +87,12 @@ public class BenchmarkUtil {
         }
     }
 
-    private static String mean_std(double mean, double std) {
-        String meanFormatted = String.valueOf(BigDecimal.valueOf(mean).round(MATH_CONTEXT));
-        String stdFormatted = String.valueOf(BigDecimal.valueOf(std).round(MATH_CONTEXT));
-
-        DecadicPrefix prefix = DecadicPrefix.parse(Integer.parseInt(meanFormatted.split("E")[1]));
-
-        return NumberRepresentation.parse(meanFormatted).coefficient(prefix.exponent) +
+    private static String formatMeanAndStd(double mean, double std) {
+        String meanFormatted = new DecimalFormat("0.######E0").format(mean);
+        String stdFormatted = new DecimalFormat("0.######E0").format(std);
+        return NumberRepresentation.parse(meanFormatted).coefficient(0) +
                 "±" +
-                NumberRepresentation.parse(stdFormatted).coefficient(prefix.exponent);
+                NumberRepresentation.parse(stdFormatted).coefficient(0);
     }
 
 
@@ -133,33 +126,6 @@ public class BenchmarkUtil {
 
     }
 
-    enum DecadicPrefix {
-        NANO(-9, "n"),
-        MICRO(-6, "μ"),
-        MILLI(-3, "m"),
-        NONE(0, ""),
-        KILO(3, "k"),
-        MEGA(6, "M"),
-        GIGA(9, "g"),
-        TERRA(12, "T");
-
-        private final int exponent;
-        private final String symbol;
-
-        DecadicPrefix(int exponent, String symbol) {
-            this.exponent = exponent;
-            this.symbol = symbol;
-        }
-
-        static DecadicPrefix parse(int exponent) {
-            int index = Functions.snapToGrid(exponent, 3);
-            for (var decadicPrefix : DecadicPrefix.values()) {
-                if (index == exponent) return decadicPrefix;
-            }
-            throw new IllegalArgumentException();
-        }
-    }
-
     static class NumberRepresentation {
 
         private final List<Character> digits;
@@ -176,6 +142,7 @@ public class BenchmarkUtil {
 
         /**
          * Parses an real number on exponential form.
+         *
          * @param exponentialForm the real number to be parsed.
          * @return the corresponding representation.
          */
@@ -237,7 +204,6 @@ public class BenchmarkUtil {
         }
 
 
-
         enum Sign {
             POSITIVE(""),
             NEGATIVE("-");
@@ -248,7 +214,7 @@ public class BenchmarkUtil {
                 this.symbol = symbol;
             }
 
-            String getSymbol(){
+            String getSymbol() {
                 return symbol;
             }
         }
