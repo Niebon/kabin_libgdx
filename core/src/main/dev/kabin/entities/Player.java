@@ -106,7 +106,7 @@ public class Player extends EntitySimple {
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
         final int yPrevUnscaled = getUnscaledY();
-        final boolean affectedByVectorField = routineActWithVectorFieldOn(this, params);
+        final boolean affectedByVectorField = routineActWithVectorFieldOn(this, params::getVectorFieldX, params::getVectorFieldY);
 
         // Ladder movement
         if (params.isCollisionAt(xPrevUnscaled, yPrevUnscaled)) {

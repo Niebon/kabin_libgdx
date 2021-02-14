@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.collections.Id;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
+import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.utilities.helperinterfaces.JSONRecordable;
 import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.utilities.helperinterfaces.Scalable;
@@ -33,15 +34,42 @@ public interface Entity extends
      */
     interface PhysicsParameters{
 
+        /**
+         * A collision check.
+         * @param x horizontal coordinate. Positive points right relative to the screen.
+         * @param y vertical coordinate. Positive points upwards the screen.
+         * @return true iff the coordinate has collision.
+         */
         boolean isCollisionAt(int x, int y);
+
+        /**
+         * A ladder data check.
+         * @param x horizontal coordinate. Positive points right relative to the screen.
+         * @param y vertical coordinate. Positive points upwards the screen.
+         * @return true iff the coordinate has ladder data.
+         */
         boolean isLadderAt(int x, int y);
+
 
         default boolean isCollisionIfNotLadderData(int x, int y){
             if (isLadderAt(x, y)) return false;
             else return (isCollisionAt(x, y));
         }
 
+        /**
+         * Horizontal vector field.
+         * @param x horizontal coordinate. Positive points right relative to the screen.
+         * @param y vertical coordinate. Positive points upwards the screen.
+         * @return the magnitude of the vector field in horizontal direction.
+         */
         float getVectorFieldX(int x, int y);
+
+        /**
+         * Vertical vector field.
+         * @param x horizontal coordinate. Positive points right relative to the screen.
+         * @param y vertical coordinate. Positive points upwards the screen.
+         * @return the magnitude of the vector field in vertical direction.
+         */
         float getVectorFieldY(int x, int y);
 
     }
@@ -88,13 +116,14 @@ public interface Entity extends
      * @return the point representing the vector (vx,vy) which acted on the entity.
      */
     default boolean routineActWithVectorFieldOn(@NotNull Entity entity,
-                                                PhysicsParameters parameters) {
+                                                BiIntToFloatFunction vectorFieldX,
+                                                BiIntToFloatFunction vectorFieldY) {
         final int x = entity.getUnscaledX();
         final int y = entity.getUnscaledY();
         for (int i = 0; i < 4; i++) {
             final float
-                    vx = parameters.getVectorFieldX(x, y + i),
-                    vy = parameters.getVectorFieldY(x, y + i);
+                    vx = vectorFieldX.eval(x, y + i),
+                    vy = vectorFieldY.eval(x, y + i);
             if (vx != 0 || vy != 0) {
                 entity.setX(entity.getX() + vx * PhysicsEngine.DT);
                 entity.setY(entity.getY() + vy * PhysicsEngine.DT);

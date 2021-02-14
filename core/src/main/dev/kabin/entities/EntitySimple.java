@@ -187,7 +187,6 @@ public class EntitySimple implements Entity {
 
     @Override
     public void updatePhysics(PhysicsParameters params) {
-        // Update x and y accordingly.
     }
 
     @Override

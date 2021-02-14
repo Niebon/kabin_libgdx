@@ -52,7 +52,6 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
 
-
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
             var keyEventUtil = KeyEventUtil.getInstance();
@@ -95,18 +94,18 @@ public class MainGame extends ApplicationAdapter {
 
             PhysicsEngine.render(stateTime, GlobalData.getWorldState());
 
-            for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
-                for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
-                    if (GlobalData.getWorldState().isCollisionAt(i, j)) {
-                        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                        shapeRenderer.setColor(Color.RED);
-                        float x = (i - currentCameraBounds.getMinX()) * scaleFactor;
-                        float y = (j - currentCameraBounds.getMinY()) * scaleFactor;
-                        shapeRenderer.rect(x, y, scaleFactor, scaleFactor);
-                        shapeRenderer.end();
-                    }
-                }
-            }
+//            for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
+//                for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
+//                    if (GlobalData.getWorldState().isCollisionAt(i, j)) {
+//                        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//                        shapeRenderer.setColor(Color.RED);
+//                        float x = (i - currentCameraBounds.getMinX()) * scaleFactor;
+//                        float y = (j - currentCameraBounds.getMinY()) * scaleFactor;
+//                        shapeRenderer.rect(x, y, scaleFactor, scaleFactor);
+//                        shapeRenderer.end();
+//                    }
+//                }
+//            }
 
         }
 
