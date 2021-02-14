@@ -1,6 +1,5 @@
 package dev.kabin.entities;
 
-import dev.kabin.GlobalData;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.utilities.CollisionTangentFinder;
 import dev.kabin.utilities.Direction;
@@ -120,7 +119,6 @@ public class Player extends EntitySimple {
             dx = vAbsDividedBySquareRoot * (r - l) * PhysicsEngine.DT;
             dy = vAbsDividedBySquareRoot * (d - u) * PhysicsEngine.DT;
 
-            // KeyEventUtil.keyD == KeyEventUtil.keyA <=> dx = 0???
             if (dx == 0) {
                 dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
             }
@@ -208,10 +206,11 @@ public class Player extends EntitySimple {
 
         if (dx != 0) {
             final boolean hasFooting;
+
            /*
-            This makes it so that the player is not stuck when jumping.
-            The condition for the player to have footing is relaxed right after a jump.
-            The numbers are found by experimentation.
+            * This makes it so that the player is not stuck when jumping.
+            * The condition for the player to have footing is relaxed right after a jump.
+            * The numbers are found by experimentation.
             */
             {
                 boolean foundCollision = false;

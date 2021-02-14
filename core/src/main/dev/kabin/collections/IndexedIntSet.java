@@ -37,9 +37,8 @@ public class IndexedIntSet {
                 underlyingArray = copy;
             }
 
-            /*
-            Start at the end of the array and update each index i as i -> i + 1.
-             */
+
+            // Start at the end of the array and update each index i as i -> i + 1.
             int indexOfVal = -result - 1;
             if (size - indexOfVal >= 0) {
                 System.arraycopy(underlyingArray, indexOfVal, underlyingArray, indexOfVal + 1, size - indexOfVal);

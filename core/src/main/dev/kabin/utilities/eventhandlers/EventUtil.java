@@ -3,7 +3,8 @@ package dev.kabin.utilities.eventhandlers;
 
 import dev.kabin.entities.Player;
 import dev.kabin.GlobalData;
-import dev.kabin.ui.DeveloperUI;
+import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,7 +82,7 @@ public class EventUtil {
 
             mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
                 if (KeyEventUtil.isAltDown()) {
-                    DeveloperUI.TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
+                    TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
                 }
             });
 

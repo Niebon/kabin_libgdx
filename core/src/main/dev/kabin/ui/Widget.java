@@ -22,22 +22,31 @@ public class Widget implements ModifiableFloatCoordinates {
     private final Group backingGroup = new Group();
     private final Window mainWindow;
     private final Window collapsedWindow;
+    private final float width;
+    private final float height;
     private Window[] popupWindows;
     private Label contentTableMessage;
     private boolean visible, collapsed;
+    private final float mainWindowX;
+    private final float mainWindowY;
 
     private Widget(
             float x, float y, float width, float height, String title, Skin skin,
             float collapsedWindowX, float collapsedWindowY, float collapsedWindowWidth, float collapsedWindowHeight,
             Label contentTableMessage
     ) {
+        mainWindowX = x;
+        mainWindowY = y;
+        this.width = width;
+        this.height = height;
+
         collapsedWindow = new Window(title, skin);
         collapsedWindow.setBounds(collapsedWindowX, collapsedWindowY, collapsedWindowWidth, collapsedWindowHeight);
         collapsedWindow.setMovable(false);
 
 
         mainWindow = new Window(title, skin);
-        mainWindow.setBounds(x, y, width, height);
+        mainWindow.setBounds(x, y, this.width, this.height);
         backingGroup.addActor(mainWindow);
         refreshContentTableMessage(contentTableMessage);
 
@@ -53,26 +62,35 @@ public class Widget implements ModifiableFloatCoordinates {
         collapseButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                mainWindow.remove();
-                backingGroup.addActor(collapsedWindow);
-                collapsed = true;
+                setCollapsed(true);
                 return true;
             }
         });
 
         // Need this substitution to reference values from constructor parameters.
-        float mainWindowX = x, mainWindowY = y;
+
         collapsedWindow.addListener(new ClickListener() {
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                collapsedWindow.remove();
-                backingGroup.addActor(mainWindow);
-                mainWindow.setBounds(mainWindowX, mainWindowY, width, height);
-                collapsed = false;
+                setCollapsed(false);
                 return true;
             }
         });
+    }
+
+    public void setCollapsed(boolean b) {
+        if (b) {
+            mainWindow.remove();
+            backingGroup.addActor(collapsedWindow);
+            collapsed = true;
+        }
+        else {
+            collapsedWindow.remove();
+            backingGroup.addActor(mainWindow);
+            mainWindow.setBounds(mainWindowX, mainWindowY, width, height);
+            collapsed = false;
+        }
     }
 
 

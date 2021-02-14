@@ -3,7 +3,6 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.entities.Entity;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.ui.DeveloperUI;
+import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 
@@ -94,18 +93,7 @@ public class MainGame extends ApplicationAdapter {
 
             PhysicsEngine.render(stateTime, GlobalData.getWorldState());
 
-//            for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
-//                for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
-//                    if (GlobalData.getWorldState().isCollisionAt(i, j)) {
-//                        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//                        shapeRenderer.setColor(Color.RED);
-//                        float x = (i - currentCameraBounds.getMinX()) * scaleFactor;
-//                        float y = (j - currentCameraBounds.getMinY()) * scaleFactor;
-//                        shapeRenderer.rect(x, y, scaleFactor, scaleFactor);
-//                        shapeRenderer.end();
-//                    }
-//                }
-//            }
+
 
         }
 
