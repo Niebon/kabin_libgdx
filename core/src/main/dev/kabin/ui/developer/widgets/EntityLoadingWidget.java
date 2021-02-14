@@ -101,6 +101,17 @@ public class EntityLoadingWidget {
         refreshContentTableMessage();
     }
 
+
+    public JSONObject toJson() {
+        return new JSONObject()
+                .put("asset", selectedAsset.isEmpty() ? "player" : selectedAsset)
+                .put("type", entityType)
+                .put("animation_type", animationType)
+                .put("layer", layer)
+                .put("collapsed", widget.isCollapsed());
+    }
+
+
     public dev.kabin.ui.Widget getWidget() {
         return widget;
     }
@@ -238,10 +249,11 @@ public class EntityLoadingWidget {
             if (preview.getCurrentAnimationType() != animationType) {
                 preview.setCurrentAnimation(animationType);
             }
-            float scale = 4.0f * preview.getOriginalWidth() / 32;
+            float scale = 4.0f *  32 / preview.getOriginalWidth();
             preview.setScale(scale);
             preview.setPos(0.75f * WIDTH + widget.getX(), widget.getY());
             preview.renderNextAnimationFrame(batch, stateTime);
         }
     }
+
 }

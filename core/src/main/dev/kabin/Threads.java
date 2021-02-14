@@ -39,6 +39,12 @@ public class Threads {
             GlobalData.getWorldState().registerEntityWhereabouts();
             GlobalData.getWorldState().clearUnusedData(GlobalData.currentCameraBounds);
             GlobalData.getWorldState().loadNearbyData(GlobalData.currentCameraBounds);
+
+
+            // Save dev session if applicable.
+            if (GlobalData.developerMode) {
+                GlobalData.saveDevSession();
+            }
         }
     }
 

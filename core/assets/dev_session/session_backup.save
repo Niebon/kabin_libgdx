@@ -1,0 +1,20 @@
+{
+  "world" : "world_2.json",
+  "developer" : {
+    "dev_mode" : true,
+    "widgets" : {
+      "entity_selection" : {
+        "collapsed" : false,
+        "asset" : "player",
+        "layer" : 0,
+        "type" : "ENTITY_SIMPLE",
+        "animation_type" : "DEFAULT_LEFT"
+      },
+      "tile_selection" : {
+        "collapsed" : false,
+        "type" : "SURFACE",
+        "asset" : "ground"
+      }
+    }
+  }
+}

@@ -6,19 +6,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import dev.kabin.components.Component;
 import dev.kabin.components.WorldRepresentation;
+import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.eventhandlers.InputEventDistributor;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointDouble;
 import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 
 public class GlobalData {
 
+    public static final String DEVELOPER_SESSION_PATH = "core/assets/dev_session/session.save";
     public static final String WORLDS_PATH = "core/assets/worlds/";
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int artWidth = 400;
@@ -40,7 +43,6 @@ public class GlobalData {
     public static OrthographicCamera camera;
     public static int worldSizeX;
     public static int worldSizeY;
-
 
 
     private static WorldRepresentation worldRepresentation;
@@ -83,10 +85,31 @@ public class GlobalData {
         //System.out.println("camera.position: " + Point.of(camera.position.x, camera.position.y) + "currentCameraBounds: " + Point.of(currentCameraBounds.getCenterX(), currentCameraBounds.getCenterY()));
     }
 
-    public static WorldRepresentation getWorldState(){
+    public static WorldRepresentation getWorldState() {
         return worldRepresentation;
     }
 
 
-
+    public static void saveDevSession() {
+        final String jsonRepr = """
+                {
+                  "world" : "%s",
+                  "developer" : {
+                    "dev_mode" : %s,
+                    "widgets" : {
+                      "entity_selection" : %s,
+                      "tile_selection" : %s
+                    }
+                  }
+                }
+                """.formatted(currentWorld,
+                developerMode,
+                DeveloperUI.getEntityLoadingWidget().toJson(),
+                DeveloperUI.getTileSelectionWidget().toJson());
+        try {
+            Files.writeString(Path.of(DEVELOPER_SESSION_PATH), jsonRepr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

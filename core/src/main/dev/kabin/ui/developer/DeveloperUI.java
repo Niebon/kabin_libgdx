@@ -95,11 +95,15 @@ public class DeveloperUI {
                 switch (FILE_DROP_DOWN_MENU.getSelected().getName()) {
                     case OPEN:
                         DeveloperUI.loadWorld();
+                        break;
                     case SAVE:
                         DeveloperUI.saveWorld();
+                        break;
                     case SAVE_AS:
                         DeveloperUI.saveWorldAs();
+                        break;
                     default:
+                        break;
                 }
             }
         });

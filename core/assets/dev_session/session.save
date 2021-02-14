@@ -1,0 +1,10 @@
+{
+  "world" : "world_1.json",
+  "developer" : {
+    "dev_mode" : true,
+    "widgets" : {
+      "entity_selection" : {"collapsed":false,"animation_type":"DEFAULT","asset":"spruce","type":"ENTITY_SIMPLE","layer":0},
+      "tile_selection" : {"collapsed":false,"asset":"ground","type":"SURFACE"}
+    }
+  }
+}

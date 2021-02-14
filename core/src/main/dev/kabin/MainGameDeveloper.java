@@ -2,7 +2,6 @@ package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -17,12 +16,10 @@ public class MainGameDeveloper extends MainGame {
     public void create() {
         super.create();
 
-
-        final String root = Gdx.files.getLocalStoragePath().replace("\\", "/") + "core/assets/";
-        final String sessionData = root + "saves/session.save";
+        final String devSessionData = Gdx.files.getLocalStoragePath().replace("\\", "/") + "core/assets/dev_session/session.save";
 
         try{
-            final JSONObject session = new JSONObject(Files.readString(Path.of(sessionData)));
+            final JSONObject session = new JSONObject(Files.readString(Path.of(devSessionData)));
             final String pathToWorld = GlobalData.WORLDS_PATH + session.getString("world");
             WorldStateRecorder.loadWorldState(new JSONObject(Files.readString(Path.of(pathToWorld))));
             DeveloperUI.getEntityLoadingWidget().loadSettings(session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("entity_selection"));

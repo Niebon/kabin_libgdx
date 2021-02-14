@@ -14,7 +14,6 @@ import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.entities.*;
 import dev.kabin.ui.Widget;
-import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
@@ -35,8 +34,8 @@ public class TileSelectionWidget {
     private static final Map<AnimationClass.Tile, @NotNull Button> typeToButton = new HashMap<>();
     private static Map<AnimationClass.Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
     private final dev.kabin.ui.Widget widget;
-    private String selectedAsset;
-    private AnimationClass.Tile currentType;
+    private String selectedAsset = "";
+    private AnimationClass.Tile currentType = AnimationClass.Tile.SURFACE;
 
 
     public TileSelectionWidget(Executor executor) {
@@ -62,17 +61,6 @@ public class TileSelectionWidget {
             }
         });
         widget.addDialogActor(loadImageAssetButton);
-    }
-
-    public void loadSettings(JSONObject settings) {
-        selectedAsset = settings.getString("asset");
-        currentType = AnimationClass.Tile .valueOf(settings.getString("type"));
-        widget.setCollapsed(settings.getBoolean("collapsed"));
-
-
-        // Finally, show content:
-        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, AnimationClass.Tile.class);
-        displaySelectTileButtons();
     }
 
     /**
@@ -114,7 +102,6 @@ public class TileSelectionWidget {
         }
     }
 
-
     /**
      * Finds any entity on screen. Deletes any of type {@link CollisionTile collision tile} with position matching
      * the current mouse position.
@@ -123,6 +110,24 @@ public class TileSelectionWidget {
         Threads.synchronize(
                 () -> removeGroundTileAtCurrentMousePosition(MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld())
         );
+    }
+
+    public void loadSettings(JSONObject settings) {
+        selectedAsset = settings.getString("asset");
+        currentType = AnimationClass.Tile.valueOf(settings.getString("type"));
+        widget.setCollapsed(settings.getBoolean("collapsed"));
+
+
+        // Finally, show content:
+        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, AnimationClass.Tile.class);
+        displaySelectTileButtons();
+    }
+
+    public JSONObject toJson() {
+        return new JSONObject()
+                .put("asset", selectedAsset.isEmpty() ? "ground" : selectedAsset)
+                .put("type", currentType)
+                .put("collapsed", widget.isCollapsed());
     }
 
     /**
