@@ -23,7 +23,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
     default Stream<ModifiablePointInt> getSurfaceContourRelativeToOrigin() {
         final int rootX = getRootX(), rootY = getRootY();
         return getSurfaceContourProfile().stream()
-                .map(p -> Point.of(p.getX() + rootX, p.getY() + rootY));
+                .map(p -> Point.of(p.x() + rootX, p.y() + rootY));
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
@@ -33,7 +33,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
         if (angleRad() == 0) {
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = profile.size(); i < n; i++) {
-                consumer.accept(profile.get(i).getX() + rootX, profile.get(i).getY() + rootY);
+                consumer.accept(profile.get(i).x() + rootX, profile.get(i).y() + rootY);
             }
         } else {
             // TODO: Test the below code.
@@ -47,8 +47,8 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
             for (int i = 0, n = profile.size(); i < n; i++) {
 
 
-                int x = profile.get(i).getX();
-                int y = profile.get(i).getY();
+                int x = profile.get(i).x();
+                int y = profile.get(i).y();
 
                 int xRelPixelMc = x - pixelMassCenterX;
                 int yRelPixelMc = y - pixelMassCenterY;

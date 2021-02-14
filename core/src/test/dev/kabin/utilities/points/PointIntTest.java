@@ -8,7 +8,7 @@ import java.util.Random;
 class PointIntTest {
 
     @Test
-    void testEqualsAndHashcodes() {
+    void testEqualsAndHashCodes() {
         for (int i = 0; i < 100_000; i++) {
             int x = new Random().nextInt();
             int y = new Random().nextInt();

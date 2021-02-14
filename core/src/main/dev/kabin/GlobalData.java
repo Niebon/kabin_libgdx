@@ -83,7 +83,7 @@ public class GlobalData {
         //System.out.println("camera.position: " + Point.of(camera.position.x, camera.position.y) + "currentCameraBounds: " + Point.of(currentCameraBounds.getCenterX(), currentCameraBounds.getCenterY()));
     }
 
-    public static WorldRepresentation getWorldRepresentation(){
+    public static WorldRepresentation getWorldState(){
         return worldRepresentation;
     }
 

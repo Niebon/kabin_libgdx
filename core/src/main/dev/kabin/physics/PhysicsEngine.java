@@ -2,9 +2,6 @@ package dev.kabin.physics;
 
 import dev.kabin.GlobalData;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityCollectionProvider;
-import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
-import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
 
 /**
  * In order to make rendering deterministic,
@@ -35,7 +32,7 @@ public class PhysicsEngine {
     }
 
     static void renderFrame(Entity.PhysicsParameters params) {
-        GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(e -> e.updatePhysics(params));
+        GlobalData.getWorldState().actionForEachEntityOrderedByType(e -> e.updatePhysics(params));
     }
 
 }

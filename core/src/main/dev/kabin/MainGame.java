@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.DeveloperUI;
 import dev.kabin.utilities.eventhandlers.EventUtil;
@@ -73,7 +71,10 @@ public class MainGame extends ApplicationAdapter {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-        GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
+
+        if (GlobalData.getWorldState() != null) {
+            GlobalData.getWorldState().actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
+        }
 
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
@@ -89,15 +90,14 @@ public class MainGame extends ApplicationAdapter {
         }
 
 
-
         // Render collision
-        if (GlobalData.getWorldRepresentation() != null) {
+        if (GlobalData.getWorldState() != null) {
 
-            PhysicsEngine.render(stateTime, GlobalData.getWorldRepresentation());
+            PhysicsEngine.render(stateTime, GlobalData.getWorldState());
 
             for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
                 for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
-                    if (GlobalData.getWorldRepresentation().isCollisionAt(i, j)) {
+                    if (GlobalData.getWorldState().isCollisionAt(i, j)) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                         shapeRenderer.setColor(Color.RED);
                         float x = (i - currentCameraBounds.getMinX()) * scaleFactor;

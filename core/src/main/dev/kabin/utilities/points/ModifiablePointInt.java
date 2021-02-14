@@ -19,8 +19,8 @@ public class ModifiablePointInt implements PointInt {
 	}
 
 	public ModifiablePointInt(@NotNull PointInt p) {
-		x = p.getX();
-		y = p.getY();
+		x = p.x();
+		y = p.y();
 	}
 
 	public ModifiablePointInt setX(int x) {
@@ -34,19 +34,11 @@ public class ModifiablePointInt implements PointInt {
 	}
 
 	@Override
-	public int getX() {
-		return x;
-	}
-
-	@Override
-	public int getY() {
-		return y;
-	}
-
 	public int x() {
 		return x;
 	}
 
+	@Override
 	public int y() {
 		return y;
 	}
@@ -71,8 +63,8 @@ public class ModifiablePointInt implements PointInt {
 		if (this == o) return true;
 		if (!(o instanceof PointInt)) return false;
 		PointInt that = (PointInt) o;
-		return x == that.getX() &&
-				y == that.getY();
+		return x == that.x() &&
+				y == that.y();
 	}
 
 	@Override

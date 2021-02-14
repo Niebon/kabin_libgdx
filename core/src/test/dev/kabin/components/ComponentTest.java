@@ -2,6 +2,7 @@ package dev.kabin.components;
 
 import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.utilities.points.ModifiablePointInt;
+import dev.kabin.utilities.points.PointInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +16,8 @@ class ComponentTest {
 
     @Test
     public void componentsRecursionTerminatesAndHasCorrectDimensions() {
-        final Component mainComponent = new Component(
-                new ComponentParameters()
+        final Component mainComponent = Component.make(
+                ComponentParameters.make()
                         .setX(0)
                         .setY(0)
                         .setWidth(ComponentParameters.COARSENESS_PARAMETER * 2)
@@ -45,8 +46,8 @@ class ComponentTest {
 
     @Test
     public void dataRemovalThrowsForEmptyLists() {
-        final Component mainComponent = new Component(
-                new ComponentParameters()
+        final Component mainComponent = Component.make(
+                ComponentParameters.make()
                         .setX(0)
                         .setY(0)
                         .setWidth(ComponentParameters.COARSENESS_PARAMETER * 2)
@@ -64,8 +65,8 @@ class ComponentTest {
         final int width = ComponentParameters.COARSENESS_PARAMETER * 8,
                 height = ComponentParameters.COARSENESS_PARAMETER * 8;
 
-        final Component mainComponent = new Component(
-                new ComponentParameters()
+        final Component mainComponent = Component.make(
+                ComponentParameters.make()
                         .setX(0)
                         .setY(0)
                         .setWidth(width)
@@ -74,11 +75,11 @@ class ComponentTest {
         );
 
         final Random r = new Random();
-        final List<ModifiablePointInt> points = IntStream.range(0, 100000)
-                .mapToObj(i -> new ModifiablePointInt(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
+        final List<PointInt> points = IntStream.range(0, 100000)
+                .mapToObj(i -> PointInt.modifiableOf(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
 
         for (Component.Data type : Component.Data.values()) {
-            for (ModifiablePointInt pointInt : points) {
+            for (PointInt pointInt : points) {
                 final int x = pointInt.x(), y = pointInt.y();
                 {
 

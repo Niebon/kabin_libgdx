@@ -7,7 +7,6 @@ import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.utilities.pools.objectpool.Borrowed;
-import dev.kabin.utilities.shapes.primitive.MutableRectInt;
 import dev.kabin.utilities.shapes.primitive.RectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class WorldRepresentation implements Entity.PhysicsParameters{
+public class WorldRepresentation implements Entity.PhysicsParameters {
 
     public static final int
             AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
@@ -28,9 +27,14 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
             AVAILABLE_ENTITY_HASHSETS = 10_000;
 
     public static final Logger LOGGER = Logger.getLogger(Component.class.getName());
-
-
-
+    private final EntityCollectionProvider entityCollectionProvider = new EntityCollectionProvider();
+    private final IndexedSetPool<Component> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
+    private final IndexedSetPool<Entity> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
+    // Keep an object pool for ArrayList<Component> instances.
+    private final ComponentArrayListPool componentArrayListPool = new ComponentArrayListPool(
+            AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
+    );
+    private final Component rootComponent;
     private long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
     private List<Entity> entitiesInCameraNeighborhoodCached;
     private long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
@@ -38,28 +42,26 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
     private Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
     private Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
-    private final EntityCollectionProvider entityCollectionProvider = new EntityCollectionProvider();
 
-
-
-
-    private final IndexedSetPool<Component> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
-    private final IndexedSetPool<Entity> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
-    // Keep an object pool for ArrayList<Component> instances.
-    private final ComponentArrayListPool componentArrayListPool = new ComponentArrayListPool(
-            AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
-    );
-
-    private final Component rootComponent;
-
-    public WorldRepresentation(int width, int height, float scaleFactor){
+    public WorldRepresentation(int width, int height, float scaleFactor) {
         rootComponent = makeRepresentationOf(width, height, scaleFactor);
+    }
+
+    @NotNull
+    @Contract("_, _, _ -> new")
+    private static Component makeRepresentationOf(int width, int height, float scaleFactor) {
+        int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
+        while (x < width * 2 || y < height * 2) {
+            x *= 2;
+            y *= 2;
+        }
+        LOGGER.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
+        return Component.make(ComponentParameters.make().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
     }
 
     public void actionForEachEntityOrderedByType(Consumer<Entity> renderEntityGlobalStateTime) {
         entityCollectionProvider.actionForEachEntityOrderedByType(renderEntityGlobalStateTime);
     }
-
 
     public List<Entity> getEntityInCameraNeighborhood(RectInt cameraPosition) {
         entitiesInCameraNeighborhoodLastUpdated = System.currentTimeMillis();
@@ -82,12 +84,13 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         return entitiesInCameraBoundsCached;
     }
 
-
     public void updateLocation(@NotNull Entity entity) {
-        updateLocation(entityToIndivisibleComponentMapping, indivisibleComponentToEntityMapping,
-                entity, entity.graphicsNbd(), rootComponent);
+        updateLocation(entityToIndivisibleComponentMapping,
+                indivisibleComponentToEntityMapping,
+                entity,
+                entity.graphicsNbd(),
+                rootComponent);
     }
-
 
     /**
      * If the neighborhood of the given entity intersects this component,
@@ -109,7 +112,8 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
                 for (Component subComponent : component.getSubComponents()) {
                     updateLocation(entityToIndivisibleComponentMapping,
                             indivisibleComponentToEntityMapping,
-                            entity, cachedEntityNodeNeighborhood,
+                            entity,
+                            cachedEntityNodeNeighborhood,
                             subComponent);
                 }
             } else {
@@ -126,7 +130,6 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         }
     }
 
-
     /**
      * Finds list of entities which are are in the given component such that their nbd meets the given nbd.
      */
@@ -138,7 +141,6 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
 
         // TODO: deal with this new.
         final List<Entity> containedEntities = new ArrayList<>();
-
 
         final IndexedSet<Entity> setOfEntitiesToReturn = entityIndexedSetPool.borrow();
         //noinspection ForLoopReplaceableByForEach
@@ -169,17 +171,13 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         return containedEntities;
     }
 
-
-
     /**
      * Registers the whereabouts of all entities from the given list.
      * This updates the information returned by
      */
     public void registerEntityWhereabouts() {
 
-    	/*
-    	Free resources from previous iteration.
-    	 */
+    	// Free resources from previous iteration.
         {
 
             // Give back data to pools.
@@ -199,34 +197,19 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         final Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
         final Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-        entityCollectionProvider.actionForEachEntityOrderedByType(e -> updateLocation(entityToIndivisibleComponentMapping,
-                indivisibleComponentToEntityMapping,
-                e,
-                e.graphicsNbd(),
-                rootComponent
-        ));
+        entityCollectionProvider.actionForEachEntityOrderedByType(entity ->
+                updateLocation(entityToIndivisibleComponentMapping, // Should NOT be this.entityToIndivisibleComponentMapping
+                        indivisibleComponentToEntityMapping,  // Should NOT be this.indivisibleComponentToEntityMapping
+                        entity,
+                        entity.graphicsNbd(),
+                        rootComponent
+                ));
 
-        // Update static references; keep the data ready to be cleared around until the beginning of the next iteration.
+        // Update references; keep the data ready to be cleared around until the beginning of the next iteration.
         this.entityToIndivisibleComponentMapping = entityToIndivisibleComponentMapping;
         this.indivisibleComponentToEntityMapping = indivisibleComponentToEntityMapping;
         timeStampLastEntityWhereaboutsRegistered = System.currentTimeMillis();
     }
-
-
-    @NotNull
-    @Contract("_, _, _ -> new")
-    private static Component makeRepresentationOf(int width, int height, float scaleFactor) {
-        int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
-        while (x < width * 2 || y < height * 2) {
-            x *= 2;
-            y *= 2;
-        }
-        LOGGER.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
-        return new Component(new ComponentParameters().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
-    }
-
-
-
 
     @Borrowed(origin = "SEARCH_ALG_OBJECT_POOL")
     public @NotNull ArrayList<Component> treeSearchFindIndivisibleComponentsMatching(
@@ -243,9 +226,9 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     }
 
     private void treeSearchRecursionStep(
-            ArrayList<Component> matches,
+            @NotNull ArrayList<Component> matches,
             @NotNull ArrayList<Component> layer,
-            Predicate<Component> condition
+            @NotNull Predicate<Component> condition
     ) {
         if (layer.isEmpty()) {
             return;
@@ -253,12 +236,8 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         if (layer.get(0).hasSubComponents()) {
             final ArrayList<Component> newLayer = componentArrayListPool.borrow();
             //noinspection ForLoopReplaceableByForEach
-            for (int i = 0, n = layer.size(); i < n; i++) {
-                for (Component child : layer.get(i).getSubComponents()) {
-                    if (condition.test(child)) {
-                        newLayer.add(child);
-                    }
-                }
+            for (int i = 0; i < layer.size(); i++) {
+                layer.get(i).forEachMatching(newLayer::add, condition);
             }
             treeSearchRecursionStep(matches, newLayer, condition);
         } else {
@@ -268,7 +247,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     }
 
 
-    public void clearUnusedData(@NotNull MutableRectInt rect) {
+    public void clearUnusedData(@NotNull RectInt rect) {
         final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> !c.getUnderlyingRectInt().meets(rect)
         );
@@ -283,7 +262,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
         componentArrayListPool.giveBack(treeSearchResult);
     }
 
-    public void loadNearbyData(@NotNull MutableRectInt rect) {
+    public void loadNearbyData(@NotNull RectInt rect) {
         final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> c.getUnderlyingRectInt().meets(rect)
         );
@@ -307,8 +286,7 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     }
 
 
-
-    public void clearData(){
+    public void clearData() {
         rootComponent.clearData();
     }
 
@@ -349,11 +327,11 @@ public class WorldRepresentation implements Entity.PhysicsParameters{
     }
 
     public boolean unregisterEntity(Entity e) {
-       return entityCollectionProvider.unregisterEntity(e);
+        return entityCollectionProvider.unregisterEntity(e);
     }
 
-    public boolean registerEntity(Entity e) {
-        return entityCollectionProvider.unregisterEntity(e);
+    public void registerEntity(Entity e) {
+        entityCollectionProvider.registerEntity(e);
     }
 
     public void populateCollection(Collection<Entity> allEntities, Predicate<Entity> criterion) {

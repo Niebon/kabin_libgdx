@@ -25,7 +25,7 @@ public class Threads {
                     System.exit(1);
                 }
             }
-            GlobalData.getWorldRepresentation().clearData();
+            GlobalData.getWorldState().clearData();
             handle();
 
             periodicBackgroundTasks = Executors.newSingleThreadScheduledExecutor(Thread::new);
@@ -36,9 +36,9 @@ public class Threads {
     private static void handle() {
         synchronized (THREAD_LOCK) {
             // Load & unload data.
-            GlobalData.getWorldRepresentation().registerEntityWhereabouts();
-            GlobalData.getWorldRepresentation().clearUnusedData(GlobalData.currentCameraBounds);
-            GlobalData.getWorldRepresentation().loadNearbyData(GlobalData.currentCameraBounds);
+            GlobalData.getWorldState().registerEntityWhereabouts();
+            GlobalData.getWorldState().clearUnusedData(GlobalData.currentCameraBounds);
+            GlobalData.getWorldState().loadNearbyData(GlobalData.currentCameraBounds);
         }
     }
 

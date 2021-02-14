@@ -14,6 +14,14 @@ public class ComponentParameters {
 
     public static final int COARSENESS_PARAMETER = 64; // 256;
 
+    private ComponentParameters(){
+
+    }
+
+    public static ComponentParameters make(){
+        return new ComponentParameters();
+    }
+
     @Contract("_ -> this")
     ComponentParameters setX(int x) {
         if (hasSubcomponents(x)) this.x = x;

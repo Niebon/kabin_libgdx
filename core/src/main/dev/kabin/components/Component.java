@@ -16,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -75,7 +77,11 @@ public class Component implements Id {
     private final int id;
     private boolean active = false;
 
-    Component(@NotNull ComponentParameters parameters) {
+    static Component make(ComponentParameters parameters){
+        return new Component(parameters);
+    }
+
+    private Component(@NotNull ComponentParameters parameters) {
 
         id = instancesInitiated++;
 
@@ -99,7 +105,8 @@ public class Component implements Id {
         this.parameters = parameters;
 
         final List<ComponentParameters> componentParametersList = IntStream.range(0, 4).mapToObj(
-                integer -> new ComponentParameters()
+                integer -> ComponentParameters
+                        .make()
                         .setX(parameters.getX() + COMPONENT_INDEX_TO_X_MAPPING.apply(integer) * parameters.getWidth() / 2)
                         .setY(parameters.getY() + COMPONENT_INDEX_TO_Y_MAPPING.apply(integer) * parameters.getHeight() / 2)
                         .setWidth(parameters.getWidth() / 2)
@@ -121,7 +128,7 @@ public class Component implements Id {
             for (Data key : Data.values()) {
                 switch (key.getType()) {
                     case FLOAT -> doubleDataMapperByKey.put(key, (x, y) -> {
-                        if (!underlyingRectContains(x, y)) return 0;
+                        if (!contains(x, y)) return 0;
 
                         // See definition of adjacency in javadoc of this class.
                         if (x < midPointX) {
@@ -143,7 +150,7 @@ public class Component implements Id {
                         }
                     });
                     case INTEGER -> intDataMapperByKey.put(key, (x, y) -> {
-                        if (!underlyingRectContains(x, y)) return 0;
+                        if (!contains(x, y)) return 0;
 
                         // See definition of adjacency in javadoc of this class.
                         if (x < midPointX) {
@@ -204,8 +211,18 @@ public class Component implements Id {
         return underlyingRectInt;
     }
 
+    /**
+     * @return an unmodifiable view of sub-components.
+     */
     public List<Component> getSubComponents() {
         return List.of(subComponents);
+    }
+
+    public void forEachMatching(Consumer<Component> action, Predicate<Component> condition) {
+        if (condition.test(subComponents[0])) action.accept(subComponents[0]);
+        if (condition.test(subComponents[1])) action.accept(subComponents[1]);
+        if (condition.test(subComponents[2])) action.accept(subComponents[2]);
+        if (condition.test(subComponents[3])) action.accept(subComponents[3]);
     }
 
     public boolean hasSubComponents() {
@@ -235,7 +252,7 @@ public class Component implements Id {
     /**
      * Returns true if [minX, maxX) and [minY, maxY) contains the point (x,y) evaluated.
      */
-    public boolean underlyingRectContains(int x, int y) {
+    public boolean contains(int x, int y) {
         return underlyingRectInt.contains(x, y);
     }
 
@@ -271,7 +288,7 @@ public class Component implements Id {
     }
 
     public void modifyVectorFieldAt(int x, int y, FloatUnaryOperation transformX, FloatUnaryOperation transformY) {
-        if (underlyingRectContains(x, y)) {
+        if (contains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
                     c.modifyVectorFieldAt(x, y, transformX, transformY);
@@ -293,7 +310,7 @@ public class Component implements Id {
     }
 
     public void activate(int x, int y) {
-        if (underlyingRectContains(x, y)) {
+        if (contains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
                     c.activate(x, y);
@@ -307,7 +324,7 @@ public class Component implements Id {
     }
 
     public void increment(int x, int y, Data key) {
-        if (underlyingRectContains(x, y)) {
+        if (contains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
                     c.increment(x, y, key);
@@ -365,12 +382,12 @@ public class Component implements Id {
     public String toString() {
         return "{" +
                 "id: " + id +
-                ", x: " + underlyingRectInt.getMinX() / COARSENESS_PARAMETER +
-                ", y: " + underlyingRectInt.getMinY() / COARSENESS_PARAMETER + "}";
+                ", x: " + underlyingRectInt.getMinX() +
+                ", y: " + underlyingRectInt.getMinY() +  "}";
     }
 
     public void decrement(int x, int y, Data key) {
-        if (underlyingRectContains(x, y)) {
+        if (contains(x, y)) {
             if (hasSubComponents()) {
                 for (Component c : subComponents) {
                     c.decrement(x, y, key);

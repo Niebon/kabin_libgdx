@@ -10,7 +10,7 @@ public interface PointInt {
         return new ModifiablePointInt(x, y);
     }
 
-    int getX();
+    int x();
 
-    int getY();
+    int y();
 }

@@ -19,13 +19,11 @@ import dev.kabin.WorldStateRecorder;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
-import dev.kabin.components.Component;
 import dev.kabin.entities.*;
 import dev.kabin.utilities.Functions;
 import dev.kabin.utilities.Statistics;
 import dev.kabin.utilities.eventhandlers.KeyEventUtil;
 import dev.kabin.utilities.eventhandlers.MouseEventUtil;
-import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.utilities.points.Point;
 import dev.kabin.utilities.points.PointFloat;
 import dev.kabin.utilities.pools.FontPool;
@@ -256,7 +254,7 @@ public class DeveloperUI {
                 GlobalData.shapeRenderer.end();
 
                 // By abuse of the word "render" include this here...
-                GlobalData.getWorldRepresentation().actionForEachEntityOrderedByType(e -> {
+                GlobalData.getWorldState().actionForEachEntityOrderedByType(e -> {
                     if (backingRect.contains(e.getX(), e.getY())) {
                         currentlySelectedEntities.add(e);
                     } else {
@@ -430,7 +428,7 @@ public class DeveloperUI {
 
 
             Entity e = entityType.getParameterConstructor().construct(parameters);
-            GlobalData.getWorldRepresentation().registerEntity(e);
+            GlobalData.getWorldState().registerEntity(e);
             float offsetX = e.getPixelMassCenterX() * e.getScale();
             float offsetY = e.getPixelMassCenterY() * e.getScale();
             e.setPos(e.getX() - offsetX, e.getY() - offsetY);
@@ -583,49 +581,24 @@ public class DeveloperUI {
             final float y = intY * GlobalData.scaleFactor;
             final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
             if (matchingCt != null) {
-                if (!GlobalData.getWorldRepresentation().unregisterEntity(matchingCt)) {
+                if (!GlobalData.getWorldState().unregisterEntity(matchingCt)) {
                     throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                 }
                 matchingCt.getActor().ifPresent(Actor::remove);
-                matchingCt.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
-                                                        @Override
-                                                        public void accept(int x, int y) {
-                                                            GlobalData.getWorldRepresentation().decrementCollisionAt(x, y);
-                                                        }
-
-                                                        @Override
-                                                        public String toString() {
-                                                            return "GlobalData.getRootComponent().decrementCollisionAt";
-                                                        }
-                                                    }
-
-                );
-                GlobalData.getWorldRepresentation().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).remove(matchingCt);
+                matchingCt.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
+                GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).remove(matchingCt);
             } else {
-                final Iterator<Entity> entityIterator = GlobalData.getWorldRepresentation().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).iterator();
+                final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).iterator();
                 while (entityIterator.hasNext()) {
                     final Entity e = entityIterator.next();
                     if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
                         final var ct = (CollisionTile) e;
-                        if (!GlobalData.getWorldRepresentation().unregisterEntity(e)) {
+                        if (!GlobalData.getWorldState().unregisterEntity(e)) {
                             throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                         }
                         CollisionTile.clearAt(ct.getUnscaledX(), ct.getUnscaledY()).orElseThrow();
                         ct.getActor().ifPresent(Actor::remove);
-
-                        ct.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
-                                                        @Override
-                                                        public void accept(int x, int y) {
-                                                            GlobalData.getWorldRepresentation().decrementCollisionAt(x, y);
-                                                        }
-
-                                                        @Override
-                                                        public String toString() {
-                                                            return "GlobalData.getRootComponent().decrementCollisionAt";
-                                                        }
-                                                    }
-
-                        );
+                        ct.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
                         // Finally remove from cache, so that the next time this method is called, the same entity is not erased twice.
                         entityIterator.remove();
                     }
@@ -672,25 +645,15 @@ public class DeveloperUI {
 
                 // Init the data.
                 newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
-                GlobalData.getWorldRepresentation().registerEntity(newCollisionTile);
+                GlobalData.getWorldState().registerEntity(newCollisionTile);
 
                 // Add collision data.
-                GlobalData.getWorldRepresentation().activate(Math.round(parameters.x()), Math.round(parameters.y()));
-                newCollisionTile.actionEachCollisionPoint(new PrimitiveIntPairConsumer() {
-                                                              @Override
-                                                              public void accept(int x, int y) {
-                                                                  GlobalData.getWorldRepresentation().activate(x, y);
-                                                                  GlobalData.getWorldRepresentation().incrementCollisionAt(x, y);
-                                                              }
-
-                                                              @Override
-                                                              public String toString() {
-                                                                  return "GlobalData.getRootComponent().incrementCollisionAt";
-                                                              }
-                                                          }
-
-                );
-                GlobalData.getWorldRepresentation().updateLocation(newCollisionTile);
+                GlobalData.getWorldState().activate(Math.round(parameters.x()), Math.round(parameters.y()));
+                newCollisionTile.actionEachCollisionPoint((x, y) -> {
+                    GlobalData.getWorldState().activate(x, y);
+                    GlobalData.getWorldState().incrementCollisionAt(x, y);
+                });
+                GlobalData.getWorldState().updateLocation(newCollisionTile);
                 //System.out.println("Position: " + newCollisionTile.getPosition());
             });
         }

@@ -18,12 +18,12 @@ public final class UnmodifiablePointInt implements PointInt {
     }
 
     @Override
-    final public int getX() {
+    final public int x() {
         return x;
     }
 
     @Override
-    final public int getY() {
+    final public int y() {
         return y;
     }
 
@@ -32,8 +32,8 @@ public final class UnmodifiablePointInt implements PointInt {
         if (this == o) return true;
         if (!(o instanceof PointInt)) return false;
         PointInt that = (PointInt) o;
-        return x == that.getX() &&
-                y == that.getY();
+        return x == that.x() &&
+                y == that.y();
     }
 
     @Override

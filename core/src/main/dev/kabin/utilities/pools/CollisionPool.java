@@ -30,14 +30,14 @@ public class CollisionPool {
         return pathIndexPairToCollisionCheck.get(path).computeIfAbsent(index, missing -> {
 
             final List<PointInt> profile = findCollisionProfile(path, index);
-            final int maxX = profile.stream().mapToInt(PointInt::getX).max().orElse(0);
-            final int maxY = profile.stream().mapToInt(PointInt::getY).max().orElse(0);
+            final int maxX = profile.stream().mapToInt(PointInt::x).max().orElse(0);
+            final int maxY = profile.stream().mapToInt(PointInt::y).max().orElse(0);
             final boolean[][] predicateHelper = new boolean[maxX + 1][maxY + 1];
             for (boolean[] booleans : predicateHelper) {
                 Arrays.fill(booleans, false);
             }
             for (PointInt p : profile) {
-                predicateHelper[p.getX()][p.getY()] = true;
+                predicateHelper[p.x()][p.y()] = true;
             }
             return (i, j) -> predicateHelper[i][j];
         });
@@ -127,9 +127,9 @@ public class CollisionPool {
         pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
         // Finally, transform to game coordinates: positive y-direction points upwards ...
-        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
-        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
-        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.getX(), Functions.transformY(p.getY(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
 
 
         // ... and make collections unmodifiable:
@@ -181,7 +181,7 @@ public class CollisionPool {
             looking:
             for (PointInt p : collisionProfileBoundary) {
                 for (PointInt q : collisionProfileBoundary) {
-                    if (p != q && Functions.distance(p.getX(), p.getY(), q.getX(), q.getY()) < 1) {
+                    if (p != q && Functions.distance(p.x(), p.y(), q.x(), q.y()) < 1) {
                         toDiscard = q;
                         break looking;
                     }

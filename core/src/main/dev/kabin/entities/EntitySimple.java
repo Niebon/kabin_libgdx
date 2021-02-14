@@ -87,8 +87,8 @@ public class EntitySimple implements Entity {
                 getUnscaledY() - Math.round(positionNbd.getCenterY())
         );
         graphicsNbd.translate(
-                getUnscaledX() - Math.round(positionNbd.getCenterX()),
-                getUnscaledY() - Math.round(positionNbd.getCenterY())
+                getUnscaledX() - Math.round(graphicsNbd.getCenterX()),
+                getUnscaledY() - Math.round(graphicsNbd.getCenterY())
         );
     }
 
@@ -139,7 +139,7 @@ public class EntitySimple implements Entity {
                             }
 
                             entitiesScheduledForRemoval.forEach(e -> {
-                                GlobalData.getWorldRepresentation().unregisterEntity(e);
+                                GlobalData.getWorldState().unregisterEntity(e);
                                 e.getActor().ifPresent(Actor::remove);
                             });
 
