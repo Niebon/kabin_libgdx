@@ -95,11 +95,18 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     @Override
     public void setCurrentAnimation(AnimationClass animationClass) {
         this.currentAnimationClass = animationClass;
-        //noinspection unchecked
-        final T currentAnimationClass = (T) this.currentAnimationClass;
-        cachedTextureRegion = regions != null ?
-                regions.get(animationBlueprint != null ? animationBlueprint.get(currentAnimationClass)[0] : 0) :
-                null;
+        if (regions != null && animationBlueprint != null) {
+            //noinspection unchecked
+            final T currentAnimationClass = (T) this.currentAnimationClass;
+            if (animationBlueprint.containsKey(currentAnimationClass)) {
+                cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[0]);
+            } else {
+                cachedTextureRegion = regions.get(0);
+            }
+        }
+//        cachedTextureRegion = regions != null ?
+//                regions.get(animationBlueprint != null ? animationBlueprint.get(currentAnimationClass)[0] : 0) :
+//                null;
     }
 
     @Override

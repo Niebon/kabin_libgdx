@@ -23,7 +23,6 @@ public interface AnimationClass {
     enum Animate implements AnimationClass {
 
         DEFAULT_LEFT(true, false, Direction.LEFT), DEFAULT_RIGHT(true, false, Direction.RIGHT),
-        STAND_LEFT(true, false, Direction.LEFT), STAND_RIGHT(true, false, Direction.RIGHT),
         STANDARD1_LEFT(false, false, Direction.LEFT), STANDARD1_RIGHT(false, false, Direction.RIGHT),
         STANDARD2_LEFT(false, false, Direction.LEFT), STANDARD2_RIGHT(false, false, Direction.RIGHT),
         STANDARD3_LEFT(false, false, Direction.LEFT), STANDARD3_RIGHT(false, false, Direction.RIGHT),

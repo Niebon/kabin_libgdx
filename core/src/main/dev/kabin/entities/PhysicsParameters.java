@@ -50,6 +50,12 @@ public interface PhysicsParameters {
     float getVectorFieldY(int x, int y);
 
 
+    /**
+     * Check if the given key is pressed. Use case: player movement.
+     *
+     * @param keycode which key.
+     * @return true or false.
+     */
     boolean isPressed(KeyCode keycode);
 
 }

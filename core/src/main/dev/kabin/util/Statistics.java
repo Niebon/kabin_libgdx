@@ -14,7 +14,7 @@ public class Statistics {
      * Get random item from list with Probability.
      */
     @Nullable
-    public static Object drawUniform(@NotNull List<?> list, double prob) {
+    public static <T> T drawUniform(@NotNull List<T> list, double prob) {
         int i = RANDOM.nextInt(list.size());
         return RANDOM.nextDouble() < prob ? list.get(i) : null;
     }
