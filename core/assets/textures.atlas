@@ -1327,7 +1327,7 @@ player/WALK_RIGHT
   orig: 32, 32
   offset: 0, 0
   index: 9
-spruce/DEFAULT
+spruce/DEFAULT_LEFT
   rotate: false
   xy: 1, 84
   size: 128, 128

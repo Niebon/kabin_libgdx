@@ -1,10 +1,10 @@
 package dev.kabin.entities;
 
-import dev.kabin.utilities.functioninterfaces.PrimitiveIntPairConsumer;
-import dev.kabin.utilities.points.ModifiablePointInt;
-import dev.kabin.utilities.points.Point;
-import dev.kabin.utilities.points.PointInt;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
+import dev.kabin.util.functioninterfaces.PrimitiveIntPairConsumer;
+import dev.kabin.util.points.ModifiablePointInt;
+import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointInt;
+import dev.kabin.util.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -15,10 +15,10 @@ import dev.kabin.entities.*;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.eventhandlers.KeyEventUtil;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
-import dev.kabin.utilities.pools.FontPool;
+import dev.kabin.util.Functions;
+import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.pools.FontPool;
 import org.json.JSONObject;
 
 import javax.swing.*;

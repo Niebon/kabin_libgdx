@@ -3,10 +3,10 @@ package dev.kabin.ui.developer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.GlobalData;
 import dev.kabin.entities.Entity;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
-import dev.kabin.utilities.points.Point;
-import dev.kabin.utilities.points.PointFloat;
-import dev.kabin.utilities.shapes.RectFloat;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointFloat;
+import dev.kabin.util.shapes.RectFloat;
 
 import java.util.Collections;
 import java.util.HashSet;

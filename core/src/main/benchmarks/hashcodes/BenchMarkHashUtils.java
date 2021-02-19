@@ -2,10 +2,9 @@ package benchmarks.hashcodes;
 
 import benchmarks.BenchmarkUtil;
 import benchmarks.Benchmarked;
-import dev.kabin.utilities.HashCodeUtil;
+import dev.kabin.util.HashCodeUtil;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Random;
 
 public class BenchMarkHashUtils extends BenchmarkUtil {

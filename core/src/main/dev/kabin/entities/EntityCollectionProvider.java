@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.utilities.Functions;
+import dev.kabin.util.Functions;
 
 import java.util.*;
 import java.util.function.Consumer;

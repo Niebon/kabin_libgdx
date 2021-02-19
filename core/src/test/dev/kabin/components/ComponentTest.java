@@ -1,8 +1,7 @@
 package dev.kabin.components;
 
-import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
-import dev.kabin.utilities.points.ModifiablePointInt;
-import dev.kabin.utilities.points.PointInt;
+import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.util.points.PointInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

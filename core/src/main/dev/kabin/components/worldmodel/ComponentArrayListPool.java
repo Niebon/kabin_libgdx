@@ -1,7 +1,7 @@
 package dev.kabin.components.worldmodel;
 
 import dev.kabin.components.Component;
-import dev.kabin.utilities.pools.objectpool.AbstractObjectPool;
+import dev.kabin.util.pools.objectpool.AbstractObjectPool;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;

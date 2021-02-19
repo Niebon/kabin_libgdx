@@ -14,10 +14,10 @@ import dev.kabin.GlobalData;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
-import dev.kabin.utilities.shapes.primitive.MutableRectInt;
-import dev.kabin.utilities.shapes.primitive.UnmodifiableRectIntView;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.util.shapes.primitive.MutableRectInt;
+import dev.kabin.util.shapes.primitive.UnmodifiableRectIntView;
 import org.json.JSONObject;
 
 import java.util.HashSet;

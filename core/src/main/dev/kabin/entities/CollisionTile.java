@@ -2,9 +2,9 @@ package dev.kabin.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.animation.AnimationClass;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.points.PointInt;
-import dev.kabin.utilities.points.UnmodifiablePointInt;
+import dev.kabin.util.Functions;
+import dev.kabin.util.points.PointInt;
+import dev.kabin.util.points.UnmodifiablePointInt;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -30,9 +30,9 @@ public class CollisionTile extends CollisionEntity {
      */
     CollisionTile(EntityParameters parameters) {
         super(parameters);
-        tile = AnimationClass.Tile.valueOf(parameters.get(TILE, String.class).orElseThrow());
+        tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
         animationPlaybackImpl.setCurrentAnimation(tile);
-        index = Math.floorMod(parameters.get(FRAME_INDEX, Integer.class).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
+        index = Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
         if (objectPool.containsKey(PointInt.unmodifiableOf(unscaledX, unscaledY))) {
             throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
         }

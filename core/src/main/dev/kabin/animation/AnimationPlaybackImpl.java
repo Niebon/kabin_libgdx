@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.collections.IntToIntFunction;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
+import dev.kabin.util.Functions;
+import dev.kabin.util.collections.IntToIntFunction;
+import dev.kabin.util.pools.ImageAnalysisPool;
 
 import java.util.Arrays;
 import java.util.EnumMap;

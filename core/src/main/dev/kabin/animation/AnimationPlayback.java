@@ -1,10 +1,10 @@
 package dev.kabin.animation;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import dev.kabin.utilities.helperinterfaces.FloatArea;
-import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
-import dev.kabin.utilities.helperinterfaces.Scalable;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
+import dev.kabin.util.helperinterfaces.FloatArea;
+import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.helperinterfaces.Scalable;
+import dev.kabin.util.pools.ImageAnalysisPool;
 
 public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea, Scalable {
 

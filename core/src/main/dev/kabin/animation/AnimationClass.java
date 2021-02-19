@@ -1,6 +1,6 @@
 package dev.kabin.animation;
 
-import dev.kabin.utilities.Direction;
+import dev.kabin.util.Direction;
 
 public interface AnimationClass {
 
@@ -21,8 +21,6 @@ public interface AnimationClass {
     int ordinal();
 
     enum Animate implements AnimationClass {
-
-        DEFAULT(true, true, Direction.NONE),
 
         DEFAULT_LEFT(true, false, Direction.LEFT), DEFAULT_RIGHT(true, false, Direction.RIGHT),
         STAND_LEFT(true, false, Direction.LEFT), STAND_RIGHT(true, false, Direction.RIGHT),

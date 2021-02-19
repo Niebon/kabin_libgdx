@@ -1,18 +1,33 @@
 package dev.kabin.entities;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import dev.kabin.animation.AnimationClass;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.utilities.CollisionTangentFinder;
-import dev.kabin.utilities.Direction;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.eventhandlers.KeyEventUtil;
+import dev.kabin.util.CollisionTangentFinder;
+import dev.kabin.util.Direction;
+import dev.kabin.util.Functions;
+import dev.kabin.util.Statistics;
+import dev.kabin.util.eventhandlers.KeyCode;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Player extends EntitySimple {
 
-
-    static Player instance;
+    private static final List<AnimationClass.Animate> STANDARD_RIGHT_LIST = List.of(
+            AnimationClass.Animate.STANDARD1_RIGHT,
+            AnimationClass.Animate.STANDARD2_RIGHT,
+            AnimationClass.Animate.STANDARD3_RIGHT
+    );
+    private static final List<AnimationClass.Animate> STANDARD_LEFT_LIST = List.of(
+            AnimationClass.Animate.STANDARD1_LEFT,
+            AnimationClass.Animate.STANDARD2_LEFT,
+            AnimationClass.Animate.STANDARD3_LEFT
+    );
+    private static Player instance;
     private final float throwMomentum;
+    private boolean handleInput = true;
     private int jumpFrame;
     private float vx0;
     private float vy0;
@@ -28,18 +43,25 @@ public class Player extends EntitySimple {
     private float runSpeed;
     private float walkSpeed;
     private boolean beganMoving;
+    private boolean facingRight;
+    private boolean onLadder;
+    private boolean running;
 
     Player(EntityParameters parameters) {
         super(parameters);
+        if (instance != null) throw new IllegalArgumentException("Player already exists.");
         // Physics
         jumpFrame = 0;
         runSpeed = PhysicsEngine.meter * 8f;   // per seconds
         walkSpeed = PhysicsEngine.meter * 3f;   // per seconds
-        jumpVel = -PhysicsEngine.meter * 7f; // per seconds
+        jumpVel = PhysicsEngine.meter * 7f; // per seconds
         toggleRunSpeed();
 
         // Throwing items
         throwMomentum = 140; // kg m/s
+
+        instance = this;
+        vAbs = runSpeed;
     }
 
     public static Optional<Player> getInstance() {
@@ -49,6 +71,10 @@ public class Player extends EntitySimple {
     @Override
     public EntityFactory.EntityType getType() {
         return EntityFactory.EntityType.PLAYER;
+    }
+
+    public void setHandleInput(boolean b) {
+        handleInput = b;
     }
 
     public void freeze() {
@@ -76,19 +102,64 @@ public class Player extends EntitySimple {
     public void throwHeldEntity() {
     }
 
-    public void handlePlayerInputMovementKeyboard() {
+    @Override
+    public void render(SpriteBatch batch, float stateTime) {
+
+        facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
+
+        // If in air
+        if (inAir) {
+            if (facingRight) animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.JUMP_RIGHT);
+            else animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.JUMP_LEFT);
+            // If not in air
+        } else {
+
+            if (onLadder) {
+
+                if (dx != 0 || dy != 0) animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.CLIMB);
+                else return;
+
+            } else {
+                // If standing still
+                if (dx == 0 && dy == 0) {
+                    if (facingRight && !STANDARD_RIGHT_LIST.contains(animationPlaybackImpl.getCurrentAnimationType())) {
+                        AnimationClass.Animate randomPick = (AnimationClass.Animate) Statistics
+                                .drawUniform(STANDARD_RIGHT_LIST, 0.005);
+                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, AnimationClass.Animate.STAND_RIGHT));
+                    } else if (!facingRight && !STANDARD_LEFT_LIST.contains(animationPlaybackImpl.getCurrentAnimationType())) {
+                        AnimationClass.Animate randomPick = (AnimationClass.Animate) Statistics
+                                .drawUniform(STANDARD_LEFT_LIST, 0.005);
+                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, AnimationClass.Animate.STAND_LEFT));
+                    }
+                }
+
+                // If walking
+                if (dx > 0) {
+                    animationPlaybackImpl.setCurrentAnimation(running ? AnimationClass.Animate.RUN_RIGHT : AnimationClass.Animate.WALK_RIGHT);
+                }
+
+                if (dx < 0) {
+                    animationPlaybackImpl.setCurrentAnimation(running ? AnimationClass.Animate.RUN_LEFT : AnimationClass.Animate.WALK_LEFT);
+                }
+            }
+        }
+
+        super.render(batch, stateTime);
+    }
+
+    private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
         exhaustRunnable();
 
-        int lLast = l;
-        int rLast = r;
-        int uLast = u;
-        int dLast = d;
-        int jumpLast = jump;
-        l = KeyEventUtil.getInstance().isPressed(KeyEventUtil.KeyCode.A) ? 1 : 0;
-        r = KeyEventUtil.getInstance().isPressed(KeyEventUtil.KeyCode.D) ? 1 : 0;
-        u = KeyEventUtil.getInstance().isPressed(KeyEventUtil.KeyCode.W) ? 1 : 0;
-        d = KeyEventUtil.getInstance().isPressed(KeyEventUtil.KeyCode.S) ? 1 : 0;
-
+        final int lLast = l;
+        final int rLast = r;
+        final int uLast = u;
+        final int dLast = d;
+        final int jumpLast = jump;
+        l = params.isPressed(KeyCode.A) ? 1 : 0;
+        r = params.isPressed(KeyCode.D) ? 1 : 0;
+        u = params.isPressed(KeyCode.W) ? 1 : 0;
+        d = params.isPressed(KeyCode.S) ? 1 : 0;
+        jump = params.isPressed(KeyCode.SPACE) ? 1 : 0;
 
         beganMoving = (rLast - lLast != r - l ^
                 uLast - dLast != u - d ^
@@ -100,7 +171,7 @@ public class Player extends EntitySimple {
 
     @Override
     public void updatePhysics(PhysicsParameters params) {
-        handlePlayerInputMovementKeyboard();
+        handlePlayerInputMovementKeyboard(params);
 
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
@@ -207,11 +278,11 @@ public class Player extends EntitySimple {
         if (dx != 0) {
             final boolean hasFooting;
 
-           /*
-            * This makes it so that the player is not stuck when jumping.
-            * The condition for the player to have footing is relaxed right after a jump.
-            * The numbers are found by experimentation.
-            */
+            /*
+             * This makes it so that the player is not stuck when jumping.
+             * The condition for the player to have footing is relaxed right after a jump.
+             * The numbers are found by experimentation.
+             */
             {
                 boolean foundCollision = false;
                 for (int i = -8, len = (jumpFrame < 8) ? 8 : -8; i < len; i++) {
@@ -272,7 +343,7 @@ public class Player extends EntitySimple {
             int dyInt = (int) Math.sin(Math.toRadians(angle)) * 8;
             willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt + dxInt, yUpdatedInt + dyInt);
         } else {
-            willSoonInterceptCollisionData =params.isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt + 8);
+            willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt + 8);
         }
 
         if (willSoonInterceptCollisionData) {

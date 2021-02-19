@@ -6,8 +6,9 @@ import dev.kabin.components.worldmodel.IndexedSetPool;
 import dev.kabin.entities.CollisionData;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
-import dev.kabin.utilities.pools.objectpool.Borrowed;
-import dev.kabin.utilities.shapes.primitive.RectInt;
+import dev.kabin.entities.PhysicsParameters;
+import dev.kabin.util.pools.objectpool.Borrowed;
+import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class WorldRepresentation implements Entity.PhysicsParameters {
+public class WorldRepresentation {
 
     public static final int
             AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
@@ -302,22 +303,18 @@ public class WorldRepresentation implements Entity.PhysicsParameters {
         rootComponent.decrementCollisionAt(x, y);
     }
 
-    @Override
     public boolean isCollisionAt(int x, int y) {
         return rootComponent.isCollisionAt(x, y);
     }
 
-    @Override
     public float getVectorFieldX(int x, int y) {
         return rootComponent.getVectorFieldX(x, y);
     }
 
-    @Override
     public float getVectorFieldY(int x, int y) {
         return rootComponent.getVectorFieldY(x, y);
     }
 
-    @Override
     public boolean isLadderAt(int x, int y) {
         return rootComponent.isLadderAt(x, y);
     }

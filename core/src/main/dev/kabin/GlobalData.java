@@ -8,11 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.eventhandlers.InputEventDistributor;
-import dev.kabin.utilities.points.Point;
-import dev.kabin.utilities.points.PointDouble;
-import dev.kabin.utilities.shapes.primitive.MutableRectInt;
+import dev.kabin.util.Functions;
+import dev.kabin.util.eventhandlers.InputEventDistributor;
+import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointDouble;
+import dev.kabin.util.shapes.primitive.MutableRectInt;
 
 import java.io.IOException;
 import java.nio.file.Files;

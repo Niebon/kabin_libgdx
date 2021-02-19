@@ -4,14 +4,14 @@ package dev.kabin.components;
 import dev.kabin.collections.Id;
 import dev.kabin.components.worldmodel.FloatArrayPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
-import dev.kabin.utilities.functioninterfaces.FloatUnaryOperation;
-import dev.kabin.utilities.functioninterfaces.IntBinaryOperator;
-import dev.kabin.utilities.linalg.FloatMatrix;
-import dev.kabin.utilities.linalg.IntMatrix;
-import dev.kabin.utilities.shapes.RectFloat;
-import dev.kabin.utilities.shapes.primitive.ImmutableRectInt;
+import dev.kabin.util.Functions;
+import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
+import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.util.functioninterfaces.IntBinaryOperator;
+import dev.kabin.util.linalg.FloatMatrix;
+import dev.kabin.util.linalg.IntMatrix;
+import dev.kabin.util.shapes.RectFloat;
+import dev.kabin.util.shapes.primitive.ImmutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
@@ -21,8 +21,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static dev.kabin.components.ComponentParameters.COARSENESS_PARAMETER;
 
 
 /**

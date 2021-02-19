@@ -14,9 +14,9 @@ import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.entities.*;
 import dev.kabin.ui.Widget;
-import dev.kabin.utilities.Functions;
-import dev.kabin.utilities.Statistics;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
+import dev.kabin.util.Functions;
+import dev.kabin.util.Statistics;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 

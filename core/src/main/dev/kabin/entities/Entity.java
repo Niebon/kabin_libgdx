@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.collections.Id;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.utilities.functioninterfaces.BiIntPredicate;
-import dev.kabin.utilities.functioninterfaces.BiIntToFloatFunction;
-import dev.kabin.utilities.helperinterfaces.JSONRecordable;
-import dev.kabin.utilities.helperinterfaces.ModifiableFloatCoordinates;
-import dev.kabin.utilities.helperinterfaces.Scalable;
-import dev.kabin.utilities.pools.ImageAnalysisPool;
-import dev.kabin.utilities.shapes.primitive.UnmodifiableRectIntView;
+import dev.kabin.util.functioninterfaces.BiIntPredicate;
+import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
+import dev.kabin.util.helperinterfaces.JSONSerializable;
+import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.helperinterfaces.Scalable;
+import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.util.shapes.primitive.UnmodifiableRectIntView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -20,7 +20,7 @@ public interface Entity extends
         ModifiableFloatCoordinates,
         Comparable<Entity>,
         ImageAnalysisPool.Analysis.Analyzable,
-        JSONRecordable,
+        JSONSerializable,
         Id
 {
 
@@ -28,51 +28,6 @@ public interface Entity extends
     void render(SpriteBatch batch, float stateTime);
 
     void updatePhysics(PhysicsParameters params);
-
-    /**
-     * Parameters for entities that undergo physical interactions with their surroundings.
-     */
-    interface PhysicsParameters{
-
-        /**
-         * A collision check.
-         * @param x horizontal coordinate. Positive points right relative to the screen.
-         * @param y vertical coordinate. Positive points upwards the screen.
-         * @return true iff the coordinate has collision.
-         */
-        boolean isCollisionAt(int x, int y);
-
-        /**
-         * A ladder data check.
-         * @param x horizontal coordinate. Positive points right relative to the screen.
-         * @param y vertical coordinate. Positive points upwards the screen.
-         * @return true iff the coordinate has ladder data.
-         */
-        boolean isLadderAt(int x, int y);
-
-
-        default boolean isCollisionIfNotLadderData(int x, int y){
-            if (isLadderAt(x, y)) return false;
-            else return (isCollisionAt(x, y));
-        }
-
-        /**
-         * Horizontal vector field.
-         * @param x horizontal coordinate. Positive points right relative to the screen.
-         * @param y vertical coordinate. Positive points upwards the screen.
-         * @return the magnitude of the vector field in horizontal direction.
-         */
-        float getVectorFieldX(int x, int y);
-
-        /**
-         * Vertical vector field.
-         * @param x horizontal coordinate. Positive points right relative to the screen.
-         * @param y vertical coordinate. Positive points upwards the screen.
-         * @return the magnitude of the vector field in vertical direction.
-         */
-        float getVectorFieldY(int x, int y);
-
-    }
 
     int getLayer();
 

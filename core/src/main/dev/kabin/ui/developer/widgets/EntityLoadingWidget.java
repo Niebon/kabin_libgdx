@@ -15,7 +15,7 @@ import dev.kabin.animation.AnimationPlaybackImpl;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityFactory;
 import dev.kabin.entities.EntityParameters;
-import dev.kabin.utilities.eventhandlers.MouseEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 import org.json.JSONObject;
 
 import javax.swing.*;

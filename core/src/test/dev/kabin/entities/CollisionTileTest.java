@@ -1,8 +1,8 @@
 package dev.kabin.entities;
 
 import dev.kabin.animation.AnimationClass;
-import dev.kabin.utilities.Procedures;
-import dev.kabin.utilities.Statistics;
+import dev.kabin.util.Procedures;
+import dev.kabin.util.Statistics;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -33,13 +33,9 @@ public class EntityParameters {
         this.backingMap = backingMap;
     }
 
-    public <T> Optional<T> get(String key, @SuppressWarnings("unused") Class<T> type) {
+    public <T> Optional<T> getMaybe(String key) {
         //noinspection unchecked
         return Optional.ofNullable((T) backingMap.get(key));
-    }
-
-    public Optional<Object> get(String key) {
-        return Optional.ofNullable(backingMap.get(key));
     }
 
     public float x() {
@@ -66,7 +62,7 @@ public class EntityParameters {
         return layer;
     }
 
-    enum Context {TEST, PRODUCTION}
+    public enum Context {TEST, PRODUCTION}
 
     public static class Builder {
         private float x;
