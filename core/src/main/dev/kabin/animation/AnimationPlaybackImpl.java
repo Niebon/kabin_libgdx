@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.util.Functions;
+import dev.kabin.util.SmoothFilter2D;
 import dev.kabin.util.collections.IntToIntFunction;
 import dev.kabin.util.pools.ImageAnalysisPool;
 
@@ -23,9 +24,10 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
     private final Map<T, int[]> animationBlueprint;
-    float x, y, scale;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
+    private SmoothFilter2D smoothFilter2D;
+    private float scale;
 
     /**
      * A constructor for a mock instance.
@@ -59,6 +61,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
         animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
+        smoothFilter2D = new SmoothFilter2D(0.5f,0.5f);
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
     }
 
@@ -162,6 +165,11 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
+    public void setSmoothParameters(float alpha, float beta) {
+        smoothFilter2D = new SmoothFilter2D(alpha, beta);
+    }
+
+    @Override
     public float getWidth() {
         return width * getScale();
     }
@@ -173,22 +181,22 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public float getX() {
-        return x;
+        return smoothFilter2D.x();
     }
 
     @Override
     public void setX(float x) {
-        this.x = x;
+        smoothFilter2D.appendSignalX(x);
     }
 
     @Override
     public float getY() {
-        return y;
+        return smoothFilter2D.y();
     }
 
     @Override
     public void setY(float y) {
-        this.y = y;
+        smoothFilter2D.appendSignalY(y);
     }
 
     @Override
@@ -228,4 +236,5 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         }
 
     }
+
 }

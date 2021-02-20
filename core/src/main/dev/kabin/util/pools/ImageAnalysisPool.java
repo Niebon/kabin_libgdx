@@ -1,7 +1,7 @@
 package dev.kabin.util.pools;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointOld;
 import dev.kabin.util.points.ModifiablePointInt;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
@@ -117,7 +117,7 @@ public class ImageAnalysisPool {
 						nx = nx + 1;
 						sumy = sumy + j;
 						ny = ny + 1;
-						pixelProfile.add(Point.of(i, j));
+						pixelProfile.add(PointOld.of(i, j));
 					}
 				}
 			}

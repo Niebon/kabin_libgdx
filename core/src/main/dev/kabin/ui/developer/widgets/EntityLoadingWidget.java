@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.animation.AnimationPlaybackImpl;
@@ -148,7 +149,7 @@ public class EntityLoadingWidget {
                 .setX(MouseEventUtil.getMouseXRelativeToWorld())
                 .setY(MouseEventUtil.getMouseYRelativeToWorld())
                 .setLayer(layer)
-                .setScale(GlobalData.scaleFactor)
+                .setScale(MainGame.scaleFactor)
                 .setAtlasPath(selectedAsset)
                 .build();
 

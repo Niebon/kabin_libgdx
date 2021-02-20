@@ -1,6 +1,6 @@
 package dev.kabin.util.shapes;
 
-import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointOld;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GrowingRectBoxed<T extends Number & Comparable<T>> extends AbstractRectBoxed<T> implements Growing<T> {
@@ -32,7 +32,7 @@ public abstract class GrowingRectBoxed<T extends Number & Comparable<T>> extends
     public abstract T getHeight();
 
     @Override
-    public void add(@NotNull Point<T> point) {
+    public void add(@NotNull PointOld<T> point) {
         T x = point.getX();
         T y = point.getY();
         T minX = getMinX(), maxX = getMaxX(), minY = getMinY(), maxY = getMaxY();

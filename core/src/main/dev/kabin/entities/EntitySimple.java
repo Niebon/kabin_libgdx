@@ -2,7 +2,6 @@ package dev.kabin.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -27,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import static dev.kabin.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
+
 
 public class EntitySimple implements Entity {
 
@@ -169,13 +169,13 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public void render(SpriteBatch batch, float stateTime) {
+    public void updateGraphics(GraphicsParameters params) {
         animationPlaybackImpl.setX(x);
         animationPlaybackImpl.setY(y);
-        animationPlaybackImpl.setScale(scale);
-        animationPlaybackImpl.renderNextAnimationFrame(batch, stateTime);
-        float offsetX = GlobalData.camera.position.x - GlobalData.screenWidth * 0.5f;
-        float offsetY = GlobalData.camera.position.y - GlobalData.screenHeight * 0.5f;
+        animationPlaybackImpl.setScale(params.getScale());
+        animationPlaybackImpl.renderNextAnimationFrame(params.getBatch(), params.getStateTime());
+        float offsetX = params.getCamX() - params.getScreenWidth() * 0.5f;
+        float offsetY = params.getCamY() - params.getScreenHeight() * 0.5f;
         float x = this.x - offsetX;
         float y = this.y - offsetY;
         actor.setBounds(

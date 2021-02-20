@@ -1,7 +1,7 @@
 package dev.kabin.util.helperinterfaces;
 
-import dev.kabin.util.points.Point;
-import dev.kabin.util.points.PointFloat;
+import dev.kabin.util.points.PointOld;
+import dev.kabin.util.points.PointFloatOld;
 import org.jetbrains.annotations.Contract;
 
 public interface ModifiableFloatCoordinates {
@@ -21,14 +21,14 @@ public interface ModifiableFloatCoordinates {
 
     /**
      * A helper procedure to consider the current position as a point.
-     * The default implementation creates a new {@link Point} instance for each call.
-     * If you want to return a cached point, it is advised to use {@link #recordPosition(PointFloat)}.
+     * The default implementation creates a new {@link PointOld} instance for each call.
+     * If you want to return a cached point, it is advised to use {@link #recordPosition(PointFloatOld)}.
      *
-     * @return the current position data as a {@link Point} isntance.
+     * @return the current position data as a {@link PointOld} isntance.
      */
     @Contract("->new")
-    default PointFloat getPosition() {
-        return Point.of(getX(), getY());
+    default PointFloatOld getPosition() {
+        return PointOld.of(getX(), getY());
     }
 
     /**
@@ -38,7 +38,7 @@ public interface ModifiableFloatCoordinates {
      * @return the input to the method.
      */
     @Contract("_->param1")
-    default PointFloat recordPosition(PointFloat positionRecord) {
+    default PointFloatOld recordPosition(PointFloatOld positionRecord) {
         return positionRecord.setX(getX()).setY(getY());
     }
 

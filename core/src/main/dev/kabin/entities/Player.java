@@ -1,6 +1,5 @@
 package dev.kabin.entities;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.CollisionTangentFinder;
@@ -103,7 +102,7 @@ public class Player extends EntitySimple {
     }
 
     @Override
-    public void render(SpriteBatch batch, float stateTime) {
+    public void updateGraphics(GraphicsParameters params) {
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
 
@@ -142,9 +141,13 @@ public class Player extends EntitySimple {
             }
         }
 
-        super.render(batch, stateTime);
+        super.updateGraphics(params);
     }
 
+    /**
+     * Helper method to set input controls.
+     * @param params input.
+     */
     private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
         exhaustRunnable();
 
@@ -174,7 +177,7 @@ public class Player extends EntitySimple {
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
         final int yPrevUnscaled = getUnscaledY();
-        final boolean affectedByVectorField = routineActWithVectorFieldOn(this, params::getVectorFieldX, params::getVectorFieldY);
+        final boolean affectedByVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY);
 
         // Ladder movement
         if (params.isLadderAt(xPrevUnscaled, yPrevUnscaled)) {

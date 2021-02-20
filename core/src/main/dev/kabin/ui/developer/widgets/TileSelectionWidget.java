@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import dev.kabin.Threads;
 import dev.kabin.animation.AnimationBundleFactory;
 import dev.kabin.animation.AnimationClass;
@@ -71,10 +72,10 @@ public class TileSelectionWidget {
      * @param mouseY the vertical coordinate of the given mouse position.
      */
     private static void removeGroundTileAtCurrentMousePosition(float mouseX, float mouseY) {
-        final int intX = Functions.snapToGrid(mouseX / GlobalData.scaleFactor, CollisionTile.TILE_SIZE);
-        final float x = intX * GlobalData.scaleFactor;
-        final int intY = Functions.snapToGrid(mouseY / GlobalData.scaleFactor, CollisionTile.TILE_SIZE);
-        final float y = intY * GlobalData.scaleFactor;
+        final int intX = Functions.snapToGrid(mouseX / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
+        final float x = intX * MainGame.scaleFactor;
+        final int intY = Functions.snapToGrid(mouseY / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
+        final float y = intY * MainGame.scaleFactor;
         final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
         if (matchingCt != null) {
             if (!GlobalData.getWorldState().unregisterEntity(matchingCt)) {
@@ -82,9 +83,9 @@ public class TileSelectionWidget {
             }
             matchingCt.getActor().ifPresent(Actor::remove);
             matchingCt.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
-            GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).remove(matchingCt);
+            GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.currentCameraBounds).remove(matchingCt);
         } else {
-            final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(GlobalData.currentCameraBounds).iterator();
+            final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.currentCameraBounds).iterator();
             while (entityIterator.hasNext()) {
                 final Entity e = entityIterator.next();
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
@@ -142,7 +143,7 @@ public class TileSelectionWidget {
                     .setX(MouseEventUtil.getMouseXRelativeToWorld())
                     .setY(MouseEventUtil.getMouseYRelativeToWorld())
                     .setLayer(0)
-                    .setScale(GlobalData.scaleFactor)
+                    .setScale(MainGame.scaleFactor)
                     .setAtlasPath(selectedAsset)
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                     .put(CollisionTile.TILE, currentType.name())

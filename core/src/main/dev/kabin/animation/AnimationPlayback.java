@@ -21,4 +21,6 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea
     ImageAnalysisPool.Analysis getPixelAnalysis();
 
     void reset();
+
+    void setSmoothParameters(float alpha, float beta);
 }

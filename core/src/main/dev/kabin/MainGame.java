@@ -3,6 +3,7 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,14 +13,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.Entity;
+import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.Functions;
 import dev.kabin.util.eventhandlers.EnumWithBoolHandler;
 import dev.kabin.util.eventhandlers.EventUtil;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -28,17 +32,35 @@ import static dev.kabin.GlobalData.*;
 
 public class MainGame extends ApplicationAdapter {
 
+    public static OrthographicCamera camera;
+    public static int screenWidth = 400;
+    public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
+    public static float scaleFactor = 1.0f;
+    private SpriteBatch spriteBatch;
+    private float stateTime = 0f;
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
-    static void renderEntityGlobalStateTime(Entity e) {
-        e.render(GlobalData.batch, GlobalData.stateTime);
+    /**
+     * Updates the field {@link #currentCameraBounds} to match the current viewing rectangle the given camera.
+     * @param camera the camera to use as reference.
+     */
+    private void translateCurrentCameraBounds(Camera camera) {
+        // Find new camera position:
+        currentCameraBounds.translate(
+                Math.round(Functions.toIntDivideBy(camera.position.x, scaleFactor) - currentCameraBounds.getCenterX()),
+                Math.round(Functions.toIntDivideBy(camera.position.y, scaleFactor) - currentCameraBounds.getCenterY())
+        );
+    }
+
+    void renderEntityGlobalStateTime(Entity e) {
+        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, stateTime, camera, scaleFactor, screenWidth, screenHeight));
     }
 
     @Override
     public void create() {
-        GlobalData.screenWidth = Gdx.graphics.getWidth();
+        screenWidth = Gdx.graphics.getWidth();
         GlobalData.screenHeight = Gdx.graphics.getHeight();
-        GlobalData.scaleFactor = (float) GlobalData.screenWidth / GlobalData.artWidth;
+        scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
 
 
         GlobalData.stage = new Stage(new ScreenViewport());
@@ -47,7 +69,7 @@ public class MainGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(imp);
         logger.setLevel(GlobalData.getLogLevel());
         EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
-        GlobalData.batch = new SpriteBatch();
+        spriteBatch = new SpriteBatch();
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
@@ -81,15 +103,15 @@ public class MainGame extends ApplicationAdapter {
         camera.update();
 
 
-        GlobalData.updateCameraLocation();
-        GlobalData.batch.setProjectionMatrix(camera.combined);
+        translateCurrentCameraBounds(camera);
+        spriteBatch.setProjectionMatrix(camera.combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-        GlobalData.stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
+        stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
         // Render graphics
         if (GlobalData.getWorldState() != null) {
-            GlobalData.getWorldState().actionForEachEntityOrderedByType(MainGame::renderEntityGlobalStateTime);
+            GlobalData.getWorldState().actionForEachEntityOrderedByType(this::renderEntityGlobalStateTime);
         }
 
         //bundle.renderFrameByIndex(0);
@@ -103,14 +125,14 @@ public class MainGame extends ApplicationAdapter {
         // Render interface:
         if (developerMode) {
             DeveloperUI.updatePositionsOfDraggedEntities();
-            DeveloperUI.render(GlobalData.userInterfaceBatch, GlobalData.stateTime);
+            DeveloperUI.render(GlobalData.userInterfaceBatch, stateTime);
         }
     }
 
     @Override
     public void dispose() {
         GlobalData.userInterfaceBatch.dispose();
-        GlobalData.batch.dispose();
+        spriteBatch.dispose();
     }
 
     static class PhysicsParametersImpl implements PhysicsParameters {
@@ -150,6 +172,62 @@ public class MainGame extends ApplicationAdapter {
         public boolean isPressed(KeyCode keycode) {
             return keyEventUtil.isPressed(keycode);
         }
+    }
+
+    static class GraphicsParametersImpl implements GraphicsParameters{
+
+        @NotNull
+        private final SpriteBatch spriteBatch;
+        private final float stateTime, scale, screenWidth, screenHeight;
+        private final Camera camera;
+
+        GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
+                               float stateTime,
+                               Camera camera,
+                               float scale, float screenWidth, float screenHeight) {
+            this.spriteBatch = spriteBatch;
+            this.stateTime = stateTime;
+            this.camera = camera;
+            this.scale = scale;
+            this.screenWidth = screenWidth;
+            this.screenHeight = screenHeight;
+        }
+
+        @Override
+        public SpriteBatch getBatch() {
+            return spriteBatch;
+        }
+
+        @Override
+        public float getStateTime() {
+            return stateTime;
+        }
+
+        @Override
+        public float getScreenWidth() {
+            return screenWidth;
+        }
+
+        @Override
+        public float getScreenHeight() {
+            return screenHeight;
+        }
+
+        @Override
+        public float getCamX() {
+            return camera.position.x;
+        }
+
+        @Override
+        public float getCamY() {
+            return camera.position.y;
+        }
+
+        @Override
+        public float getScale() {
+            return scale;
+        }
+
     }
 
 }

@@ -24,8 +24,7 @@ public interface Entity extends
         Id
 {
 
-
-    void render(SpriteBatch batch, float stateTime);
+    void updateGraphics(GraphicsParameters params);
 
     void updatePhysics(PhysicsParameters params);
 
@@ -70,9 +69,9 @@ public interface Entity extends
      * @param entity the entity to be acted on.
      * @return the point representing the vector (vx,vy) which acted on the entity.
      */
-    default boolean routineActWithVectorFieldOn(@NotNull Entity entity,
-                                                BiIntToFloatFunction vectorFieldX,
-                                                BiIntToFloatFunction vectorFieldY) {
+    default boolean action(@NotNull Entity entity,
+                           BiIntToFloatFunction vectorFieldX,
+                           BiIntToFloatFunction vectorFieldY) {
         final int x = entity.getUnscaledX();
         final int y = entity.getUnscaledY();
         for (int i = 0; i < 4; i++) {

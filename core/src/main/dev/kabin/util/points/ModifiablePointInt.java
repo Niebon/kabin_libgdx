@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper class for a pair of ints.
  */
-public class ModifiablePointInt implements PointInt {
+public final class ModifiablePointInt implements PointInt {
 
-	public int x, y;
+	private int x, y;
 
 	public ModifiablePointInt(int x, int y) {
 		this.x = x;
@@ -76,15 +76,6 @@ public class ModifiablePointInt implements PointInt {
 				"x=" + x +
 				", y=" + y +
 				'}';
-	}
-
-	public PointDouble toPointDouble(double scale) {
-		return Point.of(x * scale, y * scale);
-	}
-
-	public PointDouble toPointDouble() {
-		//noinspection RedundantCast: I'd rather have the code look symmetric and look at a silly warning to remove one of the casts.
-		return Point.of((double) x, (double) y);
 	}
 
 	public ModifiablePointInt translate(@NotNull ModifiablePointInt amount) {

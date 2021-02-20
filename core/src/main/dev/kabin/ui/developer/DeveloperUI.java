@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import dev.kabin.WorldStateRecorder;
-import dev.kabin.entities.*;
+import dev.kabin.entities.Entity;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
@@ -26,7 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -153,8 +157,8 @@ public class DeveloperUI {
             final Entity e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX()));
-            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY()));
+            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX(), MainGame.scaleFactor));
+            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY(), MainGame.scaleFactor));
         }
     }
 

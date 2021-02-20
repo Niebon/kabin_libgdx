@@ -4,7 +4,7 @@ import dev.kabin.util.shapes.RectFloat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class PointFloatTest {
+class PointOldFloatOldTest {
 
     @Test
     public void creation() {

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 public class GrowingDirectedIndexedRectBoxedInt extends GrowingDirectedIndexedRectBoxed<Integer> {
 
     public GrowingDirectedIndexedRectBoxedInt(@NotNull ModifiablePointInt pointInt) {
-        this(pointInt.x, pointInt.y, 0, 0);
+        this(pointInt.x(), pointInt.y(), 0, 0);
     }
 
     public GrowingDirectedIndexedRectBoxedInt(int x, int y, int width, int height) {

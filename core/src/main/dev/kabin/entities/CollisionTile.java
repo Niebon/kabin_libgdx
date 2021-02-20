@@ -1,10 +1,9 @@
 package dev.kabin.entities;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.animation.AnimationClass;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.PointInt;
-import dev.kabin.util.points.UnmodifiablePointInt;
+import dev.kabin.util.points.ImmutablePointInt;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -16,7 +15,7 @@ public class CollisionTile extends CollisionEntity {
     public static final String FRAME_INDEX = "frameIndex";
     public static final String TILE = "tile";
     public static final int TILE_SIZE = 16;
-    private static final Map<UnmodifiablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
+    private static final Map<ImmutablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
     private final AnimationClass.Tile tile;
     private final int index;
     private int unscaledX;
@@ -33,10 +32,10 @@ public class CollisionTile extends CollisionEntity {
         tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
         animationPlaybackImpl.setCurrentAnimation(tile);
         index = Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
-        if (objectPool.containsKey(PointInt.unmodifiableOf(unscaledX, unscaledY))) {
+        if (objectPool.containsKey(PointInt.immutablePointInt(unscaledX, unscaledY))) {
             throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
         }
-        objectPool.put(PointInt.unmodifiableOf(unscaledX, unscaledY), this);
+        objectPool.put(PointInt.immutablePointInt(unscaledX, unscaledY), this);
     }
 
     public int getIndex() {
@@ -51,17 +50,17 @@ public class CollisionTile extends CollisionEntity {
      * @return if the position was occupied, clears it and returns the occupant.
      */
     public static Optional<CollisionTile> clearAt(int x, int y) {
-        return Optional.ofNullable(objectPool.remove(PointInt.unmodifiableOf(x, y)));
+        return Optional.ofNullable(objectPool.remove(PointInt.immutablePointInt(x, y)));
     }
 
 
     @Override
-    public void render(SpriteBatch batch, float stateTime) {
+    public void updateGraphics(GraphicsParameters params) {
         animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
         animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
         animationPlaybackImpl.setScale(getScale());
         animationPlaybackImpl.setCurrentAnimation(tile);
-        animationPlaybackImpl.renderFrameByIndex(batch, index);
+        animationPlaybackImpl.renderFrameByIndex(params.getBatch(), index);
         actor().setBounds(
                 getX(), getY(),
                 animationPlaybackImpl.getWidth(),

@@ -8,22 +8,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper class for a pair of doubles.
  */
-public class PointDouble implements Point<Double> {
+public class PointOldDouble implements PointOld<Double> {
     public double x, y;
 
-    public PointDouble(double x, double y) {
+    public PointOldDouble(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public PointDouble(@NotNull PointDouble p) {
+    public PointOldDouble(@NotNull PointOldDouble p) {
         x = p.x;
         y = p.y;
     }
 
     public boolean equals(Object p) {
-        if (p instanceof PointDouble) {
-            PointDouble other = (PointDouble) p;
+        if (p instanceof PointOldDouble) {
+            PointOldDouble other = (PointOldDouble) p;
             return (x == other.x && y == other.y);
         } else return false;
     }
@@ -34,7 +34,7 @@ public class PointDouble implements Point<Double> {
         return x;
     }
 
-    public PointDouble setX(double x) {
+    public PointOldDouble setX(double x) {
         this.x = x;
         return this;
     }
@@ -44,7 +44,7 @@ public class PointDouble implements Point<Double> {
         return y;
     }
 
-    public PointDouble setY(double y) {
+    public PointOldDouble setY(double y) {
         this.y = y;
         return this;
     }
@@ -58,39 +58,39 @@ public class PointDouble implements Point<Double> {
     }
 
     @Override
-    public Point<Double> setX(@NotNull Double x) {
+    public PointOld<Double> setX(@NotNull Double x) {
         this.x = x;
         return this;
     }
 
     @Override
-    public Point<Double> setY(@NotNull Double y) {
+    public PointOld<Double> setY(@NotNull Double y) {
         this.y = y;
         return this;
     }
 
-    public PointDouble transform(@NotNull DoubleToDoubleFunction fx, @NotNull DoubleToDoubleFunction fy) {
+    public PointOldDouble transform(@NotNull DoubleToDoubleFunction fx, @NotNull DoubleToDoubleFunction fy) {
         x = fx.eval(x);
         y = fy.eval(y);
         return this;
     }
 
     @Override
-    public PointDouble rotate(double angleRadians) {
+    public PointOldDouble rotate(double angleRadians) {
         final double cs = Math.cos(angleRadians), sn = Math.sin(angleRadians);
         x = x * cs - y * sn;
         y = x * sn + y * cs;
         return this;
     }
 
-    public PointDouble scaleThis(double scalar) {
+    public PointOldDouble scaleThis(double scalar) {
         x = x * scalar;
         y = y * scalar;
         return this;
     }
 
-    public PointDouble scaleNew(double scalar) {
-        return Point.of(x,y).scaleThis(scalar);
+    public PointOldDouble scaleNew(double scalar) {
+        return PointOld.of(x,y).scaleThis(scalar);
     }
 
 
@@ -113,11 +113,11 @@ public class PointDouble implements Point<Double> {
 
     @Contract("->new")
     public ModifiablePointInt round(){
-        return Point.of((int) Math.round(x), (int) Math.round(y));
+        return PointOld.of((int) Math.round(x), (int) Math.round(y));
     }
 
     @Contract("_ -> this")
-    public PointDouble translate(@NotNull Point<Double> amount){
+    public PointOldDouble translate(@NotNull PointOld<Double> amount){
         x = x + amount.getX();
         y = y + amount.getY();
         return this;

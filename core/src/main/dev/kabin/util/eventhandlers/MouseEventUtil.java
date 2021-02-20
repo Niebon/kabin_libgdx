@@ -1,9 +1,10 @@
 package dev.kabin.util.eventhandlers;
 
 import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import dev.kabin.util.Functions;
-import dev.kabin.util.points.Point;
-import dev.kabin.util.points.PointFloat;
+import dev.kabin.util.points.PointOld;
+import dev.kabin.util.points.PointFloatOld;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -20,7 +21,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private static final Map<MouseButton, List<MouseDraggedEvent>> listenersMouseDrag = new EnumMap<>(MouseButton.class);
     private static final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
     private static final List<EventListener> defaultListeners = new ArrayList<>();
-    private static final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
+    private static final Map<MouseButton, PointFloatOld> dragStart = new EnumMap<>(MouseButton.class);
     private static MouseEventUtil instance;
     private static float xRelativeToWorld, yRelativeToWorld;
     private static float xRelativeToUI, yRelativeToUI;
@@ -39,12 +40,12 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         return (instance != null) ? instance : (instance = new MouseEventUtil());
     }
 
-    public static PointFloat getPositionRelativeToWorld() {
-        return Point.of(getMouseXRelativeToWorld(), getMouseYRelativeToWorld());
+    public static PointFloatOld getPositionRelativeToWorld() {
+        return PointOld.of(getMouseXRelativeToWorld(), getMouseYRelativeToWorld());
     }
 
-    public static PointFloat getPositionRelativeToUI() {
-        return Point.of(getXRelativeToUI(), getYRelativeToUI());
+    public static PointFloatOld getPositionRelativeToUI() {
+        return PointOld.of(getXRelativeToUI(), getYRelativeToUI());
     }
 
     public static float getXRelativeToUI() {
@@ -63,14 +64,14 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         return (float) (yRelativeToWorld / GlobalData.getScale().y());
     }
 
-    public static Optional<PointFloat> getDragStart(MouseButton b) {
+    public static Optional<PointFloatOld> getDragStart(MouseButton b) {
         return Optional.ofNullable(dragStart.get(b));
     }
 
     private void initUnmodifiableListeners() {
         // Register last time the position that the mouse began dragging.
         for (MouseButton b : MouseButton.values()) {
-            addListener(b, true, () -> dragStart.put(b, Point.of(xRelativeToWorld, yRelativeToWorld)));
+            addListener(b, true, () -> dragStart.put(b, PointOld.of(xRelativeToWorld, yRelativeToWorld)));
             addListener(b, false, () -> dragStart.remove(b));
         }
 
@@ -80,12 +81,12 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private String infoCurrentHover() {
         return "Info found about point: \n" +
                 "mouseRelToWorld: " + getPositionRelativeToWorld() + "\n" +
-                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleThis(1 / GlobalData.scaleFactor).toPointInt() + "\n" +
+                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleThis(1 / MainGame.scaleFactor).toPointInt() + "\n" +
                 "mouseRelToUI: " + getPositionRelativeToUI() + "\n" +
-                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleThis(1 / GlobalData.scaleFactor).toPointInt() + "\n" +
+                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleThis(1 / MainGame.scaleFactor).toPointInt() + "\n" +
                 "collision: " + (GlobalData.getWorldState() != null ? GlobalData.getWorldState().getCollision(
-                Math.round(getMouseXRelativeToWorld() / GlobalData.scaleFactor),
-                Math.round(getMouseYRelativeToWorld() / GlobalData.scaleFactor)
+                Math.round(getMouseXRelativeToWorld() / MainGame.scaleFactor),
+                Math.round(getMouseYRelativeToWorld() / MainGame.scaleFactor)
         ) : "");
     }
 
@@ -95,8 +96,8 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         MouseEventUtil.yRelativeToUI = Functions.transformY(y, GlobalData.screenHeight);
 
         // camera.x and camera.y are in the middle of the screen. Hence the offsets:
-        float offsetX = GlobalData.camera.position.x - GlobalData.screenWidth * 0.5f;
-        float offsetY = GlobalData.camera.position.y - GlobalData.screenHeight * 0.5f;
+        float offsetX = MainGame.camera.position.x - MainGame.screenWidth * 0.5f;
+        float offsetY = MainGame.camera.position.y - GlobalData.screenHeight * 0.5f;
 
         MouseEventUtil.xRelativeToWorld = x + offsetX;
         MouseEventUtil.yRelativeToWorld = Functions.transformY(y, GlobalData.screenHeight) + offsetY;

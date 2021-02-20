@@ -2,7 +2,7 @@ package dev.kabin.entities;
 
 import dev.kabin.util.functioninterfaces.PrimitiveIntPairConsumer;
 import dev.kabin.util.points.ModifiablePointInt;
-import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointOld;
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
     default Stream<ModifiablePointInt> getSurfaceContourRelativeToOrigin() {
         final int rootX = getRootX(), rootY = getRootY();
         return getSurfaceContourProfile().stream()
-                .map(p -> Point.of(p.x() + rootX, p.y() + rootY));
+                .map(p -> PointOld.of(p.x() + rootX, p.y() + rootY));
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {

@@ -1,6 +1,7 @@
 package dev.kabin.physics;
 
 import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import dev.kabin.entities.PhysicsParameters;
 
 /**
@@ -10,7 +11,7 @@ import dev.kabin.entities.PhysicsParameters;
 public class PhysicsEngine {
 
     public final static float DT = 1 / 120f;
-    public static float meter = 12 * GlobalData.scaleFactor;
+    public static float meter = 12 * MainGame.scaleFactor;
     public static float gravitationConstant = 9.81f * meter;
     private static float lastFrame = 0f;
 

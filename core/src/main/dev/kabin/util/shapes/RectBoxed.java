@@ -1,6 +1,6 @@
 package dev.kabin.util.shapes;
 
-import dev.kabin.util.points.Point;
+import dev.kabin.util.points.PointOld;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -41,7 +41,7 @@ public interface RectBoxed<T extends Number & Comparable<T>> {
         return 0.5 * (getMinY().doubleValue() + getMaxY().doubleValue());
     }
 
-    default boolean contains(@NotNull Point<T> point) {
+    default boolean contains(@NotNull PointOld<T> point) {
         final double
                 x = point.getX().doubleValue(),
                 y = point.getY().doubleValue();

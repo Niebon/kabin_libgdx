@@ -5,7 +5,7 @@ import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.points.PointInt;
-import dev.kabin.util.points.UnmodifiablePointInt;
+import dev.kabin.util.points.ImmutablePointInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
@@ -113,10 +113,10 @@ public class CollisionPool {
                     }
                 } else pointOfPath = false;
                 if (collision) {
-                    pathIndexPairToCollisionProfile.get(path).get(index).add(new UnmodifiablePointInt(i - x, j - y));
+                    pathIndexPairToCollisionProfile.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
                 }
                 if (pointOfPath) {
-                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new UnmodifiablePointInt(i - x, j - y));
+                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
                 }
             }
         }
@@ -127,9 +127,9 @@ public class CollisionPool {
         pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
         // Finally, transform to game coordinates: positive y-direction points upwards ...
-        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
-        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
-        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new UnmodifiablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
 
 
         // ... and make collections unmodifiable:
@@ -197,7 +197,7 @@ public class CollisionPool {
     private static boolean boundaryFound(int i, int j, @NotNull BufferedImage bufferedImage, List<PointInt> boundary) {
         final double alphaValue = (0xFF & (bufferedImage.getRGB(i, j) >> 24));
         final boolean collision = alphaValue > 0;
-        if (collision) boundary.add(new UnmodifiablePointInt(i, j));
+        if (collision) boundary.add(new ImmutablePointInt(i, j));
         return collision;
     }
 

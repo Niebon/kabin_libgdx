@@ -3,16 +3,17 @@ package dev.kabin.util.points;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-public interface Point<T extends Number> {
+@Deprecated(forRemoval = true)
+public interface PointOld<T extends Number> {
 
     @Contract("_, _ -> new")
-    static @NotNull PointFloat of(float x, float y) {
-        return new PointFloat(x, y);
+    static @NotNull PointFloatOld of(float x, float y) {
+        return new PointFloatOld(x, y);
     }
 
     @Contract("_, _ -> new")
-    static @NotNull PointDouble of(double x, double y) {
-        return new PointDouble(x, y);
+    static @NotNull PointOldDouble of(double x, double y) {
+        return new PointOldDouble(x, y);
     }
 
     @Contract("_, _ -> new")
@@ -25,16 +26,16 @@ public interface Point<T extends Number> {
     T getY();
 
     @Contract("_->this")
-    Point<T> setX(@NotNull T x);
+    PointOld<T> setX(@NotNull T x);
 
     @Contract("_->this")
-    Point<T> setY(@NotNull T y);
+    PointOld<T> setY(@NotNull T y);
 
     /**
     Rotates this point relative to the origin.
      */
     @Contract("_->this")
-	Point<T> rotate(double angleRadians);
+    PointOld<T> rotate(double angleRadians);
 
     default boolean equalsOrigin() {
         return getX().doubleValue() == 0 && getY().doubleValue() == 0;

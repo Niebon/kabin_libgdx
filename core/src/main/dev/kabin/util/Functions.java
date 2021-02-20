@@ -1,10 +1,9 @@
 package dev.kabin.util;
 
-import dev.kabin.GlobalData;
 import dev.kabin.entities.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
-import dev.kabin.util.points.Point;
-import dev.kabin.util.points.PointDouble;
+import dev.kabin.util.points.PointOld;
+import dev.kabin.util.points.PointOldDouble;
 import dev.kabin.util.points.ModifiablePointInt;
 import dev.kabin.util.shapes.AbstractRectBoxed;
 import dev.kabin.util.shapes.RectBoxed;
@@ -47,8 +46,8 @@ public class Functions {
         return false;
     }
 
-    public static float snapToPixel(float input) {
-        return Math.round(input / GlobalData.scaleFactor) * GlobalData.scaleFactor;
+    public static float snapToPixel(float input, float scaleFactor) {
+        return Math.round(input / scaleFactor) * scaleFactor;
     }
 
 
@@ -93,11 +92,11 @@ public class Functions {
     }
 
     public static double distance(@NotNull Entity entity, @NotNull AbstractRectBoxed<?> r) {
-        return distance(entity.getX(), entity.getY(), r.getCenterX() * GlobalData.scaleFactor, r.getMinY().doubleValue() * GlobalData.scaleFactor);
+        return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
     }
 
     public static double distance(@NotNull AbstractRectBoxed<?> r, @NotNull Entity entity) {
-        return distance(entity.getX(), entity.getY(), r.getCenterX() * GlobalData.scaleFactor, r.getMinY().doubleValue() * GlobalData.scaleFactor);
+        return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
     }
 
     public static double distance(double a, double b) {
@@ -112,10 +111,6 @@ public class Functions {
         return distance(entity1.getY(), entity2.getY());
     }
 
-    @Contract(pure = true)
-    public static double distance(@NotNull ModifiablePointInt p1, @NotNull ModifiablePointInt p2) {
-        return distance(p1.x, p1.y, p2.x, p2.y);
-    }
 
     /**
      * Returns the distance from a point to the border of a rectangle.
@@ -125,13 +120,13 @@ public class Functions {
      * @param <T> number.
      * @return distance.
      */
-    public static <T extends Number & Comparable<T>> double distance(@NotNull AbstractRectBoxed<T> r, @NotNull Point<T> p) {
+    public static <T extends Number & Comparable<T>> double distance(@NotNull AbstractRectBoxed<T> r, @NotNull PointOld<T> p) {
         double dx = Math.max(Math.abs(p.getX().doubleValue() - r.getCenterX()) - 0.5 * (r.getMaxX().doubleValue() - r.getMinX().doubleValue()), 0);
         double dy = Math.max(Math.abs(p.getY().doubleValue() - r.getCenterY()) - 0.5 * (r.getMaxY().doubleValue() - r.getMinY().doubleValue()), 0);
         return dx * dx + dy * dy;
     }
 
-    public static double findAngleDeg(@NotNull PointDouble dr) {
+    public static double findAngleDeg(@NotNull PointOldDouble dr) {
         return findAngleDeg(dr.x(), dr.y());
     }
 
@@ -166,7 +161,7 @@ public class Functions {
      */
     @NotNull
     @Contract("_, _, _, _ -> new")
-    public static PointDouble normalVectorAt(int x, int y, int radius, BiIntPredicate collisionPredicate) {
+    public static PointOldDouble normalVectorAt(int x, int y, int radius, BiIntPredicate collisionPredicate) {
         int termsInSum = 0;
         double sumY = 0, sumX = 0;
         final int[][] circle = intCircleCenteredAt(x, y, radius);
@@ -187,7 +182,7 @@ public class Functions {
                 dy = avgY - y,
                 dx = avgX - x;
         double r = Math.sqrt(dx * dx + dy * dy);
-        return Point.of(dx / r, dy / r);
+        return PointOld.of(dx / r, dy / r);
     }
 
     /**

@@ -2,11 +2,11 @@ package dev.kabin.util.points;
 
 public interface PointInt {
 
-    static UnmodifiablePointInt unmodifiableOf(int x, int y) {
-        return new UnmodifiablePointInt(x, y);
+    static ImmutablePointInt immutablePointInt(int x, int y) {
+        return new ImmutablePointInt(x, y);
     }
 
-    static PointInt modifiableOf(int x, int y) {
+    static ModifiablePointInt modifiableOf(int x, int y) {
         return new ModifiablePointInt(x, y);
     }
 

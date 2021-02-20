@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.GlobalData;
+import dev.kabin.MainGame;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -74,7 +74,7 @@ public class EntityParameters {
         private Context context = Context.PRODUCTION;
 
         public Builder(JSONObject o) {
-            scale = GlobalData.scaleFactor;
+            scale = MainGame.scaleFactor;
             x = o.getInt("x") * scale;
             y = o.getInt("y") * scale;
             atlasPath = o.getString("atlasPath");
