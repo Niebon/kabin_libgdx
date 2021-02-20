@@ -150,12 +150,14 @@ public class Player extends EntitySimple {
      */
     private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
         exhaustRunnable();
+        if (!handleInput) return;
 
         final int lLast = l;
         final int rLast = r;
         final int uLast = u;
         final int dLast = d;
         final int jumpLast = jump;
+
         l = params.isPressed(KeyCode.A) ? 1 : 0;
         r = params.isPressed(KeyCode.D) ? 1 : 0;
         u = params.isPressed(KeyCode.W) ? 1 : 0;

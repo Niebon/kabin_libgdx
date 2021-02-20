@@ -5,8 +5,7 @@ import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.entities.Entity;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
-import dev.kabin.util.points.PointOld;
-import dev.kabin.util.points.PointFloatOld;
+import dev.kabin.util.points.*;
 import dev.kabin.util.shapes.RectFloat;
 
 import java.util.Collections;
@@ -17,7 +16,7 @@ public class EntitySelection {
 
     private final Set<Entity> currentlySelectedEntities = new HashSet<>();
     private RectFloat backingRect;
-    private PointFloatOld begin;
+    private ImmutablePointFloat begin;
 
     public void render() {
         if (begin != null) {
@@ -26,8 +25,8 @@ public class EntitySelection {
             float width = Math.abs(begin.x() - MouseEventUtil.getXRelativeToUI());
             float height = Math.abs(begin.y() - MouseEventUtil.getYRelativeToUI());
 
-            float offsetX = MainGame.camera.position.x - MainGame.screenWidth * 0.5f;
-            float offsetY = MainGame.camera.position.y - GlobalData.screenHeight * 0.5f;
+            float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
+            float offsetY = MainGame.camera.getCamera().position.y - GlobalData.screenHeight * 0.5f;
             backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
 
             GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -49,7 +48,7 @@ public class EntitySelection {
 
     public void begin() {
         currentlySelectedEntities.clear();
-        begin = PointOld.of(MouseEventUtil.getXRelativeToUI(), MouseEventUtil.getYRelativeToUI());
+        begin = PointFloat.immutablePointFloat(MouseEventUtil.getXRelativeToUI(), MouseEventUtil.getYRelativeToUI());
     }
 
     // End, but only clear the selected dev.kabin.entities after the begin() call.

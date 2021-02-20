@@ -19,6 +19,7 @@ import dev.kabin.entities.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
+import dev.kabin.util.SmoothFilter2D;
 import dev.kabin.util.eventhandlers.EnumWithBoolHandler;
 import dev.kabin.util.eventhandlers.EventUtil;
 import dev.kabin.util.eventhandlers.KeyCode;
@@ -32,7 +33,7 @@ import static dev.kabin.GlobalData.*;
 
 public class MainGame extends ApplicationAdapter {
 
-    public static OrthographicCamera camera;
+    public static CameraWrapper camera;
     public static int screenWidth = 400;
     public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
@@ -53,7 +54,7 @@ public class MainGame extends ApplicationAdapter {
     }
 
     void renderEntityGlobalStateTime(Entity e) {
-        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, stateTime, camera, scaleFactor, screenWidth, screenHeight));
+        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, stateTime, camera.getCamera(), scaleFactor, screenWidth, screenHeight));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), 0.5f, 0.5f);
         DeveloperUI.init(stage);
         GlobalData.atlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();
@@ -81,6 +82,8 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
+
+        Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
 
         // Render physics
         if (GlobalData.getWorldState() != null) {
@@ -98,13 +101,13 @@ public class MainGame extends ApplicationAdapter {
                             keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor
             );
         } else {
-            Player.getInstance().ifPresent(player -> camera.translate(player.getX() - camera.position.x, player.getY() - camera.position.y));
+            Player.getInstance().ifPresent(player -> camera.translate(player.getX() - camera.getCamera().position.x, player.getY() - camera.getCamera().position.y));
         }
-        camera.update();
+        camera.getCamera().update();
 
 
-        translateCurrentCameraBounds(camera);
-        spriteBatch.setProjectionMatrix(camera.combined);
+        translateCurrentCameraBounds(camera.getCamera());
+        spriteBatch.setProjectionMatrix(camera.getCamera().combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
@@ -121,6 +124,8 @@ public class MainGame extends ApplicationAdapter {
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
         GlobalData.stage.act(stateTime);
         GlobalData.stage.draw();
+
+        //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
 
         // Render interface:
         if (developerMode) {
@@ -230,4 +235,25 @@ public class MainGame extends ApplicationAdapter {
 
     }
 
+
+    public static class CameraWrapper{
+
+        private final OrthographicCamera camera;
+        private final SmoothFilter2D smoothFilter2D;
+
+        public CameraWrapper(OrthographicCamera camera, float alpha, float beta) {
+            this.camera = camera;
+            this.smoothFilter2D = new SmoothFilter2D(alpha, beta);
+        }
+
+        void translate(float x, float y) {
+            smoothFilter2D.appendSignalX(x);
+            smoothFilter2D.appendSignalY(y);
+            camera.translate(smoothFilter2D.x(), smoothFilter2D.y());
+        }
+
+        public OrthographicCamera getCamera() {
+            return camera;
+        }
+    }
 }

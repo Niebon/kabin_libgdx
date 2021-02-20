@@ -51,12 +51,20 @@ public interface Entity extends
         return Math.round(getY() / getScale());
     }
 
-    default int getRootX(){
+    default int getRootIntX(){
         return getUnscaledX() - getPixelAnalysis().getPixelMassCenterXInt();
     }
 
-    default int getRootY() {
+    default int getRootIntY() {
         return getUnscaledY() - getPixelAnalysis().getLowestPixel();
+    }
+
+    default float getRootX(){
+        return getX() - getPixelMassCenterX() * getScale();
+    }
+
+    default float getRootY(){
+        return getY() - getLowestPixel() * getScale();
     }
 
     UnmodifiableRectIntView graphicsNbd();

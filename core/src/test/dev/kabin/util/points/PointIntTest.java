@@ -12,8 +12,8 @@ class PointIntTest {
         for (int i = 0; i < 100_000; i++) {
             int x = new Random().nextInt();
             int y = new Random().nextInt();
-            Assertions.assertEquals(PointInt.modifiableOf(x, y), PointInt.immutablePointInt(x, y));
-            Assertions.assertEquals(PointInt.modifiableOf(x, y).hashCode(), PointInt.immutablePointInt(x, y).hashCode());
+            Assertions.assertEquals(PointInt.modifiable(x, y), PointInt.immutable(x, y));
+            Assertions.assertEquals(PointInt.modifiable(x, y).hashCode(), PointInt.immutable(x, y).hashCode());
         }
     }
 }

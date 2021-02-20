@@ -75,7 +75,7 @@ class ComponentTest {
 
         final Random r = new Random();
         final List<PointInt> points = IntStream.range(0, 100000)
-                .mapToObj(i -> PointInt.modifiableOf(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
+                .mapToObj(i -> PointInt.modifiable(r.nextInt(width), r.nextInt(height))).collect(Collectors.toList());
 
         for (Component.Data type : Component.Data.values()) {
             for (PointInt pointInt : points) {

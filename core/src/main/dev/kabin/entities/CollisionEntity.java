@@ -27,19 +27,18 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 				animationPlaybackImpl.getCurrentImageAssetIndex()
 		);
 	}
-
-	@Override
-	public int getRootX() {
-		return super.getRootX();
-	}
-
-	@Override
-	public int getRootY() {
-		return super.getRootY();
-	}
-
 	@Override
 	public EntityFactory.EntityType getType() {
 		return EntityFactory.EntityType.COLLISION_ENTITY;
+	}
+
+	@Override
+	public int getRootIntX() {
+		return super.getRootIntX();
+	}
+
+	@Override
+	public int getRootIntY() {
+		return super.getRootIntY();
 	}
 }

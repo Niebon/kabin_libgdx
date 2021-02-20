@@ -1,8 +1,6 @@
 package dev.kabin.entities;
 
 import dev.kabin.util.functioninterfaces.PrimitiveIntPairConsumer;
-import dev.kabin.util.points.ModifiablePointInt;
-import dev.kabin.util.points.PointOld;
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import org.jetbrains.annotations.NotNull;
@@ -20,14 +18,14 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
     List<PointInt> getSurfaceContourProfile();
 
     @NotNull
-    default Stream<ModifiablePointInt> getSurfaceContourRelativeToOrigin() {
-        final int rootX = getRootX(), rootY = getRootY();
+    default Stream<PointInt> getSurfaceContourRelativeToOrigin() {
+        final int rootX = getRootIntX(), rootY = getRootIntY();
         return getSurfaceContourProfile().stream()
-                .map(p -> PointOld.of(p.x() + rootX, p.y() + rootY));
+                .map(p -> PointInt.immutable(p.x() + rootX, p.y() + rootY));
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
-        final int rootX = getRootX(), rootY = getRootY();
+        final int rootX = getRootIntX(), rootY = getRootIntY();
         final List<PointInt> profile = getCollisionProfile();
 
         if (angleRad() == 0) {
@@ -70,8 +68,8 @@ public interface CollisionData extends ImageAnalysisPool.Analysis.Analyzable {
         return 0;
     }
 
-    int getRootX();
+    int getRootIntX();
 
-    int getRootY();
+    int getRootIntY();
 
 }

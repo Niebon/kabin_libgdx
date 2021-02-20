@@ -3,8 +3,8 @@
   "developer" : {
     "dev_mode" : true,
     "widgets" : {
-      "entity_selection" : {"collapsed":false,"animation_type":"DEFAULT_LEFT","asset":"player","type":"PLAYER","layer":0},
-      "tile_selection" : {"collapsed":false,"asset":"ground","type":"SURFACE"}
+      "entity_selection" : {"collapsed":false,"animation_type":"DEFAULT_LEFT","asset":"spruce","type":"ENTITY_SIMPLE","layer":0},
+      "tile_selection" : {"collapsed":false,"asset":"ground","type":"INNER"}
     }
   }
 }

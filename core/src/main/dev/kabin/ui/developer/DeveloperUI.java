@@ -135,7 +135,8 @@ public class DeveloperUI {
     }
 
     public static void addEntityToDraggedEntities(Entity e) {
-        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(e.getX(),
+        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(
+                e.getX(),
                 e.getY(),
                 MouseEventUtil.getMouseXRelativeToWorld(),
                 MouseEventUtil.getMouseYRelativeToWorld(),

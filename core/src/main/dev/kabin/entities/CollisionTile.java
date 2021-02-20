@@ -32,10 +32,11 @@ public class CollisionTile extends CollisionEntity {
         tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
         animationPlaybackImpl.setCurrentAnimation(tile);
         index = Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
-        if (objectPool.containsKey(PointInt.immutablePointInt(unscaledX, unscaledY))) {
+        if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {
             throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
         }
-        objectPool.put(PointInt.immutablePointInt(unscaledX, unscaledY), this);
+        objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
+        animationPlaybackImpl.setSmoothParameters(1,0);
     }
 
     public int getIndex() {
@@ -50,7 +51,7 @@ public class CollisionTile extends CollisionEntity {
      * @return if the position was occupied, clears it and returns the occupant.
      */
     public static Optional<CollisionTile> clearAt(int x, int y) {
-        return Optional.ofNullable(objectPool.remove(PointInt.immutablePointInt(x, y)));
+        return Optional.ofNullable(objectPool.remove(PointInt.immutable(x, y)));
     }
 
 
@@ -104,12 +105,12 @@ public class CollisionTile extends CollisionEntity {
 
 
     @Override
-    public int getRootX() {
+    public int getRootIntX() {
         return getUnscaledX() - TILE_SIZE / 2;
     }
 
     @Override
-    public int getRootY() {
+    public int getRootIntY() {
         return getUnscaledY() - TILE_SIZE / 2;
     }
 

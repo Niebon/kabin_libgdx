@@ -81,17 +81,6 @@ public class EntitySimple implements Entity {
         id = createdInstances.incrementAndGet();
     }
 
-    private void updateNeighborhood() {
-        positionNbd.translate(
-                getUnscaledX() - Math.round(positionNbd.getCenterX()),
-                getUnscaledY() - Math.round(positionNbd.getCenterY())
-        );
-        graphicsNbd.translate(
-                getUnscaledX() - Math.round(graphicsNbd.getCenterX()),
-                getUnscaledY() - Math.round(graphicsNbd.getCenterY())
-        );
-    }
-
     protected Actor actor() {
         return actor;
     }
@@ -170,23 +159,49 @@ public class EntitySimple implements Entity {
 
     @Override
     public void updateGraphics(GraphicsParameters params) {
-        animationPlaybackImpl.setX(x);
-        animationPlaybackImpl.setY(y);
+        setScale(params.getScale());
+
+        final float graphicsRootX = getRootX();
+        final float graphicsRootY = getRootY();
+
+
+        animationPlaybackImpl.setX(graphicsRootX);
+        animationPlaybackImpl.setY(graphicsRootY);
         animationPlaybackImpl.setScale(params.getScale());
         animationPlaybackImpl.renderNextAnimationFrame(params.getBatch(), params.getStateTime());
-        float offsetX = params.getCamX() - params.getScreenWidth() * 0.5f;
-        float offsetY = params.getCamY() - params.getScreenHeight() * 0.5f;
-        float x = this.x - offsetX;
-        float y = this.y - offsetY;
-        actor.setBounds(
-                x, y,
-                animationPlaybackImpl.getWidth(),
-                animationPlaybackImpl.getHeight()
+
+        // Configure actor.
+        {
+            final float offsetX = params.getCamX() - params.getScreenWidth() * 0.5f;
+            final float offsetY = params.getCamY() - params.getScreenHeight() * 0.5f;
+            final float x = graphicsRootX - offsetX;
+            final float y = graphicsRootY - offsetY;
+            actor.setBounds(
+                    x, y,
+                    animationPlaybackImpl.getWidth(),
+                    animationPlaybackImpl.getHeight()
+            );
+        }
+
+        // Updates nbds.
+        updateNeighborhood();
+    }
+
+    private void updateNeighborhood() {
+        graphicsNbd.translate(
+                Math.round((getLeftmostPixel() + getX())/ getScale() - graphicsNbd.getCenterX()),
+                Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
+        );
+
+        positionNbd.translate(
+                Math.round((getLeftmostPixel() + getX())/ getScale() - graphicsNbd.getCenterX()),
+                Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
         );
     }
 
     @Override
     public void updatePhysics(PhysicsParameters params) {
+
     }
 
     @Override
@@ -231,9 +246,18 @@ public class EntitySimple implements Entity {
         return scale;
     }
 
+
     @Override
     public void setScale(float scale) {
-        this.scale = scale;
+        if (scale <= 0) throw new IllegalStateException("Scale should be positive.");
+
+        if (scale != 0 && scale != this.scale) {
+            x = x * scale / this.scale;
+            y = y * scale / this.scale;
+            this.scale = scale;
+        } else if (this.scale == 0) {
+            this.scale = scale;
+        }
     }
 
     @Override
@@ -244,16 +268,6 @@ public class EntitySimple implements Entity {
     @Override
     public Optional<Actor> getActor() {
         return Optional.of(actor);
-    }
-
-    @Override
-    public int getRootX() {
-        return getUnscaledX() - getPixelAnalysis().getPixelMassCenterXInt();
-    }
-
-    @Override
-    public int getRootY() {
-        return getUnscaledY() - getPixelAnalysis().getPixelMassCenterYInt();
     }
 
     @Override

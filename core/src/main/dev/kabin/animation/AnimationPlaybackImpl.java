@@ -19,7 +19,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     public static final AnimationPlaybackImpl<?> MOCK_ANIMATION_PLAYBACK = new MockAnimationPlaybackImpl();
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
-    final int width, height;
+    private final int width, height;
     private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
