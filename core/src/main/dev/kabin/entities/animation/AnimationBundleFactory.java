@@ -1,4 +1,4 @@
-package dev.kabin.animation;
+package dev.kabin.entities.animation;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;

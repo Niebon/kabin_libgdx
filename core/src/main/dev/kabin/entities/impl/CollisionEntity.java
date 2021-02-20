@@ -1,4 +1,4 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.CollisionPool;

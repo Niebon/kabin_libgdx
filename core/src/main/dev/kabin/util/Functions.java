@@ -1,10 +1,9 @@
 package dev.kabin.util;
 
-import dev.kabin.entities.Entity;
+import dev.kabin.entities.impl.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.points.PointOld;
 import dev.kabin.util.points.PointOldDouble;
-import dev.kabin.util.points.ModifiablePointInt;
 import dev.kabin.util.shapes.AbstractRectBoxed;
 import dev.kabin.util.shapes.RectBoxed;
 import org.jetbrains.annotations.Contract;

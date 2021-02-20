@@ -14,7 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.WorldStateRecorder;
-import dev.kabin.entities.Entity;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.impl.Entity;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
@@ -143,10 +144,10 @@ public class DeveloperUI {
                 e));
     }
 
-    public static void render(SpriteBatch batch, float stateTime) {
+    public static void render(GraphicsParameters params) {
         ENTITY_SELECTION.render();
-        ENTITY_LOADING_WIDGET.render(batch, stateTime);
-        TILE_SELECTION_WIDGET.render(batch);
+        ENTITY_LOADING_WIDGET.render(params);
+        TILE_SELECTION_WIDGET.render(params);
     }
 
     public static void clearDraggedEntities() {

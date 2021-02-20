@@ -1,10 +1,11 @@
-package dev.kabin.animation;
+package dev.kabin.entities.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.util.Functions;
 import dev.kabin.util.SmoothFilter2D;
 import dev.kabin.util.collections.IntToIntFunction;
@@ -113,7 +114,9 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
-    public void renderNextAnimationFrame(SpriteBatch batch, float stateTime) {
+    public void renderNextAnimationFrame(GraphicsParameters params) {
+        float stateTime = params.getStateTime();
+
         //noinspection unchecked
         final T currentAnimationClass = (T) this.currentAnimationClass;
         if (!animationsMap.containsKey(currentAnimationClass)) {
@@ -129,16 +132,19 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
                 animationsMap.get(currentAnimationClass).isAnimationFinished(stateTime)) {
             this.currentAnimationClass = currentAnimationClass.transitionToDefault();
         }
+
+        SpriteBatch batch = params.getBatch();
         batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
         batch.end();
     }
 
     @Override
-    public void renderFrameByIndex(SpriteBatch batch, int index) {
+    public void renderFrameByIndex(GraphicsParameters params, int index) {
         //noinspection unchecked
         final T currentAnimationClass = (T) this.currentAnimationClass;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
+        final SpriteBatch batch = params.getBatch();
         batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
         batch.end();

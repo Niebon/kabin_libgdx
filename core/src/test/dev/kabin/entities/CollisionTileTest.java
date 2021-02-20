@@ -1,6 +1,8 @@
 package dev.kabin.entities;
 
-import dev.kabin.animation.AnimationClass;
+import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.impl.CollisionTile;
+import dev.kabin.entities.impl.EntityParameters;
 import dev.kabin.util.Procedures;
 import dev.kabin.util.Statistics;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package dev.kabin.global;
+package dev.kabin.entities.impl.global;
 
 import dev.kabin.WorldStateRecorder;
 import org.json.JSONObject;

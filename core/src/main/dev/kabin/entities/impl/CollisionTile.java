@@ -1,6 +1,7 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
-import dev.kabin.animation.AnimationClass;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.points.ImmutablePointInt;
@@ -61,7 +62,7 @@ public class CollisionTile extends CollisionEntity {
         animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
         animationPlaybackImpl.setScale(getScale());
         animationPlaybackImpl.setCurrentAnimation(tile);
-        animationPlaybackImpl.renderFrameByIndex(params.getBatch(), index);
+        animationPlaybackImpl.renderFrameByIndex(params, index);
         actor().setBounds(
                 getX(), getY(),
                 animationPlaybackImpl.getWidth(),

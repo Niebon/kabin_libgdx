@@ -12,10 +12,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.Entity;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.Player;
+import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
@@ -37,12 +37,13 @@ public class MainGame extends ApplicationAdapter {
     public static int screenWidth = 400;
     public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
+    private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private SpriteBatch spriteBatch;
     private float stateTime = 0f;
-    private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
     /**
      * Updates the field {@link #currentCameraBounds} to match the current viewing rectangle the given camera.
+     *
      * @param camera the camera to use as reference.
      */
     private void translateCurrentCameraBounds(Camera camera) {
@@ -82,6 +83,7 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
+        stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
         Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
 
@@ -94,23 +96,22 @@ public class MainGame extends ApplicationAdapter {
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
             var keyEventUtil = KeyEventUtil.getInstance();
-            camera.translate(
-                    keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
-                            keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor,
-                    keyEventUtil.isPressed(KeyCode.S) == keyEventUtil.isPressed(KeyCode.W) ? 0 :
-                            keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor
+            camera.setPos(camera.getCamera().position.x +
+                            (keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
+                                    keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor),
+                    camera.getCamera().position.y +
+                            (keyEventUtil.isPressed(KeyCode.S) == keyEventUtil.isPressed(KeyCode.W) ? 0 :
+                                    keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor)
             );
         } else {
-            Player.getInstance().ifPresent(player -> camera.translate(player.getX() - camera.getCamera().position.x, player.getY() - camera.getCamera().position.y));
+            Player.getInstance().ifPresent(player -> camera.setPos(player.getX(), player.getY()));
         }
-        camera.getCamera().update();
 
 
         translateCurrentCameraBounds(camera.getCamera());
         spriteBatch.setProjectionMatrix(camera.getCamera().combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-        stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
         // Render graphics
         if (GlobalData.getWorldState() != null) {
@@ -130,7 +131,7 @@ public class MainGame extends ApplicationAdapter {
         // Render interface:
         if (developerMode) {
             DeveloperUI.updatePositionsOfDraggedEntities();
-            DeveloperUI.render(GlobalData.userInterfaceBatch, stateTime);
+            DeveloperUI.render(new GraphicsParametersImpl(userInterfaceBatch, stateTime, camera.getCamera(), scaleFactor, screenWidth, screenHeight));
         }
     }
 
@@ -155,12 +156,12 @@ public class MainGame extends ApplicationAdapter {
 
         @Override
         public boolean isCollisionAt(int x, int y) {
-            return worldRepresentation.isCollisionAt(x,y);
+            return worldRepresentation.isCollisionAt(x, y);
         }
 
         @Override
         public boolean isLadderAt(int x, int y) {
-            return worldRepresentation.isLadderAt(x,y);
+            return worldRepresentation.isLadderAt(x, y);
         }
 
         @Override
@@ -179,7 +180,7 @@ public class MainGame extends ApplicationAdapter {
         }
     }
 
-    static class GraphicsParametersImpl implements GraphicsParameters{
+    static class GraphicsParametersImpl implements GraphicsParameters {
 
         @NotNull
         private final SpriteBatch spriteBatch;
@@ -236,7 +237,7 @@ public class MainGame extends ApplicationAdapter {
     }
 
 
-    public static class CameraWrapper{
+    public static class CameraWrapper {
 
         private final OrthographicCamera camera;
         private final SmoothFilter2D smoothFilter2D;
@@ -246,10 +247,11 @@ public class MainGame extends ApplicationAdapter {
             this.smoothFilter2D = new SmoothFilter2D(alpha, beta);
         }
 
-        void translate(float x, float y) {
+        void setPos(float x, float y) {
             smoothFilter2D.appendSignalX(x);
             smoothFilter2D.appendSignalY(y);
-            camera.translate(smoothFilter2D.x(), smoothFilter2D.y());
+            camera.position.set(smoothFilter2D.x(), smoothFilter2D.y(), camera.position.z);
+            camera.update();
         }
 
         public OrthographicCamera getCamera() {

@@ -3,7 +3,7 @@ package dev.kabin.ui.developer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
-import dev.kabin.entities.Entity;
+import dev.kabin.entities.impl.Entity;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.points.*;
 import dev.kabin.util.shapes.RectFloat;

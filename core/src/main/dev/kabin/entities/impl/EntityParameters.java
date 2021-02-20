@@ -1,4 +1,4 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
 import dev.kabin.MainGame;
 import org.json.JSONObject;

@@ -10,12 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
-import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.AnimationClass;
-import dev.kabin.animation.AnimationPlaybackImpl;
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityFactory;
-import dev.kabin.entities.EntityParameters;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.animation.AnimationBundleFactory;
+import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.animation.AnimationPlaybackImpl;
+import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityFactory;
+import dev.kabin.entities.impl.EntityParameters;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import org.json.JSONObject;
 
@@ -242,7 +243,7 @@ public class EntityLoadingWidget {
         this.layer = layer;
     }
 
-    public void render(SpriteBatch batch, float stateTime) {
+    public void render(GraphicsParameters params) {
         if (widget.isVisible() && !widget.isCollapsed() && preview != null) {
             if (preview.getCurrentAnimationType() != animationType) {
                 preview.setCurrentAnimation(animationType);
@@ -250,7 +251,7 @@ public class EntityLoadingWidget {
             float scale = 4.0f * 32 / preview.getOriginalWidth();
             preview.setScale(scale);
             preview.setPos(0.75f * WIDTH + widget.getX(), widget.getY());
-            preview.renderNextAnimationFrame(batch, stateTime);
+            preview.renderNextAnimationFrame(params);
         }
     }
 

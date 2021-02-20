@@ -1,6 +1,6 @@
 package dev.kabin.ui.developer.widgets;
 
-import dev.kabin.entities.Entity;
+import dev.kabin.entities.impl.Entity;
 
 /**
  * Keeps a record of an entity, its current position (x,y), and a mouse position (x,y).

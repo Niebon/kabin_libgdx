@@ -1,4 +1,4 @@
-package dev.kabin.animation;
+package dev.kabin.entities.animation;
 
 import dev.kabin.util.Direction;
 

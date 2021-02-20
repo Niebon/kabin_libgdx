@@ -1,4 +1,4 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
-import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.AnimationPlaybackImpl;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.PhysicsParameters;
+import dev.kabin.entities.animation.AnimationBundleFactory;
+import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.pools.ImageAnalysisPool;
@@ -25,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import static dev.kabin.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
+import static dev.kabin.entities.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
 
 
 public class EntitySimple implements Entity {
@@ -168,7 +170,7 @@ public class EntitySimple implements Entity {
         animationPlaybackImpl.setX(graphicsRootX);
         animationPlaybackImpl.setY(graphicsRootY);
         animationPlaybackImpl.setScale(params.getScale());
-        animationPlaybackImpl.renderNextAnimationFrame(params.getBatch(), params.getStateTime());
+        animationPlaybackImpl.renderNextAnimationFrame(params);
 
         // Configure actor.
         {

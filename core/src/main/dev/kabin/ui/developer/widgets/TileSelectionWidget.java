@@ -11,9 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.Threads;
-import dev.kabin.animation.AnimationBundleFactory;
-import dev.kabin.animation.AnimationClass;
-import dev.kabin.entities.*;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.animation.AnimationBundleFactory;
+import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.impl.*;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -240,7 +241,7 @@ public class TileSelectionWidget {
     }
 
 
-    public void render(SpriteBatch batch) {
+    public void render(GraphicsParameters params) {
         if (widget.isVisible() && !widget.isCollapsed() && typeToAtlasRegionsMapping != null) {
 
             for (var entry : typeToAtlasRegionsMapping.entrySet()) {
@@ -256,6 +257,8 @@ public class TileSelectionWidget {
                 float x = widget.getX() + separationOffsetFactor * (width + offsetSeparation) + offsetX;
                 float y = widget.getY() + offsetY;
 
+
+                SpriteBatch batch = params.getBatch();
                 batch.begin();
                 batch.draw(entry.getValue()[0],
                         x,

@@ -1,7 +1,7 @@
 package dev.kabin;
 
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityFactory;
+import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityFactory;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

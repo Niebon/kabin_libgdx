@@ -1,6 +1,8 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
-import dev.kabin.animation.AnimationClass;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.PhysicsParameters;
+import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.CollisionTangentFinder;
 import dev.kabin.util.Direction;

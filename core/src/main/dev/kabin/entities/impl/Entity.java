@@ -1,8 +1,9 @@
-package dev.kabin.entities;
+package dev.kabin.entities.impl;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.collections.Id;
+import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
@@ -64,7 +65,7 @@ public interface Entity extends
     }
 
     default float getRootY(){
-        return getY() - getLowestPixel() * getScale();
+        return getY() - (getLowestPixel() - 2) * getScale();
     }
 
     UnmodifiableRectIntView graphicsNbd();

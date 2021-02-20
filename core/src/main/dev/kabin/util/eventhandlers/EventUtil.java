@@ -1,7 +1,7 @@
 package dev.kabin.util.eventhandlers;
 
 
-import dev.kabin.entities.Player;
+import dev.kabin.entities.impl.Player;
 import dev.kabin.GlobalData;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;

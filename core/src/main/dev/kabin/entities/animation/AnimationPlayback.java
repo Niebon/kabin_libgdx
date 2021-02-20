@@ -1,6 +1,6 @@
-package dev.kabin.animation;
+package dev.kabin.entities.animation;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.util.helperinterfaces.FloatArea;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.Scalable;
@@ -10,9 +10,9 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea
 
     void setCurrentAnimation(AnimationClass animationClass);
 
-    void renderNextAnimationFrame(SpriteBatch batch, float stateTime);
+    void renderNextAnimationFrame(GraphicsParameters params);
 
-    void renderFrameByIndex(SpriteBatch batch, int index);
+    void renderFrameByIndex(GraphicsParameters params, int index);
 
     String getCurrentImageAssetPath();
 
