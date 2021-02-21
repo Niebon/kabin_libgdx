@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class CollisionTangentFinder {
+public class TangentFinder {
 
     private static final int RADIUS = 5;
-    private static final int STEPS = 3;
-
 
     private static final Map<Double, int[]> angleToCoordX = new HashMap<>();
     private static final Map<Double, int[]> angleToCoordY = new HashMap<>();
+    private static int xLast;
+    private static int yLast;
 
     private static int[] calculateCoordinateX(double angle) {
         return IntStream.range(0, RADIUS).map(radius -> (int) Math.round(radius * Math.cos(Math.toRadians(angle)))).toArray();
@@ -31,33 +31,39 @@ public class CollisionTangentFinder {
         return isCollisionAt.test(x + coordX[RADIUS - 1], y + coordY[RADIUS - 1]);
     }
 
+
+
     /**
      * Bisection method to find the best slope estimate.
      */
-    public static double calculateCollisionSlope(int x, int y, Direction direction, BiIntPredicate isCollisionAt) {
+    public static double slope(int x, int y, Direction direction, BiIntPredicate isCollisionAt) {
+        if (x != xLast || y != yLast) {
+            System.out.println(TangentFinder.class.getName() + ": (x,y) = (" + x + ", " + y + ")");
+            xLast = x;
+            yLast = y;
+        }
 
         double bestEstimate = (direction == Direction.LEFT) ? 180 : 0;
         double deg1, deg2, deg3;
         double epsilon = 90;
-        int step = 1;
-        while (step <= STEPS) {
-            deg1 = bestEstimate - epsilon;
+        while (epsilon >= 30) {
+            deg3 = bestEstimate - epsilon; // lower
             deg2 = bestEstimate;
-            deg3 = bestEstimate + epsilon;
+            deg1 = bestEstimate + epsilon; // higher
 
             boolean res1 = checkBeamHitsCollision(
-                    angleToCoordX.computeIfAbsent(deg1, CollisionTangentFinder::calculateCoordinateX),
-                    angleToCoordY.computeIfAbsent(deg1, CollisionTangentFinder::calculateCoordinateY),
+                    angleToCoordX.computeIfAbsent(deg1, TangentFinder::calculateCoordinateX),
+                    angleToCoordY.computeIfAbsent(deg1, TangentFinder::calculateCoordinateY),
                     x, y, isCollisionAt);
 
             boolean res2 = checkBeamHitsCollision(
-                    angleToCoordX.computeIfAbsent(deg2, CollisionTangentFinder::calculateCoordinateX),
-                    angleToCoordY.computeIfAbsent(deg2, CollisionTangentFinder::calculateCoordinateY),
+                    angleToCoordX.computeIfAbsent(deg2, TangentFinder::calculateCoordinateX),
+                    angleToCoordY.computeIfAbsent(deg2, TangentFinder::calculateCoordinateY),
                     x, y, isCollisionAt);
 
             boolean res3 = checkBeamHitsCollision(
-                    angleToCoordX.computeIfAbsent(deg3, CollisionTangentFinder::calculateCoordinateX),
-                    angleToCoordY.computeIfAbsent(deg3, CollisionTangentFinder::calculateCoordinateY),
+                    angleToCoordX.computeIfAbsent(deg3, TangentFinder::calculateCoordinateX),
+                    angleToCoordY.computeIfAbsent(deg3, TangentFinder::calculateCoordinateY),
                     x, y, isCollisionAt);
 
             if (direction == Direction.RIGHT) {
@@ -77,8 +83,6 @@ public class CollisionTangentFinder {
 
             epsilon = epsilon * 0.5;
 
-
-            step++;
         }
 
         return bestEstimate;

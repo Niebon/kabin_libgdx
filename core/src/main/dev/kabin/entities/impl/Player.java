@@ -4,7 +4,7 @@ import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.util.CollisionTangentFinder;
+import dev.kabin.util.TangentFinder;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -185,7 +185,7 @@ public class Player extends EntitySimple {
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
         final int yPrevUnscaled = getUnscaledY();
-        final boolean affectedByVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY);
+        final boolean affectedByVectorField = Entity.action(this, params::getVectorFieldX, params::getVectorFieldY);
 
         // Ladder movement
         if (params.isLadderAt(xPrevUnscaled, yPrevUnscaled)) {
@@ -196,8 +196,8 @@ public class Player extends EntitySimple {
             if (inAir) inAir = false;
             onLadder = true;
 
-            dx = vAbsDividedBySquareRoot * (r - l) * PhysicsEngine.DT;
-            dy = vAbsDividedBySquareRoot * (d - u) * PhysicsEngine.DT;
+            dx = vAbsDividedBySquareRoot * (r - l) * params.dt();
+            dy = vAbsDividedBySquareRoot * (d - u) * params.dt();
 
             if (dx == 0) {
                 dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
@@ -211,7 +211,7 @@ public class Player extends EntitySimple {
 
             onLadder = false;
 
-            dx = vAbs * (r - l) * PhysicsEngine.DT;
+            dx = vAbs * (r - l) * params.dt();
 
             // Handle jump input
             if (jump == 1) {
@@ -246,21 +246,23 @@ public class Player extends EntitySimple {
                     jumpFrame = 0; // start jump frame
                     frameCounter = 10; // big number => greater than play new frame threshold => next frame played is start jump frame
                     animationPlaybackImpl.reset();
-                    vy0 = jumpVel;
                     if (affectedByVectorField) {
                         int i = 0;
                         while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)
                             i++;
-                        vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled + i);
-                        vy0 += params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled + i);
+                        vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i);
+                        vy0 = jumpVel + params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled - i);
+                    }
+                    else {
+                        vy0 = jumpVel;
                     }
                 }
             }
 
             // Follow freeFall trajectory
-            final float jumpTime = (jumpFrame++) * PhysicsEngine.DT;
-            dy = (vy0 - PhysicsEngine.gravitationConstant * jumpTime) * PhysicsEngine.DT;
-            dx = dx + vx0 * PhysicsEngine.DT;
+            final float jumpTime = (jumpFrame++) * params.dt();
+            dy = (vy0 - PhysicsEngine.gravitationConstant * jumpTime) * params.dt();
+            dx = dx + vx0 * params.dt();
         }
 
 
@@ -270,7 +272,7 @@ public class Player extends EntitySimple {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(Entity.findLiftAboveGround(this, params::isCollisionAt), vAbs * PhysicsEngine.DT);
+            dy = Math.min(Entity.findLiftAboveGround(this, params::isCollisionAt), vAbs * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -320,15 +322,13 @@ public class Player extends EntitySimple {
             } else if (hasFooting) {
 
                 // If the path in the given direction is obstructed:
-                final double angle;
-
-                angle = CollisionTangentFinder.calculateCollisionSlope(xPrevUnscaled,
+                final double angle = TangentFinder.slope(xPrevUnscaled,
                         yPrevUnscaled,
                         Direction.valueOf(dx),
                         params::isCollisionAt);
 
-                dy = (float) (vAbs * Math.sin(Math.toRadians(angle)) * PhysicsEngine.DT);
-                dx = (float) (vAbs * Math.cos(Math.toRadians(angle)) * PhysicsEngine.DT);
+                dy = (float) (vAbs * Math.sin(Math.toRadians(angle)) * params.dt());
+                dx = (float) (vAbs * Math.cos(Math.toRadians(angle)) * params.dt());
 
                 System.out.println(angle);
             }
@@ -339,7 +339,7 @@ public class Player extends EntitySimple {
         setY(getY() + dy);
 
         // Update constraints
-        jumpCooldown += PhysicsEngine.DT;
+        jumpCooldown += params.dt();
 
         // Check if player is in air.
         final int xUpdatedInt = getUnscaledX();

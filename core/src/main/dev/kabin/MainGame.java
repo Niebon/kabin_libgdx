@@ -126,6 +126,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
+        DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);
 
         // Render interface:
         if (developerMode) {
@@ -176,6 +177,11 @@ public class MainGame extends ApplicationAdapter {
         @Override
         public boolean isPressed(KeyCode keycode) {
             return keyEventUtil.isPressed(keycode);
+        }
+
+        @Override
+        public float dt(){
+            return PhysicsEngine.DT;
         }
     }
 

@@ -42,7 +42,6 @@ public class EntitySimple implements Entity {
     private final RectIntView positionNbdView;
     private final MutableRectInt graphicsNbd;
     private final RectIntView graphicsNbdView;
-
     private float x, y, scale;
 
     EntitySimple(EntityParameters parameters) {

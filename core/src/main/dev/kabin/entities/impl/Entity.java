@@ -80,7 +80,7 @@ public interface Entity extends
      * @param entity the entity to be acted on.
      * @return the point representing the vector (vx,vy) which acted on the entity.
      */
-    default boolean action(@NotNull Entity entity,
+    static boolean action(@NotNull Entity entity,
                            BiIntToFloatFunction vectorFieldX,
                            BiIntToFloatFunction vectorFieldY) {
         final int x = entity.getUnscaledX();
