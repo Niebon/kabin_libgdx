@@ -84,6 +84,7 @@ public class Player extends EntitySimple {
 
     public void setHandleInput(boolean b) {
         handleInput = b;
+        r = l = u = r = jump = 0;
     }
 
     public void freeze() {

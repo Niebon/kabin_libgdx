@@ -34,7 +34,8 @@ public class CollisionTile extends CollisionEntity {
         animationPlaybackImpl.setCurrentAnimation(tile);
         index = Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
         if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {
-            throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
+            throw new IllegalArgumentException(("The position at which this collision tile was placed was already occupied. " +
+                    "Use the clearAt method to clear. Here are the coordinates (%s,%s)").formatted(getUnscaledX(), getUnscaledY()));
         }
         objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
         animationPlaybackImpl.setSmoothParameters(1, getX(), getY());
@@ -60,7 +61,7 @@ public class CollisionTile extends CollisionEntity {
     public void updateGraphics(GraphicsParameters params) {
         animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
         animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
-        animationPlaybackImpl.setScale(getScale());
+        animationPlaybackImpl.setScale(getScale() * 1.01f);
         animationPlaybackImpl.setCurrentAnimation(tile);
         animationPlaybackImpl.renderFrameByIndex(params, index);
         actor().setBounds(

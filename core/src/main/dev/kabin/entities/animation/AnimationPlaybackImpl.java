@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.util.Functions;
 import dev.kabin.util.ExponentialSmoothener2D;
+import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntFunction;
 import dev.kabin.util.pools.ImageAnalysisPool;
 
@@ -28,7 +29,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private final int maxPixelheight;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
-    private ExponentialSmoothener2D exponentialSmoothener2D;
+    private WeightedAverage2D weightedAverage2D;
     private float scale;
 
     /**
@@ -64,7 +65,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
         animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
-        exponentialSmoothener2D = new ExponentialSmoothener2D(0.5f, 0f, 0f);
+        weightedAverage2D = new WeightedAverage2D(0.5f);
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
 
         maxPixelheight = Arrays.stream(regions.items)
@@ -177,7 +178,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public void setSmoothParameters(float alpha, float initX, float initY) {
-        exponentialSmoothener2D = new ExponentialSmoothener2D(alpha, initX, initY);
+        weightedAverage2D = new WeightedAverage2D(alpha);
     }
 
     @Override
@@ -192,22 +193,22 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public float getX() {
-        return exponentialSmoothener2D.x();
+        return weightedAverage2D.x();
     }
 
     @Override
     public void setX(float x) {
-        exponentialSmoothener2D.appendSignalX(x);
+        weightedAverage2D.appendSignalX(x);
     }
 
     @Override
     public float getY() {
-        return exponentialSmoothener2D.y();
+        return weightedAverage2D.y();
     }
 
     @Override
     public void setY(float y) {
-        exponentialSmoothener2D.appendSignalY(y);
+        weightedAverage2D.appendSignalY(y);
     }
 
     @Override

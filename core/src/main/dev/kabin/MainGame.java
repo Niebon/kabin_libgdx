@@ -18,7 +18,6 @@ import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.ExponentialSmoothener2D;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.eventhandlers.*;
@@ -54,7 +53,7 @@ public class MainGame extends ApplicationAdapter {
     }
 
     void renderEntityGlobalStateTime(Entity e) {
-        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, stateTime, camera.getCamera(), scaleFactor, screenWidth, screenHeight));
+        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight));
     }
 
     @Override
@@ -74,7 +73,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
-        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), 0.5f);
+        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         DeveloperUI.init(stage);
         GlobalData.atlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();
@@ -94,7 +93,7 @@ public class MainGame extends ApplicationAdapter {
 
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
-            camera.setPos(
+            if (!keyEventUtil.isControlDown()) camera.setPos(
                     camera.getCamera().position.x +
                             (keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
                                     keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor),
@@ -131,7 +130,7 @@ public class MainGame extends ApplicationAdapter {
         // Render interface:
         if (developerMode) {
             DeveloperUI.updatePositionsOfDraggedEntities();
-            DeveloperUI.render(new GraphicsParametersImpl(userInterfaceBatch, stateTime, camera.getCamera(), scaleFactor, screenWidth, screenHeight));
+            DeveloperUI.render(new GraphicsParametersImpl(userInterfaceBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight));
         }
     }
 
@@ -194,9 +193,11 @@ public class MainGame extends ApplicationAdapter {
         private final Camera camera;
 
         GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
-                               float stateTime,
                                @NotNull Camera camera,
-                               float scale, float screenWidth, float screenHeight) {
+                               float stateTime,
+                               float scale,
+                               float screenWidth,
+                               float screenHeight) {
             this.spriteBatch = spriteBatch;
             this.stateTime = stateTime;
             this.camera = camera;
@@ -247,21 +248,17 @@ public class MainGame extends ApplicationAdapter {
 
         @NotNull
         private final OrthographicCamera camera;
-        private final ExponentialSmoothener2D exponentialSmoothener2D;
 
 
         private final WeightedAverage2D directionalPreSmoothening = new WeightedAverage2D(0.1f);
         private final WeightedAverage2D directionalFinalSmoothening = new WeightedAverage2D(0.005f);
 
-        public CameraWrapper(@NotNull OrthographicCamera camera, float alpha) {
+        public CameraWrapper(@NotNull OrthographicCamera camera) {
             this.camera = camera;
-            this.exponentialSmoothener2D = new ExponentialSmoothener2D(alpha, camera.position.x, camera.position.y);
         }
 
-        void setPos(float x, float y) {
-            exponentialSmoothener2D.appendSignalX(x);
-            exponentialSmoothener2D.appendSignalY(y);
-            camera.position.set(exponentialSmoothener2D.x(), exponentialSmoothener2D.y(), camera.position.z);
+        public void setPos(float x, float y) {
+            camera.position.set(x, y, camera.position.z);
             camera.update();
         }
 

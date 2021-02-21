@@ -25,11 +25,12 @@ public class EntityFactory {
         //LADDER(Ladder::new, Ladder::new, EntityGroupProvider.Type.FOCAL_POINT),
         //MAP_CONNECTOR(MapConnector::new, MapConnector::new, null),
         //OON(Moon::new, Moon::new, EntityGroupProvider.Type.SKY),
-        PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT);
+        PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT),
         //STARS(Stars::new, Stars::new, EntityGroupProvider.Type.SKY),
-        //STATIC_BACKGROUND(StaticBackground::new, null, EntityGroupProvider.Type.STATIC_BACKGROUND),
+        STATIC_BACKGROUND(StaticBackground::new, EntityCollectionProvider.Type.STATIC_BACKGROUND),
         //SKY(Sky::new, null, EntityGroupProvider.Type.SKY),
         //SHORTCUT(Shortcut::new, Shortcut::new, EntityGroupProvider.Type.FOCAL_POINT);
+        ;
 
         final EntityConstructor entityConstructor;
         final EntityCollectionProvider.Type groupType;

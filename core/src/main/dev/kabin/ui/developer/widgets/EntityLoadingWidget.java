@@ -1,7 +1,6 @@
 package dev.kabin.ui.developer.widgets;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,7 +16,6 @@ import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
 import dev.kabin.entities.impl.EntityParameters;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -118,7 +116,7 @@ public class EntityLoadingWidget {
         return widget;
     }
 
-    void refreshContentTableMessage() {
+    private void refreshContentTableMessage() {
         final int maxLength = 10;
         var contentTableMessage = new Label(
                 "Asset: " +
@@ -189,7 +187,13 @@ public class EntityLoadingWidget {
     void showSelectEntityTypeBox() {
         var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         var selectBox = new SelectBox<String>(skin, "default");
-        selectBox.setItems(Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name).toArray(String[]::new));
+        selectBox.setItems(
+                Arrays
+                        .stream(EntityFactory.EntityType.values())
+                        .filter(type -> type != EntityFactory.EntityType.STATIC_BACKGROUND)
+                        .map(Enum::name)
+                        .toArray(String[]::new)
+        );
         selectBox.setSelectedIndex(entityType.ordinal());
         var dialog = new Dialog("Setting", skin);
         dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
@@ -233,10 +237,6 @@ public class EntityLoadingWidget {
                 widget.removeActor(dialog);
             }
         });
-    }
-
-    public void setEntityType(EntityFactory.EntityType entityType) {
-        this.entityType = entityType;
     }
 
     public void setLayer(int layer) {
