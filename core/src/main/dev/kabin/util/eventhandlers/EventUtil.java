@@ -1,10 +1,12 @@
 package dev.kabin.util.eventhandlers;
 
 
-import dev.kabin.entities.impl.Player;
 import dev.kabin.GlobalData;
+import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
+import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +26,7 @@ public class EventUtil {
         Player.getInstance().ifPresent(Player::freeze);
         currentInputOptions = options;
         final KeyEventUtil keyEventUtil = KeyEventUtil.getInstance();
-        final MouseEventUtil mouseEventUtil = MouseEventUtil.getInstance();
+        final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
 
 
         keyEventUtil.clear();
@@ -60,9 +62,7 @@ public class EventUtil {
                 developerMode = !developerMode;
                 // TODO
                 DeveloperUI.setVisible(GlobalData.developerMode);
-                if (developerMode) {
 
-                }
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });
         }
@@ -71,47 +71,69 @@ public class EventUtil {
         if (options.isHandleDevModeEvents()) {
 
             // Mouse events
-            mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                if (KeyEventUtil.isShiftDown()) {
-                    DeveloperUI.getEntityLoadingWidget().addEntity();
-                }
-            });
+            {
+                mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
+                    if (KeyEventUtil.isShiftDown()) {
+                        DeveloperUI.getEntityLoadingWidget().addEntity();
+                    }
+                });
 
-            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
-                if (KeyEventUtil.isAltDown()) {
-                    DeveloperUI.getTileSelectionWidget().replaceCollisionTileAtCurrentMousePositionWithCurrentSelection();
-                }
-            });
+                mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
+                    if (KeyEventUtil.isAltDown()) {
+                        DeveloperUI.getTileSelectionWidget().replaceCollisionTileAtCurrentMousePositionWithCurrentSelection();
+                    }
+                });
 
-            mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
-                if (KeyEventUtil.isAltDown()) {
-                    TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
-                }
-            });
+                mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
+                    if (KeyEventUtil.isAltDown()) {
+                        TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
+                    }
+                });
 
-            mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                if (KeyEventUtil.isControlDown()) {
-                    DeveloperUI.addDevCue();
-                }
-            });
+                mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
+                    if (KeyEventUtil.isControlDown()) {
+                        DeveloperUI.addDevCue();
+                    }
+                });
+
+                mouseEventUtil.addMouseScrollListener(val -> {
+                    GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(
+                            MutableRectInt.centeredAt(
+                                    Math.round(GlobalData.mouseEventUtil.getMouseXRelativeToWorld() / options.getScale()),
+                                    Math.round(GlobalData.mouseEventUtil.getMouseYRelativeToWorld() / options.getScale()),
+                                    4,
+                                    4)
+                    ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {
+                        if (val > 0) {
+                            e.setLayer(e.getLayer() + 1);
+                            System.out.println("Modified layer: " + e.getLayer());
+                        } else if (val < 0) {
+                            e.setLayer(e.getLayer() - 1);
+                            System.out.println("Modified layer: " + e.getLayer());
+                        }
+                    });
+                });
+            }
 
 
             // Keyboard events
-            keyEventUtil.addListener(KeyCode.S, true, () -> {
-                if (KeyEventUtil.isControlDown() && developerMode) {
-                    DeveloperUI.saveWorld();
-                }
-            });
-            keyEventUtil.addListener(KeyCode.Z, true, () -> {
-                if (KeyEventUtil.isControlDown() && developerMode) {
-                    DeveloperUI.undoChange();
-                }
-            });
-            keyEventUtil.addListener(KeyCode.Y, true, () -> {
-                if (KeyEventUtil.isControlDown() && developerMode) {
-                    DeveloperUI.redoChange();
-                }
-            });
+            {
+                keyEventUtil.addListener(KeyCode.S, true, () -> {
+                    if (KeyEventUtil.isControlDown() && developerMode) {
+                        DeveloperUI.saveWorld();
+                    }
+                });
+                keyEventUtil.addListener(KeyCode.Z, true, () -> {
+                    if (KeyEventUtil.isControlDown() && developerMode) {
+                        DeveloperUI.undoChange();
+                    }
+                });
+                keyEventUtil.addListener(KeyCode.Y, true, () -> {
+                    if (KeyEventUtil.isControlDown() && developerMode) {
+                        DeveloperUI.redoChange();
+                    }
+                });
+            }
         }
     }
 
@@ -125,26 +147,25 @@ public class EventUtil {
 
     public enum LastActive {MOUSE, CONTROLLER}
 
-    public static class InputOptions {
+    public static final class InputOptions {
 
         private boolean handlePlayerEvents;
         private boolean handleDevModeEvents;
         private boolean handleDevModeToggleEvent;
         private boolean handleMenuEvents;
         private boolean handleControllerEvents;
+        private float scale = 1;
 
         @NotNull
-        @Contract(" -> new")
-        public static InputOptions getRegisterAll() {
-            return new InputOptions() {
-                {
-                    setHandleDevModeToggleEvent(true);
-                    setHandleDevModeEvents(true);
-                    setHandleMenuEvents(true);
-                    setHandlePlayerEvents(true);
-                    setHandleControllerEvents(true);
-                }
-            };
+        @Contract("_-> new")
+        public static InputOptions registerAll(float scale) {
+            return new InputOptions()
+                    .setHandleDevModeToggleEvent(true)
+                    .setHandleDevModeEvents(true)
+                    .setHandleMenuEvents(true)
+                    .setHandlePlayerEvents(true)
+                    .setHandleControllerEvents(true)
+                    .setScale(scale);
         }
 
         public boolean isHandlePlayerEvents() {
@@ -169,24 +190,36 @@ public class EventUtil {
             return handleMenuEvents;
         }
 
-        public void setHandleMenuEvents(boolean handleMenuEvents) {
+        public InputOptions setHandleMenuEvents(boolean handleMenuEvents) {
             this.handleMenuEvents = handleMenuEvents;
+            return this;
         }
 
         public boolean isHandleDevModeToggleEvent() {
             return handleDevModeToggleEvent;
         }
 
-        public void setHandleDevModeToggleEvent(boolean handleDevModeToggleEvent) {
+        public InputOptions setHandleDevModeToggleEvent(boolean handleDevModeToggleEvent) {
             this.handleDevModeToggleEvent = handleDevModeToggleEvent;
+            return this;
         }
 
         public boolean isHandleControllerEvents() {
             return handleControllerEvents;
         }
 
-        public void setHandleControllerEvents(boolean handleControllerEvents) {
+        public InputOptions setHandleControllerEvents(boolean handleControllerEvents) {
             this.handleControllerEvents = handleControllerEvents;
+            return this;
+        }
+
+        float getScale() {
+            return scale;
+        }
+
+        public InputOptions setScale(float scale) {
+            this.scale = scale;
+            return this;
         }
     }
 }

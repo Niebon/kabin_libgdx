@@ -1,10 +1,13 @@
 package dev.kabin.util.shapes.primitive;
 
-public class UnmodifiableRectIntView implements RectInt {
+/**
+ * Implements an <b>unmodifiable</b> view of a {@link RectInt}.
+ */
+public class RectIntView implements RectInt {
 
     private final RectInt data;
 
-    public UnmodifiableRectIntView(RectInt data) {
+    public RectIntView(RectInt data) {
         this.data = data;
     }
 

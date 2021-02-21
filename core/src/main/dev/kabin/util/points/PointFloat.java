@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Contract;
 
 public interface PointFloat {
 
-    static ImmutablePointFloat immutablePointFloat(float x, float y) {
+    static ImmutablePointFloat immutable(float x, float y) {
         return new ImmutablePointFloat(x, y);
     }
 
@@ -18,7 +18,7 @@ public interface PointFloat {
 
     @Contract("_->new")
     default PointFloat scaleBy(float scale) {
-        return immutablePointFloat(x() * scale, y() * scale);
+        return immutable(x() * scale, y() * scale);
     }
 
     default PointInt toPointInt() {

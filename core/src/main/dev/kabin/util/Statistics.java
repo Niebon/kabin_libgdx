@@ -22,7 +22,8 @@ public class Statistics {
     /**
      * Get random item from list with uniform probability.
      */
-    public static Object drawUniform(@NotNull List<?> list) {
+    @Nullable
+    public static <T> T drawUniform(@NotNull List<T> list) {
         int i = RANDOM.nextInt(list.size());
         return list.get(i);
     }

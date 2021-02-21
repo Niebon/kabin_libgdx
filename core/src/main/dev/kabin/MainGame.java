@@ -20,10 +20,7 @@ import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
 import dev.kabin.util.SmoothFilter2D;
-import dev.kabin.util.eventhandlers.EnumWithBoolHandler;
-import dev.kabin.util.eventhandlers.EventUtil;
-import dev.kabin.util.eventhandlers.KeyCode;
-import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.*;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +37,7 @@ public class MainGame extends ApplicationAdapter {
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private SpriteBatch spriteBatch;
     private float stateTime = 0f;
+    private final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
 
     /**
      * Updates the field {@link #currentCameraBounds} to match the current viewing rectangle the given camera.
@@ -63,14 +61,14 @@ public class MainGame extends ApplicationAdapter {
         screenWidth = Gdx.graphics.getWidth();
         GlobalData.screenHeight = Gdx.graphics.getHeight();
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
-
+        mouseEventUtil.setScale(scaleFactor);
 
         GlobalData.stage = new Stage(new ScreenViewport());
         InputMultiplexer imp = new InputMultiplexer();
         imp.setProcessors(GlobalData.getInputProcessor(), GlobalData.stage);
         Gdx.input.setInputProcessor(imp);
         logger.setLevel(GlobalData.getLogLevel());
-        EventUtil.setInputOptions(EventUtil.InputOptions.getRegisterAll());
+        EventUtil.setInputOptions(EventUtil.InputOptions.registerAll(scaleFactor));
         spriteBatch = new SpriteBatch();
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
@@ -95,8 +93,9 @@ public class MainGame extends ApplicationAdapter {
 
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
-            var keyEventUtil = KeyEventUtil.getInstance();
-            camera.setPos(camera.getCamera().position.x +
+            final KeyEventUtil keyEventUtil = KeyEventUtil.getInstance();
+            camera.setPos(
+                    camera.getCamera().position.x +
                             (keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
                                     keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor),
                     camera.getCamera().position.y +
@@ -185,11 +184,12 @@ public class MainGame extends ApplicationAdapter {
         @NotNull
         private final SpriteBatch spriteBatch;
         private final float stateTime, scale, screenWidth, screenHeight;
+        @NotNull
         private final Camera camera;
 
         GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
                                float stateTime,
-                               Camera camera,
+                               @NotNull Camera camera,
                                float scale, float screenWidth, float screenHeight) {
             this.spriteBatch = spriteBatch;
             this.stateTime = stateTime;
@@ -200,7 +200,7 @@ public class MainGame extends ApplicationAdapter {
         }
 
         @Override
-        public SpriteBatch getBatch() {
+        public @NotNull SpriteBatch getBatch() {
             return spriteBatch;
         }
 
@@ -239,10 +239,11 @@ public class MainGame extends ApplicationAdapter {
 
     public static class CameraWrapper {
 
+        @NotNull
         private final OrthographicCamera camera;
         private final SmoothFilter2D smoothFilter2D;
 
-        public CameraWrapper(OrthographicCamera camera, float alpha, float beta) {
+        public CameraWrapper(@NotNull OrthographicCamera camera, float alpha, float beta) {
             this.camera = camera;
             this.smoothFilter2D = new SmoothFilter2D(alpha, beta);
         }
@@ -254,6 +255,7 @@ public class MainGame extends ApplicationAdapter {
             camera.update();
         }
 
+        @NotNull
         public OrthographicCamera getCamera() {
             return camera;
         }

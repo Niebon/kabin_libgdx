@@ -13,64 +13,61 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
     private static final Logger LOGGER = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
-    private static final List<EventListener> changeListeners = new ArrayList<>();
-    private static final Map<MouseButton, Boolean> currentMouseStates = new EnumMap<>(MouseButton.class);
-    private static final Map<MouseButton, List<EventListener>> listenersPressed = new EnumMap<>(MouseButton.class);
-    private static final Map<MouseButton, List<EventListener>> listenersReleased = new EnumMap<>(MouseButton.class);
-    private static final Map<MouseButton, List<MouseDraggedEvent>> listenersMouseDrag = new EnumMap<>(MouseButton.class);
-    private static final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
-    private static final List<EventListener> defaultListeners = new ArrayList<>();
-    private static final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
-    private static MouseEventUtil instance;
-    private static float xRelativeToWorld, yRelativeToWorld;
-    private static float xRelativeToUI, yRelativeToUI;
+    private final List<EventListener> changeListeners = new ArrayList<>();
+    private final Map<MouseButton, Boolean> currentMouseStates = new EnumMap<>(MouseButton.class);
+    private final Map<MouseButton, List<EventListener>> listenersPressed = new EnumMap<>(MouseButton.class);
+    private final Map<MouseButton, List<EventListener>> listenersReleased = new EnumMap<>(MouseButton.class);
+    private final Map<MouseButton, List<MouseDraggedEvent>> listenersMouseDrag = new EnumMap<>(MouseButton.class);
+    private final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
+    private final List<EventListener> defaultListeners = new ArrayList<>();
+    private final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
+    private float xRelativeToWorld, yRelativeToWorld;
+    private float xRelativeToUI, yRelativeToUI;
+    private float scale;
 
-    /**
-     * The mouse event utility has a state which is overridden each time a call to {@link #clear()} is made.
-     * This includes any listeners adding during the constructor.
-     */
-    protected MouseEventUtil() {
-        // Hence we make a call to unmodifiable listeners.
+
+
+    public MouseEventUtil(float scale) {
         initUnmodifiableListeners();
+        this.scale = scale;
     }
 
-    @NotNull
-    public static MouseEventUtil getInstance() {
-        return (instance != null) ? instance : (instance = new MouseEventUtil());
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
-    public static PointFloat getPositionRelativeToWorld() {
-        return PointFloat.immutablePointFloat(getMouseXRelativeToWorld(), getMouseYRelativeToWorld());
+    public PointFloat getPositionRelativeToWorld() {
+        return PointFloat.immutable(getMouseXRelativeToWorld(), getMouseYRelativeToWorld());
     }
 
-    public static PointFloat getPositionRelativeToUI() {
-        return PointFloat.immutablePointFloat(getXRelativeToUI(), getYRelativeToUI());
+    public PointFloat getPositionRelativeToUI() {
+        return PointFloat.immutable(getXRelativeToUI(), getYRelativeToUI());
     }
 
-    public static float getXRelativeToUI() {
-        return (float) (xRelativeToUI / GlobalData.getScale().x());
+    public float getXRelativeToUI() {
+        return xRelativeToUI / scale;
     }
 
-    public static float getYRelativeToUI() {
-        return (float) (yRelativeToUI / GlobalData.getScale().x());
+    public float getYRelativeToUI() {
+        return yRelativeToUI / scale;
     }
 
-    public static float getMouseXRelativeToWorld() {
-        return (float) (xRelativeToWorld / GlobalData.getScale().x());
+    public float getMouseXRelativeToWorld() {
+        return xRelativeToWorld / scale;
     }
 
-    public static float getMouseYRelativeToWorld() {
-        return (float) (yRelativeToWorld / GlobalData.getScale().y());
+    public float getMouseYRelativeToWorld() {
+        return (float) (yRelativeToWorld / scale);
     }
 
-    public static Optional<PointFloat> getDragStart(MouseButton b) {
+    public Optional<PointFloat> getDragStart(MouseButton b) {
         return Optional.ofNullable(dragStart.get(b));
     }
 
     private void initUnmodifiableListeners() {
         // Register last time the position that the mouse began dragging.
         for (MouseButton b : MouseButton.values()) {
-            addListener(b, true, () -> dragStart.put(b, PointFloat.immutablePointFloat(xRelativeToWorld, yRelativeToWorld)));
+            addListener(b, true, () -> dragStart.put(b, PointFloat.immutable(xRelativeToWorld, yRelativeToWorld)));
             addListener(b, false, () -> dragStart.remove(b));
         }
 
@@ -91,16 +88,16 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
     public void registerMouseMoved(float x, float y) {
         EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
-        MouseEventUtil.xRelativeToUI = x;
-        MouseEventUtil.yRelativeToUI = Functions.transformY(y, GlobalData.screenHeight);
+        xRelativeToUI = x;
+        yRelativeToUI = Functions.transformY(y, GlobalData.screenHeight);
 
         // camera.x and camera.y are in the middle of the screen. Hence the offsets:
         float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
         float offsetY = MainGame.camera.getCamera().position.y - GlobalData.screenHeight * 0.5f;
 
-        MouseEventUtil.xRelativeToWorld = x + offsetX;
-        MouseEventUtil.yRelativeToWorld = Functions.transformY(y, GlobalData.screenHeight) + offsetY;
-        LOGGER.info(() -> "\n" + "BLC: " + MouseEventUtil.xRelativeToWorld + ", " + MouseEventUtil.yRelativeToWorld + "\n"
+        xRelativeToWorld = x + offsetX;
+        yRelativeToWorld = Functions.transformY(y, GlobalData.screenHeight) + offsetY;
+        LOGGER.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }
 

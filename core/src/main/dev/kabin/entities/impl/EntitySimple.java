@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,7 +19,7 @@ import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
-import dev.kabin.util.shapes.primitive.UnmodifiableRectIntView;
+import dev.kabin.util.shapes.primitive.RectIntView;
 import org.json.JSONObject;
 
 import java.util.HashSet;
@@ -36,13 +37,13 @@ public class EntitySimple implements Entity {
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
     protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
     private final String atlasPath;
-    private final int layer;
+    private int layer;
     private final Actor actor = new Actor();
     private final int id;
     private final MutableRectInt positionNbd;
-    private final UnmodifiableRectIntView positionNbdView;
+    private final RectIntView positionNbdView;
     private final MutableRectInt graphicsNbd;
-    private final UnmodifiableRectIntView graphicsNbdView;
+    private final RectIntView graphicsNbdView;
 
     private float x, y, scale;
 
@@ -58,7 +59,7 @@ public class EntitySimple implements Entity {
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return EntitySimple.this.touchDown(button);
+                return EntitySimple.this.touchDown(button, x, y);
             }
         });
         actor.addListener(new DragListener() {
@@ -72,13 +73,13 @@ public class EntitySimple implements Entity {
                 }
             }
         });
+
         setPos(parameters.x(), parameters.y());
 
-        // TODO: will the pathfinder algorithm suffer if position nbd is too big?
         positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
         graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
-        positionNbdView = new UnmodifiableRectIntView(positionNbd);
-        graphicsNbdView = new UnmodifiableRectIntView(graphicsNbd);
+        positionNbdView = new RectIntView(positionNbd);
+        graphicsNbdView = new RectIntView(graphicsNbd);
         updateNeighborhood();
         id = createdInstances.incrementAndGet();
     }
@@ -87,10 +88,10 @@ public class EntitySimple implements Entity {
         return actor;
     }
 
-    public boolean touchDown(int button) {
+    public boolean touchDown(int button, float x, float y) {
         LOGGER.warning(() -> "Click registered.");
         switch (button) {
-            case Input.Buttons.RIGHT -> handleMouseClickRight();
+            case Input.Buttons.RIGHT -> handleMouseClickRight(x, y);
             case Input.Buttons.LEFT -> handleMouseClickLeft();
         }
         return true;
@@ -99,15 +100,15 @@ public class EntitySimple implements Entity {
     private void handleMouseClickLeft() {
     }
 
-    private void handleMouseClickRight() {
+    private void handleMouseClickRight(float x, float y) {
         if (GlobalData.developerMode) {
             final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
             final var dialog = new Dialog("Actions", skin);
             final float width = 200;
             final float height = 200;
             dialog.setBounds(
-                    MouseEventUtil.getXRelativeToUI() + width * 0.1f,
-                    MouseEventUtil.getYRelativeToUI() + height * 0.1f,
+                    x + width * 0.1f,
+                    y + height * 0.1f,
                     width, height
             );
             dialog.getContentTable().defaults().pad(10);
@@ -273,12 +274,12 @@ public class EntitySimple implements Entity {
     }
 
     @Override
-    public UnmodifiableRectIntView graphicsNbd() {
+    public RectIntView graphicsNbd() {
         return graphicsNbdView;
     }
 
     @Override
-    public UnmodifiableRectIntView positionNbd() {
+    public RectIntView positionNbd() {
         return positionNbdView;
     }
 
@@ -305,5 +306,9 @@ public class EntitySimple implements Entity {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 }

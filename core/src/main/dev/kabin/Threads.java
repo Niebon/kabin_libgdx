@@ -39,7 +39,7 @@ public class Threads {
             GlobalData.getWorldState().registerEntityWhereabouts();
             GlobalData.getWorldState().clearUnusedData(MainGame.currentCameraBounds);
             GlobalData.getWorldState().loadNearbyData(MainGame.currentCameraBounds);
-
+            GlobalData.getWorldState().sortAllLayers();
 
             // Save dev session if applicable.
             if (GlobalData.developerMode) {

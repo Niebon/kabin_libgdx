@@ -85,9 +85,13 @@ public class Player extends EntitySimple {
     }
 
     public void toggleRunSpeed() {
+        running = true;
+        vAbs = runSpeed;
     }
 
     public void toggleWalkSpeed() {
+        running = false;
+        vAbs = walkSpeed;
     }
 
     public void interactWithNearestIntractable() {

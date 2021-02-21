@@ -1,13 +1,13 @@
 package dev.kabin.entities.impl.global;
 
-import dev.kabin.WorldStateRecorder;
+import dev.kabin.Serializer;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class WorldStateRecorderTest {
+class SerializerTest {
 
     // Can this be redeemed?
     @Disabled
@@ -23,7 +23,7 @@ class WorldStateRecorderTest {
                                 .put("type", "PLAYER")
                         )
                 );
-        WorldStateRecorder.loadWorldState(content);
+        Serializer.loadWorldState(content);
     }
 
 }

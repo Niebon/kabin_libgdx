@@ -333,4 +333,8 @@ public class WorldRepresentation {
     public void populateCollection(Collection<Entity> allEntities, Predicate<Entity> criterion) {
         entityCollectionProvider.populateCollection(allEntities, criterion);
     }
+
+    public void sortAllLayers(){
+        entityCollectionProvider.sortAllLayers();
+    }
 }

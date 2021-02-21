@@ -11,7 +11,7 @@ import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.Scalable;
 import dev.kabin.util.pools.ImageAnalysisPool;
-import dev.kabin.util.shapes.primitive.UnmodifiableRectIntView;
+import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -28,6 +28,8 @@ public interface Entity extends
     void updateGraphics(GraphicsParameters params);
 
     void updatePhysics(PhysicsParameters params);
+
+    void setLayer(int layer);
 
     int getLayer();
 
@@ -68,9 +70,9 @@ public interface Entity extends
         return getY() - (getLowestPixel() - 2) * getScale();
     }
 
-    UnmodifiableRectIntView graphicsNbd();
+    RectIntView graphicsNbd();
 
-    UnmodifiableRectIntView positionNbd();
+    RectIntView positionNbd();
 
     /**
      * Acts on an entity with the present vector field and returns the vector of the action.

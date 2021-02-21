@@ -21,7 +21,7 @@ public class MainGameDeveloper extends MainGame {
         try{
             final JSONObject session = new JSONObject(Files.readString(Path.of(devSessionData)));
             final String pathToWorld = GlobalData.WORLDS_PATH + session.getString("world");
-            WorldStateRecorder.loadWorldState(new JSONObject(Files.readString(Path.of(pathToWorld))));
+            Serializer.loadWorldState(new JSONObject(Files.readString(Path.of(pathToWorld))));
             DeveloperUI.getEntityLoadingWidget().loadSettings(session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("entity_selection"));
             DeveloperUI.getTileSelectionWidget().loadSettings(session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("tile_selection"));
         } catch (IOException e) {

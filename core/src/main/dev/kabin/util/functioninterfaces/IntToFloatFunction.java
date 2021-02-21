@@ -1,5 +1,6 @@
 package dev.kabin.util.functioninterfaces;
 
+@FunctionalInterface
 public interface IntToFloatFunction {
-    float f(int val);
+    float apply(int val);
 }

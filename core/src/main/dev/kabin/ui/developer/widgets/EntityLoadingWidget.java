@@ -147,8 +147,8 @@ public class EntityLoadingWidget {
 
 
         EntityParameters parameters = new EntityParameters.Builder()
-                .setX(MouseEventUtil.getMouseXRelativeToWorld())
-                .setY(MouseEventUtil.getMouseYRelativeToWorld())
+                .setX(GlobalData.mouseEventUtil.getMouseXRelativeToWorld())
+                .setY(GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
                 .setLayer(layer)
                 .setScale(MainGame.scaleFactor)
                 .setAtlasPath(selectedAsset)

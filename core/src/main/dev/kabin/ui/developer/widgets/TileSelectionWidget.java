@@ -110,7 +110,7 @@ public class TileSelectionWidget {
      */
     public static void removeGroundTileAtCurrentMousePositionThreadLocked() {
         Threads.synchronize(
-                () -> removeGroundTileAtCurrentMousePosition(MouseEventUtil.getMouseXRelativeToWorld(), MouseEventUtil.getMouseYRelativeToWorld())
+                () -> removeGroundTileAtCurrentMousePosition(GlobalData.mouseEventUtil.getMouseXRelativeToWorld(), GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
         );
     }
 
@@ -141,8 +141,8 @@ public class TileSelectionWidget {
             if (selectedAsset == null) return;
             if (currentType == null) return;
             final EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(MouseEventUtil.getMouseXRelativeToWorld())
-                    .setY(MouseEventUtil.getMouseYRelativeToWorld())
+                    .setX(GlobalData.mouseEventUtil.getMouseXRelativeToWorld())
+                    .setY(GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
                     .setLayer(0)
                     .setScale(MainGame.scaleFactor)
                     .setAtlasPath(selectedAsset)

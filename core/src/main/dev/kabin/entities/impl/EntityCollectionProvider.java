@@ -17,11 +17,10 @@ import java.util.stream.Collectors;
  */
 public class EntityCollectionProvider {
 
-    private final Map<Type, List<Entity>> groupMap;
-
     private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values())
             .sorted(Comparator.comparingInt(Type::getLayer))
             .toArray(Type[]::new);
+    private final Map<Type, List<Entity>> groupMap;
 
     public EntityCollectionProvider() {
         groupMap = Arrays.stream(Type.values())
@@ -71,6 +70,16 @@ public class EntityCollectionProvider {
                 }
             }
         }
+    }
+
+    public void sortAllLayers() {
+        for (var type : Type.values()) {
+            sortByLayer(type);
+        }
+    }
+
+    public void sortByLayer(Type type) {
+        Collections.sort(groupMap.get(type));
     }
 
     public enum Type {

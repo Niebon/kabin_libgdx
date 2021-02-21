@@ -2,7 +2,6 @@ package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
-import dev.kabin.WorldStateRecorder;
+import dev.kabin.Serializer;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
@@ -139,8 +138,8 @@ public class DeveloperUI {
         CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(
                 e.getX(),
                 e.getY(),
-                MouseEventUtil.getMouseXRelativeToWorld(),
-                MouseEventUtil.getMouseYRelativeToWorld(),
+                GlobalData.mouseEventUtil.getMouseXRelativeToWorld(),
+                GlobalData.mouseEventUtil.getMouseYRelativeToWorld(),
                 e));
     }
 
@@ -159,8 +158,8 @@ public class DeveloperUI {
             final Entity e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + MouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX(), MainGame.scaleFactor));
-            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + MouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY(), MainGame.scaleFactor));
+            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + GlobalData.mouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX(), MainGame.scaleFactor));
+            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + GlobalData.mouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY(), MainGame.scaleFactor));
         }
     }
 
@@ -184,7 +183,7 @@ public class DeveloperUI {
     }
 
     public static void saveWorld(Path path) {
-        JSONObject worldState = WorldStateRecorder.recordWorldState();
+        JSONObject worldState = Serializer.recordWorldState();
         try {
             Files.write(path, worldState.toString().getBytes());
         } catch (IOException e) {
@@ -214,7 +213,7 @@ public class DeveloperUI {
                 File selectedFile = chooser.getSelectedFile();
                 GlobalData.currentWorld = selectedFile.getName();
                 try {
-                    WorldStateRecorder.loadWorldState(new JSONObject(Files.readString(selectedFile.toPath())));
+                    Serializer.loadWorldState(new JSONObject(Files.readString(selectedFile.toPath())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

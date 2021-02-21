@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper class for a pair of doubles.
  */
+@Deprecated(forRemoval = true)
 public class PointOldDouble implements PointOld<Double> {
     public double x, y;
 

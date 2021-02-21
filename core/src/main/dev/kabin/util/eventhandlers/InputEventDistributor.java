@@ -14,6 +14,14 @@ import com.badlogic.gdx.InputProcessor;
  */
 public class InputEventDistributor implements InputProcessor {
 
+	private final MouseEventUtil mouseEventUtil;
+	private final KeyEventUtil keyEventUtil;
+
+	public InputEventDistributor(MouseEventUtil mouseEventUtil, KeyEventUtil keyEventUtil) {
+		this.mouseEventUtil = mouseEventUtil;
+		this.keyEventUtil = keyEventUtil;
+	}
+
 	@Override
 	public boolean keyDown(int keycode) {
 		final boolean pressed = true;
@@ -23,38 +31,38 @@ public class InputEventDistributor implements InputProcessor {
 
 	private void setKeyCodePressedStatus(int keycode, boolean pressed) {
 		switch (keycode) {
-			case Input.Keys.Q -> KeyEventUtil.getInstance().registerEvent(KeyCode.Q, pressed);
-			case Input.Keys.W -> KeyEventUtil.getInstance().registerEvent(KeyCode.W, pressed);
-			case Input.Keys.E -> KeyEventUtil.getInstance().registerEvent(KeyCode.E, pressed);
-			case Input.Keys.R -> KeyEventUtil.getInstance().registerEvent(KeyCode.R, pressed);
-			case Input.Keys.T -> KeyEventUtil.getInstance().registerEvent(KeyCode.T, pressed);
-			case Input.Keys.Y -> KeyEventUtil.getInstance().registerEvent(KeyCode.Y, pressed);
-			case Input.Keys.U -> KeyEventUtil.getInstance().registerEvent(KeyCode.U, pressed);
-			case Input.Keys.I -> KeyEventUtil.getInstance().registerEvent(KeyCode.I, pressed);
-			case Input.Keys.O -> KeyEventUtil.getInstance().registerEvent(KeyCode.O, pressed);
-			case Input.Keys.P -> KeyEventUtil.getInstance().registerEvent(KeyCode.P, pressed);
-			case Input.Keys.A -> KeyEventUtil.getInstance().registerEvent(KeyCode.A, pressed);
-			case Input.Keys.S -> KeyEventUtil.getInstance().registerEvent(KeyCode.S, pressed);
-			case Input.Keys.D -> KeyEventUtil.getInstance().registerEvent(KeyCode.D, pressed);
-			case Input.Keys.F -> KeyEventUtil.getInstance().registerEvent(KeyCode.F, pressed);
-			case Input.Keys.G -> KeyEventUtil.getInstance().registerEvent(KeyCode.G, pressed);
-			case Input.Keys.H -> KeyEventUtil.getInstance().registerEvent(KeyCode.H, pressed);
-			case Input.Keys.J -> KeyEventUtil.getInstance().registerEvent(KeyCode.J, pressed);
-			case Input.Keys.K -> KeyEventUtil.getInstance().registerEvent(KeyCode.K, pressed);
-			case Input.Keys.L -> KeyEventUtil.getInstance().registerEvent(KeyCode.L, pressed);
-			case Input.Keys.Z -> KeyEventUtil.getInstance().registerEvent(KeyCode.Z, pressed);
-			case Input.Keys.X -> KeyEventUtil.getInstance().registerEvent(KeyCode.X, pressed);
-			case Input.Keys.C -> KeyEventUtil.getInstance().registerEvent(KeyCode.C, pressed);
-			case Input.Keys.V -> KeyEventUtil.getInstance().registerEvent(KeyCode.V, pressed);
-			case Input.Keys.B -> KeyEventUtil.getInstance().registerEvent(KeyCode.B, pressed);
-			case Input.Keys.N -> KeyEventUtil.getInstance().registerEvent(KeyCode.N, pressed);
-			case Input.Keys.M -> KeyEventUtil.getInstance().registerEvent(KeyCode.M, pressed);
-			case Input.Keys.F12 -> KeyEventUtil.getInstance().registerEvent(KeyCode.F12, pressed);
-			case Input.Keys.CONTROL_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyCode.CONTROL_LEFT, pressed);
-			case Input.Keys.SHIFT_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyCode.SHIFT_LEFT, pressed);
-			case Input.Keys.ALT_LEFT -> KeyEventUtil.getInstance().registerEvent(KeyCode.ALT_LEFT, pressed);
-			case Input.Keys.ESCAPE -> KeyEventUtil.getInstance().registerEvent(KeyCode.ESCAPE, pressed);
-			case Input.Keys.SPACE -> KeyEventUtil.getInstance().registerEvent(KeyCode.SPACE, pressed);
+			case Input.Keys.Q -> keyEventUtil.registerEvent(KeyCode.Q, pressed);
+			case Input.Keys.W -> keyEventUtil.registerEvent(KeyCode.W, pressed);
+			case Input.Keys.E -> keyEventUtil.registerEvent(KeyCode.E, pressed);
+			case Input.Keys.R -> keyEventUtil.registerEvent(KeyCode.R, pressed);
+			case Input.Keys.T -> keyEventUtil.registerEvent(KeyCode.T, pressed);
+			case Input.Keys.Y -> keyEventUtil.registerEvent(KeyCode.Y, pressed);
+			case Input.Keys.U -> keyEventUtil.registerEvent(KeyCode.U, pressed);
+			case Input.Keys.I -> keyEventUtil.registerEvent(KeyCode.I, pressed);
+			case Input.Keys.O -> keyEventUtil.registerEvent(KeyCode.O, pressed);
+			case Input.Keys.P -> keyEventUtil.registerEvent(KeyCode.P, pressed);
+			case Input.Keys.A -> keyEventUtil.registerEvent(KeyCode.A, pressed);
+			case Input.Keys.S -> keyEventUtil.registerEvent(KeyCode.S, pressed);
+			case Input.Keys.D -> keyEventUtil.registerEvent(KeyCode.D, pressed);
+			case Input.Keys.F -> keyEventUtil.registerEvent(KeyCode.F, pressed);
+			case Input.Keys.G -> keyEventUtil.registerEvent(KeyCode.G, pressed);
+			case Input.Keys.H -> keyEventUtil.registerEvent(KeyCode.H, pressed);
+			case Input.Keys.J -> keyEventUtil.registerEvent(KeyCode.J, pressed);
+			case Input.Keys.K -> keyEventUtil.registerEvent(KeyCode.K, pressed);
+			case Input.Keys.L -> keyEventUtil.registerEvent(KeyCode.L, pressed);
+			case Input.Keys.Z -> keyEventUtil.registerEvent(KeyCode.Z, pressed);
+			case Input.Keys.X -> keyEventUtil.registerEvent(KeyCode.X, pressed);
+			case Input.Keys.C -> keyEventUtil.registerEvent(KeyCode.C, pressed);
+			case Input.Keys.V -> keyEventUtil.registerEvent(KeyCode.V, pressed);
+			case Input.Keys.B -> keyEventUtil.registerEvent(KeyCode.B, pressed);
+			case Input.Keys.N -> keyEventUtil.registerEvent(KeyCode.N, pressed);
+			case Input.Keys.M -> keyEventUtil.registerEvent(KeyCode.M, pressed);
+			case Input.Keys.F12 -> keyEventUtil.registerEvent(KeyCode.F12, pressed);
+			case Input.Keys.CONTROL_LEFT -> keyEventUtil.registerEvent(KeyCode.CONTROL_LEFT, pressed);
+			case Input.Keys.SHIFT_LEFT -> keyEventUtil.registerEvent(KeyCode.SHIFT_LEFT, pressed);
+			case Input.Keys.ALT_LEFT -> keyEventUtil.registerEvent(KeyCode.ALT_LEFT, pressed);
+			case Input.Keys.ESCAPE -> keyEventUtil.registerEvent(KeyCode.ESCAPE, pressed);
+			case Input.Keys.SPACE -> keyEventUtil.registerEvent(KeyCode.SPACE, pressed);
 		}
 	}
 
@@ -79,8 +87,8 @@ public class InputEventDistributor implements InputProcessor {
 
 	private void setMouseButtonStatus(int button, boolean pressed) {
 		switch (button) {
-			case Input.Buttons.RIGHT -> MouseEventUtil.getInstance().registerEvent(MouseEventUtil.MouseButton.RIGHT, pressed);
-			case Input.Buttons.LEFT -> MouseEventUtil.getInstance().registerEvent(MouseEventUtil.MouseButton.LEFT, pressed);
+			case Input.Buttons.RIGHT -> mouseEventUtil.registerEvent(MouseEventUtil.MouseButton.RIGHT, pressed);
+			case Input.Buttons.LEFT -> mouseEventUtil.registerEvent(MouseEventUtil.MouseButton.LEFT, pressed);
 		}
 	}
 
@@ -93,24 +101,24 @@ public class InputEventDistributor implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
-		if (MouseEventUtil.getInstance().isPressed(MouseEventUtil.MouseButton.LEFT)) {
-			MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.LEFT, x, y);
+		if (mouseEventUtil.isPressed(MouseEventUtil.MouseButton.LEFT)) {
+			mouseEventUtil.registerMouseDragged(MouseEventUtil.MouseButton.LEFT, x, y);
 		}
-		if (MouseEventUtil.getInstance().isPressed(MouseEventUtil.MouseButton.RIGHT)) {
-			MouseEventUtil.getInstance().registerMouseDragged(MouseEventUtil.MouseButton.RIGHT, x, y);
+		if (mouseEventUtil.isPressed(MouseEventUtil.MouseButton.RIGHT)) {
+			mouseEventUtil.registerMouseDragged(MouseEventUtil.MouseButton.RIGHT, x, y);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int x, int y) {
-		MouseEventUtil.getInstance().registerMouseMoved(x, y);
+		mouseEventUtil.registerMouseMoved(x, y);
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		MouseEventUtil.getInstance().registerMouseScroll(amount);
+		mouseEventUtil.registerMouseScroll(amount);
 		return false;
 	}
 

@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.InputEventDistributor;
-import dev.kabin.util.points.PointOld;
-import dev.kabin.util.points.PointOldDouble;
+import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,8 +23,6 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int ART_WIDTH = 400;
     public static final int ART_HEIGHT = 225;
-    private static final InputProcessor inputProcessor = new InputEventDistributor();
-    private static final PointOldDouble scale = PointOld.of(1.0, 1.0);
     public static TextureAtlas atlas;
     public static boolean developerMode = true;
     public static Stage stage;
@@ -35,18 +33,10 @@ public class GlobalData {
     public static int worldSizeX;
     public static int worldSizeY;
 
+    public static final MouseEventUtil mouseEventUtil = new MouseEventUtil(1.0f);
+    private static final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, KeyEventUtil.getInstance());
 
     private static WorldRepresentation worldRepresentation;
-
-
-    public static void setScale(double x, double y) {
-        scale.setX(x);
-        scale.setY(y);
-    }
-
-    public static PointOldDouble getScale() {
-        return scale;
-    }
 
     public static TextureAtlas getAtlas() {
         return atlas;
@@ -94,4 +84,5 @@ public class GlobalData {
             e.printStackTrace();
         }
     }
+
 }

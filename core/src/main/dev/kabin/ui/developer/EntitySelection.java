@@ -20,10 +20,10 @@ public class EntitySelection {
 
     public void render() {
         if (begin != null) {
-            float minX = Math.min(begin.x(), MouseEventUtil.getXRelativeToUI());
-            float minY = Math.min(begin.y(), MouseEventUtil.getYRelativeToUI());
-            float width = Math.abs(begin.x() - MouseEventUtil.getXRelativeToUI());
-            float height = Math.abs(begin.y() - MouseEventUtil.getYRelativeToUI());
+            float minX = Math.min(begin.x(), GlobalData.mouseEventUtil.getXRelativeToUI());
+            float minY = Math.min(begin.y(), GlobalData.mouseEventUtil.getYRelativeToUI());
+            float width = Math.abs(begin.x() - GlobalData.mouseEventUtil.getXRelativeToUI());
+            float height = Math.abs(begin.y() - GlobalData.mouseEventUtil.getYRelativeToUI());
 
             float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
             float offsetY = MainGame.camera.getCamera().position.y - GlobalData.screenHeight * 0.5f;
@@ -31,8 +31,8 @@ public class EntitySelection {
 
             GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
-            GlobalData.shapeRenderer.rect(begin.x(), begin.y(), MouseEventUtil.getXRelativeToUI() - begin.x(),
-                    MouseEventUtil.getYRelativeToUI() - begin.y());
+            GlobalData.shapeRenderer.rect(begin.x(), begin.y(), GlobalData.mouseEventUtil.getXRelativeToUI() - begin.x(),
+                    GlobalData.mouseEventUtil.getYRelativeToUI() - begin.y());
             GlobalData.shapeRenderer.end();
 
             // By abuse of the word "render" include this here...
@@ -48,7 +48,7 @@ public class EntitySelection {
 
     public void begin() {
         currentlySelectedEntities.clear();
-        begin = PointFloat.immutablePointFloat(MouseEventUtil.getXRelativeToUI(), MouseEventUtil.getYRelativeToUI());
+        begin = PointFloat.immutable(GlobalData.mouseEventUtil.getXRelativeToUI(), GlobalData.mouseEventUtil.getYRelativeToUI());
     }
 
     // End, but only clear the selected dev.kabin.entities after the begin() call.

@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class WorldStateRecorder {
+public class Serializer {
 
-    private static final Logger logger = Logger.getLogger(WorldStateRecorder.class.getName());
+    private static final Logger logger = Logger.getLogger(Serializer.class.getName());
     public static final String WORLD_SIZE_X = "worldSizeX";
     public static final String WORLD_SIZE_Y = "worldSizeY";
     public static final String ENTITIES = "entities";
