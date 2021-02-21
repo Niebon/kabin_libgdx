@@ -1,12 +1,12 @@
 package dev.kabin.util;
 
-public class SmoothFilter2D {
+public class ExponentialSmoothener2D {
 
-    private final SmoothFilter x, y;
+    private final ExponentialSmoothener x, y;
 
-    public SmoothFilter2D(float alpha, float beta) {
-        x = new SmoothFilter(alpha, beta);
-        y = new SmoothFilter(alpha, beta);
+    public ExponentialSmoothener2D(float alpha, float initX, float initY) {
+        x = new ExponentialSmoothener(alpha, initX);
+        y = new ExponentialSmoothener(alpha, initY);
     }
 
     public void appendSignalX(float x) {

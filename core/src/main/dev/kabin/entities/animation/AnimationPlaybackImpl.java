@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.util.Functions;
-import dev.kabin.util.SmoothFilter2D;
+import dev.kabin.util.ExponentialSmoothener2D;
 import dev.kabin.util.collections.IntToIntFunction;
 import dev.kabin.util.pools.ImageAnalysisPool;
 
@@ -27,7 +27,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private final Map<T, int[]> animationBlueprint;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
-    private SmoothFilter2D smoothFilter2D;
+    private ExponentialSmoothener2D exponentialSmoothener2D;
     private float scale;
 
     /**
@@ -62,7 +62,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         cachedTextureRegion = regions.get(0);
         currentAnimationClass = tClass.getEnumConstants()[0];
         animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
-        smoothFilter2D = new SmoothFilter2D(0.5f,0.5f);
+        exponentialSmoothener2D = new ExponentialSmoothener2D(0.5f, 0f, 0f);
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
     }
 
@@ -171,8 +171,8 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
-    public void setSmoothParameters(float alpha, float beta) {
-        smoothFilter2D = new SmoothFilter2D(alpha, beta);
+    public void setSmoothParameters(float alpha, float initX, float initY) {
+        exponentialSmoothener2D = new ExponentialSmoothener2D(alpha, initX, initY);
     }
 
     @Override
@@ -187,22 +187,22 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public float getX() {
-        return smoothFilter2D.x();
+        return exponentialSmoothener2D.x();
     }
 
     @Override
     public void setX(float x) {
-        smoothFilter2D.appendSignalX(x);
+        exponentialSmoothener2D.appendSignalX(x);
     }
 
     @Override
     public float getY() {
-        return smoothFilter2D.y();
+        return exponentialSmoothener2D.y();
     }
 
     @Override
     public void setY(float y) {
-        smoothFilter2D.appendSignalY(y);
+        exponentialSmoothener2D.appendSignalY(y);
     }
 
     @Override

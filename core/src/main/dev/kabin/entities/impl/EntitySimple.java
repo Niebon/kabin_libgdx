@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -16,7 +15,6 @@ import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
 import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -59,7 +57,7 @@ public class EntitySimple implements Entity {
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return EntitySimple.this.touchDown(button, x, y);
+                return EntitySimple.this.touchDown(button);
             }
         });
         actor.addListener(new DragListener() {
@@ -80,6 +78,7 @@ public class EntitySimple implements Entity {
         graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
         positionNbdView = new RectIntView(positionNbd);
         graphicsNbdView = new RectIntView(graphicsNbd);
+        animationPlaybackImpl.setSmoothParameters(0.5f, getRootX(), getRootY());
         updateNeighborhood();
         id = createdInstances.incrementAndGet();
     }
@@ -88,10 +87,10 @@ public class EntitySimple implements Entity {
         return actor;
     }
 
-    public boolean touchDown(int button, float x, float y) {
+    public boolean touchDown(int button) {
         LOGGER.warning(() -> "Click registered.");
         switch (button) {
-            case Input.Buttons.RIGHT -> handleMouseClickRight(x, y);
+            case Input.Buttons.RIGHT -> handleMouseClickRight();
             case Input.Buttons.LEFT -> handleMouseClickLeft();
         }
         return true;
@@ -100,7 +99,7 @@ public class EntitySimple implements Entity {
     private void handleMouseClickLeft() {
     }
 
-    private void handleMouseClickRight(float x, float y) {
+    private void handleMouseClickRight() {
         if (GlobalData.developerMode) {
             final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
             final var dialog = new Dialog("Actions", skin);

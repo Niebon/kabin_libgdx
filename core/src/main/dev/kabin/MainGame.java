@@ -19,7 +19,7 @@ import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
-import dev.kabin.util.SmoothFilter2D;
+import dev.kabin.util.ExponentialSmoothener2D;
 import dev.kabin.util.eventhandlers.*;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +74,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
-        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), 0.5f, 0.5f);
+        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), 0.5f);
         DeveloperUI.init(stage);
         GlobalData.atlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();
@@ -241,17 +241,17 @@ public class MainGame extends ApplicationAdapter {
 
         @NotNull
         private final OrthographicCamera camera;
-        private final SmoothFilter2D smoothFilter2D;
+        private final ExponentialSmoothener2D exponentialSmoothener2D;
 
-        public CameraWrapper(@NotNull OrthographicCamera camera, float alpha, float beta) {
+        public CameraWrapper(@NotNull OrthographicCamera camera, float alpha) {
             this.camera = camera;
-            this.smoothFilter2D = new SmoothFilter2D(alpha, beta);
+            this.exponentialSmoothener2D = new ExponentialSmoothener2D(alpha, camera.position.x, camera.position.y);
         }
 
         void setPos(float x, float y) {
-            smoothFilter2D.appendSignalX(x);
-            smoothFilter2D.appendSignalY(y);
-            camera.position.set(smoothFilter2D.x(), smoothFilter2D.y(), camera.position.z);
+            exponentialSmoothener2D.appendSignalX(x);
+            exponentialSmoothener2D.appendSignalY(y);
+            camera.position.set(exponentialSmoothener2D.x(), exponentialSmoothener2D.y(), camera.position.z);
             camera.update();
         }
 

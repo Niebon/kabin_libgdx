@@ -37,7 +37,7 @@ public class CollisionTile extends CollisionEntity {
             throw new IllegalArgumentException("The position at which this collision tile was placed was already occupied. Use the clearAt method to clear.");
         }
         objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
-        animationPlaybackImpl.setSmoothParameters(1,0);
+        animationPlaybackImpl.setSmoothParameters(1, getX(), getY());
     }
 
     public int getIndex() {

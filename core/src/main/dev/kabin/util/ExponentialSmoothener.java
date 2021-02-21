@@ -1,13 +1,14 @@
 package dev.kabin.util;
 
-public class SmoothFilter {
+public class ExponentialSmoothener {
 
     private final float alpha, beta;
     private float valSmooth, lastAppendedVal;
 
-    public SmoothFilter(float alpha, float beta) {
+    public ExponentialSmoothener(float alpha, float init) {
         this.alpha = alpha;
-        this.beta = beta;
+        this.beta = 1 - alpha;
+        lastAppendedVal = init;
     }
 
     public void appendSignal(float val) {
