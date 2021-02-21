@@ -107,8 +107,8 @@ public class EntitySimple implements Entity {
             final float width = 200;
             final float height = 200;
             dialog.setBounds(
-                    x + width * 0.1f,
-                    y + height * 0.1f,
+                    GlobalData.mouseEventUtil.getXRelativeToUI() + width * 0.1f,
+                    GlobalData.mouseEventUtil.getYRelativeToUI() + height * 0.1f,
                     width, height
             );
             dialog.getContentTable().defaults().pad(10);

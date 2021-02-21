@@ -26,7 +26,6 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private float scale;
 
 
-
     public MouseEventUtil(float scale) {
         initUnmodifiableListeners();
         this.scale = scale;
@@ -45,19 +44,19 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     }
 
     public float getXRelativeToUI() {
-        return xRelativeToUI / scale;
+        return xRelativeToUI;
     }
 
     public float getYRelativeToUI() {
-        return yRelativeToUI / scale;
+        return yRelativeToUI;
     }
 
     public float getMouseXRelativeToWorld() {
-        return xRelativeToWorld / scale;
+        return xRelativeToWorld;
     }
 
     public float getMouseYRelativeToWorld() {
-        return (float) (yRelativeToWorld / scale);
+        return yRelativeToWorld;
     }
 
     public Optional<PointFloat> getDragStart(MouseButton b) {
