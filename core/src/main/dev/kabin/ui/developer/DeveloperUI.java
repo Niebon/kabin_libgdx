@@ -35,6 +35,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
+import static dev.kabin.GlobalData.keyEventUtil;
 
 public class DeveloperUI {
 
@@ -52,7 +53,7 @@ public class DeveloperUI {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
-                    !KeyEventUtil.isAltDown() &&
+                    !keyEventUtil.isAltDown() &&
                             CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
                             !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
                             !TILE_SELECTION_WIDGET.getWidget().isDragging()

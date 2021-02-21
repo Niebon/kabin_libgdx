@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
 import static dev.kabin.GlobalData.*;
+import static dev.kabin.GlobalData.keyEventUtil;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -87,13 +88,12 @@ public class MainGame extends ApplicationAdapter {
 
         // Render physics
         if (GlobalData.getWorldState() != null) {
-            final var parameters = new PhysicsParametersImpl(GlobalData.getWorldState(), KeyEventUtil.getInstance());
+            final var parameters = new PhysicsParametersImpl(GlobalData.getWorldState(), keyEventUtil);
             PhysicsEngine.render(stateTime, parameters);
         }
 
         // Admit camera free mode movement if in developer mode.
         if (GlobalData.developerMode) {
-            final KeyEventUtil keyEventUtil = KeyEventUtil.getInstance();
             camera.setPos(
                     camera.getCamera().position.x +
                             (keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :

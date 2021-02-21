@@ -25,7 +25,7 @@ public class EventUtil {
     public static void setInputOptions(@NotNull EventUtil.InputOptions options) {
         Player.getInstance().ifPresent(Player::freeze);
         currentInputOptions = options;
-        final KeyEventUtil keyEventUtil = KeyEventUtil.getInstance();
+        final KeyEventUtil keyEventUtil = GlobalData.keyEventUtil;
         final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
 
 
@@ -73,25 +73,25 @@ public class EventUtil {
             // Mouse events
             {
                 mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                    if (KeyEventUtil.isShiftDown()) {
+                    if (keyEventUtil.isShiftDown()) {
                         DeveloperUI.getEntityLoadingWidget().addEntity();
                     }
                 });
 
                 mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
-                    if (KeyEventUtil.isAltDown()) {
+                    if (keyEventUtil.isAltDown()) {
                         DeveloperUI.getTileSelectionWidget().replaceCollisionTileAtCurrentMousePositionWithCurrentSelection();
                     }
                 });
 
                 mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
-                    if (KeyEventUtil.isAltDown()) {
+                    if (keyEventUtil.isAltDown()) {
                         TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
                     }
                 });
 
                 mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
-                    if (KeyEventUtil.isControlDown()) {
+                    if (keyEventUtil.isControlDown()) {
                         DeveloperUI.addDevCue();
                     }
                 });
@@ -119,17 +119,17 @@ public class EventUtil {
             // Keyboard events
             {
                 keyEventUtil.addListener(KeyCode.S, true, () -> {
-                    if (KeyEventUtil.isControlDown() && developerMode) {
+                    if (keyEventUtil.isControlDown() && developerMode) {
                         DeveloperUI.saveWorld();
                     }
                 });
                 keyEventUtil.addListener(KeyCode.Z, true, () -> {
-                    if (KeyEventUtil.isControlDown() && developerMode) {
+                    if (keyEventUtil.isControlDown() && developerMode) {
                         DeveloperUI.undoChange();
                     }
                 });
                 keyEventUtil.addListener(KeyCode.Y, true, () -> {
-                    if (KeyEventUtil.isControlDown() && developerMode) {
+                    if (keyEventUtil.isControlDown() && developerMode) {
                         DeveloperUI.redoChange();
                     }
                 });

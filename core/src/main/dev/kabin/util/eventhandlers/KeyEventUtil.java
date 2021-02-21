@@ -9,20 +9,15 @@ import java.util.Map;
 
 public class KeyEventUtil implements EnumWithBoolHandler<KeyCode>{
 
-    private static KeyEventUtil instance;
 
-    private static final List<EventListener> changeListeners = new ArrayList<>();
-    private static final Map<KeyCode, Boolean> currentKeyStates = new EnumMap<>(KeyCode.class);
-    private static final Map<KeyCode, List<EventListener>> listenersPressed = new EnumMap<>(KeyCode.class);
-    private static final Map<KeyCode, List<EventListener>> listenersReleased = new EnumMap<>(KeyCode.class);
-    private static final List<EventListener> defaultListeners = new ArrayList<>();
+    private final List<EventListener> changeListeners = new ArrayList<>();
+    private final Map<KeyCode, Boolean> currentKeyStates = new EnumMap<>(KeyCode.class);
+    private final Map<KeyCode, List<EventListener>> listenersPressed = new EnumMap<>(KeyCode.class);
+    private final Map<KeyCode, List<EventListener>> listenersReleased = new EnumMap<>(KeyCode.class);
+    private final List<EventListener> defaultListeners = new ArrayList<>();
 
-    protected KeyEventUtil(){}
+    public KeyEventUtil(){}
 
-    @NotNull
-    public static KeyEventUtil getInstance() {
-        return (instance != null) ? instance : (instance = new KeyEventUtil());
-    }
 
     @NotNull
     @Override
@@ -53,15 +48,15 @@ public class KeyEventUtil implements EnumWithBoolHandler<KeyCode>{
         return defaultListeners;
     }
 
-    public static boolean isControlDown(){
+    public boolean isControlDown(){
         return currentKeyStates.containsKey(KeyCode.CONTROL_LEFT) && currentKeyStates.get(KeyCode.CONTROL_LEFT);
     }
 
-    public static boolean isShiftDown(){
+    public boolean isShiftDown(){
         return currentKeyStates.containsKey(KeyCode.SHIFT_LEFT) && currentKeyStates.get(KeyCode.SHIFT_LEFT);
     }
 
-    public static boolean isAltDown() {
+    public boolean isAltDown() {
         return currentKeyStates.containsKey(KeyCode.ALT_LEFT) && currentKeyStates.get(KeyCode.ALT_LEFT);
     }
 

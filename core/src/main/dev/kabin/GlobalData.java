@@ -34,7 +34,8 @@ public class GlobalData {
     public static int worldSizeY;
 
     public static final MouseEventUtil mouseEventUtil = new MouseEventUtil(1.0f);
-    private static final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, KeyEventUtil.getInstance());
+    public static final KeyEventUtil keyEventUtil = new KeyEventUtil();
+    private static final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
 
     private static WorldRepresentation worldRepresentation;
 
