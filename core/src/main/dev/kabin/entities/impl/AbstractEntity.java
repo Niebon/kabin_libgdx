@@ -13,6 +13,7 @@ import dev.kabin.GlobalData;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
+import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.pools.ImageAnalysisPool;
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
 import static dev.kabin.entities.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
 
 
-public class EntitySimple implements Entity {
+abstract class EntitySimple implements Entity {
 
     private static final Logger LOGGER = Logger.getLogger(EntitySimple.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
@@ -50,7 +51,7 @@ public class EntitySimple implements Entity {
         layer = parameters.layer();
         switch (parameters.getContext()) {
             case TEST -> animationPlaybackImpl = MOCK_ANIMATION_PLAYBACK;
-            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath);
+            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath, getType().animationClass());
             default -> throw new IllegalStateException("Unexpected value: " + parameters.getContext());
         }
         actor.addListener(new ClickListener() {
@@ -235,11 +236,6 @@ public class EntitySimple implements Entity {
     @Override
     public String getAtlasPath() {
         return atlasPath;
-    }
-
-    @Override
-    public EntityFactory.EntityType getType() {
-        return EntityFactory.EntityType.ENTITY_SIMPLE;
     }
 
     @Override

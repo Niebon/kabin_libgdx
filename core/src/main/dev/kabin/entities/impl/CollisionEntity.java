@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CollisionEntity extends EntitySimple implements CollisionData {
+public class CollisionEntity  extends EntitySimple implements CollisionData {
 
-    CollisionEntity(EntityParameters parameters) {
+	CollisionEntity(EntityParameters parameters) {
         super(parameters);
     }
 
@@ -27,6 +27,7 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 				animationPlaybackImpl.getCurrentImageAssetIndex()
 		);
 	}
+
 	@Override
 	public EntityFactory.EntityType getType() {
 		return EntityFactory.EntityType.COLLISION_ENTITY;
@@ -41,4 +42,5 @@ public class CollisionEntity extends EntitySimple implements CollisionData {
 	public int getRootIntY() {
 		return super.getRootIntY();
 	}
+
 }

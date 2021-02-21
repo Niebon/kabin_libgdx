@@ -33,11 +33,11 @@ public class EntityCollectionProvider {
     }
 
     public void registerEntity(Entity e) {
-        groupMap.get(e.getType().groupType).add(e);
+        groupMap.get(e.getType().groupType()).add(e);
     }
 
     public boolean unregisterEntity(Entity e) {
-        return groupMap.get(e.getType().groupType).remove(e);
+        return groupMap.get(e.getType().groupType()).remove(e);
     }
 
     public void actionForEachEntityOfType(Type type, Consumer<Entity> action) {

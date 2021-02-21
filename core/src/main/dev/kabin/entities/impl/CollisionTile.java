@@ -28,7 +28,7 @@ public class CollisionTile extends CollisionEntity {
      *
      * @param parameters constructor parameters.
      */
-    CollisionTile(EntityParameters parameters) {
+    public CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
         animationPlaybackImpl.setCurrentAnimation(tile);

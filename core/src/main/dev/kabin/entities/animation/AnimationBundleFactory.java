@@ -13,7 +13,7 @@ public class AnimationBundleFactory {
 
     public static Map<Enum<?>, int[]> findEnumTypeToIntArrayMapping(String atlasPath, Class<?> clazz) {
         return Arrays.stream(clazz.getEnumConstants())
-                .map(constant -> (Enum<?>) constant)
+                .map(e -> (Enum<?>) e)
                 .filter(type -> GlobalData.getAtlas().findRegions(atlasPath + '/' + type.name()).size > 0)
                 .collect(Collectors.toMap(
                         Function.identity(),
@@ -48,19 +48,10 @@ public class AnimationBundleFactory {
                 .toArray(TextureAtlas.AtlasRegion[]::new));
     }
 
-    public static AnimationPlaybackImpl<?> loadFromAtlasPath(String atlasPath) {
-        for (var clazz : new Class<?>[]{
-                AnimationClass.Tile.class,
-                AnimationClass.Animate.class,
-                AnimationClass.Inanimate.class
-        }) {
-            var regions = findAllAnimations(atlasPath, clazz);
-            if (regions.isEmpty()) continue;
-            var animations = findEnumTypeToIntArrayMapping(atlasPath, clazz);
-            //noinspection rawtypes,unchecked,unchecked
-            return new AnimationPlaybackImpl(regions, animations, clazz);
-        }
-        throw new RuntimeException();
+    public static AnimationPlaybackImpl<?> loadFromAtlasPath(String atlasPath, Class<?> clazz) {
+        var regions = findAllAnimations(atlasPath, clazz);
+        var animations = findEnumTypeToIntArrayMapping(atlasPath, clazz);
+        return new AnimationPlaybackImpl(regions, animations, clazz);
     }
 
 

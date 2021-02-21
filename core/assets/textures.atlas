@@ -4,7 +4,7 @@ size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-background/DEFAULT_LEFT
+background/DEFAULT
   rotate: false
   xy: 1, 18
   size: 400, 225
@@ -1334,7 +1334,7 @@ player/WALK_RIGHT
   orig: 32, 32
   offset: 0, 0
   index: 9
-spruce/DEFAULT_LEFT
+spruce/DEFAULT
   rotate: false
   xy: 402, 82
   size: 128, 128

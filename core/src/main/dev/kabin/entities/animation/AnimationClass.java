@@ -65,7 +65,7 @@ public interface AnimationClass {
     }
 
     enum Inanimate implements AnimationClass {
-        ;
+        DEFAULT;
 
         @Override
         public AnimationClass transitionToDefault() {

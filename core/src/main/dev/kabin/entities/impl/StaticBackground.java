@@ -2,7 +2,7 @@ package dev.kabin.entities.impl;
 
 import dev.kabin.entities.GraphicsParameters;
 
-public class StaticBackground extends EntitySimple {
+public class StaticBackground extends EntityInanimate {
 
     private static StaticBackground instance;
 

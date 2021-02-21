@@ -59,8 +59,25 @@ public class ImageAnalysisPool {
         }
         public Analysis(@NotNull String path, int index) {
             final int width, height;
-            final TextureAtlas.AtlasRegion atlasRegion = Optional.ofNullable(GlobalData.getAtlas().getRegions()
-                    .select(a -> path.equals(a.toString()) && index == a.index).iterator().next()).orElseThrow();
+            final Optional<TextureAtlas.AtlasRegion> atlasRegionMaybe = Optional.ofNullable(GlobalData.getAtlas().getRegions()
+                    .select(a -> path.equals(a.toString()) && index == a.index).iterator().next());
+            if (atlasRegionMaybe.isEmpty()) {
+                lowestPixel = 0;
+                highestPixel = 0;
+                leftmostPixel = 0;
+                rightmostPixel = 0;
+                pixelHeight = 0;
+                pixelWidth = 0;
+                pixelMassCenterXInt = 0;
+                pixelMassCenterYInt = 0;
+                pixelsX = 0;
+                pixelsY = 0;
+                pixelMassCenterX = 0;
+                pixelMassCenterY = 0;
+                return;
+            }
+
+            final TextureAtlas.AtlasRegion atlasRegion = atlasRegionMaybe.get();
             int minX = atlasRegion.getRegionX();
             int minY = atlasRegion.getRegionY();
             width = atlasRegion.getRegionWidth();

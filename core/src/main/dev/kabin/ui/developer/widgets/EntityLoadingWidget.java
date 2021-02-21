@@ -30,7 +30,7 @@ public class EntityLoadingWidget {
     private final dev.kabin.ui.Widget widget;
     private AnimationPlaybackImpl<?> preview = null;
     private String selectedAsset = "";
-    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_SIMPLE;
+    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
     private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;
     private int layer;
 
@@ -97,7 +97,7 @@ public class EntityLoadingWidget {
 
 
         // Finally, show content:
-        preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset);
+        preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset, AnimationClass.Animate.class);
         refreshContentTableMessage();
     }
 
@@ -177,7 +177,7 @@ public class EntityLoadingWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset);
+                preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset, AnimationClass.Animate.class);
             }
             refreshContentTableMessage();
         });

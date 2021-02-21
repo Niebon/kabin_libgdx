@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Player extends EntitySimple {
+public class Player extends EntityAnimate {
 
     private static final List<AnimationClass.Animate> STANDARD_RIGHT_LIST = List.of(
             AnimationClass.Animate.STANDARD1_RIGHT,

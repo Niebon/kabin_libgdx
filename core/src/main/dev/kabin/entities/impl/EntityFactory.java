@@ -1,5 +1,6 @@
 package dev.kabin.entities.impl;
 
+import dev.kabin.entities.animation.AnimationClass;
 import org.json.JSONObject;
 
 public class EntityFactory {
@@ -8,8 +9,8 @@ public class EntityFactory {
     public enum EntityType {
         //BEAR(Bear::new, Bear::new, EntityGroupProvider.Type.FOCAL_POINT),
         //CAT(Cat::new, Cat::new, EntityGroupProvider.Type.FOCAL_POINT),
-        COLLISION_ENTITY(CollisionEntity::new, EntityCollectionProvider.Type.FOCAL_POINT),
-        COLLISION_TILE(CollisionTile::new, EntityCollectionProvider.Type.FOREGROUND),
+        COLLISION_ENTITY(CollisionEntity::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Inanimate.class),
+        COLLISION_TILE(CollisionTile::new, EntityCollectionProvider.Type.FOREGROUND, AnimationClass.Tile.class),
         //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //ENTITY_BACKGROUND(EntityBackground::new, EntityBackground::newFromMouseClick, EntityGroupProvider.Type.BACKGROUND),
@@ -17,7 +18,9 @@ public class EntityFactory {
         //ENTITY_FOREGROUND(EntityForeground::new, EntityForeground::newFromMouseClick, EntityGroupProvider.Type.FOREGROUND),
         //ENTITY_MOVABLE(EntityMovable::new, EntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //ENTITY_LUMINATING(EntityLuminating::new, EntityLuminating::new, EntityGroupProvider.Type.FOCAL_POINT),
-        ENTITY_SIMPLE(EntitySimple::new, EntityCollectionProvider.Type.FOCAL_POINT),
+        ENTITY_ANIMATE(EntityAnimate::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Animate.class),
+        ENTITY_INANIMATE(EntityInanimate::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Inanimate.class),
+
         //ENTITY_THROWABLE(EntityThrowable::new, EntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
         //FOX(Fox::new, Fox::new, EntityGroupProvider.Type.FOCAL_POINT),
         //GROUND(Ground::new, Ground::new, null),
@@ -25,20 +28,23 @@ public class EntityFactory {
         //LADDER(Ladder::new, Ladder::new, EntityGroupProvider.Type.FOCAL_POINT),
         //MAP_CONNECTOR(MapConnector::new, MapConnector::new, null),
         //OON(Moon::new, Moon::new, EntityGroupProvider.Type.SKY),
-        PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT),
+        PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Animate.class),
         //STARS(Stars::new, Stars::new, EntityGroupProvider.Type.SKY),
-        STATIC_BACKGROUND(StaticBackground::new, EntityCollectionProvider.Type.STATIC_BACKGROUND),
+        STATIC_BACKGROUND(StaticBackground::new, EntityCollectionProvider.Type.STATIC_BACKGROUND, AnimationClass.Inanimate.class),
         //SKY(Sky::new, null, EntityGroupProvider.Type.SKY),
         //SHORTCUT(Shortcut::new, Shortcut::new, EntityGroupProvider.Type.FOCAL_POINT);
         ;
 
-        final EntityConstructor entityConstructor;
-        final EntityCollectionProvider.Type groupType;
+        private final EntityConstructor entityConstructor;
+        private final EntityCollectionProvider.Type groupType;
+        private final Class<? extends Enum<?>> animationClass;
 
         EntityType(EntityConstructor entityConstructor,
-                   EntityCollectionProvider.Type groupType) {
+                   EntityCollectionProvider.Type groupType,
+                   Class<? extends Enum<?>> animationClass) {
             this.entityConstructor = entityConstructor;
             this.groupType = groupType;
+            this.animationClass = animationClass;
         }
 
         public JsonConstructor getJsonConstructor() {
@@ -51,6 +57,10 @@ public class EntityFactory {
 
         public EntityCollectionProvider.Type groupType() {
             return groupType;
+        }
+
+        public Class<? extends Enum<?>> animationClass(){
+            return animationClass;
         }
 
     }
