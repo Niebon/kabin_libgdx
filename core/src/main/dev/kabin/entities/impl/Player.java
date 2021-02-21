@@ -30,8 +30,16 @@ public class Player extends EntitySimple {
     private final float throwMomentum;
     private boolean handleInput = true;
     private int jumpFrame;
+
+    // Cached velocity caused by environment.
     private float vx0;
     private float vy0;
+
+    // Cached total velocity: (velocity caused by player) + (velocity caused by environment)
+    private float cachedVx;
+    private float cachedVy;
+
+
     private boolean inAir;
     private float dx, dy;
     private int r, l, u, d;
@@ -272,7 +280,7 @@ public class Player extends EntitySimple {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(Entity.findLiftAboveGround(this, params::isCollisionAt), vAbs * params.dt());
+            dy = Math.min(Entity.findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbs * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -337,6 +345,9 @@ public class Player extends EntitySimple {
         // Update physics
         setX(getX() + dx);
         setY(getY() + dy);
+        cachedVx = dx / params.dt();
+        cachedVy = dy / params.dt();
+
 
         // Update constraints
         jumpCooldown += params.dt();
@@ -366,4 +377,14 @@ public class Player extends EntitySimple {
     private void dropHeldEntityIfOnLadder(int xPrevUnscaled, int round) {
 
     }
+
+
+    public double getVx() {
+        return cachedVx;
+    }
+
+    public double getVy() {
+        return cachedVy;
+    }
+
 }

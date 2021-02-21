@@ -18,8 +18,9 @@ import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.Functions;
 import dev.kabin.util.ExponentialSmoothener2D;
+import dev.kabin.util.Functions;
+import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.eventhandlers.*;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
 import static dev.kabin.GlobalData.*;
-import static dev.kabin.GlobalData.keyEventUtil;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -36,9 +36,9 @@ public class MainGame extends ApplicationAdapter {
     public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
+    private final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
     private SpriteBatch spriteBatch;
     private float stateTime = 0f;
-    private final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
 
     /**
      * Updates the field {@link #currentCameraBounds} to match the current viewing rectangle the given camera.
@@ -103,7 +103,7 @@ public class MainGame extends ApplicationAdapter {
                                     keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor)
             );
         } else {
-            Player.getInstance().ifPresent(player -> camera.setPos(player.getX(), player.getY()));
+            Player.getInstance().ifPresent(camera::follow);
         }
 
 
@@ -126,7 +126,7 @@ public class MainGame extends ApplicationAdapter {
         GlobalData.stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
-        DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);
+        //DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);
 
         // Render interface:
         if (developerMode) {
@@ -180,7 +180,7 @@ public class MainGame extends ApplicationAdapter {
         }
 
         @Override
-        public float dt(){
+        public float dt() {
             return PhysicsEngine.DT;
         }
     }
@@ -249,6 +249,10 @@ public class MainGame extends ApplicationAdapter {
         private final OrthographicCamera camera;
         private final ExponentialSmoothener2D exponentialSmoothener2D;
 
+
+        private final WeightedAverage2D directionalPreSmoothening = new WeightedAverage2D(0.1f);
+        private final WeightedAverage2D directionalFinalSmoothening = new WeightedAverage2D(0.005f);
+
         public CameraWrapper(@NotNull OrthographicCamera camera, float alpha) {
             this.camera = camera;
             this.exponentialSmoothener2D = new ExponentialSmoothener2D(alpha, camera.position.x, camera.position.y);
@@ -264,6 +268,17 @@ public class MainGame extends ApplicationAdapter {
         @NotNull
         public OrthographicCamera getCamera() {
             return camera;
+        }
+
+        public void follow(Player player) {
+            final float unit = 3 * player.getMaxPixelHeight() * scaleFactor;
+            directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx()) * unit));
+            directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy()) * unit + 0.5f * unit));
+            directionalFinalSmoothening.appendSignalX(directionalPreSmoothening.x());
+            directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
+            setPos(player.getX() + directionalFinalSmoothening.x(),
+                    player.getY() + directionalFinalSmoothening.y()
+            );
         }
     }
 }

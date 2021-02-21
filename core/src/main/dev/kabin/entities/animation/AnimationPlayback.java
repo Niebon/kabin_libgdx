@@ -23,4 +23,6 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, FloatArea
     void reset();
 
     void setSmoothParameters(float alpha, float initX, float initY);
+
+    int getMaxPixelHeight();
 }

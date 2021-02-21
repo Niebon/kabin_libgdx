@@ -2,8 +2,7 @@ package dev.kabin.util;
 
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
-import dev.kabin.util.points.PointOld;
-import dev.kabin.util.points.PointOldDouble;
+import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.AbstractRectBoxed;
 import dev.kabin.util.shapes.RectBoxed;
 import org.jetbrains.annotations.Contract;
@@ -110,25 +109,6 @@ public class Functions {
         return distance(entity1.getY(), entity2.getY());
     }
 
-
-    /**
-     * Returns the distance from a point to the border of a rectangle.
-     *
-     * @param r   rectangle.
-     * @param p   point.
-     * @param <T> number.
-     * @return distance.
-     */
-    public static <T extends Number & Comparable<T>> double distance(@NotNull AbstractRectBoxed<T> r, @NotNull PointOld<T> p) {
-        double dx = Math.max(Math.abs(p.getX().doubleValue() - r.getCenterX()) - 0.5 * (r.getMaxX().doubleValue() - r.getMinX().doubleValue()), 0);
-        double dy = Math.max(Math.abs(p.getY().doubleValue() - r.getCenterY()) - 0.5 * (r.getMaxY().doubleValue() - r.getMinY().doubleValue()), 0);
-        return dx * dx + dy * dy;
-    }
-
-    public static double findAngleDeg(@NotNull PointOldDouble dr) {
-        return findAngleDeg(dr.x(), dr.y());
-    }
-
     /**
      * Returns the angle between [0, 360) of the given pair [dx,dy].
      *
@@ -160,9 +140,9 @@ public class Functions {
      */
     @NotNull
     @Contract("_, _, _, _ -> new")
-    public static PointOldDouble normalVectorAt(int x, int y, int radius, BiIntPredicate collisionPredicate) {
+    public static PointFloat normalVectorAt(int x, int y, int radius, BiIntPredicate collisionPredicate) {
         int termsInSum = 0;
-        double sumY = 0, sumX = 0;
+        float sumY = 0, sumX = 0;
         final int[][] circle = intCircleCenteredAt(x, y, radius);
 
         //noinspection ForLoopReplaceableByForEach
@@ -175,13 +155,13 @@ public class Functions {
                 termsInSum++;
             }
         }
-        final double
+        final float
                 avgY = sumY / termsInSum,
                 avgX = sumX / termsInSum,
                 dy = avgY - y,
                 dx = avgX - x;
-        double r = Math.sqrt(dx * dx + dy * dy);
-        return PointOld.of(dx / r, dy / r);
+        float r = (float) Math.sqrt(dx * dx + dy * dy);
+        return PointFloat.immutable(dx / r, dy / r);
     }
 
     /**
@@ -189,7 +169,6 @@ public class Functions {
      *
      * @return a double int array with dimension [CIRCLE_RES][2].
      */
-    @NotNull
     public static int[][] intCircleCenteredAt(int x, int y, int radius) {
         final int[][] circle = new int[NUMBER_OF_SLICES][2];
         for (int i = 0; i < NUMBER_OF_SLICES; i++) {

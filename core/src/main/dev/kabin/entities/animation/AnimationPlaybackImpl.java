@@ -25,6 +25,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
     private final Map<T, int[]> animationBlueprint;
+    private final int maxPixelheight;
     private AnimationClass currentAnimationClass;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private ExponentialSmoothener2D exponentialSmoothener2D;
@@ -40,6 +41,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         regions = null;
         animationClassIndexToAnimationLength = null;
         animationBlueprint = null;
+        maxPixelheight = 0;
     }
 
     public AnimationPlaybackImpl(
@@ -64,10 +66,16 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationClassIndexToAnimationLength = new IntToIntFunction(tClass.getEnumConstants().length);
         exponentialSmoothener2D = new ExponentialSmoothener2D(0.5f, 0f, 0f);
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
+
+        maxPixelheight = Arrays.stream(regions.items)
+                .map(region -> ImageAnalysisPool.findAnalysis(String.valueOf(region), region.index))
+                .mapToInt(ImageAnalysisPool.Analysis::getPixelHeight)
+                .max().orElse(0);
     }
 
-    static AnimationPlaybackImpl<?> getMockAnimationPlaybackImpl() {
-        return MOCK_ANIMATION_PLAYBACK;
+    @Override
+    public int getMaxPixelHeight() {
+        return maxPixelheight;
     }
 
     public int getCurrentAnimationLength() {
@@ -108,9 +116,6 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
                 cachedTextureRegion = regions.get(0);
             }
         }
-//        cachedTextureRegion = regions != null ?
-//                regions.get(animationBlueprint != null ? animationBlueprint.get(currentAnimationClass)[0] : 0) :
-//                null;
     }
 
     @Override

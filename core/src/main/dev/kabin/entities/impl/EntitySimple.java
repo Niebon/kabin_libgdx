@@ -309,4 +309,9 @@ public class EntitySimple implements Entity {
     public void setLayer(int layer) {
         this.layer = layer;
     }
+
+    @Override
+    public int getMaxPixelHeight(){
+        return animationPlaybackImpl.getMaxPixelHeight();
+    }
 }

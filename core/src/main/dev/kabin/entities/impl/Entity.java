@@ -105,15 +105,17 @@ public interface Entity extends
      * y - dy corresponds to the first point where the given entity is placed
      * strictly above the ground/collision surface.
      */
-    static float findLiftAboveGround(@NotNull Entity entity,
+    static float findLiftAboveGround(int x,
+                                     int y,
+                                     float scale,
                                      @NotNull BiIntPredicate collisionPredicate) {
-        final int
-                x = entity.getUnscaledX(),
-                y = entity.getUnscaledY();
+
         int j = 0;
         while (collisionPredicate.test(x, y + j)) j++;
-        return entity.getScale() * j;
+        return scale * j;
     }
+
+    int getMaxPixelHeight();
 
 
 }
