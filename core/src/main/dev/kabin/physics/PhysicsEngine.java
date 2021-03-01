@@ -33,7 +33,7 @@ public class PhysicsEngine {
     }
 
     public static void renderFrame(PhysicsParameters params) {
-        GlobalData.getWorldState().actionForEachEntityOrderedByType(e -> e.updatePhysics(params));
+        GlobalData.getWorldState().forEachEntityInCameraNeighborhood(e -> e.updatePhysics(params));
     }
 
 }

@@ -29,7 +29,6 @@ public class GlobalData {
     public static SpriteBatch userInterfaceBatch;
     public static ShapeRenderer shapeRenderer;
     public static String currentWorld = "world_1.json";
-    public static int screenHeight = 225;
     public static int worldSizeX;
     public static int worldSizeY;
 

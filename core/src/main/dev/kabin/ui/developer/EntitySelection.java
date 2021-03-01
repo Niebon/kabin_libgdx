@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.entities.impl.Entity;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.points.*;
 import dev.kabin.util.shapes.RectFloat;
 
@@ -26,7 +25,7 @@ public class EntitySelection {
             float height = Math.abs(begin.y() - GlobalData.mouseEventUtil.getYRelativeToUI());
 
             float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
-            float offsetY = MainGame.camera.getCamera().position.y - GlobalData.screenHeight * 0.5f;
+            float offsetY = MainGame.camera.getCamera().position.y - MainGame.screenHeight * 0.5f;
             backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
 
             GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

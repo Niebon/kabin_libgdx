@@ -36,9 +36,9 @@ public class WorldRepresentation {
     );
     private final Component rootComponent;
     private long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
-    private List<Entity> entitiesInCameraNeighborhoodCached;
+    private ArrayList<Entity> entitiesInCameraNeighborhoodCached;
     private long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
-    private List<Entity> entitiesInCameraBoundsCached;
+    private ArrayList<Entity> entitiesInCameraBoundsCached;
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
     private Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
     private Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
@@ -63,18 +63,6 @@ public class WorldRepresentation {
         entityCollectionProvider.actionForEachEntityOrderedByType(renderEntityGlobalStateTime);
     }
 
-    public List<Entity> getEntityInCameraNeighborhood(RectInt cameraPosition) {
-        entitiesInCameraNeighborhoodLastUpdated = System.currentTimeMillis();
-        return entitiesInCameraNeighborhoodCached = getContainedEntities(cameraPosition);
-    }
-
-    public List<Entity> getEntityInCameraNeighborhoodCached(RectInt cameraPosition) {
-        if (entitiesInCameraNeighborhoodLastUpdated <= timeStampLastEntityWhereaboutsRegistered) {
-            entitiesInCameraNeighborhoodLastUpdated = System.currentTimeMillis();
-            return entitiesInCameraNeighborhoodCached = getContainedEntities(cameraPosition);
-        }
-        return entitiesInCameraNeighborhoodCached;
-    }
 
     public List<Entity> getEntitiesWithinCameraBoundsCached(RectInt cameraPosition) {
         if (entitiesInCameraBoundsLastUpdated <= timeStampLastEntityWhereaboutsRegistered) {
@@ -134,13 +122,13 @@ public class WorldRepresentation {
      * Finds list of entities which are are in the given component such that their nbd meets the given nbd.
      */
     @NotNull
-    public List<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
+    private ArrayList<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
         ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> c.getUnderlyingRectInt().meets(neighborhood)
         );
 
         // TODO: deal with this new.
-        final List<Entity> containedEntities = new ArrayList<>();
+        final ArrayList<Entity> containedEntities = new ArrayList<>();
 
         final IndexedSet<Entity> setOfEntitiesToReturn = entityIndexedSetPool.borrow();
         //noinspection ForLoopReplaceableByForEach
@@ -171,11 +159,20 @@ public class WorldRepresentation {
         return containedEntities;
     }
 
+    public void forEachEntityInCameraNeighborhood(Consumer<Entity> action) {
+        ArrayList<Entity> entities = entitiesInCameraNeighborhoodCached;
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, n = entities.size(); i < n; i++) {
+            action.accept(entities.get(i));
+        }
+    }
+
     /**
      * Registers the whereabouts of all entities from the given list.
      * This updates the information returned by
+     * @param currentCameraNeighborhood
      */
-    public void registerEntityWhereabouts() {
+    public void registerEntityWhereabouts(RectInt currentCameraNeighborhood) {
 
     	// Free resources from previous iteration.
         {
@@ -208,6 +205,12 @@ public class WorldRepresentation {
         // Update references; keep the data ready to be cleared around until the beginning of the next iteration.
         this.entityToIndivisibleComponentMapping = entityToIndivisibleComponentMapping;
         this.indivisibleComponentToEntityMapping = indivisibleComponentToEntityMapping;
+
+
+        entitiesInCameraNeighborhoodCached = getContainedEntities(currentCameraNeighborhood);
+        Collections.sort(entitiesInCameraNeighborhoodCached);
+
+
         timeStampLastEntityWhereaboutsRegistered = System.currentTimeMillis();
     }
 

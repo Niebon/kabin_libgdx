@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CollisionEntity  extends EntitySimple implements CollisionData {
+public class CollisionEntity  extends AbstractEntity implements CollisionData {
 
 	CollisionEntity(EntityParameters parameters) {
         super(parameters);

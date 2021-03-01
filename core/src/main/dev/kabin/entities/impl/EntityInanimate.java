@@ -1,6 +1,6 @@
 package dev.kabin.entities.impl;
 
-public class EntityInanimate extends EntitySimple {
+public class EntityInanimate extends AbstractEntity {
 
     EntityInanimate(EntityParameters parameters) {
         super(parameters);

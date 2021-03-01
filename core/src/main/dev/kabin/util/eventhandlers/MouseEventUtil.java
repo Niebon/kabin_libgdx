@@ -88,14 +88,14 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     public void registerMouseMoved(float x, float y) {
         EventUtil.setLastActive(EventUtil.LastActive.MOUSE);
         xRelativeToUI = x;
-        yRelativeToUI = Functions.transformY(y, GlobalData.screenHeight);
+        yRelativeToUI = Functions.transformY(y, MainGame.screenHeight);
 
         // camera.x and camera.y are in the middle of the screen. Hence the offsets:
         float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
-        float offsetY = MainGame.camera.getCamera().position.y - GlobalData.screenHeight * 0.5f;
+        float offsetY = MainGame.camera.getCamera().position.y - MainGame.screenHeight * 0.5f;
 
         xRelativeToWorld = x + offsetX;
-        yRelativeToWorld = Functions.transformY(y, GlobalData.screenHeight) + offsetY;
+        yRelativeToWorld = Functions.transformY(y, MainGame.screenHeight) + offsetY;
         LOGGER.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }

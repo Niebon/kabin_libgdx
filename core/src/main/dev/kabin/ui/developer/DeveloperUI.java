@@ -19,8 +19,6 @@ import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import dev.kabin.util.Functions;
-import dev.kabin.util.eventhandlers.KeyEventUtil;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.pools.FontPool;
 import org.json.JSONObject;
 
@@ -93,7 +91,7 @@ public class DeveloperUI {
         buttonSaveAs.setName(SAVE_AS);
         FILE_DROP_DOWN_MENU.setItems(buttonOpen, buttonSave, buttonSaveAs);
         FILE_DROP_DOWN_MENU.setSelectedIndex(0);
-        FILE_DROP_DOWN_MENU.setPosition(0f, GlobalData.screenHeight - FILE_DROP_DOWN_MENU.getHeight());
+        FILE_DROP_DOWN_MENU.setPosition(0f, MainGame.screenHeight - FILE_DROP_DOWN_MENU.getHeight());
         FILE_DROP_DOWN_MENU.setName("File");
         FILE_DROP_DOWN_MENU.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {

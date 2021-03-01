@@ -58,6 +58,10 @@ public interface PhysicsParameters {
      */
     boolean isPressed(KeyCode keycode);
 
+
+    /**
+     * @return time step.
+     */
     float dt();
 
 }

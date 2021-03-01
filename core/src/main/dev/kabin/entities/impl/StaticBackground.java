@@ -10,6 +10,7 @@ public class StaticBackground extends EntityInanimate {
         super(parameters);
         instance = this;
         animationPlaybackImpl.setSmoothParameters(1f, 0, 0);
+        actor().remove();
     }
 
     @Override

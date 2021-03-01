@@ -84,9 +84,9 @@ public class TileSelectionWidget {
             }
             matchingCt.getActor().ifPresent(Actor::remove);
             matchingCt.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
-            GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.currentCameraBounds).remove(matchingCt);
+            GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).remove(matchingCt);
         } else {
-            final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.currentCameraBounds).iterator();
+            final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).iterator();
             while (entityIterator.hasNext()) {
                 final Entity e = entityIterator.next();
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {

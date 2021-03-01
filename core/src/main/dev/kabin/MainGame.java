@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
@@ -22,6 +21,8 @@ import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.eventhandlers.*;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
+import dev.kabin.util.shapes.primitive.RectInt;
+import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -32,34 +33,17 @@ public class MainGame extends ApplicationAdapter {
 
     public static CameraWrapper camera;
     public static int screenWidth = 400;
-    public static MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
     public static float scaleFactor = 1.0f;
+    public static int screenHeight = 225;
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
     private SpriteBatch spriteBatch;
     private float stateTime = 0f;
 
-    /**
-     * Updates the field {@link #currentCameraBounds} to match the current viewing rectangle the given camera.
-     *
-     * @param camera the camera to use as reference.
-     */
-    private void translateCurrentCameraBounds(Camera camera) {
-        // Find new camera position:
-        currentCameraBounds.translate(
-                Math.round(Functions.toIntDivideBy(camera.position.x, scaleFactor) - currentCameraBounds.getCenterX()),
-                Math.round(Functions.toIntDivideBy(camera.position.y, scaleFactor) - currentCameraBounds.getCenterY())
-        );
-    }
-
-    void renderEntityGlobalStateTime(Entity e) {
-        e.updateGraphics(new GraphicsParametersImpl(spriteBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight));
-    }
-
     @Override
     public void create() {
         screenWidth = Gdx.graphics.getWidth();
-        GlobalData.screenHeight = Gdx.graphics.getHeight();
+        screenHeight = Gdx.graphics.getHeight();
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
         mouseEventUtil.setScale(scaleFactor);
 
@@ -106,14 +90,13 @@ public class MainGame extends ApplicationAdapter {
         }
 
 
-        translateCurrentCameraBounds(camera.getCamera());
         spriteBatch.setProjectionMatrix(camera.getCamera().combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
 
         // Render graphics
         if (GlobalData.getWorldState() != null) {
-            GlobalData.getWorldState().actionForEachEntityOrderedByType(this::renderEntityGlobalStateTime);
+            GlobalData.getWorldState().forEachEntityInCameraNeighborhood(e -> e.updateGraphics(new GraphicsParametersImpl(spriteBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight)));
         }
 
         //bundle.renderFrameByIndex(0);
@@ -253,6 +236,15 @@ public class MainGame extends ApplicationAdapter {
         private final WeightedAverage2D directionalPreSmoothening = new WeightedAverage2D(0.1f);
         private final WeightedAverage2D directionalFinalSmoothening = new WeightedAverage2D(0.005f);
 
+        // Bounds
+        public final MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
+        public final RectIntView currentCameraBoundsView = new RectIntView(currentCameraBounds);
+
+        // Neighborhood
+        public final MutableRectInt currentCameraNeighborhood = MutableRectInt.centeredAt(0, 0, 2 * screenWidth, 2 * screenHeight);
+        public final RectIntView currentCameraNeighborhoodView = new RectIntView(currentCameraNeighborhood);
+
+
         public CameraWrapper(@NotNull OrthographicCamera camera) {
             this.camera = camera;
         }
@@ -260,6 +252,15 @@ public class MainGame extends ApplicationAdapter {
         public void setPos(float x, float y) {
             camera.position.set(x, y, camera.position.z);
             camera.update();
+            // Find new camera position:
+            currentCameraBounds.translate(
+                    Math.round(Functions.toIntDivideBy(x, scaleFactor) - currentCameraBounds.getCenterX()),
+                    Math.round(Functions.toIntDivideBy(y, scaleFactor) - currentCameraBounds.getCenterY())
+            );
+            currentCameraNeighborhood.translate(
+                    Math.round(Functions.toIntDivideBy(x, scaleFactor) - currentCameraNeighborhood.getCenterX()),
+                    Math.round(Functions.toIntDivideBy(y, scaleFactor) - currentCameraNeighborhood.getCenterY())
+            );
         }
 
         @NotNull
@@ -276,6 +277,14 @@ public class MainGame extends ApplicationAdapter {
             setPos(player.getX() + directionalFinalSmoothening.x(),
                     player.getY() + directionalFinalSmoothening.y()
             );
+        }
+
+        public RectIntView currentCameraBounds() {
+            return currentCameraBoundsView;
+        }
+
+        public RectIntView getCameraNeighborhood() {
+            return currentCameraNeighborhoodView;
         }
     }
 }

@@ -36,9 +36,9 @@ public class Threads {
     private static void handle() {
         synchronized (THREAD_LOCK) {
             // Load & unload data.
-            GlobalData.getWorldState().registerEntityWhereabouts();
-            GlobalData.getWorldState().clearUnusedData(MainGame.currentCameraBounds);
-            GlobalData.getWorldState().loadNearbyData(MainGame.currentCameraBounds);
+            GlobalData.getWorldState().registerEntityWhereabouts(MainGame.camera.getCameraNeighborhood());
+            GlobalData.getWorldState().clearUnusedData(MainGame.camera.getCameraNeighborhood());
+            GlobalData.getWorldState().loadNearbyData(MainGame.camera.getCameraNeighborhood());
             GlobalData.getWorldState().sortAllLayers();
 
             // Save dev session if applicable.

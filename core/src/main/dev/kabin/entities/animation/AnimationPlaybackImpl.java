@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.util.Functions;
-import dev.kabin.util.ExponentialSmoothener2D;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntFunction;
 import dev.kabin.util.pools.ImageAnalysisPool;

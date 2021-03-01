@@ -13,7 +13,6 @@ import dev.kabin.GlobalData;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.pools.ImageAnalysisPool;
@@ -30,9 +29,9 @@ import java.util.logging.Logger;
 import static dev.kabin.entities.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
 
 
-abstract class EntitySimple implements Entity {
+abstract class AbstractEntity implements Entity {
 
-    private static final Logger LOGGER = Logger.getLogger(EntitySimple.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AbstractEntity.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
     protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
     private final String atlasPath;
@@ -45,7 +44,7 @@ abstract class EntitySimple implements Entity {
     private final RectIntView graphicsNbdView;
     private float x, y, scale;
 
-    EntitySimple(EntityParameters parameters) {
+    AbstractEntity(EntityParameters parameters) {
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
@@ -57,14 +56,14 @@ abstract class EntitySimple implements Entity {
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return EntitySimple.this.touchDown(button);
+                return AbstractEntity.this.touchDown(button);
             }
         });
         actor.addListener(new DragListener() {
             @Override
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().isEmpty()) {
-                    DeveloperUI.addEntityToDraggedEntities(EntitySimple.this);
+                    DeveloperUI.addEntityToDraggedEntities(AbstractEntity.this);
                 } else {
                     DeveloperUI.getEntitySelection().getCurrentlySelectedEntities()
                             .forEach(DeveloperUI::addEntityToDraggedEntities);
@@ -123,10 +122,10 @@ abstract class EntitySimple implements Entity {
                             final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
                             final Set<Entity> currentlySelectedEntities = DeveloperUI.getEntitySelection()
                                     .getCurrentlySelectedEntities();
-                            if (currentlySelectedEntities.contains(EntitySimple.this)) {
+                            if (currentlySelectedEntities.contains(AbstractEntity.this)) {
                                 entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
                             } else {
-                                entitiesScheduledForRemoval.add(EntitySimple.this);
+                                entitiesScheduledForRemoval.add(AbstractEntity.this);
                             }
 
                             entitiesScheduledForRemoval.forEach(e -> {

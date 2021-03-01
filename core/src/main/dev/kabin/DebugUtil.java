@@ -29,7 +29,7 @@ public class DebugUtil {
      * Draws root of each entity.
      */
     static void renderEachRoot(ShapeRenderer renderer, MutableRectInt currentCameraBounds, float scaleFactor) {
-        GlobalData.getWorldState().actionForEachEntityOrderedByType(e -> {
+        GlobalData.getWorldState().forEachEntityInCameraNeighborhood(e -> {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
             renderer.setColor(Color.GREEN);
             float x = e.getX() - currentCameraBounds.getMinX() * scaleFactor;

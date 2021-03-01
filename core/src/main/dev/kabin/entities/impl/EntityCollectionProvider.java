@@ -1,7 +1,5 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.util.Functions;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -17,31 +15,27 @@ import java.util.stream.Collectors;
  */
 public class EntityCollectionProvider {
 
-    private static final Type[] GROUPS_ORDERED = Arrays.stream(Type.values())
+    private static final Type[] TYPES_ORDERED = Arrays.stream(Type.values())
             .sorted(Comparator.comparingInt(Type::getLayer))
             .toArray(Type[]::new);
-    private final Map<Type, List<Entity>> groupMap;
+    private final Map<Type, List<Entity>> collectionMap;
 
     public EntityCollectionProvider() {
-        groupMap = Arrays.stream(Type.values())
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        val -> new ArrayList<>(),
-                        Functions::projectLeft,
-                        () -> new EnumMap<>(Type.class))
-                );
+        collectionMap = Arrays
+                .stream(Type.values())
+                .collect(Collectors.toMap(Function.identity(), val -> new ArrayList<>()));
     }
 
     public void registerEntity(Entity e) {
-        groupMap.get(e.getType().groupType()).add(e);
+        collectionMap.get(e.getType().groupType()).add(e);
     }
 
     public boolean unregisterEntity(Entity e) {
-        return groupMap.get(e.getType().groupType()).remove(e);
+        return collectionMap.get(e.getType().groupType()).remove(e);
     }
 
     public void actionForEachEntityOfType(Type type, Consumer<Entity> action) {
-        List<Entity> entities = groupMap.get(type);
+        final List<Entity> entities = collectionMap.get(type);
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = entities.size(); i < n; i++) {
             action.accept(entities.get(i));
@@ -49,7 +43,7 @@ public class EntityCollectionProvider {
     }
 
     public void actionForEachEntityOrderedByType(Consumer<Entity> action) {
-        for (Type type : GROUPS_ORDERED) {
+        for (Type type : TYPES_ORDERED) {
             actionForEachEntityOfType(type, action);
         }
     }
@@ -61,8 +55,8 @@ public class EntityCollectionProvider {
      * @param criterion  the criterion to match.
      */
     public void populateCollection(Collection<Entity> collection, Predicate<Entity> criterion) {
-        for (Type type : GROUPS_ORDERED) {
-            final List<Entity> list = groupMap.get(type);
+        for (Type type : TYPES_ORDERED) {
+            final List<Entity> list = collectionMap.get(type);
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = list.size(); i < n; i++) {
                 if (criterion.test(list.get(i))) {
@@ -79,7 +73,7 @@ public class EntityCollectionProvider {
     }
 
     public void sortByLayer(Type type) {
-        Collections.sort(groupMap.get(type));
+        Collections.sort(collectionMap.get(type));
     }
 
     public enum Type {
@@ -107,5 +101,6 @@ public class EntityCollectionProvider {
         public String toString() {
             return name();
         }
+
     }
 }
