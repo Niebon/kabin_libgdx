@@ -22,7 +22,7 @@ public interface AnimationPlayback extends ModifiableFloatCoordinates, Rectangul
 
     void reset();
 
-    void setSmoothParameters(float alpha, float initX, float initY);
+    void setSmoothParameter(float alpha);
 
     int getMaxPixelHeight();
 }

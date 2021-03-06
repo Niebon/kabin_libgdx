@@ -45,6 +45,8 @@ abstract class AbstractEntity implements Entity {
     private float x, y, scale;
 
     AbstractEntity(EntityParameters parameters) {
+        id = createdInstances.incrementAndGet();
+
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
@@ -53,6 +55,8 @@ abstract class AbstractEntity implements Entity {
             case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath, getType().animationClass());
             default -> throw new IllegalStateException("Unexpected value: " + parameters.getContext());
         }
+        animationPlaybackImpl.setSmoothParameter(0.5f);
+
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -72,14 +76,13 @@ abstract class AbstractEntity implements Entity {
         });
 
         setPos(parameters.x(), parameters.y());
-
-        positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
-        graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
-        positionNbdView = new RectIntView(positionNbd);
-        graphicsNbdView = new RectIntView(graphicsNbd);
-        animationPlaybackImpl.setSmoothParameters(0.5f, getRootX(), getRootY());
-        updateNeighborhood();
-        id = createdInstances.incrementAndGet();
+        {
+            positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+            graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+            positionNbdView = new RectIntView(positionNbd);
+            graphicsNbdView = new RectIntView(graphicsNbd);
+            updateNeighborhood();
+        }
     }
 
     protected Actor actor() {

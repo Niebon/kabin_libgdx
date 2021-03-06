@@ -2,11 +2,13 @@ package dev.kabin.util.eventhandlers;
 
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseButton> {
@@ -24,9 +26,9 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private float xRelativeToWorld, yRelativeToWorld;
     private float xRelativeToUI, yRelativeToUI;
     private float scale;
+    private Supplier<WorldRepresentation> worldRepresentationSupplier;
 
-
-    public MouseEventUtil(float scale) {
+    public MouseEventUtil(float scale, Supplier<WorldRepresentation> worldRepresentationSupplier) {
         initUnmodifiableListeners();
         this.scale = scale;
     }
@@ -74,12 +76,13 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     }
 
     private String infoCurrentHover() {
+        var worldState = worldRepresentationSupplier.get();
         return "Info found about point: \n" +
                 "mouseRelToWorld: " + getPositionRelativeToWorld() + "\n" +
                 "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleBy(1 / MainGame.scaleFactor).toPointInt() + "\n" +
                 "mouseRelToUI: " + getPositionRelativeToUI() + "\n" +
                 "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleBy(1 / MainGame.scaleFactor).toPointInt() + "\n" +
-                "collision: " + (GlobalData.getWorldState() != null ? GlobalData.getWorldState().getCollision(
+                "collision: " + (worldState != null ? worldState.getCollision(
                 Math.round(getMouseXRelativeToWorld() / MainGame.scaleFactor),
                 Math.round(getMouseYRelativeToWorld() / MainGame.scaleFactor)
         ) : "");

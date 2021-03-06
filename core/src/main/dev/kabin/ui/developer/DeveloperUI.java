@@ -13,12 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.Serializer;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import dev.kabin.util.Functions;
+import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.pools.FontPool;
 import org.json.JSONObject;
 
@@ -31,9 +34,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
-import static dev.kabin.GlobalData.keyEventUtil;
 
 public class DeveloperUI {
 
@@ -51,7 +54,7 @@ public class DeveloperUI {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
-                    !keyEventUtil.isAltDown() &&
+                    !keyEventUtilSupplier.get().isAltDown() &&
                             CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
                             !ENTITY_LOADING_WIDGET.getWidget().isDragging() &&
                             !TILE_SELECTION_WIDGET.getWidget().isDragging()
@@ -72,7 +75,14 @@ public class DeveloperUI {
         return ENTITY_SELECTION;
     }
 
-    public static void init(Stage stage) {
+    private static Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private static Supplier<MouseEventUtil> mouseEventUtilSupplier;
+    private static Supplier<KeyEventUtil> keyEventUtilSupplier;
+
+    public static void init(Stage stage,
+                            Supplier<WorldRepresentation> worldRepresentationSupplier,
+                            Supplier<MouseEventUtil> mouseEventUtilSupplier,
+                            Supplier<KeyEventUtil> keyEventUtilSupplier) {
         stage.addListener(new DragListener() {
             @Override
             public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -80,7 +90,9 @@ public class DeveloperUI {
             }
         });
         DeveloperUI.setVisible(GlobalData.developerMode);
-
+        DeveloperUI.worldRepresentationSupplier = worldRepresentationSupplier;
+        DeveloperUI.mouseEventUtilSupplier = mouseEventUtilSupplier;
+        DeveloperUI.keyEventUtilSupplier = keyEventUtilSupplier;
 
         // Add drop down menu:
         var buttonOpen = new Button();
@@ -137,8 +149,8 @@ public class DeveloperUI {
         CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(
                 e.getX(),
                 e.getY(),
-                GlobalData.mouseEventUtil.getMouseXRelativeToWorld(),
-                GlobalData.mouseEventUtil.getMouseYRelativeToWorld(),
+                mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
+                mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 e));
     }
 
@@ -157,8 +169,8 @@ public class DeveloperUI {
             final Entity e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + GlobalData.mouseEventUtil.getMouseXRelativeToWorld() - de.getInitialMouseX(), MainGame.scaleFactor));
-            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + GlobalData.mouseEventUtil.getMouseYRelativeToWorld() - de.getInitialMouseY(), MainGame.scaleFactor));
+            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + mouseEventUtilSupplier.get().getMouseXRelativeToWorld() - de.getInitialMouseX(), MainGame.scaleFactor));
+            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + mouseEventUtilSupplier.get().getMouseYRelativeToWorld() - de.getInitialMouseY(), MainGame.scaleFactor));
         }
     }
 
@@ -182,7 +194,7 @@ public class DeveloperUI {
     }
 
     public static void saveWorld(Path path) {
-        JSONObject worldState = Serializer.recordWorldState();
+        JSONObject worldState = Serializer.recordWorldState(worldRepresentationSupplier.get());
         try {
             Files.write(path, worldState.toString().getBytes());
         } catch (IOException e) {
@@ -212,6 +224,8 @@ public class DeveloperUI {
                 File selectedFile = chooser.getSelectedFile();
                 GlobalData.currentWorld = selectedFile.getName();
                 try {
+
+                    // TODO: deal with.
                     Serializer.loadWorldState(new JSONObject(Files.readString(selectedFile.toPath())));
                 } catch (IOException e) {
                     e.printStackTrace();

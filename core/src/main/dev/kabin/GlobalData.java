@@ -5,11 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.eventhandlers.InputEventDistributor;
-import dev.kabin.util.eventhandlers.KeyEventUtil;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,35 +28,14 @@ public class GlobalData {
     public static int worldSizeX;
     public static int worldSizeY;
 
-    public static final MouseEventUtil mouseEventUtil = new MouseEventUtil(1.0f);
-    public static final KeyEventUtil keyEventUtil = new KeyEventUtil();
-    private static final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
-
-    private static WorldRepresentation worldRepresentation;
 
     public static TextureAtlas getAtlas() {
         return atlas;
     }
 
-    public static InputProcessor getInputProcessor() {
-        return inputProcessor;
-    }
-
     public static Level getLogLevel() {
         return Level.WARNING;
     }
-
-    public static void setMapSize(int worldSizeX, int worldSizeY) {
-        GlobalData.worldSizeX = worldSizeX;
-        GlobalData.worldSizeY = worldSizeY;
-        worldRepresentation = new WorldRepresentation(worldSizeX, worldSizeY, MainGame.scaleFactor);
-    }
-
-
-    public static WorldRepresentation getWorldState() {
-        return worldRepresentation;
-    }
-
 
     public static void saveDevSession() {
         final String jsonRepr = """

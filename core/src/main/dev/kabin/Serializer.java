@@ -1,5 +1,6 @@
 package dev.kabin;
 
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
 import org.json.JSONObject;
@@ -18,9 +19,9 @@ public class Serializer {
     public static final String WORLD_SIZE_Y = "worldSizeY";
     public static final String ENTITIES = "entities";
 
-    public static JSONObject recordWorldState() {
+    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation) {
         final List<Entity> allEntities = new ArrayList<>();
-        GlobalData.getWorldState().populateCollection(allEntities, e -> true);
+        worldRepresentation.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
         o.put(WORLD_SIZE_X, GlobalData.worldSizeX);
@@ -28,10 +29,10 @@ public class Serializer {
         return o;
     }
 
-    public static void loadWorldState(JSONObject o) {
+    public static WorldRepresentation loadWorldState(JSONObject o) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        GlobalData.setMapSize(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y));
+        final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), MainGame.scaleFactor);
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
@@ -45,14 +46,13 @@ public class Serializer {
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
                     Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor().construct(json);
-                    GlobalData.getWorldState().registerEntity(e);
+                    worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }
             }
         });
 
-        // Now that a world is loaded, begin threads!
-        Threads.init();
+        return worldRepresentation;
     }
 
 

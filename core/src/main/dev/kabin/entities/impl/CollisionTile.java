@@ -38,7 +38,7 @@ public class CollisionTile extends CollisionEntity {
                     "Use the clearAt method to clear. Here are the coordinates (%s,%s)").formatted(getUnscaledX(), getUnscaledY()));
         }
         objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
-        animationPlaybackImpl.setSmoothParameters(1, getX(), getY());
+        animationPlaybackImpl.setSmoothParameter(1);
     }
 
     public int getIndex() {

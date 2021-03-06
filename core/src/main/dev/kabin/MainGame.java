@@ -3,6 +3,7 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,7 +22,6 @@ import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.eventhandlers.*;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
-import dev.kabin.util.shapes.primitive.RectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +36,18 @@ public class MainGame extends ApplicationAdapter {
     public static float scaleFactor = 1.0f;
     public static int screenHeight = 225;
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
-    private final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
+    public final MouseEventUtil mouseEventUtil = new MouseEventUtil(1.0f, this::getWorldRepresentation);
+    public final KeyEventUtil keyEventUtil = new KeyEventUtil();
+    private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
     private SpriteBatch spriteBatch;
     private float stateTime = 0f;
+
+    protected WorldRepresentation worldRepresentation;
+
+    private WorldRepresentation getWorldRepresentation(){
+        return worldRepresentation;
+    }
+
 
     @Override
     public void create() {
@@ -49,7 +58,7 @@ public class MainGame extends ApplicationAdapter {
 
         GlobalData.stage = new Stage(new ScreenViewport());
         InputMultiplexer imp = new InputMultiplexer();
-        imp.setProcessors(GlobalData.getInputProcessor(), GlobalData.stage);
+        imp.setProcessors(inputProcessor, GlobalData.stage);
         Gdx.input.setInputProcessor(imp);
         logger.setLevel(GlobalData.getLogLevel());
         EventUtil.setInputOptions(EventUtil.InputOptions.registerAll(scaleFactor));
@@ -58,9 +67,23 @@ public class MainGame extends ApplicationAdapter {
 
 
         camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-        DeveloperUI.init(stage);
+        DeveloperUI.init(
+                stage,
+                this::getWorldRepresentation,
+                this::getMouseEventSupplier,
+                this::getKeyEventSupplier
+
+        );
         GlobalData.atlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();
+    }
+
+    private KeyEventUtil getKeyEventSupplier() {
+        return keyEventUtil;
+    }
+
+    private MouseEventUtil getMouseEventSupplier() {
+        return mouseEventUtil;
     }
 
     @Override
@@ -70,8 +93,8 @@ public class MainGame extends ApplicationAdapter {
         Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
 
         // Render physics
-        if (GlobalData.getWorldState() != null) {
-            final var parameters = new PhysicsParametersImpl(GlobalData.getWorldState(), keyEventUtil);
+        if (worldRepresentation != null) {
+            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil);
             PhysicsEngine.render(stateTime, parameters);
         }
 
@@ -95,8 +118,8 @@ public class MainGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
 
         // Render graphics
-        if (GlobalData.getWorldState() != null) {
-            GlobalData.getWorldState().forEachEntityInCameraNeighborhood(e -> e.updateGraphics(new GraphicsParametersImpl(spriteBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight)));
+        if (worldRepresentation != null) {
+            worldRepresentation.forEachEntityInCameraNeighborhood(e -> e.updateGraphics(new GraphicsParametersImpl(spriteBatch, camera.getCamera(), stateTime, scaleFactor, screenWidth, screenHeight)));
         }
 
         //bundle.renderFrameByIndex(0);

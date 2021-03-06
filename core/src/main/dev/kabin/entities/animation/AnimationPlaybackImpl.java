@@ -176,7 +176,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     }
 
     @Override
-    public void setSmoothParameters(float alpha, float initX, float initY) {
+    public void setSmoothParameter(float alpha) {
         weightedAverage2D = new WeightedAverage2D(alpha);
     }
 
