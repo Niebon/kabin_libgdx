@@ -4,10 +4,10 @@ import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationClass;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.util.TangentFinder;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
+import dev.kabin.util.TangentFinder;
 import dev.kabin.util.eventhandlers.KeyCode;
 
 import java.util.List;
@@ -44,13 +44,13 @@ public class Player extends EntityAnimate {
     private float dx, dy;
     private int r, l, u, d;
     private float vAbsDividedBySquareRoot;
-    private float vAbs;
+    private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;
     private int jump;
     private float jumpCooldown;
     private int frameCounter;
-    private float jumpVel;
-    private float runSpeed;
-    private float walkSpeed;
+    private static final float RUN_SPEED_METERS_PER_SECONDS = 8f;
+    private static final float WALK_SPEED_METERS_PER_SECONDS = 3f;
+    private float vAbsMetersPerSecond;
     private boolean beganMoving;
     private boolean facingRight;
     private boolean onLadder;
@@ -61,16 +61,13 @@ public class Player extends EntityAnimate {
         if (instance != null) throw new IllegalArgumentException("Player already exists.");
         // Physics
         jumpFrame = 0;
-        runSpeed = PhysicsEngine.meter * 8f;   // per seconds
-        walkSpeed = PhysicsEngine.meter * 3f;   // per seconds
-        jumpVel = PhysicsEngine.meter * 7f; // per seconds
         toggleRunSpeed();
 
         // Throwing items
         throwMomentum = 140; // kg m/s
 
         instance = this;
-        vAbs = runSpeed;
+        vAbsMetersPerSecond = RUN_SPEED_METERS_PER_SECONDS;
     }
 
     public static Optional<Player> getInstance() {
@@ -95,12 +92,12 @@ public class Player extends EntityAnimate {
 
     public void toggleRunSpeed() {
         running = true;
-        vAbs = runSpeed;
+        vAbsMetersPerSecond = RUN_SPEED_METERS_PER_SECONDS;
     }
 
     public void toggleWalkSpeed() {
         running = false;
-        vAbs = walkSpeed;
+        vAbsMetersPerSecond = WALK_SPEED_METERS_PER_SECONDS;
     }
 
     public void interactWithNearestIntractable() {
@@ -220,7 +217,7 @@ public class Player extends EntityAnimate {
 
             onLadder = false;
 
-            dx = vAbs * (r - l) * params.dt();
+            dx = vAbsMetersPerSecond * params.meter() * (r - l) * params.dt();
 
             // Handle jump input
             if (jump == 1) {
@@ -260,17 +257,17 @@ public class Player extends EntityAnimate {
                         while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)
                             i++;
                         vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i);
-                        vy0 = jumpVel + params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled - i);
+                        vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled - i);
                     }
                     else {
-                        vy0 = jumpVel;
+                        vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
                     }
                 }
             }
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - PhysicsEngine.gravitationConstant * jumpTime) * params.dt();
+            dy = (vy0 - PhysicsEngine.GRAVITATION_CONSTANT * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 
@@ -281,7 +278,7 @@ public class Player extends EntityAnimate {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(Entity.findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbs * params.dt());
+            dy = Math.min(Entity.findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsMetersPerSecond * params.meter() * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -331,13 +328,14 @@ public class Player extends EntityAnimate {
             } else if (hasFooting) {
 
                 // If the path in the given direction is obstructed:
-                final double angle = TangentFinder.slope(xPrevUnscaled,
+                final double angle = TangentFinder.slope(
+                        xPrevUnscaled,
                         yPrevUnscaled,
                         Direction.valueOf(dx),
                         params::isCollisionAt);
 
-                dy = (float) (vAbs * Math.sin(Math.toRadians(angle)) * params.dt());
-                dx = (float) (vAbs * Math.cos(Math.toRadians(angle)) * params.dt());
+                dy = (float) (vAbsMetersPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
+                dx = (float) (vAbsMetersPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
 
                 System.out.println(angle);
             }

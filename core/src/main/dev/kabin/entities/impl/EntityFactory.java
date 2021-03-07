@@ -1,5 +1,6 @@
 package dev.kabin.entities.impl;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.animation.AnimationClass;
 import org.json.JSONObject;
 
@@ -27,43 +28,43 @@ public class EntityFactory {
         //GROUND_TILE(GroundTile::new,  EntityGroupProvider.Type.GROUND),
         //LADDER(Ladder::new, Ladder::new, EntityGroupProvider.Type.FOCAL_POINT),
         //MAP_CONNECTOR(MapConnector::new, MapConnector::new, null),
-        //OON(Moon::new, Moon::new, EntityGroupProvider.Type.SKY),
-        PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Animate.class),
-        //STARS(Stars::new, Stars::new, EntityGroupProvider.Type.SKY),
-        STATIC_BACKGROUND(StaticBackground::new, EntityCollectionProvider.Type.STATIC_BACKGROUND, AnimationClass.Inanimate.class),
-        //SKY(Sky::new, null, EntityGroupProvider.Type.SKY),
-        //SHORTCUT(Shortcut::new, Shortcut::new, EntityGroupProvider.Type.FOCAL_POINT);
-        ;
+		//OON(Moon::new, Moon::new, EntityGroupProvider.Type.SKY),
+		PLAYER(Player::new, EntityCollectionProvider.Type.FOCAL_POINT, AnimationClass.Animate.class),
+		//STARS(Stars::new, Stars::new, EntityGroupProvider.Type.SKY),
+		STATIC_BACKGROUND(StaticBackground::new, EntityCollectionProvider.Type.STATIC_BACKGROUND, AnimationClass.Inanimate.class),
+		//SKY(Sky::new, null, EntityGroupProvider.Type.SKY),
+		//SHORTCUT(Shortcut::new, Shortcut::new, EntityGroupProvider.Type.FOCAL_POINT);
+		;
 
-        private final EntityConstructor entityConstructor;
-        private final EntityCollectionProvider.Type groupType;
-        private final Class<? extends Enum<?>> animationClass;
+		private final EntityConstructor entityConstructor;
+		private final EntityCollectionProvider.Type groupType;
+		private final Class<? extends Enum<?>> animationClass;
 
-        EntityType(EntityConstructor entityConstructor,
-                   EntityCollectionProvider.Type groupType,
-                   Class<? extends Enum<?>> animationClass) {
-            this.entityConstructor = entityConstructor;
-            this.groupType = groupType;
-            this.animationClass = animationClass;
-        }
+		EntityType(EntityConstructor entityConstructor,
+				   EntityCollectionProvider.Type groupType,
+				   Class<? extends Enum<?>> animationClass) {
+			this.entityConstructor = entityConstructor;
+			this.groupType = groupType;
+			this.animationClass = animationClass;
+		}
 
-        public JsonConstructor getJsonConstructor() {
-            return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject).build());
-        }
+		public JsonConstructor getJsonConstructor(TextureAtlas textureAtlas) {
+			return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject).setTextureAtlas(textureAtlas).build());
+		}
 
-        public EntityConstructor getParameterConstructor() {
-            return entityConstructor;
-        }
+		public EntityConstructor getParameterConstructor() {
+			return entityConstructor;
+		}
 
-        public EntityCollectionProvider.Type groupType() {
-            return groupType;
-        }
+		public EntityCollectionProvider.Type groupType() {
+			return groupType;
+		}
 
-        public Class<? extends Enum<?>> animationClass(){
-            return animationClass;
-        }
+		public Class<? extends Enum<?>> animationClass() {
+			return animationClass;
+		}
 
-    }
+	}
 
     @FunctionalInterface
     public interface EntityConstructor {

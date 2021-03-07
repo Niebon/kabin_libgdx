@@ -1,6 +1,7 @@
 package dev.kabin.ui.developer.widgets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,6 +23,8 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class EntityLoadingWidget {
 
@@ -33,8 +36,21 @@ public class EntityLoadingWidget {
     private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
     private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;
     private int layer;
+    private final Supplier<Float> mouseRelativeToWorldX;
+    private final Supplier<Float> mouseRelativeToWorldY;
+    private final Consumer<Entity> registerEntityToWorld;
+    private final Supplier<TextureAtlas> textureAtlasSupplier;
 
-    public EntityLoadingWidget(Executor executor) {
+
+    public EntityLoadingWidget(Executor executor,
+                               Supplier<Float> mouseRelativeToWorldX,
+                               Supplier<Float> mouseRelativeToWorldY,
+                               Consumer<Entity> registerEntityToWorld,
+                               Supplier<TextureAtlas> textureAtlasSupplier) {
+        this.mouseRelativeToWorldX = mouseRelativeToWorldX;
+        this.mouseRelativeToWorldY = mouseRelativeToWorldY;
+        this.registerEntityToWorld = registerEntityToWorld;
+        this.textureAtlasSupplier = textureAtlasSupplier;
         widget = new dev.kabin.ui.Widget.Builder()
                 .setTitle("Entity loading widget")
                 .setWidth(WIDTH)
@@ -97,7 +113,7 @@ public class EntityLoadingWidget {
 
 
         // Finally, show content:
-        preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset, AnimationClass.Animate.class);
+        preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Animate.class);
         refreshContentTableMessage();
     }
 
@@ -145,16 +161,17 @@ public class EntityLoadingWidget {
 
 
         EntityParameters parameters = new EntityParameters.Builder()
-                .setX(GlobalData.mouseEventUtil.getMouseXRelativeToWorld())
-                .setY(GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
+                .setX(mouseRelativeToWorldX.get())
+                .setY(mouseRelativeToWorldY.get())
                 .setLayer(layer)
                 .setScale(MainGame.scaleFactor)
                 .setAtlasPath(selectedAsset)
+                .setTextureAtlas(textureAtlasSupplier.get())
                 .build();
 
 
         Entity e = entityType.getParameterConstructor().construct(parameters);
-        GlobalData.getWorldState().registerEntity(e);
+        registerEntityToWorld.accept(e);
         e.getActor().ifPresent(GlobalData.stage::addActor);
 
     }
@@ -177,7 +194,7 @@ public class EntityLoadingWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                preview = AnimationBundleFactory.loadFromAtlasPath(selectedAsset, AnimationClass.Animate.class);
+                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Animate.class);
             }
             refreshContentTableMessage();
         });

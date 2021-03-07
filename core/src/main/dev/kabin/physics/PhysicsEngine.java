@@ -1,8 +1,9 @@
 package dev.kabin.physics;
 
-import dev.kabin.GlobalData;
-import dev.kabin.MainGame;
 import dev.kabin.entities.PhysicsParameters;
+import dev.kabin.entities.impl.Entity;
+
+import java.util.function.Consumer;
 
 /**
  * In order to make rendering deterministic,
@@ -10,30 +11,30 @@ import dev.kabin.entities.PhysicsParameters;
  */
 public class PhysicsEngine {
 
-    public final static float DT = 1 / 120f;
-    public static float meter = 12 * MainGame.scaleFactor;
-    public static float gravitationConstant = 9.81f * meter;
-    private static float lastFrame = 0f;
+	public static final int METER = 10; // One meter in pixels
+	public static final float DT = 1 / 120f;
+	public static final float GRAVITATION_CONSTANT = 9.81f;
+	private static float lastFrame = 0f;
 
-    private static int findNumberOfFramesToRender(float stateTime) {
-        int frames = 1;
-        float timeElapsedSinceLastFrame = stateTime - lastFrame;
-        while (frames * DT < timeElapsedSinceLastFrame) {
-            frames++;
-        }
-        lastFrame = stateTime;
-        return frames - 1;
-    }
+	private static int findNumberOfFramesToRender(float stateTime) {
+		int frames = 1;
+		float timeElapsedSinceLastFrame = stateTime - lastFrame;
+		while (frames * DT < timeElapsedSinceLastFrame) {
+			frames++;
+		}
+		lastFrame = stateTime;
+		return frames - 1;
+	}
 
-    public static void render(float stateTime, PhysicsParameters params) {
-        int numberOfFramesToRender = findNumberOfFramesToRender(stateTime);
-        for (int i = 0; i < numberOfFramesToRender; i++) {
-            renderFrame(params);
-        }
-    }
+	public static void renderOutstandingFrames(float stateTime, PhysicsParameters params, Consumer<Consumer<Entity>> forEachEntity) {
+		int numberOfFramesToRender = findNumberOfFramesToRender(stateTime);
+		for (int i = 0; i < numberOfFramesToRender; i++) {
+			renderExactlyOneFrame(params, forEachEntity);
+		}
+	}
 
-    public static void renderFrame(PhysicsParameters params) {
-        GlobalData.getWorldState().forEachEntityInCameraNeighborhood(e -> e.updatePhysics(params));
-    }
+	public static void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<Entity>> forEachEntity) {
+		forEachEntity.accept(e -> e.updatePhysics(params));
+	}
 
 }

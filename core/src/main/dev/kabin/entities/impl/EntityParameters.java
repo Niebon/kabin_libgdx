@@ -1,5 +1,6 @@
 package dev.kabin.entities.impl;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.MainGame;
 import org.json.JSONObject;
 
@@ -9,13 +10,15 @@ import java.util.Optional;
 
 public class EntityParameters {
 
-    private final Context context;
+    private final RuntimeContext runtimeContext;
     private final Map<String, Object> backingMap;
     private final float x;
     private final float y;
     private final String atlasPath;
     private final float scale;
     private final int layer;
+    private final TextureAtlas textureAtlas;
+
 
     private EntityParameters(float x,
                              float y,
@@ -23,19 +26,24 @@ public class EntityParameters {
                              float scale,
                              int layer,
                              Map<String, Object> backingMap,
-                             Context context) {
-        this.context = context;
+                             RuntimeContext runtimeContext, TextureAtlas textureAtlas) {
+        this.runtimeContext = runtimeContext;
         this.x = x;
         this.y = y;
         this.atlasPath = atlasPath;
         this.scale = scale;
         this.layer = layer;
         this.backingMap = backingMap;
+        this.textureAtlas = textureAtlas;
     }
 
     public <T> Optional<T> getMaybe(String key) {
         //noinspection unchecked
         return Optional.ofNullable((T) backingMap.get(key));
+    }
+
+    public TextureAtlas getTextureAtlas() {
+        return textureAtlas;
     }
 
     public float x() {
@@ -54,15 +62,15 @@ public class EntityParameters {
         return atlasPath;
     }
 
-    public Context getContext() {
-        return context;
+    public RuntimeContext getContext() {
+        return runtimeContext;
     }
 
     int layer() {
         return layer;
     }
 
-    public enum Context {TEST, PRODUCTION}
+    public enum RuntimeContext {TEST, PRODUCTION}
 
     public static class Builder {
         private float x;
@@ -71,7 +79,8 @@ public class EntityParameters {
         private float scale;
         private int layer;
         private Map<String, Object> backingMap = new HashMap<>();
-        private Context context = Context.PRODUCTION;
+        private RuntimeContext runtimeContext = RuntimeContext.PRODUCTION;
+        private TextureAtlas textureAtlas;
 
         public Builder(JSONObject o) {
             scale = MainGame.scaleFactor;
@@ -89,7 +98,7 @@ public class EntityParameters {
         }
 
         public static Builder testParameters(){
-            return new Builder().setContext(Context.TEST);
+            return new Builder().setContext(RuntimeContext.TEST);
         }
 
         public Builder setX(float x) {
@@ -102,8 +111,8 @@ public class EntityParameters {
             return this;
         }
 
-        public Builder setContext(Context context) {
-            this.context = context;
+        public Builder setContext(RuntimeContext runtimeContext) {
+            this.runtimeContext = runtimeContext;
             return this;
         }
 
@@ -122,6 +131,11 @@ public class EntityParameters {
             return this;
         }
 
+        public Builder setTextureAtlas(TextureAtlas textureAtlas) {
+            this.textureAtlas = textureAtlas;
+            return this;
+        }
+
         public Builder setBackingMap(Map<String, Object> backingMap) {
             this.backingMap = backingMap;
             return this;
@@ -137,8 +151,8 @@ public class EntityParameters {
 
         public EntityParameters build() {
             return new EntityParameters(
-                    x, y, atlasPath, scale, layer, backingMap, context
-            );
+                    x, y, atlasPath, scale, layer, backingMap, runtimeContext,
+                    textureAtlas);
         }
 
 

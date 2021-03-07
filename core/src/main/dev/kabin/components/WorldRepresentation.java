@@ -37,7 +37,7 @@ public class WorldRepresentation {
     private final Component rootComponent;
     private long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
     private ArrayList<Entity> entitiesInCameraNeighborhoodCached;
-    private long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
+    private final long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
     private ArrayList<Entity> entitiesInCameraBoundsCached;
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
     private Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
@@ -161,6 +161,7 @@ public class WorldRepresentation {
 
     public void forEachEntityInCameraNeighborhood(Consumer<Entity> action) {
         ArrayList<Entity> entities = entitiesInCameraNeighborhoodCached;
+        if (entities == null) return;
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = entities.size(); i < n; i++) {
             action.accept(entities.get(i));

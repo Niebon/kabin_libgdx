@@ -4,25 +4,34 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.entities.impl.Entity;
-import dev.kabin.util.points.*;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.points.ImmutablePointFloat;
+import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.RectFloat;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class EntitySelection {
 
     private final Set<Entity> currentlySelectedEntities = new HashSet<>();
+    private final Supplier<MouseEventUtil> mouseEventUtil;
     private RectFloat backingRect;
     private ImmutablePointFloat begin;
 
-    public void render() {
+    public EntitySelection(Supplier<MouseEventUtil> mouseEventUtil) {
+        this.mouseEventUtil = mouseEventUtil;
+    }
+
+    public void render(Consumer<Consumer<Entity>> forEachEntity) {
         if (begin != null) {
-            float minX = Math.min(begin.x(), GlobalData.mouseEventUtil.getXRelativeToUI());
-            float minY = Math.min(begin.y(), GlobalData.mouseEventUtil.getYRelativeToUI());
-            float width = Math.abs(begin.x() - GlobalData.mouseEventUtil.getXRelativeToUI());
-            float height = Math.abs(begin.y() - GlobalData.mouseEventUtil.getYRelativeToUI());
+            float minX = Math.min(begin.x(), mouseEventUtil.get().getXRelativeToUI());
+            float minY = Math.min(begin.y(), mouseEventUtil.get().getYRelativeToUI());
+            float width = Math.abs(begin.x() - mouseEventUtil.get().getXRelativeToUI());
+            float height = Math.abs(begin.y() - mouseEventUtil.get().getYRelativeToUI());
 
             float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
             float offsetY = MainGame.camera.getCamera().position.y - MainGame.screenHeight * 0.5f;
@@ -30,12 +39,12 @@ public class EntitySelection {
 
             GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
-            GlobalData.shapeRenderer.rect(begin.x(), begin.y(), GlobalData.mouseEventUtil.getXRelativeToUI() - begin.x(),
-                    GlobalData.mouseEventUtil.getYRelativeToUI() - begin.y());
+            GlobalData.shapeRenderer.rect(begin.x(), begin.y(), mouseEventUtil.get().getXRelativeToUI() - begin.x(),
+                    mouseEventUtil.get().getYRelativeToUI() - begin.y());
             GlobalData.shapeRenderer.end();
 
             // By abuse of the word "render" include this here...
-            GlobalData.getWorldState().actionForEachEntityOrderedByType(e -> {
+            forEachEntity.accept(e -> {
                 if (backingRect.contains(e.getX(), e.getY())) {
                     currentlySelectedEntities.add(e);
                 } else {
@@ -47,7 +56,10 @@ public class EntitySelection {
 
     public void begin() {
         currentlySelectedEntities.clear();
-        begin = PointFloat.immutable(GlobalData.mouseEventUtil.getXRelativeToUI(), GlobalData.mouseEventUtil.getYRelativeToUI());
+        begin = PointFloat.immutable(
+                mouseEventUtil.get().getXRelativeToUI(),
+                mouseEventUtil.get().getYRelativeToUI()
+        );
     }
 
     // End, but only clear the selected dev.kabin.entities after the begin() call.

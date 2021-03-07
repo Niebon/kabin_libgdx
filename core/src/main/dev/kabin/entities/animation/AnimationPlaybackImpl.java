@@ -22,6 +22,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     private final int width, height;
     private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
+    private final TextureAtlas atlas;
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
     private final Map<T, int[]> animationBlueprint;
@@ -42,13 +43,16 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationClassIndexToAnimationLength = null;
         animationBlueprint = null;
         maxPixelheight = 0;
+        atlas = null;
     }
 
     public AnimationPlaybackImpl(
+            TextureAtlas atlas,
             Array<TextureAtlas.AtlasRegion> regions,
             Map<T, int[]> animationBlueprint,
             Class<T> tClass
     ) {
+        this.atlas = atlas;
         this.regions = regions;
         this.animationsMap = animationBlueprint.entrySet().stream().collect(
                 Collectors.toMap(
@@ -68,7 +72,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
 
         maxPixelheight = Arrays.stream(regions.items)
-                .map(region -> ImageAnalysisPool.findAnalysis(String.valueOf(region), region.index))
+                .map(region -> ImageAnalysisPool.findAnalysis(atlas, String.valueOf(region), region.index))
                 .mapToInt(ImageAnalysisPool.Analysis::getPixelHeight)
                 .max().orElse(0);
     }
@@ -167,7 +171,7 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
 
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return ImageAnalysisPool.findAnalysis(getCurrentImageAssetPath(), getCurrentImageAssetIndex());
+        return ImageAnalysisPool.findAnalysis(atlas, getCurrentImageAssetPath(), getCurrentImageAssetIndex());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package dev.kabin.util.pools;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.PointInt;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +14,10 @@ public class ImageAnalysisPool {
 
     private static final Map<String, Map<Integer, Analysis>> data = new HashMap<>();
 
-    public static Analysis findAnalysis(String path, int index) {
+    public static Analysis findAnalysis(TextureAtlas atlas, String path, int index) {
         if (!data.containsKey(path) || !data.get(path).containsKey(index)) {
             data.putIfAbsent(path, new HashMap<>());
-            data.get(path).put(index, new Analysis(path, index));
+            data.get(path).put(index, new Analysis(atlas, path, index));
         }
         return data.get(path).get(index);
     }
@@ -57,9 +56,13 @@ public class ImageAnalysisPool {
             pixelMassCenterX = 0;
             pixelMassCenterY = 0;
         }
-        public Analysis(@NotNull String path, int index) {
+
+        public Analysis(
+                @NotNull TextureAtlas atlas,
+                @NotNull String path,
+                int index) {
             final int width, height;
-            final Optional<TextureAtlas.AtlasRegion> atlasRegionMaybe = Optional.ofNullable(GlobalData.getAtlas().getRegions()
+            final Optional<TextureAtlas.AtlasRegion> atlasRegionMaybe = Optional.ofNullable(atlas.getRegions()
                     .select(a -> path.equals(a.toString()) && index == a.index).iterator().next());
             if (atlasRegionMaybe.isEmpty()) {
                 lowestPixel = 0;

@@ -64,4 +64,8 @@ public interface PhysicsParameters {
      */
     float dt();
 
+    /**
+     * @return a meter.
+     */
+    float meter();
 }

@@ -2,13 +2,15 @@ package dev.kabin.util.eventhandlers;
 
 
 import dev.kabin.GlobalData;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 import static dev.kabin.GlobalData.developerMode;
 
@@ -22,11 +24,12 @@ public class EventUtil {
         return currentInputOptions;
     }
 
-    public static void setInputOptions(@NotNull EventUtil.InputOptions options) {
+    public static void setInputOptions(@NotNull EventUtil.InputOptions options,
+                                       KeyEventUtil keyEventUtil,
+                                       MouseEventUtil mouseEventUtil,
+                                       Supplier<WorldRepresentation> representation) {
         Player.getInstance().ifPresent(Player::freeze);
         currentInputOptions = options;
-        final KeyEventUtil keyEventUtil = GlobalData.keyEventUtil;
-        final MouseEventUtil mouseEventUtil = GlobalData.mouseEventUtil;
 
 
         keyEventUtil.clear();
@@ -86,7 +89,7 @@ public class EventUtil {
 
                 mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
                     if (keyEventUtil.isAltDown()) {
-                        TileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
+                        DeveloperUI.getTileSelectionWidget().removeGroundTileAtCurrentMousePositionThreadLocked();
                     }
                 });
 
@@ -97,10 +100,10 @@ public class EventUtil {
                 });
 
                 mouseEventUtil.addMouseScrollListener(val -> {
-                    GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(
+                    representation.get().getEntitiesWithinCameraBoundsCached(
                             MutableRectInt.centeredAt(
-                                    Math.round(GlobalData.mouseEventUtil.getMouseXRelativeToWorld() / options.getScale()),
-                                    Math.round(GlobalData.mouseEventUtil.getMouseYRelativeToWorld() / options.getScale()),
+                                    Math.round(mouseEventUtil.getMouseXRelativeToWorld() / options.getScale()),
+                                    Math.round(mouseEventUtil.getMouseYRelativeToWorld() / options.getScale()),
                                     4,
                                     4)
                     ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {

@@ -1,5 +1,6 @@
 package dev.kabin;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
@@ -29,7 +30,7 @@ public class Serializer {
         return o;
     }
 
-    public static WorldRepresentation loadWorldState(JSONObject o) {
+    public static WorldRepresentation loadWorldState(TextureAtlas textureAtlas, JSONObject o) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), MainGame.scaleFactor);
@@ -45,7 +46,7 @@ public class Serializer {
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor().construct(json);
+                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor(textureAtlas).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }

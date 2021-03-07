@@ -1,15 +1,10 @@
 package dev.kabin.entities.impl;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.GlobalData;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
@@ -20,9 +15,7 @@ import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -52,7 +45,10 @@ abstract class AbstractEntity implements Entity {
         layer = parameters.layer();
         switch (parameters.getContext()) {
             case TEST -> animationPlaybackImpl = MOCK_ANIMATION_PLAYBACK;
-            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(atlasPath, getType().animationClass());
+            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
+                    parameters.getTextureAtlas(),
+                    atlasPath,
+                    getType().animationClass());
             default -> throw new IllegalStateException("Unexpected value: " + parameters.getContext());
         }
         animationPlaybackImpl.setSmoothParameter(0.5f);
@@ -102,63 +98,7 @@ abstract class AbstractEntity implements Entity {
     }
 
     private void handleMouseClickRight() {
-        if (GlobalData.developerMode) {
-            final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-            final var dialog = new Dialog("Actions", skin);
-            final float width = 200;
-            final float height = 200;
-            dialog.setBounds(
-                    GlobalData.mouseEventUtil.getXRelativeToUI() + width * 0.1f,
-                    GlobalData.mouseEventUtil.getYRelativeToUI() + height * 0.1f,
-                    width, height
-            );
-            dialog.getContentTable().defaults().pad(10);
 
-            // Remove button.
-            final var removeButton = new TextButton("Remove", skin, "default");
-            removeButton.addListener(
-                    new ClickListener() {
-                        @Override
-                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-                            // Find all dev.kabin.entities scheduled for removal.
-                            final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
-                            final Set<Entity> currentlySelectedEntities = DeveloperUI.getEntitySelection()
-                                    .getCurrentlySelectedEntities();
-                            if (currentlySelectedEntities.contains(AbstractEntity.this)) {
-                                entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
-                            } else {
-                                entitiesScheduledForRemoval.add(AbstractEntity.this);
-                            }
-
-                            entitiesScheduledForRemoval.forEach(e -> {
-                                GlobalData.getWorldState().unregisterEntity(e);
-                                e.getActor().ifPresent(Actor::remove);
-                            });
-
-                            dialog.remove();
-                            return true;
-                        }
-                    }
-            );
-            dialog.getContentTable().add(removeButton).size(100, 30);
-
-            // Exit button.
-            var exitButton = new TextButton("x", skin, "default");
-            exitButton.addListener(
-                    new ClickListener() {
-                        @Override
-                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                            return dialog.remove();
-                        }
-                    }
-            );
-            dialog.getTitleTable().add(exitButton)
-                    .size(20, 20)
-                    .padRight(0).padTop(0);
-            dialog.setModal(true);
-            GlobalData.stage.addActor(dialog);
-        }
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
-import dev.kabin.Threads;
+import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
 import dev.kabin.entities.animation.AnimationClass;
@@ -18,7 +18,6 @@ import dev.kabin.entities.impl.*;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
-import dev.kabin.util.eventhandlers.MouseEventUtil;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class TileSelectionWidget {
 
@@ -38,9 +39,26 @@ public class TileSelectionWidget {
     private final dev.kabin.ui.Widget widget;
     private String selectedAsset = "";
     private AnimationClass.Tile currentType = AnimationClass.Tile.SURFACE;
+    private final Supplier<TextureAtlas> textureAtlasSupplier;
+    private final Supplier<Float> mouseXRelativeToWorld;
+    private final Supplier<Float> mouseYRelativeToWorld;
+    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Consumer<Runnable> synchronizer;
 
 
-    public TileSelectionWidget(Executor executor) {
+    public TileSelectionWidget(
+            Supplier<TextureAtlas> atlas,
+            Executor executor,
+            Supplier<Float> mouseXRelativeToWorld,
+            Supplier<Float> mouseYRelativeToWorld,
+            Supplier<WorldRepresentation> worldRepresentationSupplier,
+            Consumer<Runnable> synchronizer
+    ) {
+        this.textureAtlasSupplier = atlas;
+        this.mouseXRelativeToWorld = mouseXRelativeToWorld;
+        this.mouseYRelativeToWorld = mouseYRelativeToWorld;
+        this.worldRepresentationSupplier = worldRepresentationSupplier;
+        this.synchronizer = synchronizer;
         widget = new dev.kabin.ui.Widget.Builder()
                 .setTitle("Tile selection widget")
                 .setX(Gdx.graphics.getWidth() - WIDTH)
@@ -72,31 +90,31 @@ public class TileSelectionWidget {
      * @param mouseX the horizontal coordinate of the given mouse position.
      * @param mouseY the vertical coordinate of the given mouse position.
      */
-    private static void removeGroundTileAtCurrentMousePosition(float mouseX, float mouseY) {
+    private void removeGroundTileAtCurrentMousePosition(float mouseX, float mouseY) {
         final int intX = Functions.snapToGrid(mouseX / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
         final float x = intX * MainGame.scaleFactor;
         final int intY = Functions.snapToGrid(mouseY / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
         final float y = intY * MainGame.scaleFactor;
         final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
         if (matchingCt != null) {
-            if (!GlobalData.getWorldState().unregisterEntity(matchingCt)) {
+            if (!worldRepresentationSupplier.get().unregisterEntity(matchingCt)) {
                 throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
             }
             matchingCt.getActor().ifPresent(Actor::remove);
-            matchingCt.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
-            GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).remove(matchingCt);
+            matchingCt.actionEachCollisionPoint(worldRepresentationSupplier.get()::decrementCollisionAt);
+            worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).remove(matchingCt);
         } else {
-            final Iterator<Entity> entityIterator = GlobalData.getWorldState().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).iterator();
+            final Iterator<Entity> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).iterator();
             while (entityIterator.hasNext()) {
                 final Entity e = entityIterator.next();
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
                     final var ct = (CollisionTile) e;
-                    if (!GlobalData.getWorldState().unregisterEntity(e)) {
+                    if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
                         throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                     }
                     CollisionTile.clearAt(ct.getUnscaledX(), ct.getUnscaledY()).orElseThrow();
                     ct.getActor().ifPresent(Actor::remove);
-                    ct.actionEachCollisionPoint(GlobalData.getWorldState()::decrementCollisionAt);
+                    ct.actionEachCollisionPoint(worldRepresentationSupplier.get()::decrementCollisionAt);
                     // Finally remove from cache, so that the next time this method is called, the same entity is not erased twice.
                     entityIterator.remove();
                 }
@@ -108,9 +126,9 @@ public class TileSelectionWidget {
      * Finds any entity on screen. Deletes any of type {@link CollisionTile collision tile} with position matching
      * the current mouse position.
      */
-    public static void removeGroundTileAtCurrentMousePositionThreadLocked() {
-        Threads.synchronize(
-                () -> removeGroundTileAtCurrentMousePosition(GlobalData.mouseEventUtil.getMouseXRelativeToWorld(), GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
+    public void removeGroundTileAtCurrentMousePositionThreadLocked() {
+        synchronizer.accept(
+                () -> removeGroundTileAtCurrentMousePosition(mouseXRelativeToWorld.get(), mouseYRelativeToWorld.get())
         );
     }
 
@@ -121,7 +139,7 @@ public class TileSelectionWidget {
 
 
         // Finally, show content:
-        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, AnimationClass.Tile.class);
+        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Tile.class);
         displaySelectTileButtons();
     }
 
@@ -137,17 +155,18 @@ public class TileSelectionWidget {
      * Afterwards, a new collision tile is added at the current mouse position.
      */
     public void replaceCollisionTileAtCurrentMousePositionWithCurrentSelection() {
-        Threads.synchronize(() -> {
+        synchronizer.accept(() -> {
             if (selectedAsset == null) return;
             if (currentType == null) return;
             final EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(GlobalData.mouseEventUtil.getMouseXRelativeToWorld())
-                    .setY(GlobalData.mouseEventUtil.getMouseYRelativeToWorld())
+                    .setX(mouseXRelativeToWorld.get())
+                    .setY(mouseYRelativeToWorld.get())
                     .setLayer(0)
                     .setScale(MainGame.scaleFactor)
                     .setAtlasPath(selectedAsset)
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                     .put(CollisionTile.TILE, currentType.name())
+                    .setTextureAtlas(textureAtlasSupplier.get())
                     .build();
 
             //System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());
@@ -156,19 +175,20 @@ public class TileSelectionWidget {
             removeGroundTileAtCurrentMousePosition(parameters.x(), parameters.y());
 
             // Get the new instance.
-            final CollisionTile newCollisionTile = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
+            final CollisionTile newCollisionTile
+                    = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
 
             // Init the data.
             newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
-            GlobalData.getWorldState().registerEntity(newCollisionTile);
+            worldRepresentationSupplier.get().registerEntity(newCollisionTile);
 
             // Add collision data.
-            GlobalData.getWorldState().activate(Math.round(parameters.x()), Math.round(parameters.y()));
+            worldRepresentationSupplier.get().activate(Math.round(parameters.x()), Math.round(parameters.y()));
             newCollisionTile.actionEachCollisionPoint((x, y) -> {
-                GlobalData.getWorldState().activate(x, y);
-                GlobalData.getWorldState().incrementCollisionAt(x, y);
+                worldRepresentationSupplier.get().activate(x, y);
+                worldRepresentationSupplier.get().incrementCollisionAt(x, y);
             });
-            GlobalData.getWorldState().updateLocation(newCollisionTile);
+            worldRepresentationSupplier.get().updateLocation(newCollisionTile);
             //System.out.println("Position: " + newCollisionTile.getPosition());
         });
     }
@@ -191,7 +211,7 @@ public class TileSelectionWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(selectedAsset, AnimationClass.Tile.class);
+                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(GlobalData.getAtlas(), selectedAsset, AnimationClass.Tile.class);
                 displaySelectTileButtons();
             }
         });

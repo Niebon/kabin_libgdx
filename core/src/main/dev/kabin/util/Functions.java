@@ -307,4 +307,8 @@ public class Functions {
     public static <T> T projectRight(T left, T right) {
         return right;
     }
+
+    public static <T> T nullSupplier() {
+        return null;
+    }
 }
