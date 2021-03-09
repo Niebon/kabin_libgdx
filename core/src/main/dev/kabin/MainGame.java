@@ -28,19 +28,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-import static dev.kabin.GlobalData.developerMode;
-
 public class MainGame extends ApplicationAdapter {
 
 	public static CameraWrapper camera;
 	public static int screenWidth = 400;
 	public static float scaleFactor = 1.0f;
 	public static int screenHeight = 225;
-	public final KeyEventUtil keyEventUtil = new KeyEventUtil();
 	private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
-	private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
 	protected WorldRepresentation worldRepresentation;
+	public final KeyEventUtil keyEventUtil = new KeyEventUtil();
 	public final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation);
+	private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
+
 	protected final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation);
 	protected TextureAtlas textureAtlas;
 	private float stateTime = 0f;
@@ -85,6 +84,7 @@ public class MainGame extends ApplicationAdapter {
 
 		camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		threadHandler.reload();
+		Player.getInstance().ifPresent(p -> p.setHandleInput(true));
 	}
 
 	protected KeyEventUtil getKeyEventUtil() {
@@ -103,7 +103,6 @@ public class MainGame extends ApplicationAdapter {
 	public void render() {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
-		Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
 
 		// Render physics
 		if (worldRepresentation != null) {
