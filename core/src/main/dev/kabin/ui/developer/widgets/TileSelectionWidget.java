@@ -211,7 +211,7 @@ public class TileSelectionWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(GlobalData.getAtlas(), selectedAsset, AnimationClass.Tile.class);
+                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Tile.class);
                 displaySelectTileButtons();
             }
         });

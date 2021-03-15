@@ -1,6 +1,5 @@
 package dev.kabin;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,10 +27,6 @@ public class GlobalData {
     public static int worldSizeX;
     public static int worldSizeY;
 
-
-    public static TextureAtlas getAtlas() {
-        return atlas;
-    }
 
     public static Level getLogLevel() {
         return Level.WARNING;

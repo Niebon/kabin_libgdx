@@ -37,10 +37,10 @@ public class MainGame extends ApplicationAdapter {
 	public static float scaleFactor = 1.0f;
 	public static int screenHeight = 225;
 	public final KeyEventUtil keyEventUtil = new KeyEventUtil();
+	public final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation);
 	private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
 	private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
 	protected WorldRepresentation worldRepresentation;
-	public final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation);
 	protected final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation);
 	protected TextureAtlas textureAtlas;
 	private float stateTime = 0f;

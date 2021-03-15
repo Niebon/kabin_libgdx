@@ -37,6 +37,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
+import static dev.kabin.GlobalData.atlas;
 
 public class DeveloperUI {
 
@@ -313,7 +314,7 @@ public class DeveloperUI {
 				try {
 
 					// TODO: deal with.
-					Serializer.loadWorldState(GlobalData.getAtlas(), new JSONObject(Files.readString(selectedFile.toPath())));
+					Serializer.loadWorldState(atlas, new JSONObject(Files.readString(selectedFile.toPath())));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
