@@ -1,6 +1,7 @@
 package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
+import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import org.json.JSONObject;
 
@@ -48,6 +49,8 @@ public class MainGameDeveloper extends MainGame {
 
     @Override
     public void render() {
+        Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
+
         super.render();
 
         // Render interface:
