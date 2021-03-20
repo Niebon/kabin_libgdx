@@ -3,6 +3,7 @@ package dev.kabin;
 import com.badlogic.gdx.Gdx;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.eventhandlers.KeyCode;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -45,6 +46,23 @@ public class MainGameDeveloper extends MainGame {
         );
         DeveloperUI.getEntityLoadingWidget().loadSettings(entityLoadingWidgetSettings);
         DeveloperUI.getTileSelectionWidget().loadSettings(tileSelectionWidgetSettings);
+    }
+
+    @Override
+    protected void updateCamera(CameraWrapper camera) {
+        // Admit camera free mode movement if in developer mode.
+        if (GlobalData.developerMode) {
+            if (!keyEventUtil.isControlDown()) camera.setPos(
+                    camera.getCamera().position.x +
+                            (keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
+                                    keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor),
+                    camera.getCamera().position.y +
+                            (keyEventUtil.isPressed(KeyCode.S) == keyEventUtil.isPressed(KeyCode.W) ? 0 :
+                                    keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor)
+            );
+        } else {
+            Player.getInstance().ifPresent(camera::follow);
+        }
     }
 
     @Override

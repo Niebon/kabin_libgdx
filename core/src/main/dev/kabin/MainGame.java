@@ -100,6 +100,15 @@ public class MainGame extends ApplicationAdapter {
 		return textureAtlas;
 	}
 
+	/**
+	 * Helper method to update the camera. Can be overridden by subclasses.
+	 *
+	 * @param cameraWrapper
+	 */
+	protected void updateCamera(CameraWrapper cameraWrapper){
+		Player.getInstance().ifPresent(cameraWrapper::follow);
+	}
+
 	@Override
 	public void render() {
 		stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
@@ -111,19 +120,7 @@ public class MainGame extends ApplicationAdapter {
 			PhysicsEngine.renderOutstandingFrames(stateTime, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
 		}
 
-		// Admit camera free mode movement if in developer mode.
-		if (GlobalData.developerMode) {
-			if (!keyEventUtil.isControlDown()) camera.setPos(
-					camera.getCamera().position.x +
-							(keyEventUtil.isPressed(KeyCode.A) == keyEventUtil.isPressed(KeyCode.D) ? 0 :
-									keyEventUtil.isPressed(KeyCode.A) ? -scaleFactor : scaleFactor),
-					camera.getCamera().position.y +
-							(keyEventUtil.isPressed(KeyCode.S) == keyEventUtil.isPressed(KeyCode.W) ? 0 :
-									keyEventUtil.isPressed(KeyCode.S) ? -scaleFactor : scaleFactor)
-			);
-		} else {
-			Player.getInstance().ifPresent(camera::follow);
-		}
+		updateCamera(camera);
 
 		// Shading
 		Pixmap p = new Pixmap(new byte[0], 0, 0);
