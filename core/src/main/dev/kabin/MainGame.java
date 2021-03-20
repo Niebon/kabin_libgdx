@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -123,6 +124,9 @@ public class MainGame extends ApplicationAdapter {
 		} else {
 			Player.getInstance().ifPresent(camera::follow);
 		}
+
+		// Shading
+		Pixmap p = new Pixmap(new byte[0], 0, 0);
 
 
 		spriteBatch.setProjectionMatrix(camera.getCamera().combined);

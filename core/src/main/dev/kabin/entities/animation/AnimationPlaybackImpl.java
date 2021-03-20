@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implements AnimationPlayback, Disposable {
 
-    public static final AnimationPlaybackImpl<?> MOCK_ANIMATION_PLAYBACK = new MockAnimationPlaybackImpl();
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
     private final int width, height;
     private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
@@ -32,26 +31,13 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
     private WeightedAverage2D weightedAverage2D;
     private float scale;
 
-    /**
-     * A constructor for a mock instance.
-     */
-    private AnimationPlaybackImpl() {
-        width = 0;
-        height = 0;
-        animationsMap = null;
-        regions = null;
-        animationClassIndexToAnimationLength = null;
-        animationBlueprint = null;
-        maxPixelheight = 0;
-        atlas = null;
-    }
-
     public AnimationPlaybackImpl(
             TextureAtlas atlas,
             Array<TextureAtlas.AtlasRegion> regions,
             Map<T, int[]> animationBlueprint,
             Class<T> tClass
     ) {
+        if (regions.isEmpty()) throw new IllegalArgumentException("The parameter regions must be non-empty.");
         this.atlas = atlas;
         this.regions = regions;
         this.animationsMap = animationBlueprint.entrySet().stream().collect(
@@ -230,26 +216,6 @@ public class AnimationPlaybackImpl<T extends Enum<T> & AnimationClass> implement
         animationsMap.forEach((type, animation) -> Arrays.stream(animation.getKeyFrames())
                 .forEach(r -> r.getTexture().dispose()));
         regions.forEach(r -> r.getTexture().dispose());
-    }
-
-    static class MockAnimationPlaybackImpl extends AnimationPlaybackImpl {
-
-
-        @Override
-        public int getCurrentImageAssetIndex() {
-            return 0;
-        }
-
-        @Override
-        public ImageAnalysisPool.Analysis getPixelAnalysis() {
-            return ImageAnalysisPool.Analysis.getMockInstance();
-        }
-
-        @Override
-        public int getCurrentAnimationLength() {
-            return 1;
-        }
-
     }
 
 }

@@ -18,7 +18,7 @@ public class IntToIntFunction {
     }
 
     public IntToIntFunction(int capacity) {
-        if (capacity <= 0) throw new IllegalArgumentException("Capacity must be positive.");
+        if (capacity < 0) throw new IllegalArgumentException("Capacity must be non-negative.");
         domain = new int[capacity];
         coDomain = new int[capacity];
     }

@@ -2,9 +2,10 @@ package dev.kabin.entities.impl;
 
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.util.Functions;
-import dev.kabin.util.points.PointInt;
 import dev.kabin.util.points.ImmutablePointInt;
+import dev.kabin.util.points.PointInt;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -31,18 +32,18 @@ public class CollisionTile extends CollisionEntity {
     public CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
-        animationPlaybackImpl.setCurrentAnimation(tile);
-        index = Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), animationPlaybackImpl.getCurrentAnimationLength());
+        final Optional<AnimationPlaybackImpl<?>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
+        animationPlaybackImpl.ifPresent(a -> a.setCurrentAnimation(tile));
+        index = animationPlaybackImpl
+                .map(AnimationPlaybackImpl::getCurrentAnimationLength)
+                .map(i -> Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), i))
+                .orElse(0);
         if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {
             throw new IllegalArgumentException(("The position at which this collision tile was placed was already occupied. " +
                     "Use the clearAt method to clear. Here are the coordinates (%s,%s)").formatted(getUnscaledX(), getUnscaledY()));
         }
         objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
-        animationPlaybackImpl.setSmoothParameter(1);
-    }
-
-    public int getIndex() {
-        return index;
+        animationPlaybackImpl.ifPresent(a -> a.setSmoothParameter(1));
     }
 
     /**
@@ -56,19 +57,25 @@ public class CollisionTile extends CollisionEntity {
         return Optional.ofNullable(objectPool.remove(PointInt.immutable(x, y)));
     }
 
+    public int getIndex() {
+        return index;
+    }
 
     @Override
     public void updateGraphics(GraphicsParameters params) {
-        animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
-        animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
-        animationPlaybackImpl.setScale(getScale() * 1.01f);
-        animationPlaybackImpl.setCurrentAnimation(tile);
-        animationPlaybackImpl.renderFrameByIndex(params, index);
-        actor().setBounds(
-                getX(), getY(),
-                animationPlaybackImpl.getWidth(),
-                animationPlaybackImpl.getHeight()
-        );
+        final var animationPlaybackImpl = getAnimationPlaybackImpl();
+        if (animationPlaybackImpl != null) {
+            animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
+            animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
+            animationPlaybackImpl.setScale(getScale() * 1.01f);
+            animationPlaybackImpl.setCurrentAnimation(tile);
+            animationPlaybackImpl.renderFrameByIndex(params, index);
+            actor().setBounds(
+                    getX(), getY(),
+                    animationPlaybackImpl.getWidth(),
+                    animationPlaybackImpl.getHeight()
+            );
+        }
     }
 
     @Override

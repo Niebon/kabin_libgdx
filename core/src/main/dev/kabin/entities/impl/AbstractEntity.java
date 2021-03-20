@@ -13,22 +13,24 @@ import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import static dev.kabin.entities.animation.AnimationPlaybackImpl.MOCK_ANIMATION_PLAYBACK;
-
 
 abstract class AbstractEntity implements Entity {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEntity.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
-    protected final AnimationPlaybackImpl<?> animationPlaybackImpl;
+
+    // Protected data:
+    private final AnimationPlaybackImpl<?> animationPlaybackImpl;
+
+    // Class fields:
     private final String atlasPath;
-    private int layer;
     private final Actor actor = new Actor();
     private final int id;
     private final MutableRectInt positionNbd;
@@ -37,21 +39,22 @@ abstract class AbstractEntity implements Entity {
     private final RectIntView graphicsNbdView;
     private float x, y, scale;
 
+    // Class variables:
+    private int layer;
+
     AbstractEntity(EntityParameters parameters) {
         id = createdInstances.incrementAndGet();
 
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
-        switch (parameters.getContext()) {
-            case TEST -> animationPlaybackImpl = MOCK_ANIMATION_PLAYBACK;
-            case PRODUCTION -> animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
-                    parameters.getTextureAtlas(),
-                    atlasPath,
-                    getType().animationClass());
-            default -> throw new IllegalStateException("Unexpected value: " + parameters.getContext());
+        animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
+                parameters.getTextureAtlas(),
+                atlasPath,
+                getType().animationClass());
+        if (animationPlaybackImpl != null) {
+            animationPlaybackImpl.setSmoothParameter(0.5f);
         }
-        animationPlaybackImpl.setSmoothParameter(0.5f);
 
         actor.addListener(new ClickListener() {
             @Override
@@ -79,6 +82,11 @@ abstract class AbstractEntity implements Entity {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
+    }
+
+    @Nullable
+    protected AnimationPlaybackImpl<?> getAnimationPlaybackImpl() {
+        return animationPlaybackImpl;
     }
 
     protected Actor actor() {
@@ -133,12 +141,12 @@ abstract class AbstractEntity implements Entity {
 
     private void updateNeighborhood() {
         graphicsNbd.translate(
-                Math.round((getLeftmostPixel() + getX())/ getScale() - graphicsNbd.getCenterX()),
+                Math.round((getLeftmostPixel() + getX()) / getScale() - graphicsNbd.getCenterX()),
                 Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
         );
 
         positionNbd.translate(
-                Math.round((getLeftmostPixel() + getX())/ getScale() - graphicsNbd.getCenterX()),
+                Math.round((getLeftmostPixel() + getX()) / getScale() - graphicsNbd.getCenterX()),
                 Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
         );
     }
@@ -151,6 +159,10 @@ abstract class AbstractEntity implements Entity {
     @Override
     public int getLayer() {
         return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 
     @Override
@@ -185,7 +197,6 @@ abstract class AbstractEntity implements Entity {
         return scale;
     }
 
-
     @Override
     public void setScale(float scale) {
         if (scale <= 0) throw new IllegalStateException("Scale should be positive.");
@@ -201,7 +212,7 @@ abstract class AbstractEntity implements Entity {
 
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return animationPlaybackImpl.getPixelAnalysis();
+        return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageAnalysisPool.Analysis.emptyAnalysis();
     }
 
     @Override
@@ -244,12 +255,8 @@ abstract class AbstractEntity implements Entity {
         return id;
     }
 
-    public void setLayer(int layer) {
-        this.layer = layer;
-    }
-
     @Override
-    public int getMaxPixelHeight(){
+    public int getMaxPixelHeight() {
         return animationPlaybackImpl.getMaxPixelHeight();
     }
 }

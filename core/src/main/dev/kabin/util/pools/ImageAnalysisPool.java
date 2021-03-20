@@ -24,8 +24,8 @@ public class ImageAnalysisPool {
 
     public static class Analysis {
 
-        public static final MockAnalysis MOCK_ANALYSIS = new MockAnalysis();
-        final List<PointInt> pixelProfile = new ArrayList<>();
+        private static final Analysis EMPTY_ANALYSIS = new Analysis();
+        private final List<PointInt> pixelProfile = new ArrayList<>();
         private final int lowestPixel;
         private final int highestPixel;
         private final int leftmostPixel;
@@ -159,10 +159,10 @@ public class ImageAnalysisPool {
         }
 
         /**
-         * A mock instance for unit tests.
+         * An analysis object which holds no data.
          */
-        public static Analysis getMockInstance() {
-            return MOCK_ANALYSIS;
+        public static Analysis emptyAnalysis() {
+            return EMPTY_ANALYSIS;
         }
 
         public List<PointInt> getPixelProfile() {
@@ -282,9 +282,5 @@ public class ImageAnalysisPool {
 
         }
 
-        public static class MockAnalysis extends Analysis {
-            public MockAnalysis() {
-            }
-        }
     }
 }

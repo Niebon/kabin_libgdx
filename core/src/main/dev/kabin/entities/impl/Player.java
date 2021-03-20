@@ -3,6 +3,7 @@ package dev.kabin.entities.impl;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
@@ -115,6 +116,8 @@ public class Player extends EntityAnimate {
 
     @Override
     public void updateGraphics(GraphicsParameters params) {
+        final AnimationPlaybackImpl<?> animationPlaybackImpl = getAnimationPlaybackImpl();
+        if (animationPlaybackImpl == null) return;
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
 
@@ -251,7 +254,7 @@ public class Player extends EntityAnimate {
                     jumpCooldown = 0;
                     jumpFrame = 0; // start jump frame
                     frameCounter = 10; // big number => greater than play new frame threshold => next frame played is start jump frame
-                    animationPlaybackImpl.reset();
+                    Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AnimationPlaybackImpl::reset);
                     if (affectedByVectorField) {
                         int i = 0;
                         while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)

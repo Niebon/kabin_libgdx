@@ -20,8 +20,8 @@ public class CollisionEntity extends AbstractEntity implements CollisionData {
 	public @NotNull List<PointInt> getCollisionProfile() {
 		return CollisionPool.findCollisionProfile(
 				atlas,
-				animationPlaybackImpl.getCurrentImageAssetPath(),
-				animationPlaybackImpl.getCurrentImageAssetIndex()
+				getAnimationPlaybackImpl().getCurrentImageAssetPath(),
+				getAnimationPlaybackImpl().getCurrentImageAssetIndex()
 		);
 	}
 
@@ -29,8 +29,8 @@ public class CollisionEntity extends AbstractEntity implements CollisionData {
 	public @NotNull List<PointInt> getSurfaceContourProfile() {
 		return CollisionPool.findSurfaceContourProfile(
 				atlas,
-				animationPlaybackImpl.getCurrentImageAssetPath(),
-				animationPlaybackImpl.getCurrentImageAssetIndex()
+				getAnimationPlaybackImpl().getCurrentImageAssetPath(),
+				getAnimationPlaybackImpl().getCurrentImageAssetIndex()
 		);
 	}
 

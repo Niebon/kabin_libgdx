@@ -2,6 +2,7 @@ package dev.kabin.entities.animation;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -10,7 +11,7 @@ import java.util.stream.Stream;
 
 public class AnimationBundleFactory {
 
-	public static Map<Enum<?>, int[]> findEnumTypeToIntArrayMapping(TextureAtlas textureAtlas,
+	private static Map<Enum<?>, int[]> findEnumTypeToIntArrayMapping(TextureAtlas textureAtlas,
 																	String atlasPath,
 																	Class<?> clazz) {
 		return Arrays.stream(clazz.getEnumConstants())
@@ -40,7 +41,7 @@ public class AnimationBundleFactory {
 				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 	}
 
-	public static Array<TextureAtlas.AtlasRegion> findAllAnimations(
+	private static Array<TextureAtlas.AtlasRegion> findAllAnimations(
 			TextureAtlas textureAtlas,
 			String atlasRegionPath,
 			Class<?> clazz) {
@@ -55,9 +56,11 @@ public class AnimationBundleFactory {
 				.toArray(TextureAtlas.AtlasRegion[]::new));
 	}
 
-	public static AnimationPlaybackImpl<?> loadFromAtlasPath(TextureAtlas textureAtlas,
+	@Nullable
+	public static AnimationPlaybackImpl<?> loadFromAtlasPath(@Nullable TextureAtlas textureAtlas,
 															 String atlasPath,
 															 Class<?> clazz) {
+		if (textureAtlas == null) return null;
 		var regions = findAllAnimations(textureAtlas, atlasPath, clazz);
 		var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, clazz);
 		//noinspection unchecked
