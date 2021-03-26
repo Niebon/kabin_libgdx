@@ -18,6 +18,8 @@ import dev.kabin.entities.impl.*;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
@@ -40,8 +42,10 @@ public class TileSelectionWidget {
     private String selectedAsset = "";
     private AnimationClass.Tile currentType = AnimationClass.Tile.SURFACE;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
-    private final Supplier<Float> mouseXRelativeToWorld;
-    private final Supplier<Float> mouseYRelativeToWorld;
+    private final FloatSupplier mouseXRelativeToWorld;
+    private final FloatSupplier mouseYRelativeToWorld;
+    private final FloatSupplier scale;
+    private final Supplier<RectInt> currCamBounds;
     private final Supplier<WorldRepresentation> worldRepresentationSupplier;
     private final Consumer<Runnable> synchronizer;
 
@@ -49,14 +53,18 @@ public class TileSelectionWidget {
     public TileSelectionWidget(
             Supplier<TextureAtlas> atlas,
             Executor executor,
-            Supplier<Float> mouseXRelativeToWorld,
-            Supplier<Float> mouseYRelativeToWorld,
+            FloatSupplier mouseXRelativeToWorld,
+            FloatSupplier mouseYRelativeToWorld,
+            FloatSupplier scale,
+            Supplier<RectInt> currCamBounds,
             Supplier<WorldRepresentation> worldRepresentationSupplier,
             Consumer<Runnable> synchronizer
     ) {
         this.textureAtlasSupplier = atlas;
         this.mouseXRelativeToWorld = mouseXRelativeToWorld;
         this.mouseYRelativeToWorld = mouseYRelativeToWorld;
+        this.scale = scale;
+        this.currCamBounds = currCamBounds;
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.synchronizer = synchronizer;
         widget = new dev.kabin.ui.Widget.Builder()
@@ -91,10 +99,10 @@ public class TileSelectionWidget {
      * @param mouseY the vertical coordinate of the given mouse position.
      */
     private void removeGroundTileAtCurrentMousePosition(float mouseX, float mouseY) {
-        final int intX = Functions.snapToGrid(mouseX / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
-        final float x = intX * MainGame.scaleFactor;
-        final int intY = Functions.snapToGrid(mouseY / MainGame.scaleFactor, CollisionTile.TILE_SIZE);
-        final float y = intY * MainGame.scaleFactor;
+        final int intX = Functions.snapToGrid(mouseX / scale.get(), CollisionTile.TILE_SIZE);
+        final float x = intX * scale.get();
+        final int intY = Functions.snapToGrid(mouseY / scale.get(), CollisionTile.TILE_SIZE);
+        final float y = intY * scale.get();
         final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
         if (matchingCt != null) {
             if (!worldRepresentationSupplier.get().unregisterEntity(matchingCt)) {
@@ -102,9 +110,9 @@ public class TileSelectionWidget {
             }
             matchingCt.getActor().ifPresent(Actor::remove);
             matchingCt.actionEachCollisionPoint(worldRepresentationSupplier.get()::decrementCollisionAt);
-            worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).remove(matchingCt);
+            worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).remove(matchingCt);
         } else {
-            final Iterator<Entity> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(MainGame.camera.currentCameraBounds()).iterator();
+            final Iterator<Entity> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
             while (entityIterator.hasNext()) {
                 final Entity e = entityIterator.next();
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
@@ -162,7 +170,7 @@ public class TileSelectionWidget {
                     .setX(mouseXRelativeToWorld.get())
                     .setY(mouseYRelativeToWorld.get())
                     .setLayer(0)
-                    .setScale(MainGame.scaleFactor)
+                    .setScale(scale.get())
                     .setAtlasPath(selectedAsset)
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                     .put(CollisionTile.TILE, currentType.name())

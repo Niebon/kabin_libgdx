@@ -1,11 +1,14 @@
 package dev.kabin.util.eventhandlers;
 
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -15,26 +18,39 @@ import java.util.function.Supplier;
 import static dev.kabin.GlobalData.developerMode;
 
 
-public class EventUtil {
+public class EventTriggerController {
 
-    private static InputOptions currentInputOptions;
-    private static LastActive lastActive = LastActive.MOUSE;
+    private LastActive lastActive = LastActive.MOUSE;
+    private final KeyEventUtil keyEventUtil;
+    private final MouseEventUtil mouseEventUtil;
+    private final Supplier<WorldRepresentation> representation;
+    private Supplier<DeveloperUI> developerUISupplier;
+    private final FloatSupplier scaleSupplier;
 
-    public static InputOptions getCurrentInputOptions() {
-        return currentInputOptions;
+    public EventTriggerController(@NotNull EventTriggerController.InputOptions options,
+                                  @NotNull KeyEventUtil keyEventUtil,
+                                  @NotNull MouseEventUtil mouseEventUtil,
+                                  @NotNull Supplier<WorldRepresentation> representation,
+                                  @NotNull Supplier<DeveloperUI> developerUISupplier,
+                                  @NotNull FloatSupplier scaleSupplier) {
+        this.keyEventUtil = keyEventUtil;
+        this.mouseEventUtil = mouseEventUtil;
+        this.representation = representation;
+        this.developerUISupplier = developerUISupplier;
+        this.scaleSupplier = scaleSupplier;
+        setInputOptions(options);
     }
 
-    public static void setInputOptions(@NotNull EventUtil.InputOptions options,
-                                       KeyEventUtil keyEventUtil,
-                                       MouseEventUtil mouseEventUtil,
-                                       Supplier<WorldRepresentation> representation) {
-        Player.getInstance().ifPresent(Player::freeze);
-        currentInputOptions = options;
+    public void setDeveloperUISupplier(Supplier<DeveloperUI> developerUISupplier) {
+        this.developerUISupplier = developerUISupplier;
+    }
 
+    public void setInputOptions(@NotNull InputOptions options) {
+        Player.getInstance().ifPresent(Player::freeze);
 
         keyEventUtil.clear();
         mouseEventUtil.clear();
-
+        mouseEventUtil.addListener(() -> setLastActive(EventTriggerController.LastActive.MOUSE));
 
         // Menu trigger
         if (options.isHandleMenuEvents()) {
@@ -64,7 +80,7 @@ public class EventUtil {
             keyEventUtil.addListener(KeyCode.F12, true, () -> {
                 developerMode = !developerMode;
                 // TODO
-                DeveloperUI.setVisible(GlobalData.developerMode);
+                developerUISupplier.get().setVisible(GlobalData.developerMode);
 
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });
@@ -77,45 +93,43 @@ public class EventUtil {
             {
                 mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
                     if (keyEventUtil.isShiftDown()) {
-                        DeveloperUI.getEntityLoadingWidget().addEntity();
+                        developerUISupplier.get().addEntity();
                     }
                 });
 
                 mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.LEFT, () -> {
                     if (keyEventUtil.isAltDown()) {
-                        DeveloperUI.getTileSelectionWidget().replaceCollisionTileAtCurrentMousePositionWithCurrentSelection();
+                        developerUISupplier.get().replaceCollisionTileAtCurrentMousePositionWithCurrentSelection();
                     }
                 });
 
                 mouseEventUtil.addMouseDragListener(MouseEventUtil.MouseButton.RIGHT, () -> {
                     if (keyEventUtil.isAltDown()) {
-                        DeveloperUI.getTileSelectionWidget().removeGroundTileAtCurrentMousePositionThreadLocked();
+                        developerUISupplier.get().removeGroundTileAtCurrentMousePositionThreadLocked();
                     }
                 });
 
                 mouseEventUtil.addListener(MouseEventUtil.MouseButton.LEFT, true, () -> {
                     if (keyEventUtil.isControlDown()) {
-                        DeveloperUI.addDevCue();
+                        developerUISupplier.get().addDevCue();
                     }
                 });
 
-                mouseEventUtil.addMouseScrollListener(val -> {
-                    representation.get().getEntitiesWithinCameraBoundsCached(
-                            MutableRectInt.centeredAt(
-                                    Math.round(mouseEventUtil.getMouseXRelativeToWorld() / options.getScale()),
-                                    Math.round(mouseEventUtil.getMouseYRelativeToWorld() / options.getScale()),
-                                    4,
-                                    4)
-                    ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {
-                        if (val > 0) {
-                            e.setLayer(e.getLayer() + 1);
-                            System.out.println("Modified layer: " + e.getLayer());
-                        } else if (val < 0) {
-                            e.setLayer(e.getLayer() - 1);
-                            System.out.println("Modified layer: " + e.getLayer());
-                        }
-                    });
-                });
+                mouseEventUtil.addMouseScrollListener(val -> representation.get().getEntitiesWithinCameraBoundsCached(
+                        MutableRectInt.centeredAt(
+                                Math.round(mouseEventUtil.getMouseXRelativeToWorld() / scaleSupplier.get()),
+                                Math.round(mouseEventUtil.getMouseYRelativeToWorld() / scaleSupplier.get()),
+                                4,
+                                4)
+                ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {
+                    if (val > 0) {
+                        e.setLayer(e.getLayer() + 1);
+                        System.out.println("Modified layer: " + e.getLayer());
+                    } else if (val < 0) {
+                        e.setLayer(e.getLayer() - 1);
+                        System.out.println("Modified layer: " + e.getLayer());
+                    }
+                }));
             }
 
 
@@ -123,29 +137,29 @@ public class EventUtil {
             {
                 keyEventUtil.addListener(KeyCode.S, true, () -> {
                     if (keyEventUtil.isControlDown() && developerMode) {
-                        DeveloperUI.saveWorld();
+                        developerUISupplier.get().saveWorld();
                     }
                 });
                 keyEventUtil.addListener(KeyCode.Z, true, () -> {
                     if (keyEventUtil.isControlDown() && developerMode) {
-                        DeveloperUI.undoChange();
+                        developerUISupplier.get().undoChange();
                     }
                 });
                 keyEventUtil.addListener(KeyCode.Y, true, () -> {
                     if (keyEventUtil.isControlDown() && developerMode) {
-                        DeveloperUI.redoChange();
+                        developerUISupplier.get().redoChange();
                     }
                 });
             }
         }
     }
 
-    public static LastActive getLastActive() {
+    public LastActive getLastActive() {
         return lastActive;
     }
 
-    public static void setLastActive(LastActive lastActive) {
-        EventUtil.lastActive = lastActive;
+    public void setLastActive(LastActive lastActive) {
+        this.lastActive = lastActive;
     }
 
     public enum LastActive {MOUSE, CONTROLLER}
@@ -157,18 +171,16 @@ public class EventUtil {
         private boolean handleDevModeToggleEvent;
         private boolean handleMenuEvents;
         private boolean handleControllerEvents;
-        private float scale = 1;
 
         @NotNull
-        @Contract("_-> new")
-        public static InputOptions registerAll(float scale) {
+        @Contract(" -> new")
+        public static InputOptions registerAll() {
             return new InputOptions()
                     .setHandleDevModeToggleEvent(true)
                     .setHandleDevModeEvents(true)
                     .setHandleMenuEvents(true)
                     .setHandlePlayerEvents(true)
-                    .setHandleControllerEvents(true)
-                    .setScale(scale);
+                    .setHandleControllerEvents(true);
         }
 
         public boolean isHandlePlayerEvents() {
@@ -216,13 +228,5 @@ public class EventUtil {
             return this;
         }
 
-        float getScale() {
-            return scale;
-        }
-
-        public InputOptions setScale(float scale) {
-            this.scale = scale;
-            return this;
-        }
     }
 }

@@ -5,6 +5,7 @@ import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.points.ImmutablePointFloat;
 import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.RectFloat;
@@ -19,11 +20,17 @@ public class EntitySelection {
 
     private final Set<Entity> currentlySelectedEntities = new HashSet<>();
     private final Supplier<MouseEventUtil> mouseEventUtil;
+    private final FloatSupplier camPosX;
+    private final FloatSupplier camPosY;
     private RectFloat backingRect;
     private ImmutablePointFloat begin;
 
-    public EntitySelection(Supplier<MouseEventUtil> mouseEventUtil) {
+    public EntitySelection(Supplier<MouseEventUtil> mouseEventUtil,
+                           FloatSupplier camPosX,
+                           FloatSupplier camPosY) {
         this.mouseEventUtil = mouseEventUtil;
+        this.camPosX = camPosX;
+        this.camPosY = camPosY;
     }
 
     public void render(Consumer<Consumer<Entity>> forEachEntity) {
@@ -33,8 +40,8 @@ public class EntitySelection {
             float width = Math.abs(begin.x() - mouseEventUtil.get().getXRelativeToUI());
             float height = Math.abs(begin.y() - mouseEventUtil.get().getYRelativeToUI());
 
-            float offsetX = MainGame.camera.getCamera().position.x - MainGame.screenWidth * 0.5f;
-            float offsetY = MainGame.camera.getCamera().position.y - MainGame.screenHeight * 0.5f;
+            float offsetX = camPosX.get() - MainGame.screenWidth * 0.5f;
+            float offsetY = camPosY.get() - MainGame.screenHeight * 0.5f;
             backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
 
             GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

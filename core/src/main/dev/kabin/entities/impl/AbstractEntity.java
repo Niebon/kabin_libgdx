@@ -62,17 +62,18 @@ abstract class AbstractEntity implements Entity {
                 return AbstractEntity.this.touchDown(button);
             }
         });
-        actor.addListener(new DragListener() {
-            @Override
-            public void dragStart(InputEvent event, float x, float y, int pointer) {
-                if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().isEmpty()) {
-                    DeveloperUI.addEntityToDraggedEntities(AbstractEntity.this);
-                } else {
-                    DeveloperUI.getEntitySelection().getCurrentlySelectedEntities()
-                            .forEach(DeveloperUI::addEntityToDraggedEntities);
-                }
-            }
-        });
+        // TODO: delete after this is put elsewhere
+//        actor.addListener(new DragListener() {
+//            @Override
+//            public void dragStart(InputEvent event, float x, float y, int pointer) {
+//                if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().isEmpty()) {
+//                    DeveloperUI.addEntityToDraggedEntities(AbstractEntity.this);
+//                } else {
+//                    DeveloperUI.getEntitySelection().getCurrentlySelectedEntities()
+//                            .forEach(DeveloperUI::addEntityToDraggedEntities);
+//                }
+//            }
+//        });
 
         setPos(parameters.x(), parameters.y());
         {

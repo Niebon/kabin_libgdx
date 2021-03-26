@@ -82,8 +82,8 @@ public class EntityParameters {
         private RuntimeContext runtimeContext = RuntimeContext.PRODUCTION;
         private TextureAtlas textureAtlas;
 
-        public Builder(JSONObject o) {
-            scale = MainGame.scaleFactor;
+        public Builder(JSONObject o, float scale) {
+            this.scale = scale;
             x = o.getInt("x") * scale;
             y = o.getInt("y") * scale;
             atlasPath = o.getString("atlasPath");

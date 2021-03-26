@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Align;
 import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
@@ -17,11 +18,14 @@ import dev.kabin.entities.animation.AnimationPlaybackImpl;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
 import dev.kabin.entities.impl.EntityParameters;
+import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -36,19 +40,22 @@ public class EntityLoadingWidget {
     private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
     private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;
     private int layer;
-    private final Supplier<Float> mouseRelativeToWorldX;
-    private final Supplier<Float> mouseRelativeToWorldY;
+    private final FloatSupplier mouseRelativeToWorldX;
+    private final FloatSupplier mouseRelativeToWorldY;
+    private final FloatSupplier scale;
     private final Consumer<Entity> registerEntityToWorld;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
 
 
     public EntityLoadingWidget(Executor executor,
-                               Supplier<Float> mouseRelativeToWorldX,
-                               Supplier<Float> mouseRelativeToWorldY,
+                               FloatSupplier mouseRelativeToWorldX,
+                               FloatSupplier mouseRelativeToWorldY,
+                               FloatSupplier scale,
                                Consumer<Entity> registerEntityToWorld,
                                Supplier<TextureAtlas> textureAtlasSupplier) {
         this.mouseRelativeToWorldX = mouseRelativeToWorldX;
         this.mouseRelativeToWorldY = mouseRelativeToWorldY;
+        this.scale = scale;
         this.registerEntityToWorld = registerEntityToWorld;
         this.textureAtlasSupplier = textureAtlasSupplier;
         widget = new dev.kabin.ui.Widget.Builder()
@@ -152,11 +159,11 @@ public class EntityLoadingWidget {
         widget.refreshContentTableMessage(contentTableMessage);
     }
 
-    public void addEntity() {
+    public Optional<Entity> addEntity() {
 
         // Early exit, no asset selected.
         if (selectedAsset == null || selectedAsset.equals("")) {
-            return;
+            return Optional.empty();
         }
 
 
@@ -164,7 +171,7 @@ public class EntityLoadingWidget {
                 .setX(mouseRelativeToWorldX.get())
                 .setY(mouseRelativeToWorldY.get())
                 .setLayer(layer)
-                .setScale(MainGame.scaleFactor)
+                .setScale(scale.get())
                 .setAtlasPath(selectedAsset)
                 .setTextureAtlas(textureAtlasSupplier.get())
                 .build();
@@ -174,6 +181,7 @@ public class EntityLoadingWidget {
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(GlobalData.stage::addActor);
 
+        return Optional.of(e);
     }
 
     public void loadAsset(Executor executor) {

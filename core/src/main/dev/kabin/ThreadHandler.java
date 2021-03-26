@@ -1,6 +1,9 @@
 package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
+import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.shapes.primitive.RectInt;
 
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -15,10 +18,16 @@ public class ThreadHandler {
     private final Object threadLock = new Object();
     private final Logger logger = Logger.getLogger(ThreadHandler.class.getName());
     private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<RectInt> camNbd;
+    private final Supplier<DeveloperUI> developerUISupplier;
     private ScheduledExecutorService periodicBackgroundTasks;
 
-    public ThreadHandler(Supplier<WorldRepresentation> worldRepresentationSupplier) {
+    public ThreadHandler(Supplier<WorldRepresentation> worldRepresentationSupplier,
+                         Supplier<RectInt> camNbd,
+                         Supplier<DeveloperUI> developerUISupplier) {
         this.worldRepresentationSupplier = worldRepresentationSupplier;
+        this.camNbd = camNbd;
+        this.developerUISupplier = developerUISupplier;
     }
 
     public void reload() {
@@ -48,14 +57,14 @@ public class ThreadHandler {
             final WorldRepresentation worldRepresentation = worldRepresentationSupplier.get();
             if (worldRepresentation == null) return;
 
-            worldRepresentation.registerEntityWhereabouts(MainGame.camera.getCameraNeighborhood());
-            worldRepresentation.clearUnusedData(MainGame.camera.getCameraNeighborhood());
-            worldRepresentation.loadNearbyData(MainGame.camera.getCameraNeighborhood());
+            worldRepresentation.registerEntityWhereabouts(camNbd.get());
+            worldRepresentation.clearUnusedData(camNbd.get());
+            worldRepresentation.loadNearbyData(camNbd.get());
             worldRepresentation.sortAllLayers();
 
             // Save dev session if applicable.
             if (GlobalData.developerMode) {
-                GlobalData.saveDevSession();
+                GlobalData.saveDevSession(developerUISupplier.get());
             }
         }
     }

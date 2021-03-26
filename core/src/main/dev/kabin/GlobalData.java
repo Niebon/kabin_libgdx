@@ -32,7 +32,7 @@ public class GlobalData {
         return Level.WARNING;
     }
 
-    public static void saveDevSession() {
+    public static void saveDevSession(DeveloperUI developerUI) {
         final String jsonRepr = """
                 {
                   "world" : "%s",
@@ -46,8 +46,8 @@ public class GlobalData {
                 }
                 """.formatted(currentWorld,
                 developerMode,
-                DeveloperUI.getEntityLoadingWidget().toJson(),
-                DeveloperUI.getTileSelectionWidget().toJson());
+                developerUI.entityLoadingWidgetToJson(),
+                developerUI.tileLoadingWidgetToJson());
         try {
             Files.writeString(Path.of(DEVELOPER_SESSION_PATH), jsonRepr);
         } catch (IOException e) {

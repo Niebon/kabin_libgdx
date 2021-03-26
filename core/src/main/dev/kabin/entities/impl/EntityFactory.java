@@ -48,8 +48,8 @@ public class EntityFactory {
 			this.animationClass = animationClass;
 		}
 
-		public JsonConstructor getJsonConstructor(TextureAtlas textureAtlas) {
-			return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject).setTextureAtlas(textureAtlas).build());
+		public JsonConstructor getJsonConstructor(TextureAtlas textureAtlas,float scale) {
+			return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject, scale).setTextureAtlas(textureAtlas).build());
 		}
 
 		public EntityConstructor getParameterConstructor() {

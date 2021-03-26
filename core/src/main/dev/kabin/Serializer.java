@@ -1,9 +1,12 @@
 package dev.kabin;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
+import dev.kabin.ui.developer.DeveloperUI;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ public class Serializer {
     public static final String WORLD_SIZE_Y = "worldSizeY";
     public static final String ENTITIES = "entities";
 
-    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation) {
+    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation, float scale) {
         final List<Entity> allEntities = new ArrayList<>();
         worldRepresentation.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
@@ -30,10 +33,10 @@ public class Serializer {
         return o;
     }
 
-    public static WorldRepresentation loadWorldState(TextureAtlas textureAtlas, JSONObject o) {
+    public static WorldRepresentation loadWorldState(TextureAtlas textureAtlas, JSONObject o, float scale) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), MainGame.scaleFactor);
+        final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
@@ -46,7 +49,7 @@ public class Serializer {
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor(textureAtlas).construct(json);
+                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor(textureAtlas, scale).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(GlobalData.stage::addActor);
                 }
