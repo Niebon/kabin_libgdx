@@ -52,21 +52,30 @@ public class MainGame extends ApplicationAdapter {
             keyEventUtil,
             mouseEventUtil,
             this::getWorldRepresentation,
-            Functions.nullSupplier(),
+            Functions::getNull,
             this::getScale
     );
+    private Stage stage;
 
     // Private data:
     private float scaleFactor = 1.0f;
     private CameraWrapper camera;
 
 
+    /**
+     * @return the scale factor for the pixel art from the native resolution 400 by 225.
+     */
     public float getScale() {
         return scaleFactor;
     }
 
+    // Protected methods:
     protected void setDeveloperUISupplier(Supplier<DeveloperUI> developerUISupplier) {
         eventTriggerController.setDeveloperUISupplier(developerUISupplier);
+    }
+
+    protected Stage getStage() {
+        return stage;
     }
 
     private TextureAtlas textureAtlas;
@@ -98,7 +107,7 @@ public class MainGame extends ApplicationAdapter {
     public void create() {
         textureAtlas = new TextureAtlas("textures.atlas");
         GlobalData.shapeRenderer = new ShapeRenderer();
-        GlobalData.stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ScreenViewport());
         GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
@@ -107,7 +116,7 @@ public class MainGame extends ApplicationAdapter {
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
 
         InputMultiplexer imp = new InputMultiplexer();
-        imp.setProcessors(inputProcessor, GlobalData.stage);
+        imp.setProcessors(inputProcessor, stage);
         Gdx.input.setInputProcessor(imp);
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
@@ -191,8 +200,8 @@ public class MainGame extends ApplicationAdapter {
         //System.out.println(bundle.getCurrentImageAssetPath());
 
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
-        GlobalData.stage.act(stateTime);
-        GlobalData.stage.draw();
+        stage.act(stateTime);
+        stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
         //DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);

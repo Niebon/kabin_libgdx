@@ -39,35 +39,37 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static dev.kabin.GlobalData.WORLDS_PATH;
-import static dev.kabin.GlobalData.atlas;
 
 public class DeveloperUI {
 
+    // Constants
     public static final String OPEN = "open";
     public static final String SAVE = "save";
     public static final String SAVE_AS = "save as";
-    private final Set<DraggedEntity> CURRENTLY_DRAGGED_ENTITIES = new HashSet<>();
-    private final Executor EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-
-    private final SelectBox<Button> FILE_DROP_DOWN_MENU = new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default");
-    private Supplier<WorldRepresentation> worldRepresentationSupplier = Functions.nullSupplier();
-    private Supplier<MouseEventUtil> mouseEventUtilSupplier = Functions.nullSupplier();
-    private EntitySelection entitySelection;
-    private final DragListener SELECTION_END = new DragListener() {
+    private final Set<DraggedEntity> draggedEntities = new HashSet<>();
+    private final Executor executorService = Executors.newSingleThreadExecutor();
+    private final SelectBox<Button> fileDropDownMenu = new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default");
+    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<MouseEventUtil> mouseEventUtilSupplier;
+    private final Supplier<TextureAtlas> textureAtlasSupplier;
+    private final FloatSupplier scale;
+    private final EntitySelection entitySelection;
+    // Class fields
+    private final DragListener selectionEnd = new DragListener() {
         @Override
         public void dragStop(InputEvent event, float x, float y, int pointer) {
             getEntitySelection().end();
         }
     };
-    private Supplier<KeyEventUtil> keyEventUtilSupplier = Functions.nullSupplier();
-    private EntityLoadingWidget entityLoadingWidget;
-    private TileSelectionWidget tileSelectionWidget;
+    private final Supplier<KeyEventUtil> keyEventUtilSupplier;
+    private final EntityLoadingWidget entityLoadingWidget;
+    private final TileSelectionWidget tileSelectionWidget;
     private final DragListener selectionBegin = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
             if (
                     !keyEventUtilSupplier.get().isAltDown() &&
-                            CURRENTLY_DRAGGED_ENTITIES.isEmpty() &&
+                            draggedEntities.isEmpty() &&
                             !entityLoadingWidget.getWidget().isDragging() &&
                             !tileSelectionWidget.getWidget().isDragging()
             ) {
@@ -75,36 +77,41 @@ public class DeveloperUI {
             }
         }
     };
-    private FloatSupplier scale;
+    private final Stage stage;
 
     public EntitySelection getEntitySelection() {
         return entitySelection;
     }
 
-    public void init(Stage stage,
-                     Supplier<WorldRepresentation> worldRepresentationSupplier,
-                     Supplier<MouseEventUtil> mouseEventUtilSupplier,
-                     Supplier<KeyEventUtil> keyEventUtilSupplier,
-                     Supplier<TextureAtlas> textureAtlasSupplier,
-                     FloatSupplier camPosX,
-                     FloatSupplier camPosY,
-                     Supplier<RectInt> camBounds,
-                     Consumer<Runnable> synchronizer,
-                     FloatSupplier scale) {
+    public DeveloperUI(Stage stage,
+                       Supplier<WorldRepresentation> worldRepresentationSupplier,
+                       Supplier<MouseEventUtil> mouseEventUtilSupplier,
+                       Supplier<KeyEventUtil> keyEventUtilSupplier,
+                       Supplier<TextureAtlas> textureAtlasSupplier,
+                       FloatSupplier camPosX,
+                       FloatSupplier camPosY,
+                       Supplier<RectInt> camBounds,
+                       Consumer<Runnable> synchronizer,
+                       FloatSupplier scale) {
+        this.textureAtlasSupplier = textureAtlasSupplier;
+
         this.scale = scale;
+        this.stage = stage;
 
         entitySelection = new EntitySelection(mouseEventUtilSupplier, camPosX, camPosY);
 
         entityLoadingWidget = new EntityLoadingWidget(
-                EXECUTOR_SERVICE,
+                stage,
+                executorService,
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 scale,
                 e -> worldRepresentationSupplier.get().registerEntity(e),
                 textureAtlasSupplier);
         tileSelectionWidget = new TileSelectionWidget(
+                stage,
                 textureAtlasSupplier,
-                EXECUTOR_SERVICE,
+                executorService,
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 scale,
@@ -133,13 +140,13 @@ public class DeveloperUI {
         buttonSave.setName(SAVE);
         var buttonSaveAs = new Button();
         buttonSaveAs.setName(SAVE_AS);
-        FILE_DROP_DOWN_MENU.setItems(buttonOpen, buttonSave, buttonSaveAs);
-        FILE_DROP_DOWN_MENU.setSelectedIndex(0);
-        FILE_DROP_DOWN_MENU.setPosition(0f, MainGame.screenHeight - FILE_DROP_DOWN_MENU.getHeight());
-        FILE_DROP_DOWN_MENU.setName("File");
-        FILE_DROP_DOWN_MENU.addListener(new ChangeListener() {
+        fileDropDownMenu.setItems(buttonOpen, buttonSave, buttonSaveAs);
+        fileDropDownMenu.setSelectedIndex(0);
+        fileDropDownMenu.setPosition(0f, MainGame.screenHeight - fileDropDownMenu.getHeight());
+        fileDropDownMenu.setName("File");
+        fileDropDownMenu.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                switch (FILE_DROP_DOWN_MENU.getSelected().getName()) {
+                switch (fileDropDownMenu.getSelected().getName()) {
                     case OPEN:
                         loadWorld();
                         break;
@@ -154,86 +161,87 @@ public class DeveloperUI {
                 }
             }
         });
-        stage.addActor(FILE_DROP_DOWN_MENU);
-        worldRepresentationSupplier.get().actionForEachEntityOrderedByType(e ->
-                e.getActor().ifPresent(a -> a.addListener(new ClickListener() {
-                            @Override
-                            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                if (button != Input.Buttons.RIGHT) return false;
-                                if (GlobalData.developerMode) {
-                                    final Skin skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-                                    final var dialog = new Dialog("Actions", skin);
-                                    final float width = 200;
-                                    final float height = 200;
-                                    dialog.setBounds(
-                                            mouseEventUtilSupplier.get().getXRelativeToUI() + width * 0.1f,
-                                            mouseEventUtilSupplier.get().getYRelativeToUI() + height * 0.1f,
-                                            width, height
-                                    );
-                                    dialog.getContentTable().defaults().pad(10);
-
-                                    // Remove button.
-                                    final var removeButton = new TextButton("Remove", skin, "default");
-                                    removeButton.addListener(
-                                            new ClickListener() {
-                                                @Override
-                                                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-                                                    // Find all dev.kabin.entities scheduled for removal.
-                                                    final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
-                                                    final Set<Entity> currentlySelectedEntities = getEntitySelection()
-                                                            .getCurrentlySelectedEntities();
-                                                    if (currentlySelectedEntities.contains(e)) {
-                                                        entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
-                                                    } else {
-                                                        entitiesScheduledForRemoval.add(e);
-                                                    }
-
-                                                    entitiesScheduledForRemoval.forEach(e -> {
-                                                        worldRepresentationSupplier.get().unregisterEntity(e);
-                                                        e.getActor().ifPresent(Actor::remove);
-                                                    });
-
-                                                    dialog.remove();
-                                                    return true;
-                                                }
-                                            }
-                                    );
-                                    dialog.getContentTable().add(removeButton).size(100, 30);
-
-                                    // Exit button.
-                                    var exitButton = new TextButton("x", skin, "default");
-                                    exitButton.addListener(
-                                            new ClickListener() {
-                                                @Override
-                                                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                                    return dialog.remove();
-                                                }
-                                            }
-                                    );
-                                    dialog.getTitleTable().add(exitButton)
-                                            .size(20, 20)
-                                            .padRight(0).padTop(0);
-                                    dialog.setModal(true);
-                                    GlobalData.stage.addActor(dialog);
-                                }
-                                return true;
-                            }
-                        })
-                )
-        );
-
-
+        stage.addActor(fileDropDownMenu);
+        worldRepresentationSupplier.get().actionForEachEntityOrderedByType(this::initializeModificationDialogBoxFor);
         worldRepresentationSupplier.get().actionForEachEntityOrderedByType(this::addDragListenerToEntity);
     }
 
+    private void initializeModificationDialogBoxFor(Entity e) {
+        e.getActor().ifPresent(a -> a.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (button != Input.Buttons.RIGHT) {
+                    return false;
+                }
+
+                final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+                final var dialog = new Dialog("Actions", skin);
+                final float width = 200;
+                final float height = 200;
+                dialog.setBounds(
+                        mouseEventUtilSupplier.get().getXRelativeToUI() + width * 0.1f,
+                        mouseEventUtilSupplier.get().getYRelativeToUI() + height * 0.1f,
+                        width, height
+                );
+                dialog.getContentTable().defaults().pad(10);
+
+                // Remove button.
+                final var removeButton = new TextButton("Remove", skin, "default");
+                removeButton.addListener(
+                        new ClickListener() {
+                            @Override
+                            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                                // Find all dev.kabin.entities scheduled for removal.
+                                final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
+                                final Set<Entity> currentlySelectedEntities = getEntitySelection()
+                                        .getCurrentlySelectedEntities();
+                                if (currentlySelectedEntities.contains(e)) {
+                                    entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
+                                } else {
+                                    entitiesScheduledForRemoval.add(e);
+                                }
+
+                                entitiesScheduledForRemoval.forEach(e -> {
+                                    worldRepresentationSupplier.get().unregisterEntity(e);
+                                    e.getActor().ifPresent(Actor::remove);
+                                });
+
+                                dialog.remove();
+                                return true;
+                            }
+                        }
+                );
+                dialog.getContentTable().add(removeButton).size(100, 30);
+
+                // Exit button.
+                final var exitButton = new TextButton("x", skin, "default");
+                exitButton.addListener(
+                        new ClickListener() {
+                            @Override
+                            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                                return dialog.remove();
+                            }
+                        }
+                );
+                dialog.getTitleTable().add(exitButton)
+                        .size(20, 20)
+                        .padRight(0).padTop(0);
+                dialog.setModal(true);
+                stage.addActor(dialog);
+
+                return true;
+            }
+        }));
+    }
+
     private void saveWorldAs() {
-        EXECUTOR_SERVICE.execute(() -> {
+        executorService.execute(() -> {
             final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
                     + "core/assets/worlds/";
-            JFileChooser chooser = new JFileChooser(relativePath);
+            final JFileChooser chooser = new JFileChooser(relativePath);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            JFrame f = new JFrame();
+            final JFrame f = new JFrame();
             f.setVisible(true);
             f.toFront();
             f.setVisible(false);
@@ -248,7 +256,7 @@ public class DeveloperUI {
     }
 
     public void addEntityToDraggedEntities(Entity e) {
-        CURRENTLY_DRAGGED_ENTITIES.add(new DraggedEntity(
+        draggedEntities.add(new DraggedEntity(
                 e.getX(),
                 e.getY(),
                 mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
@@ -263,11 +271,11 @@ public class DeveloperUI {
     }
 
     public void clearDraggedEntities() {
-        CURRENTLY_DRAGGED_ENTITIES.clear();
+        draggedEntities.clear();
     }
 
     public void updatePositionsOfDraggedEntities() {
-        for (DraggedEntity de : CURRENTLY_DRAGGED_ENTITIES) {
+        for (DraggedEntity de : draggedEntities) {
             final Entity e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
@@ -280,11 +288,11 @@ public class DeveloperUI {
         entityLoadingWidget.getWidget().setVisible(b);
         tileSelectionWidget.getWidget().setVisible(b);
         if (b) {
-            GlobalData.stage.addListener(selectionBegin);
-            GlobalData.stage.addListener(SELECTION_END);
+            stage.addListener(selectionBegin);
+            stage.addListener(selectionEnd);
         } else {
-            GlobalData.stage.removeListener(selectionBegin);
-            GlobalData.stage.removeListener(SELECTION_END);
+            stage.removeListener(selectionBegin);
+            stage.removeListener(selectionEnd);
         }
     }
 
@@ -296,7 +304,7 @@ public class DeveloperUI {
     }
 
     public void saveWorld(Path path) {
-        JSONObject worldState = Serializer.recordWorldState(worldRepresentationSupplier.get(), scale.get());
+        final JSONObject worldState = Serializer.recordWorldState(worldRepresentationSupplier.get(), scale.get());
         try {
             Files.write(path, worldState.toString().getBytes());
         } catch (IOException e) {
@@ -311,12 +319,12 @@ public class DeveloperUI {
     }
 
     public void loadWorld() {
-        EXECUTOR_SERVICE.execute(() -> {
+        executorService.execute(() -> {
             final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
                     + "core/assets/worlds/";
-            JFileChooser chooser = new JFileChooser(relativePath);
+            final JFileChooser chooser = new JFileChooser(relativePath);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            JFrame f = new JFrame();
+            final JFrame f = new JFrame();
             f.setVisible(true);
             f.toFront();
             f.setVisible(false);
@@ -328,7 +336,7 @@ public class DeveloperUI {
                 try {
 
                     // TODO: deal with.
-                    Serializer.loadWorldState(atlas, new JSONObject(Files.readString(selectedFile.toPath())), scale.get());
+                    Serializer.loadWorldState(stage, textureAtlasSupplier.get(), new JSONObject(Files.readString(selectedFile.toPath())), scale.get());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -356,8 +364,11 @@ public class DeveloperUI {
         entityLoadingWidget.addEntity().ifPresent(this::addDragListenerToEntity);
     }
 
-
-
+    /**
+     * Helper method to add a drag listener to an entity. This drag listener adds entities to the {@link #entitySelection}.
+     *
+     * @param e the entity whose actor to modify by adding a drag listener.
+     */
     private void addDragListenerToEntity(Entity e) {
         e.getActor().ifPresent(
                 actor -> actor.addListener(new DragListener() {

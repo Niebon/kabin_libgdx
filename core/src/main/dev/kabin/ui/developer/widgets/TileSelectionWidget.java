@@ -5,11 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import dev.kabin.GlobalData;
-import dev.kabin.MainGame;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
@@ -41,6 +40,7 @@ public class TileSelectionWidget {
     private final dev.kabin.ui.Widget widget;
     private String selectedAsset = "";
     private AnimationClass.Tile currentType = AnimationClass.Tile.SURFACE;
+    private final Stage stage;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
     private final FloatSupplier mouseXRelativeToWorld;
     private final FloatSupplier mouseYRelativeToWorld;
@@ -51,6 +51,7 @@ public class TileSelectionWidget {
 
 
     public TileSelectionWidget(
+            Stage stage,
             Supplier<TextureAtlas> atlas,
             Executor executor,
             FloatSupplier mouseXRelativeToWorld,
@@ -60,6 +61,7 @@ public class TileSelectionWidget {
             Supplier<WorldRepresentation> worldRepresentationSupplier,
             Consumer<Runnable> synchronizer
     ) {
+        this.stage = stage;
         this.textureAtlasSupplier = atlas;
         this.mouseXRelativeToWorld = mouseXRelativeToWorld;
         this.mouseYRelativeToWorld = mouseYRelativeToWorld;
@@ -68,6 +70,7 @@ public class TileSelectionWidget {
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.synchronizer = synchronizer;
         widget = new dev.kabin.ui.Widget.Builder()
+                .setStage(stage)
                 .setTitle("Tile selection widget")
                 .setX(Gdx.graphics.getWidth() - WIDTH)
                 .setY(0)
@@ -187,7 +190,7 @@ public class TileSelectionWidget {
                     = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
 
             // Init the data.
-            newCollisionTile.getActor().ifPresent(GlobalData.stage::addActor);
+            newCollisionTile.getActor().ifPresent(stage::addActor);
             worldRepresentationSupplier.get().registerEntity(newCollisionTile);
 
             // Add collision data.
@@ -200,6 +203,7 @@ public class TileSelectionWidget {
             //System.out.println("Position: " + newCollisionTile.getPosition());
         });
     }
+
 
     private void loadAsset(Executor executor) {
         executor.execute(() -> {
@@ -238,9 +242,8 @@ public class TileSelectionWidget {
             float width = scale * (16 + 2);
             float height = scale * (16 + 2);
             float offsetX = 75 - scale;
-            float offsetY = 75 - scale;
+            float y = 75 - scale;
             float x = separationOffsetFactor * (width + offsetSeparation - scale) + offsetX;
-            float y = offsetY;
 
             var button = new TextButton("", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
             button.setWidth(width);

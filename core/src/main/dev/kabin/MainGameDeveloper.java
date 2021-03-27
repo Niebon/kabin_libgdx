@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static dev.kabin.GlobalData.*;
+import static dev.kabin.GlobalData.developerMode;
+import static dev.kabin.GlobalData.userInterfaceBatch;
 
 public class MainGameDeveloper extends MainGame {
 
@@ -26,7 +27,7 @@ public class MainGameDeveloper extends MainGame {
         try {
             final JSONObject session = new JSONObject(Files.readString(Path.of(devSessionData)));
             final String pathToWorld = GlobalData.WORLDS_PATH + session.getString("world");
-            worldRepresentation = Serializer.loadWorldState(getTextureAtlas(), new JSONObject(Files.readString(Path.of(pathToWorld))), getScale());
+            worldRepresentation = Serializer.loadWorldState(getStage(), getTextureAtlas(), new JSONObject(Files.readString(Path.of(pathToWorld))), getScale());
             entityLoadingWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("entity_selection");
             tileSelectionWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("tile_selection");
         } catch (IOException e) {
@@ -36,9 +37,8 @@ public class MainGameDeveloper extends MainGame {
 
         // Initiates the developer interface.
         // In particular adds developer interface listeners to entities.
-        developerUI = new DeveloperUI();
-        developerUI.init(
-                stage,
+        developerUI = new DeveloperUI(
+                getStage(),
                 this::getWorldRepresentation,
                 this::getMouseEventUtil,
                 this::getKeyEventUtil,
@@ -47,8 +47,7 @@ public class MainGameDeveloper extends MainGame {
                 this.getCameraWrapper()::getCameraY,
                 this::getCamBounds,
                 this::synchronizer,
-                this::getScale
-        );
+                this::getScale);
         developerUI.loadEntityLoadingWidgetSettings(entityLoadingWidgetSettings);
         developerUI.loadTileLoadingWidgetSettings(tileSelectionWidgetSettings);
         setDeveloperUISupplier(() -> developerUI);

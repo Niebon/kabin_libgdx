@@ -308,7 +308,7 @@ public class Functions {
         return right;
     }
 
-    public static <T> T nullSupplier() {
+    public static <T> T getNull() {
         return null;
     }
 }

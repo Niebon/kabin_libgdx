@@ -1,12 +1,10 @@
 package dev.kabin;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
-import dev.kabin.ui.developer.DeveloperUI;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class Serializer {
         return o;
     }
 
-    public static WorldRepresentation loadWorldState(TextureAtlas textureAtlas, JSONObject o, float scale) {
+    public static WorldRepresentation loadWorldState(Stage stage, TextureAtlas textureAtlas, JSONObject o, float scale) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
@@ -51,7 +49,7 @@ public class Serializer {
                     logger.info(() -> "Loaded the entity: " + json);
                     Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor(textureAtlas, scale).construct(json);
                     worldRepresentation.registerEntity(e);
-                    e.getActor().ifPresent(GlobalData.stage::addActor);
+                    e.getActor().ifPresent(stage::addActor);
                 }
             }
         });

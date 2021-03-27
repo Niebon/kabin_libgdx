@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 
@@ -27,14 +27,25 @@ public class Widget implements ModifiableFloatCoordinates {
     private Window[] popupWindows;
     private Label contentTableMessage;
     private boolean visible, collapsed;
+    private final Stage stage;
     private final float mainWindowX;
     private final float mainWindowY;
 
     private Widget(
-            float x, float y, float width, float height, String title, Skin skin,
-            float collapsedWindowX, float collapsedWindowY, float collapsedWindowWidth, float collapsedWindowHeight,
+            Stage stage,
+            float x,
+            float y,
+            float width,
+            float height,
+            String title,
+            Skin skin,
+            float collapsedWindowX,
+            float collapsedWindowY,
+            float collapsedWindowWidth,
+            float collapsedWindowHeight,
             Label contentTableMessage
     ) {
+        this.stage = stage;
         mainWindowX = x;
         mainWindowY = y;
         this.width = width;
@@ -79,13 +90,16 @@ public class Widget implements ModifiableFloatCoordinates {
         });
     }
 
+    public boolean isCollapsed() {
+        return collapsed;
+    }
+
     public void setCollapsed(boolean b) {
         if (b) {
             mainWindow.remove();
             backingGroup.addActor(collapsedWindow);
             collapsed = true;
-        }
-        else {
+        } else {
             collapsedWindow.remove();
             backingGroup.addActor(mainWindow);
             mainWindow.setBounds(mainWindowX, mainWindowY, width, height);
@@ -93,23 +107,17 @@ public class Widget implements ModifiableFloatCoordinates {
         }
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
 
     public void setVisible(boolean b) {
         visible = b;
         if (b) {
-            GlobalData.stage.addActor(backingGroup);
+            stage.addActor(backingGroup);
         } else {
             backingGroup.remove();
         }
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isCollapsed(){
-        return collapsed;
-    }
-
-    public boolean isVisible(){
-        return visible;
     }
 
     public void addDialogActor(Actor a) {
@@ -172,7 +180,6 @@ public class Widget implements ModifiableFloatCoordinates {
         mainWindow.setY(y);
     }
 
-
     public static class Builder {
 
         public static final Skin DEFAULT_SKIN = new Skin(Gdx.files.internal("uiskin.json"));
@@ -185,6 +192,7 @@ public class Widget implements ModifiableFloatCoordinates {
         private float width, height, x, y;
         private float collapsedWindowWidth, collapsedWindowHeight, collapsedWindowX, collapsedWindowY;
         private Label contentTableMessage;
+        private Stage stage;
 
         @SuppressWarnings("unused")
         public Builder setSkin(Skin skin) {
@@ -252,8 +260,14 @@ public class Widget implements ModifiableFloatCoordinates {
             return this;
         }
 
+        public Builder setStage(Stage stage) {
+            this.stage = stage;
+            return this;
+        }
+
         public Widget build() {
             return new Widget(
+                    stage,
                     x, y,
                     Functions.requireNonNullElse(width, DEFAULT_WIDTH),
                     Functions.requireNonNullElse(height, DEFAULT_HEIGHT),
