@@ -14,6 +14,7 @@ import dev.kabin.entities.animation.AbstractAnimationPlayback;
 import dev.kabin.entities.animation.AnimationBundleFactory;
 import dev.kabin.entities.animation.AnimationPlayback;
 import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityCollectionProvider;
 import dev.kabin.entities.impl.EntityFactory;
 import dev.kabin.entities.impl.EntityParameters;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
@@ -214,13 +215,15 @@ public class EntityLoadingWidget {
     }
 
 
-    void showSelectEntityTypeBox() {
+    private void showSelectEntityTypeBox() {
         final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         final var selectBox = new SelectBox<String>(skin, "default");
         selectBox.setItems(
                 Arrays
                         .stream(EntityFactory.EntityType.values())
-                        .filter(type -> type != EntityFactory.EntityType.STATIC_BACKGROUND)
+                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.BACKGROUND)
+                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.BACKGROUND_LAYER_2)
+                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.SKY)
                         .map(Enum::name)
                         .toArray(String[]::new)
         );
@@ -274,12 +277,12 @@ public class EntityLoadingWidget {
         this.layer = layer;
     }
 
-    void showAnimationTypeBox(Class<?> clazz) {
-        var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-        var selectBox = new SelectBox<String>(skin, "default");
+    private void showAnimationTypeBox(Class<?> clazz) {
+        final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+        final var selectBox = new SelectBox<String>(skin, "default");
         selectBox.setItems(Arrays.stream(clazz.getEnumConstants()).map(e -> (Enum<?>) e).map(Enum::name).toArray(String[]::new));
         selectBox.setSelectedIndex(0);
-        var dialog = new Dialog("Setting", skin);
+        final var dialog = new Dialog("Setting", skin);
         dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
         dialog.getContentTable().defaults().pad(10);
         dialog.getContentTable().add(selectBox);
@@ -293,6 +296,7 @@ public class EntityLoadingWidget {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 animationType = getAnimationTypeByName(selectBox.getSelected(), entityType.animationClass());
+                refreshContentTableMessage();
                 widget.removeActor(dialog);
             }
         });
