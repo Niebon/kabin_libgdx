@@ -13,7 +13,6 @@ import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.animation.AbstractAnimationPlayback;
 import dev.kabin.entities.animation.AnimationBundleFactory;
 import dev.kabin.entities.animation.AnimationPlayback;
-import dev.kabin.entities.animation.enums.Animate;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
 import dev.kabin.entities.impl.EntityParameters;
@@ -46,7 +45,7 @@ public class EntityLoadingWidget {
     // Class variables:
     private AbstractAnimationPlayback<?> preview = null;
     private String selectedAsset = "";
-    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
+    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE; // Default.
     private Enum<?> animationType = entityType.animationClass().getEnumConstants()[0];
     private int layer;
 
@@ -169,7 +168,7 @@ public class EntityLoadingWidget {
         }
 
 
-        EntityParameters parameters = new EntityParameters.Builder()
+        final EntityParameters parameters = new EntityParameters.Builder()
                 .setX(mouseRelativeToWorldX.get())
                 .setY(mouseRelativeToWorldY.get())
                 .setLayer(layer)
@@ -179,7 +178,7 @@ public class EntityLoadingWidget {
                 .build();
 
 
-        Entity e = entityType.getParameterConstructor().construct(parameters);
+        final Entity e = entityType.getParameterConstructor().construct(parameters);
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
 
@@ -190,25 +189,34 @@ public class EntityLoadingWidget {
         selectedAsset = settings.getString("asset");
         entityType = EntityFactory.EntityType.valueOf(settings.getString("type"));
         final String animationType = settings.getString("animation_type");
-        this.animationType = Arrays
-                .stream(entityType.animationClass().getEnumConstants())
-                .map(e -> (Enum<?>) e)
-                .filter(e -> e.name().equals(animationType))
-                .findFirst()
-                .orElseThrow(() -> new EnumConstantNotPresentException(entityType.animationClass(), animationType));
+        this.animationType = getAnimationTypeByName(animationType, entityType.animationClass());
         layer = settings.getInt("layer");
         widget.setCollapsed(settings.getBoolean("collapsed"));
 
 
         // Finally, show content:
-        preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, Animate.class);
+        //noinspection unchecked
+        preview = AnimationBundleFactory.loadFromAtlasPath(
+                textureAtlasSupplier.get(),
+                selectedAsset,
+                entityType.animationClass().getEnumConstants()[0].getClass()
+        );
         refreshContentTableMessage();
+    }
+
+    private Enum<?> getAnimationTypeByName(String animationType, Class<? extends Enum<?>> enumClass) {
+        return Arrays
+                .stream(enumClass.getEnumConstants())
+                .map(e -> (Enum<?>) e)
+                .filter(e -> e.name().equals(animationType))
+                .findFirst()
+                .orElseThrow(() -> new EnumConstantNotPresentException(entityType.animationClass(), animationType));
     }
 
 
     void showSelectEntityTypeBox() {
-        var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-        var selectBox = new SelectBox<String>(skin, "default");
+        final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+        final var selectBox = new SelectBox<String>(skin, "default");
         selectBox.setItems(
                 Arrays
                         .stream(EntityFactory.EntityType.values())
@@ -217,7 +225,7 @@ public class EntityLoadingWidget {
                         .toArray(String[]::new)
         );
         selectBox.setSelectedIndex(entityType.ordinal());
-        var dialog = new Dialog("Setting", skin);
+        final var dialog = new Dialog("Setting", skin);
         dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
         dialog.getContentTable().defaults().pad(10);
         dialog.getContentTable().add(selectBox);
@@ -255,7 +263,8 @@ public class EntityLoadingWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, Animate.class);
+                //noinspection unchecked
+                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, animationType.getClass());
             }
             refreshContentTableMessage();
         });
@@ -269,7 +278,7 @@ public class EntityLoadingWidget {
         var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         var selectBox = new SelectBox<String>(skin, "default");
         selectBox.setItems(Arrays.stream(clazz.getEnumConstants()).map(e -> (Enum<?>) e).map(Enum::name).toArray(String[]::new));
-        selectBox.setSelectedIndex(entityType.ordinal());
+        selectBox.setSelectedIndex(0);
         var dialog = new Dialog("Setting", skin);
         dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
         dialog.getContentTable().defaults().pad(10);
@@ -283,7 +292,7 @@ public class EntityLoadingWidget {
         dialog.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                animationType = Animate.valueOf(selectBox.getSelected());
+                animationType = getAnimationTypeByName(selectBox.getSelected(), entityType.animationClass());
                 widget.removeActor(dialog);
             }
         });
