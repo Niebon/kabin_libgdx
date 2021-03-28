@@ -10,9 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.animation.AbstractAnimationPlayback;
 import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.AnimationClass;
-import dev.kabin.entities.animation.AnimationPlaybackImpl;
+import dev.kabin.entities.animation.AnimationPlayback;
+import dev.kabin.entities.animation.enums.Animate;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.EntityFactory;
 import dev.kabin.entities.impl.EntityParameters;
@@ -29,14 +30,12 @@ import java.util.function.Supplier;
 
 public class EntityLoadingWidget {
 
+    // Constants:
     private static final int WIDTH = 600;
     private static final int HEIGHT = 200;
+
+    // Class fields:
     private final dev.kabin.ui.Widget widget;
-    private AnimationPlaybackImpl<?> preview = null;
-    private String selectedAsset = "";
-    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
-    private AnimationClass.Animate animationType = AnimationClass.Animate.DEFAULT_RIGHT;
-    private int layer;
     private final Stage stage;
     private final FloatSupplier mouseRelativeToWorldX;
     private final FloatSupplier mouseRelativeToWorldY;
@@ -44,6 +43,12 @@ public class EntityLoadingWidget {
     private final Consumer<Entity> registerEntityToWorld;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
 
+    // Class variables:
+    private AbstractAnimationPlayback<?> preview = null;
+    private String selectedAsset = "";
+    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE;
+    private Enum<?> animationType = entityType.animationClass().getEnumConstants()[0];
+    private int layer;
 
     public EntityLoadingWidget(
             Stage stage,
@@ -67,7 +72,7 @@ public class EntityLoadingWidget {
                 .setCollapsedWindowWidth(WIDTH)
                 .build();
 
-        var loadImageAssetButton = new TextButton("Asset", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
+        final var loadImageAssetButton = new TextButton("Asset", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
         loadImageAssetButton.setWidth(100);
         loadImageAssetButton.setHeight(25);
         loadImageAssetButton.setX(25);
@@ -104,7 +109,7 @@ public class EntityLoadingWidget {
         chooseAnimationTypeButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                showAnimationTypeBox();
+                showAnimationTypeBox(entityType.animationClass());
                 return true;
             }
         });
@@ -113,17 +118,12 @@ public class EntityLoadingWidget {
         refreshContentTableMessage();
     }
 
-    public void loadSettings(JSONObject settings) {
-        selectedAsset = settings.getString("asset");
-        entityType = EntityFactory.EntityType.valueOf(settings.getString("type"));
-        animationType = AnimationClass.Animate.valueOf(settings.getString("animation_type"));
-        layer = settings.getInt("layer");
-        widget.setCollapsed(settings.getBoolean("collapsed"));
-
-
-        // Finally, show content:
-        preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Animate.class);
-        refreshContentTableMessage();
+    private static <T extends Enum<T>> void setCurrentAnimationOfPreviewTo(
+            AnimationPlayback<?> ap,
+            Enum<?> animType
+    ) {
+        //noinspection unchecked
+        ((AnimationPlayback<T>) ap).setCurrentAnimation((T) animType);
     }
 
 
@@ -186,28 +186,23 @@ public class EntityLoadingWidget {
         return Optional.of(e);
     }
 
-    public void loadAsset(Executor executor) {
-        executor.execute(() -> {
-            final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
-                    + "core/assets/raw_textures/";
-            JFileChooser chooser = new JFileChooser(relativePath);
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            JFrame f = new JFrame();
-            f.setVisible(true);
-            f.toFront();
-            f.setVisible(false);
-            int res = chooser.showOpenDialog(f);
-            f.dispose();
-            if (res == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = chooser.getSelectedFile();
-                selectedAsset = selectedFile
-                        .getAbsolutePath()
-                        .replace("\\", "/")
-                        .replace(relativePath, "");
-                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Animate.class);
-            }
-            refreshContentTableMessage();
-        });
+    public void loadSettings(JSONObject settings) {
+        selectedAsset = settings.getString("asset");
+        entityType = EntityFactory.EntityType.valueOf(settings.getString("type"));
+        final String animationType = settings.getString("animation_type");
+        this.animationType = Arrays
+                .stream(entityType.animationClass().getEnumConstants())
+                .map(e -> (Enum<?>) e)
+                .filter(e -> e.name().equals(animationType))
+                .findFirst()
+                .orElseThrow(() -> new EnumConstantNotPresentException(entityType.animationClass(), animationType));
+        layer = settings.getInt("layer");
+        widget.setCollapsed(settings.getBoolean("collapsed"));
+
+
+        // Finally, show content:
+        preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, Animate.class);
+        refreshContentTableMessage();
     }
 
 
@@ -242,10 +237,38 @@ public class EntityLoadingWidget {
         });
     }
 
-    void showAnimationTypeBox() {
+    public void loadAsset(Executor executor) {
+        executor.execute(() -> {
+            final String relativePath = Gdx.files.getLocalStoragePath().replace("\\", "/")
+                    + "core/assets/raw_textures/";
+            JFileChooser chooser = new JFileChooser(relativePath);
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            JFrame f = new JFrame();
+            f.setVisible(true);
+            f.toFront();
+            f.setVisible(false);
+            int res = chooser.showOpenDialog(f);
+            f.dispose();
+            if (res == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = chooser.getSelectedFile();
+                selectedAsset = selectedFile
+                        .getAbsolutePath()
+                        .replace("\\", "/")
+                        .replace(relativePath, "");
+                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, Animate.class);
+            }
+            refreshContentTableMessage();
+        });
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
+    }
+
+    void showAnimationTypeBox(Class<?> clazz) {
         var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         var selectBox = new SelectBox<String>(skin, "default");
-        selectBox.setItems(Arrays.stream(AnimationClass.Animate.values()).map(Enum::name).toArray(String[]::new));
+        selectBox.setItems(Arrays.stream(clazz.getEnumConstants()).map(e -> (Enum<?>) e).map(Enum::name).toArray(String[]::new));
         selectBox.setSelectedIndex(entityType.ordinal());
         var dialog = new Dialog("Setting", skin);
         dialog.setPosition(Gdx.graphics.getWidth() * 0.5f - 100, Gdx.graphics.getHeight() * 0.5f - 100);
@@ -260,20 +283,16 @@ public class EntityLoadingWidget {
         dialog.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                animationType = AnimationClass.Animate.valueOf(selectBox.getSelected());
+                animationType = Animate.valueOf(selectBox.getSelected());
                 widget.removeActor(dialog);
             }
         });
     }
 
-    public void setLayer(int layer) {
-        this.layer = layer;
-    }
-
     public void render(GraphicsParameters params) {
         if (widget.isVisible() && !widget.isCollapsed() && preview != null) {
-            if (preview.getCurrentAnimationType() != animationType) {
-                preview.setCurrentAnimation(animationType);
+            if (preview.getCurrentAnimation() != animationType) {
+                setCurrentAnimationOfPreviewTo(preview, animationType);
             }
             float scale = 4.0f * 32 / preview.getOriginalWidth();
             preview.setScale(scale);

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
@@ -46,7 +45,7 @@ public class MainGame extends ApplicationAdapter {
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
     private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
-    private final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI);
+    private final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
     private final EventTriggerController eventTriggerController = new EventTriggerController(
             EventTriggerController.InputOptions.registerAll(),
             keyEventUtil,
@@ -61,7 +60,6 @@ public class MainGame extends ApplicationAdapter {
     private float scaleFactor = 1.0f;
     private CameraWrapper camera;
 
-
     /**
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
      */
@@ -72,6 +70,14 @@ public class MainGame extends ApplicationAdapter {
     // Protected methods:
     protected void setDeveloperUISupplier(Supplier<DeveloperUI> developerUISupplier) {
         eventTriggerController.setDeveloperUISupplier(developerUISupplier);
+    }
+
+    protected boolean isDeveloperMode() {
+        return eventTriggerController.isDeveloperMode();
+    }
+
+    protected void setDeveloperMode(boolean developerMode) {
+        eventTriggerController.setDeveloperMode(developerMode);
     }
 
     protected Stage getStage() {
@@ -106,9 +112,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void create() {
         textureAtlas = new TextureAtlas("textures.atlas");
-        GlobalData.shapeRenderer = new ShapeRenderer();
         stage = new Stage(new ScreenViewport());
-        GlobalData.userInterfaceBatch = new SpriteBatch();
 
 
         screenWidth = Gdx.graphics.getWidth();
@@ -211,7 +215,7 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        GlobalData.userInterfaceBatch.dispose();
+        super.dispose();
         spriteBatch.dispose();
     }
 

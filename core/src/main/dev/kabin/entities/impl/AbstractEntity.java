@@ -4,12 +4,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
+import dev.kabin.entities.animation.AbstractAnimationPlayback;
 import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.AnimationPlaybackImpl;
-import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -21,13 +19,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 
-abstract class AbstractEntity implements Entity {
+abstract class AbstractEntity<T extends Enum<T>> implements Entity {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEntity.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
 
     // Protected data:
-    private final AnimationPlaybackImpl<?> animationPlaybackImpl;
+    private final AbstractAnimationPlayback<T> animationPlaybackImpl;
 
     // Class fields:
     private final String atlasPath;
@@ -44,14 +42,13 @@ abstract class AbstractEntity implements Entity {
 
     AbstractEntity(EntityParameters parameters) {
         id = createdInstances.incrementAndGet();
-
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
         animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
                 parameters.getTextureAtlas(),
                 atlasPath,
-                getType().animationClass());
+                (Class<T>) getType().animationClass());
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setSmoothParameter(0.5f);
         }
@@ -86,7 +83,7 @@ abstract class AbstractEntity implements Entity {
     }
 
     @Nullable
-    protected AnimationPlaybackImpl<?> getAnimationPlaybackImpl() {
+    protected AbstractAnimationPlayback<T> getAnimationPlaybackImpl() {
         return animationPlaybackImpl;
     }
 

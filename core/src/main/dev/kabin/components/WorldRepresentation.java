@@ -56,7 +56,7 @@ public class WorldRepresentation {
             y *= 2;
         }
         LOGGER.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
-        return Component.make(ComponentParameters.make().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor));
+        return Component.make(ComponentParameters.builder().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor).build());
     }
 
     public void actionForEachEntityOrderedByType(Consumer<Entity> renderEntityGlobalStateTime) {
@@ -338,7 +338,15 @@ public class WorldRepresentation {
         entityCollectionProvider.populateCollection(allEntities, criterion);
     }
 
-    public void sortAllLayers(){
+    public void sortAllLayers() {
         entityCollectionProvider.sortAllLayers();
+    }
+
+    public int getWorldSizeX() {
+        return rootComponent.getWidth();
+    }
+
+    public int getWorldSizeY() {
+        return rootComponent.getHeight();
     }
 }

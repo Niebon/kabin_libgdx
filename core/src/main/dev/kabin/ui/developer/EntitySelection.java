@@ -1,7 +1,6 @@
 package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
@@ -24,6 +23,7 @@ public class EntitySelection {
     private final FloatSupplier camPosY;
     private RectFloat backingRect;
     private ImmutablePointFloat begin;
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public EntitySelection(Supplier<MouseEventUtil> mouseEventUtil,
                            FloatSupplier camPosX,
@@ -44,11 +44,11 @@ public class EntitySelection {
             float offsetY = camPosY.get() - MainGame.screenHeight * 0.5f;
             backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
 
-            GlobalData.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            GlobalData.shapeRenderer.setColor(0, 1, 1, 1);
-            GlobalData.shapeRenderer.rect(begin.x(), begin.y(), mouseEventUtil.get().getXRelativeToUI() - begin.x(),
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(0, 1, 1, 1);
+            shapeRenderer.rect(begin.x(), begin.y(), mouseEventUtil.get().getXRelativeToUI() - begin.x(),
                     mouseEventUtil.get().getYRelativeToUI() - begin.y());
-            GlobalData.shapeRenderer.end();
+            shapeRenderer.end();
 
             // By abuse of the word "render" include this here...
             forEachEntity.accept(e -> {

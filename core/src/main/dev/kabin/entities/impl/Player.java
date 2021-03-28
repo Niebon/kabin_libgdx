@@ -2,8 +2,8 @@ package dev.kabin.entities.impl;
 
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.animation.AnimationClass;
-import dev.kabin.entities.animation.AnimationPlaybackImpl;
+import dev.kabin.entities.animation.AbstractAnimationPlayback;
+import dev.kabin.entities.animation.enums.Animate;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
@@ -17,15 +17,15 @@ import java.util.Optional;
 
 public class Player extends EntityAnimate {
 
-    private static final List<AnimationClass.Animate> STANDARD_RIGHT_LIST = List.of(
-            AnimationClass.Animate.STANDARD1_RIGHT,
-            AnimationClass.Animate.STANDARD2_RIGHT,
-            AnimationClass.Animate.STANDARD3_RIGHT
+    private static final List<Animate> STANDARD_RIGHT_LIST = List.of(
+            Animate.STANDARD1_RIGHT,
+            Animate.STANDARD2_RIGHT,
+            Animate.STANDARD3_RIGHT
     );
-    private static final List<AnimationClass.Animate> STANDARD_LEFT_LIST = List.of(
-            AnimationClass.Animate.STANDARD1_LEFT,
-            AnimationClass.Animate.STANDARD2_LEFT,
-            AnimationClass.Animate.STANDARD3_LEFT
+    private static final List<Animate> STANDARD_LEFT_LIST = List.of(
+            Animate.STANDARD1_LEFT,
+            Animate.STANDARD2_LEFT,
+            Animate.STANDARD3_LEFT
     );
     private static Player instance;
     private final float throwMomentum;
@@ -116,42 +116,42 @@ public class Player extends EntityAnimate {
 
     @Override
     public void updateGraphics(GraphicsParameters params) {
-        final AnimationPlaybackImpl<?> animationPlaybackImpl = getAnimationPlaybackImpl();
+        final AbstractAnimationPlayback<Animate> animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl == null) return;
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
 
         // If in air
         if (inAir) {
-            if (facingRight) animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.JUMP_RIGHT);
-            else animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.JUMP_LEFT);
+            if (facingRight) animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_RIGHT);
+            else animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_LEFT);
             // If not in air
         } else {
 
             if (onLadder) {
 
-                if (dx != 0 || dy != 0) animationPlaybackImpl.setCurrentAnimation(AnimationClass.Animate.CLIMB);
+                if (dx != 0 || dy != 0) animationPlaybackImpl.setCurrentAnimation(Animate.CLIMB);
                 else return;
 
             } else {
                 // If standing still
                 if (dx == 0 && dy == 0) {
-                    if (facingRight && !STANDARD_RIGHT_LIST.contains(animationPlaybackImpl.getCurrentAnimationType())) {
-                        AnimationClass.Animate randomPick = Statistics.drawUniform(STANDARD_RIGHT_LIST, 0.005);
-                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, AnimationClass.Animate.DEFAULT_RIGHT));
-                    } else if (!facingRight && !STANDARD_LEFT_LIST.contains(animationPlaybackImpl.getCurrentAnimationType())) {
-                        AnimationClass.Animate randomPick = Statistics.drawUniform(STANDARD_LEFT_LIST, 0.005);
-                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, AnimationClass.Animate.DEFAULT_LEFT));
+                    if (facingRight && !STANDARD_RIGHT_LIST.contains(animationPlaybackImpl.getCurrentAnimation())) {
+                        Animate randomPick = Statistics.drawUniform(STANDARD_RIGHT_LIST, 0.005);
+                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, Animate.DEFAULT_RIGHT));
+                    } else if (!facingRight && !STANDARD_LEFT_LIST.contains(animationPlaybackImpl.getCurrentAnimation())) {
+                        Animate randomPick = Statistics.drawUniform(STANDARD_LEFT_LIST, 0.005);
+                        animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, Animate.DEFAULT_LEFT));
                     }
                 }
 
                 // If walking
                 if (dx > 0) {
-                    animationPlaybackImpl.setCurrentAnimation(running ? AnimationClass.Animate.RUN_RIGHT : AnimationClass.Animate.WALK_RIGHT);
+                    animationPlaybackImpl.setCurrentAnimation(running ? Animate.RUN_RIGHT : Animate.WALK_RIGHT);
                 }
 
                 if (dx < 0) {
-                    animationPlaybackImpl.setCurrentAnimation(running ? AnimationClass.Animate.RUN_LEFT : AnimationClass.Animate.WALK_LEFT);
+                    animationPlaybackImpl.setCurrentAnimation(running ? Animate.RUN_LEFT : Animate.WALK_LEFT);
                 }
             }
         }
@@ -254,7 +254,7 @@ public class Player extends EntityAnimate {
                     jumpCooldown = 0;
                     jumpFrame = 0; // start jump frame
                     frameCounter = 10; // big number => greater than play new frame threshold => next frame played is start jump frame
-                    Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AnimationPlaybackImpl::reset);
+                    Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlayback::reset);
                     if (affectedByVectorField) {
                         int i = 0;
                         while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)
@@ -340,7 +340,6 @@ public class Player extends EntityAnimate {
                 dy = (float) (vAbsMetersPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
                 dx = (float) (vAbsMetersPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
 
-                System.out.println(angle);
             }
         }
 

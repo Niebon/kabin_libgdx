@@ -2,7 +2,7 @@ package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.functioninterfaces.BooleanSupplier;
 import dev.kabin.util.shapes.primitive.RectInt;
 
 import java.util.Optional;
@@ -20,14 +20,17 @@ public class ThreadHandler {
     private final Supplier<WorldRepresentation> worldRepresentationSupplier;
     private final Supplier<RectInt> camNbd;
     private final Supplier<DeveloperUI> developerUISupplier;
+    private final BooleanSupplier devMod;
     private ScheduledExecutorService periodicBackgroundTasks;
 
     public ThreadHandler(Supplier<WorldRepresentation> worldRepresentationSupplier,
                          Supplier<RectInt> camNbd,
-                         Supplier<DeveloperUI> developerUISupplier) {
+                         Supplier<DeveloperUI> developerUISupplier,
+                         BooleanSupplier devMod) {
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.camNbd = camNbd;
         this.developerUISupplier = developerUISupplier;
+        this.devMod = devMod;
     }
 
     public void reload() {
@@ -63,8 +66,8 @@ public class ThreadHandler {
             worldRepresentation.sortAllLayers();
 
             // Save dev session if applicable.
-            if (GlobalData.developerMode) {
-                GlobalData.saveDevSession(developerUISupplier.get());
+            if (devMod.isTrue()) {
+                GlobalData.saveDevSession(developerUISupplier.get(), devMod.isTrue());
             }
         }
     }

@@ -4,62 +4,41 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 
-
 public class ComponentParameters {
-
-    private int x, y;
-    private int width, height;
-    private float scaleFactor;
-    private boolean hasSubcomponents = true;
 
     public static final int COARSENESS_PARAMETER = 64; // 256;
 
-    private ComponentParameters(){
+    private final int x, y;
+    private final int width, height;
+    private final float scaleFactor;
+    private final boolean hasSubcomponents;
 
-    }
 
-    public static ComponentParameters make(){
-        return new ComponentParameters();
-    }
-
-    @Contract("_ -> this")
-    ComponentParameters setX(int x) {
-        if (hasSubcomponents(x)) this.x = x;
-        else hasSubcomponents = false;
-        return this;
-    }
-
-    @Contract("_ -> this")
-    ComponentParameters setY(int y) {
-        if (hasSubcomponents(y)) this.y = y;
-        else hasSubcomponents = false;
-        return this;
-    }
-
-    @Contract("_ -> this")
-    ComponentParameters setHeight(int height) {
-        if (hasSubcomponents(height)) this.height = height;
-        else hasSubcomponents = false;
-        return this;
-    }
-
-    @Contract("_ -> this")
-    ComponentParameters setWidth(int width) {
-        if (hasSubcomponents(width)) this.width = width;
-        else hasSubcomponents = false;
-        return this;
-    }
-
-    @Contract("_ -> this")
-    ComponentParameters setScaleFactor(float scaleFactor) {
+    private ComponentParameters(int x,
+                                int y,
+                                int width,
+                                int height,
+                                float scaleFactor,
+                                boolean hasSubcomponents) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
         this.scaleFactor = scaleFactor;
-        return this;
+        this.hasSubcomponents = hasSubcomponents;
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
 
     /**
      * @return false iff the parameters are invalid.
      */
-    public boolean hasSubcomponents() {return hasSubcomponents;}
+    public boolean hasSubcomponents() {
+        return hasSubcomponents;
+    }
 
     public int getX() {
         return x;
@@ -81,9 +60,6 @@ public class ComponentParameters {
         return scaleFactor;
     }
 
-    private static boolean hasSubcomponents(int value) {
-        return Math.floorMod(value, COARSENESS_PARAMETER) == 0;
-    }
 
     @Override
     public String toString() {
@@ -99,5 +75,58 @@ public class ComponentParameters {
             }
         }.toString();
 
+    }
+
+    public static class Builder {
+
+        private int x, y;
+        private int width, height;
+        private float scaleFactor;
+        private boolean hasSubcomponents = true;
+
+        private Builder() {
+        }
+
+        private static boolean hasSubcomponents(int value) {
+            return Math.floorMod(value, COARSENESS_PARAMETER) == 0;
+        }
+
+        @Contract("_ -> this")
+        public Builder setX(int x) {
+            if (hasSubcomponents(x)) this.x = x;
+            else hasSubcomponents = false;
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public Builder setY(int y) {
+            if (hasSubcomponents(y)) this.y = y;
+            else hasSubcomponents = false;
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public Builder setHeight(int height) {
+            if (hasSubcomponents(height)) this.height = height;
+            else hasSubcomponents = false;
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public Builder setWidth(int width) {
+            if (hasSubcomponents(width)) this.width = width;
+            else hasSubcomponents = false;
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public Builder setScaleFactor(float scaleFactor) {
+            this.scaleFactor = scaleFactor;
+            return this;
+        }
+
+        public ComponentParameters build() {
+            return new ComponentParameters(x, y, width, height, scaleFactor, hasSubcomponents);
+        }
     }
 }

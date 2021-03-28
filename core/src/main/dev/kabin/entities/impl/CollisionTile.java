@@ -1,8 +1,8 @@
 package dev.kabin.entities.impl;
 
 import dev.kabin.entities.GraphicsParameters;
-import dev.kabin.entities.animation.AnimationClass;
-import dev.kabin.entities.animation.AnimationPlaybackImpl;
+import dev.kabin.entities.animation.AbstractAnimationPlayback;
+import dev.kabin.entities.animation.enums.Tile;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.ImmutablePointInt;
 import dev.kabin.util.points.PointInt;
@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CollisionTile extends CollisionEntity {
+public class CollisionTile extends CollisionEntity<Tile> {
 
     public static final String FRAME_INDEX = "frameIndex";
     public static final String TILE = "tile";
     public static final int TILE_SIZE = 16;
     private static final Map<ImmutablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
-    private final AnimationClass.Tile tile;
+    private final Tile tile;
     private final int index;
     private int unscaledX;
     private int unscaledY;
@@ -31,11 +31,11 @@ public class CollisionTile extends CollisionEntity {
      */
     public CollisionTile(EntityParameters parameters) {
         super(parameters);
-        tile = AnimationClass.Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
-        final Optional<AnimationPlaybackImpl<?>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
+        tile = Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
+        final Optional<AbstractAnimationPlayback<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
         animationPlaybackImpl.ifPresent(a -> a.setCurrentAnimation(tile));
         index = animationPlaybackImpl
-                .map(AnimationPlaybackImpl::getCurrentAnimationLength)
+                .map(AbstractAnimationPlayback::getCurrentAnimationLength)
                 .map(i -> Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), i))
                 .orElse(0);
         if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {

@@ -38,7 +38,6 @@ public class TangentFinder {
      */
     public static double slope(int x, int y, Direction direction, BiIntPredicate isCollisionAt) {
         if (x != xLast || y != yLast) {
-            System.out.println(TangentFinder.class.getName() + ": (x,y) = (" + x + ", " + y + ")");
             xLast = x;
             yLast = y;
         }

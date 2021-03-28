@@ -75,10 +75,6 @@ public class Component implements Id {
     private final int id;
     private boolean active = false;
 
-    static Component make(ComponentParameters parameters){
-        return new Component(parameters);
-    }
-
     private Component(@NotNull ComponentParameters parameters) {
 
         id = instancesInitiated++;
@@ -104,12 +100,13 @@ public class Component implements Id {
 
         final List<ComponentParameters> componentParametersList = IntStream.range(0, 4).mapToObj(
                 integer -> ComponentParameters
-                        .make()
+                        .builder()
                         .setX(parameters.getX() + COMPONENT_INDEX_TO_X_MAPPING.apply(integer) * parameters.getWidth() / 2)
                         .setY(parameters.getY() + COMPONENT_INDEX_TO_Y_MAPPING.apply(integer) * parameters.getHeight() / 2)
                         .setWidth(parameters.getWidth() / 2)
                         .setHeight(parameters.getHeight() / 2)
                         .setScaleFactor(scaleFactor)
+                        .build()
         ).collect(Collectors.toList());
 
         // One has subcomponents <=> all have subcomponents.
@@ -202,6 +199,10 @@ public class Component implements Id {
             depth++;
         }
         this.depth = depth;
+    }
+
+    public static Component make(ComponentParameters parameters) {
+        return new Component(parameters);
     }
 
 

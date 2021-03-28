@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.animation.enums.Tile;
 import dev.kabin.entities.impl.CollisionTile;
 import dev.kabin.entities.impl.EntityParameters;
 import dev.kabin.util.Procedures;
@@ -19,7 +19,7 @@ class CollisionTileTest {
                 .setScale(1)
                 .setAtlasPath("raw_textures/ground")
                 .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
-                .put(CollisionTile.TILE, AnimationClass.Tile.SURFACE.name())
+                .put(CollisionTile.TILE, Tile.SURFACE.name())
                 .setScale(scale)
                 .build();
     }

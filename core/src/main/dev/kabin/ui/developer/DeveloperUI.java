@@ -22,6 +22,7 @@ import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.functioninterfaces.BooleanSupplier;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.shapes.primitive.RectInt;
 import org.json.JSONObject;
@@ -92,7 +93,8 @@ public class DeveloperUI {
                        FloatSupplier camPosY,
                        Supplier<RectInt> camBounds,
                        Consumer<Runnable> synchronizer,
-                       FloatSupplier scale) {
+                       FloatSupplier scale,
+                       BooleanSupplier developerMode) {
         this.textureAtlasSupplier = textureAtlasSupplier;
 
         this.scale = scale;
@@ -127,7 +129,7 @@ public class DeveloperUI {
                 DeveloperUI.this.clearDraggedEntities();
             }
         });
-        this.setVisible(GlobalData.developerMode);
+        this.setVisible(developerMode.isTrue());
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.mouseEventUtilSupplier = mouseEventUtilSupplier;
         this.keyEventUtilSupplier = keyEventUtilSupplier;
@@ -304,7 +306,7 @@ public class DeveloperUI {
     }
 
     public void saveWorld(Path path) {
-        final JSONObject worldState = Serializer.recordWorldState(worldRepresentationSupplier.get(), scale.get());
+        final JSONObject worldState = Serializer.recordWorldState(worldRepresentationSupplier.get());
         try {
             Files.write(path, worldState.toString().getBytes());
         } catch (IOException e) {

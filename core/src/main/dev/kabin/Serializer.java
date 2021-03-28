@@ -21,13 +21,13 @@ public class Serializer {
     public static final String WORLD_SIZE_Y = "worldSizeY";
     public static final String ENTITIES = "entities";
 
-    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation, float scale) {
+    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation) {
         final List<Entity> allEntities = new ArrayList<>();
         worldRepresentation.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
-        o.put(WORLD_SIZE_X, GlobalData.worldSizeX);
-        o.put(WORLD_SIZE_Y, GlobalData.worldSizeY);
+        o.put(WORLD_SIZE_X, worldRepresentation.getWorldSizeX());
+        o.put(WORLD_SIZE_Y, worldRepresentation.getWorldSizeY());
         return o;
     }
 

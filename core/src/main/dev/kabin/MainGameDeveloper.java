@@ -1,6 +1,7 @@
 package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.KeyCode;
@@ -10,12 +11,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static dev.kabin.GlobalData.developerMode;
-import static dev.kabin.GlobalData.userInterfaceBatch;
 
 public class MainGameDeveloper extends MainGame {
 
     private DeveloperUI developerUI;
+    private SpriteBatch developerUISpriteBatch;
 
     @Override
     public void create() {
@@ -47,16 +47,19 @@ public class MainGameDeveloper extends MainGame {
                 this.getCameraWrapper()::getCameraY,
                 this::getCamBounds,
                 this::synchronizer,
-                this::getScale);
+                this::getScale,
+                this::isDeveloperMode);
         developerUI.loadEntityLoadingWidgetSettings(entityLoadingWidgetSettings);
         developerUI.loadTileLoadingWidgetSettings(tileSelectionWidgetSettings);
+        developerUI.setVisible(isDeveloperMode());
         setDeveloperUISupplier(() -> developerUI);
+        developerUISpriteBatch = new SpriteBatch();
     }
 
     @Override
     protected void updateCamera(CameraWrapper camera) {
         // Admit camera free mode movement if in developer mode.
-        if (GlobalData.developerMode) {
+        if (isDeveloperMode()) {
             if (!getKeyEventUtil().isControlDown()) camera.setPos(
                     camera.getCamera().position.x +
                             (getKeyEventUtil().isPressed(KeyCode.A) == getKeyEventUtil().isPressed(KeyCode.D) ? 0 :
@@ -72,14 +75,14 @@ public class MainGameDeveloper extends MainGame {
 
     @Override
     public void render() {
-        Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
+        Player.getInstance().ifPresent(player -> player.setHandleInput(!isDeveloperMode()));
 
         super.render();
 
         // Render interface:
-        if (developerMode) {
+        if (isDeveloperMode()) {
             developerUI.updatePositionsOfDraggedEntities();
-            developerUI.render(new GraphicsParametersImpl(userInterfaceBatch,
+            developerUI.render(new GraphicsParametersImpl(developerUISpriteBatch,
                     getCameraWrapper().getCamera(),
                     worldRepresentation::forEachEntityInCameraNeighborhood,
                     getStateTime(),
@@ -87,5 +90,11 @@ public class MainGameDeveloper extends MainGame {
                     screenWidth,
                     screenHeight));
         }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        developerUISpriteBatch.dispose();
     }
 }

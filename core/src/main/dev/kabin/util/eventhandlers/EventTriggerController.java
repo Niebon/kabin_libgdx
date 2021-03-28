@@ -1,9 +1,6 @@
 package dev.kabin.util.eventhandlers;
 
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import dev.kabin.GlobalData;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.impl.Entity;
 import dev.kabin.entities.impl.Player;
@@ -15,9 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-import static dev.kabin.GlobalData.developerMode;
-
-
 public class EventTriggerController {
 
     private LastActive lastActive = LastActive.MOUSE;
@@ -26,6 +20,7 @@ public class EventTriggerController {
     private final Supplier<WorldRepresentation> representation;
     private Supplier<DeveloperUI> developerUISupplier;
     private final FloatSupplier scaleSupplier;
+    private boolean developerMode = false;
 
     public EventTriggerController(@NotNull EventTriggerController.InputOptions options,
                                   @NotNull KeyEventUtil keyEventUtil,
@@ -39,6 +34,14 @@ public class EventTriggerController {
         this.developerUISupplier = developerUISupplier;
         this.scaleSupplier = scaleSupplier;
         setInputOptions(options);
+    }
+
+    public boolean isDeveloperMode() {
+        return developerMode;
+    }
+
+    public void setDeveloperMode(boolean developerMode) {
+        this.developerMode = developerMode;
     }
 
     public void setDeveloperUISupplier(Supplier<DeveloperUI> developerUISupplier) {
@@ -80,7 +83,7 @@ public class EventTriggerController {
             keyEventUtil.addListener(KeyCode.F12, true, () -> {
                 developerMode = !developerMode;
                 // TODO
-                developerUISupplier.get().setVisible(GlobalData.developerMode);
+                developerUISupplier.get().setVisible(developerMode);
 
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });

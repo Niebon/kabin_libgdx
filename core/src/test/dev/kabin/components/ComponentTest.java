@@ -16,12 +16,13 @@ class ComponentTest {
     @Test
     public void componentsRecursionTerminatesAndHasCorrectDimensions() {
         final Component mainComponent = Component.make(
-                ComponentParameters.make()
+                ComponentParameters.builder()
                         .setX(0)
                         .setY(0)
                         .setWidth(ComponentParameters.COARSENESS_PARAMETER * 2)
                         .setHeight(ComponentParameters.COARSENESS_PARAMETER * 2)
                         .setScaleFactor(1)
+                        .build()
         );
 
         // Check sub-component x-position
@@ -46,12 +47,13 @@ class ComponentTest {
     @Test
     public void dataRemovalThrowsForEmptyLists() {
         final Component mainComponent = Component.make(
-                ComponentParameters.make()
+                ComponentParameters.builder()
                         .setX(0)
                         .setY(0)
                         .setWidth(ComponentParameters.COARSENESS_PARAMETER * 2)
                         .setHeight(ComponentParameters.COARSENESS_PARAMETER * 2)
                         .setScaleFactor(1)
+                        .build()
         );
 
         Arrays.stream(Component.Data.values()).filter(d -> d.getType() == Component.Data.PrimitiveType.INTEGER).forEach(type ->
@@ -65,12 +67,13 @@ class ComponentTest {
                 height = ComponentParameters.COARSENESS_PARAMETER * 8;
 
         final Component mainComponent = Component.make(
-                ComponentParameters.make()
+                ComponentParameters.builder()
                         .setX(0)
                         .setY(0)
                         .setWidth(width)
                         .setHeight(height)
                         .setScaleFactor(1)
+                        .build()
         );
 
         final Random r = new Random();

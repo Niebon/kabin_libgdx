@@ -1,7 +1,5 @@
 package dev.kabin;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.ui.developer.DeveloperUI;
 
 import java.io.IOException;
@@ -16,9 +14,6 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int ART_WIDTH = 400;
     public static final int ART_HEIGHT = 225;
-    public static boolean developerMode = true;
-    public static SpriteBatch userInterfaceBatch;
-    public static ShapeRenderer shapeRenderer;
     public static String currentWorld = "world_1.json";
     public static int worldSizeX;
     public static int worldSizeY;
@@ -28,7 +23,7 @@ public class GlobalData {
         return Level.WARNING;
     }
 
-    public static void saveDevSession(DeveloperUI developerUI) {
+    public static void saveDevSession(DeveloperUI developerUI, boolean developerMode) {
         final String jsonRepr = """
                 {
                   "world" : "%s",

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.AnimationClass;
+import dev.kabin.entities.animation.enums.Tile;
 import dev.kabin.entities.impl.*;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
@@ -35,15 +35,15 @@ public class TileSelectionWidget {
 
     private static final int WIDTH = 600;
     private static final int HEIGHT = 200;
-    private static final Map<AnimationClass.Tile, @NotNull Button> typeToButton = new HashMap<>();
-    private static Map<AnimationClass.Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
+    private static final Map<Tile, @NotNull Button> typeToButton = new HashMap<>();
+    private static Map<Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
     private final dev.kabin.ui.Widget widget;
     private String selectedAsset = "";
-    private AnimationClass.Tile currentType = AnimationClass.Tile.SURFACE;
+    private final FloatSupplier mouseRelativeToWorldX;
     private final Stage stage;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
-    private final FloatSupplier mouseXRelativeToWorld;
-    private final FloatSupplier mouseYRelativeToWorld;
+    private final FloatSupplier mouseRelativeToWorldY;
+    private Tile currentType = Tile.SURFACE;
     private final FloatSupplier scale;
     private final Supplier<RectInt> currCamBounds;
     private final Supplier<WorldRepresentation> worldRepresentationSupplier;
@@ -54,8 +54,8 @@ public class TileSelectionWidget {
             Stage stage,
             Supplier<TextureAtlas> atlas,
             Executor executor,
-            FloatSupplier mouseXRelativeToWorld,
-            FloatSupplier mouseYRelativeToWorld,
+            FloatSupplier mouseRelativeToWorldX,
+            FloatSupplier mouseRelativeToWorldY,
             FloatSupplier scale,
             Supplier<RectInt> currCamBounds,
             Supplier<WorldRepresentation> worldRepresentationSupplier,
@@ -63,8 +63,8 @@ public class TileSelectionWidget {
     ) {
         this.stage = stage;
         this.textureAtlasSupplier = atlas;
-        this.mouseXRelativeToWorld = mouseXRelativeToWorld;
-        this.mouseYRelativeToWorld = mouseYRelativeToWorld;
+        this.mouseRelativeToWorldX = mouseRelativeToWorldX;
+        this.mouseRelativeToWorldY = mouseRelativeToWorldY;
         this.scale = scale;
         this.currCamBounds = currCamBounds;
         this.worldRepresentationSupplier = worldRepresentationSupplier;
@@ -79,7 +79,7 @@ public class TileSelectionWidget {
                 .setCollapsedWindowWidth(WIDTH)
                 .build();
 
-        var loadImageAssetButton = new TextButton("Asset", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
+        final var loadImageAssetButton = new TextButton("Asset", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
         loadImageAssetButton.setWidth(100);
         loadImageAssetButton.setHeight(25);
         loadImageAssetButton.setX(25);
@@ -139,18 +139,18 @@ public class TileSelectionWidget {
      */
     public void removeGroundTileAtCurrentMousePositionThreadLocked() {
         synchronizer.accept(
-                () -> removeGroundTileAtCurrentMousePosition(mouseXRelativeToWorld.get(), mouseYRelativeToWorld.get())
+                () -> removeGroundTileAtCurrentMousePosition(mouseRelativeToWorldX.get(), mouseRelativeToWorldY.get())
         );
     }
 
     public void loadSettings(JSONObject settings) {
         selectedAsset = settings.getString("asset");
-        currentType = AnimationClass.Tile.valueOf(settings.getString("type"));
+        currentType = Tile.valueOf(settings.getString("type"));
         widget.setCollapsed(settings.getBoolean("collapsed"));
 
 
         // Finally, show content:
-        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Tile.class);
+        typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, Tile.class);
         displaySelectTileButtons();
     }
 
@@ -170,8 +170,8 @@ public class TileSelectionWidget {
             if (selectedAsset == null) return;
             if (currentType == null) return;
             final EntityParameters parameters = new EntityParameters.Builder()
-                    .setX(mouseXRelativeToWorld.get())
-                    .setY(mouseYRelativeToWorld.get())
+                    .setX(mouseRelativeToWorldX.get())
+                    .setY(mouseRelativeToWorldY.get())
                     .setLayer(0)
                     .setScale(scale.get())
                     .setAtlasPath(selectedAsset)
@@ -223,7 +223,7 @@ public class TileSelectionWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, AnimationClass.Tile.class);
+                typeToAtlasRegionsMapping = AnimationBundleFactory.findTypeToAtlasRegionsMapping(textureAtlasSupplier.get(), selectedAsset, Tile.class);
                 displaySelectTileButtons();
             }
         });
@@ -233,7 +233,7 @@ public class TileSelectionWidget {
         typeToButton.forEach((t, b) -> b.remove());
         typeToButton.clear();
 
-        for (var entry : AnimationClass.Tile.values()) {
+        for (var entry : Tile.values()) {
             // Distance between displayed tiles.
             int separationOffsetFactor = entry.ordinal();
 

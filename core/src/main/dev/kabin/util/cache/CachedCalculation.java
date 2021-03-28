@@ -1,4 +1,4 @@
-package dev.kabin.cache;
+package dev.kabin.util.cache;
 
 import org.jetbrains.annotations.NotNull;
 

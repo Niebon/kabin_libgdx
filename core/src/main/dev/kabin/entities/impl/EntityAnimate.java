@@ -1,6 +1,8 @@
 package dev.kabin.entities.impl;
 
-public class EntityAnimate extends AbstractEntity {
+import dev.kabin.entities.animation.enums.Animate;
+
+public class EntityAnimate extends AbstractEntity<Animate> {
 
     EntityAnimate(EntityParameters parameters) {
         super(parameters);
