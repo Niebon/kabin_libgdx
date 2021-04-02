@@ -20,6 +20,7 @@ import java.util.Optional;
 
 public class Player extends EntityAnimate {
 
+    // Constants
     private static final List<Animate> STANDARD_RIGHT_LIST = List.of(
             Animate.STANDARD1_RIGHT,
             Animate.STANDARD2_RIGHT,
@@ -33,8 +34,11 @@ public class Player extends EntityAnimate {
     private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;
     private static final float RUN_SPEED_METERS_PER_SECONDS = 8f;
     private static final float WALK_SPEED_METERS_PER_SECONDS = 3f;
+
+    // Static variables:
     private static Player instance;
-    private final float throwMomentum;
+
+    // Class variables:
     private boolean handleInput = true;
     private int jumpFrame;
     // Cached velocity caused by environment.
@@ -46,12 +50,9 @@ public class Player extends EntityAnimate {
     private boolean inAir;
     private float dx, dy;
     private int r, l, u, d;
-    private float vAbsDividedBySquareRoot;
     private int jump;
-    private float jumpCooldown;
-    private int frameCounter;
+    private float jumpCooldown = Float.MAX_VALUE / 2f;
     private float vAbsMetersPerSecond;
-    private boolean beganMoving;
     private boolean facingRight;
     private boolean onLadder;
     private boolean running;
@@ -61,15 +62,10 @@ public class Player extends EntityAnimate {
         if (instance != null) {
             throw new IllegalArgumentException("Player already exists.");
         }
+        instance = this;
         // Physics
         jumpFrame = 0;
         toggleRunSpeed();
-
-        // Throwing items
-        throwMomentum = 140; // kg m/s
-
-        instance = this;
-        vAbsMetersPerSecond = RUN_SPEED_METERS_PER_SECONDS;
     }
 
     public static Optional<Player> getInstance() {
@@ -163,7 +159,7 @@ public class Player extends EntityAnimate {
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
 
         // If in air
-        if (inAir) {
+        if (inAir || jumpCooldown < 0.5) {
             if (facingRight) animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_RIGHT);
             else animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_LEFT);
             // If not in air
@@ -207,23 +203,15 @@ public class Player extends EntityAnimate {
      */
     private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
         exhaustRunnable();
-        if (!handleInput) return;
-
-        final int lLast = l;
-        final int rLast = r;
-        final int uLast = u;
-        final int dLast = d;
-        final int jumpLast = jump;
+        if (!handleInput) {
+            return;
+        }
 
         l = params.isPressed(KeyCode.A) ? 1 : 0;
         r = params.isPressed(KeyCode.D) ? 1 : 0;
         u = params.isPressed(KeyCode.W) ? 1 : 0;
         d = params.isPressed(KeyCode.S) ? 1 : 0;
         jump = params.isPressed(KeyCode.SPACE) ? 1 : 0;
-
-        beganMoving = (rLast - lLast != r - l ^
-                uLast - dLast != u - d ^
-                (jumpLast == 0 && jump == 1));
     }
 
     private void exhaustRunnable() {
@@ -247,8 +235,8 @@ public class Player extends EntityAnimate {
             if (inAir) inAir = false;
             onLadder = true;
 
-            dx = vAbsDividedBySquareRoot * (r - l) * params.dt();
-            dy = vAbsDividedBySquareRoot * (d - u) * params.dt();
+            dx = WALK_SPEED_METERS_PER_SECONDS * (r - l) * params.dt();
+            dy = WALK_SPEED_METERS_PER_SECONDS * (d - u) * params.dt();
 
             if (dx == 0) {
                 dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
@@ -268,34 +256,9 @@ public class Player extends EntityAnimate {
             if (jump == 1) {
                 jump = 0;
                 final double jumpCooldownThreshold = 0.2;
-
-//                // Intercept jump trajectory. If the trajectory crashes with collision, then suppress the jump.
-//                final boolean suppressJump;
-//                {
-//                    double x = getX();
-//                    double y = getY();
-//
-//                    for (int jumpFrame = 0, len = 5; jumpFrame < len; jumpFrame++) {
-//                        final double jumpTime = (jumpFrame++) * dt;
-//                        double dy = (vy0 + GameData.gravitationConstant * jumpTime) * dt;
-//                        double dx = this.dx + vx0 * dt;
-//                        x = x + dx;
-//                        y = y + dy;
-//                    }
-//
-//                    final double jumpTime = (jumpFrame++) * dt;
-//                    dy = (vy0 + GameData.gravitationConstant * jumpTime) * dt;
-//                    dx = dx + vx0 * dt;
-//                    final int xNewUnscaled = (int) Math.round(x / getScale());
-//                    final int yNewUnscaled = (int) Math.round(y / getScale());
-//
-//                    suppressJump = GameData.getRootComponent().collisionIfNotLadderData(xNewUnscaled, yNewUnscaled - 2);
-//                }
-
                 if (!inAir && jumpCooldown > jumpCooldownThreshold) {
                     jumpCooldown = 0;
                     jumpFrame = 0; // start jump frame
-                    frameCounter = 10; // big number => greater than play new frame threshold => next frame played is start jump frame
                     Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
                     if (affectedByVectorField) {
                         int i = 0;
