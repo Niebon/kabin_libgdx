@@ -4,10 +4,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.animation.AbstractAnimationPlayback;
-import dev.kabin.entities.animation.AnimationBundleFactory;
+import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.impl.animation.AnimationBundleFactory;
 import dev.kabin.util.pools.ImageAnalysisPool;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -19,13 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 
-abstract class AbstractEntity<T extends Enum<T>> implements Entity {
+abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>> implements EntityLibgdx {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractEntity.class.getName());
+    private static final Logger logger = Logger.getLogger(AbstractLibgdxEntity.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
 
     // Protected data:
-    private final AbstractAnimationPlayback<T> animationPlaybackImpl;
+    private final AbstractAnimationPlaybackLibgdx<AnimationClass> animationPlaybackImpl;
 
     // Class fields:
     private final String atlasPath;
@@ -40,7 +39,7 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
     // Class variables:
     private int layer;
 
-    AbstractEntity(EntityParameters parameters) {
+    AbstractLibgdxEntity(EntityParameters parameters) {
         id = createdInstances.incrementAndGet();
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
@@ -48,7 +47,8 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
         animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
                 parameters.getTextureAtlas(),
                 atlasPath,
-                (Class<T>) getType().animationClass());
+                getAnimationClass()
+        );
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setSmoothParameter(0.5f);
         }
@@ -56,22 +56,9 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
         actor.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return AbstractEntity.this.touchDown(button);
+                return AbstractLibgdxEntity.this.touchDown(button);
             }
         });
-        // TODO: delete after this is put elsewhere
-//        actor.addListener(new DragListener() {
-//            @Override
-//            public void dragStart(InputEvent event, float x, float y, int pointer) {
-//                if (DeveloperUI.getEntitySelection().getCurrentlySelectedEntities().isEmpty()) {
-//                    DeveloperUI.addEntityToDraggedEntities(AbstractEntity.this);
-//                } else {
-//                    DeveloperUI.getEntitySelection().getCurrentlySelectedEntities()
-//                            .forEach(DeveloperUI::addEntityToDraggedEntities);
-//                }
-//            }
-//        });
-
         setPos(parameters.x(), parameters.y());
         {
             positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
@@ -82,8 +69,14 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private Class<AnimationClass> getAnimationClass() {
+        return (Class<AnimationClass>) getType().animationClass();
+    }
+
+
     @Nullable
-    protected AbstractAnimationPlayback<T> getAnimationPlaybackImpl() {
+    protected AbstractAnimationPlaybackLibgdx<AnimationClass> getAnimationPlaybackImpl() {
         return animationPlaybackImpl;
     }
 
@@ -92,7 +85,7 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
     }
 
     public boolean touchDown(int button) {
-        LOGGER.warning(() -> "Click registered.");
+        logger.warning(() -> "Click registered.");
         switch (button) {
             case Input.Buttons.RIGHT -> handleMouseClickRight();
             case Input.Buttons.LEFT -> handleMouseClickLeft();
@@ -108,7 +101,7 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
     }
 
     @Override
-    public void updateGraphics(GraphicsParameters params) {
+    public void updateGraphics(GraphicsParametersLibgdx params) {
         setScale(params.getScale());
 
         final float graphicsRootX = getRootX();
@@ -186,11 +179,6 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
     }
 
     @Override
-    public String getAtlasPath() {
-        return atlasPath;
-    }
-
-    @Override
     public float getScale() {
         return scale;
     }
@@ -233,9 +221,9 @@ abstract class AbstractEntity<T extends Enum<T>> implements Entity {
         return new JSONObject()
                 .put("x", getUnscaledX())
                 .put("y", getUnscaledY())
-                .put("atlasPath", getAtlasPath())
+                .put("atlasPath", atlasPath)
                 .put("layer", getLayer())
-                .put("primitiveType", getType().name());
+                .put("type", getType().name());
     }
 
     @Override

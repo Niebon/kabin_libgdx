@@ -1,7 +1,5 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.entities.GraphicsParameters;
-
 import java.util.Optional;
 
 public class StaticBackground extends EntityInanimate {
@@ -21,7 +19,7 @@ public class StaticBackground extends EntityInanimate {
     }
 
     @Override
-    public void updateGraphics(GraphicsParameters params) {
+    public void updateGraphics(GraphicsParametersLibgdx params) {
         final var animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setPos(
@@ -38,8 +36,8 @@ public class StaticBackground extends EntityInanimate {
     }
 
     @Override
-    public EntityFactory.EntityType getType() {
-        return EntityFactory.EntityType.STATIC_BACKGROUND;
+    public EntityType getType() {
+        return EntityType.STATIC_BACKGROUND;
     }
 
 }

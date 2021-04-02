@@ -1,10 +1,11 @@
-package dev.kabin.entities.animation;
+package dev.kabin.entities.impl.animation;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
-import dev.kabin.entities.animation.enums.Animate;
-import dev.kabin.entities.animation.enums.Inanimate;
-import dev.kabin.entities.animation.enums.Tile;
+import dev.kabin.entities.AnimationMetadata;
+import dev.kabin.entities.impl.animation.enums.Animate;
+import dev.kabin.entities.impl.animation.enums.Inanimate;
+import dev.kabin.entities.impl.animation.enums.Tile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -58,31 +59,32 @@ public class AnimationBundleFactory {
                 .toArray(TextureAtlas.AtlasRegion[]::new));
     }
 
+    @SuppressWarnings("unchecked") // Casts are checked explicitly in the if, then, else branch.
     @Nullable
-    public static <T extends Enum<T>> AbstractAnimationPlayback<T> loadFromAtlasPath(@Nullable TextureAtlas textureAtlas,
-                                                                                     String atlasPath,
-                                                                                     Class<T> clazz) {
+    public static <T extends Enum<T>> AbstractAnimationPlaybackLibgdx<T> loadFromAtlasPath(@Nullable TextureAtlas textureAtlas,
+                                                                                           String atlasPath,
+                                                                                           Class<T> clazz) {
         if (textureAtlas == null) return null;
         if (clazz == Animate.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Animate.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Animate.class);
-            return (AbstractAnimationPlayback<T>) new AnimationPlaybackAnimate(textureAtlas, regions, animations);
+            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxAnimate(textureAtlas, regions, animations);
         } else if (clazz == Inanimate.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Inanimate.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Inanimate.class);
-            return (AbstractAnimationPlayback<T>) new AnimationPlaybackInanimate(textureAtlas, regions, animations);
+            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxInanimate(textureAtlas, regions, animations);
         } else if (clazz == Tile.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Tile.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Tile.class);
-            return (AbstractAnimationPlayback<T>) new AnimationPlaybackTile(textureAtlas, regions, animations);
+            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxTile(textureAtlas, regions, animations);
         } else throw new IllegalArgumentException();
     }
 
-    public static class AnimationPlaybackAnimate extends AbstractAnimationPlayback<Animate> {
+    public static class AnimationPlaybackLibgdxAnimate extends AbstractAnimationPlaybackLibgdx<Animate> {
 
-        public AnimationPlaybackAnimate(TextureAtlas atlas,
-                                        Array<TextureAtlas.AtlasRegion> regions,
-                                        Map<Animate, int[]> animationBlueprint) {
+        public AnimationPlaybackLibgdxAnimate(TextureAtlas atlas,
+                                              Array<TextureAtlas.AtlasRegion> regions,
+                                              Map<Animate, int[]> animationBlueprint) {
             super(atlas, regions, animationBlueprint, Animate.class);
         }
 
@@ -98,11 +100,11 @@ public class AnimationBundleFactory {
 
     }
 
-    public static class AnimationPlaybackInanimate extends AbstractAnimationPlayback<Inanimate> {
+    public static class AnimationPlaybackLibgdxInanimate extends AbstractAnimationPlaybackLibgdx<Inanimate> {
 
-        public AnimationPlaybackInanimate(TextureAtlas atlas,
-                                          Array<TextureAtlas.AtlasRegion> regions,
-                                          Map<Inanimate, int[]> animationBlueprint) {
+        public AnimationPlaybackLibgdxInanimate(TextureAtlas atlas,
+                                                Array<TextureAtlas.AtlasRegion> regions,
+                                                Map<Inanimate, int[]> animationBlueprint) {
             super(atlas, regions, animationBlueprint, Inanimate.class);
         }
 
@@ -118,11 +120,11 @@ public class AnimationBundleFactory {
 
     }
 
-    public static class AnimationPlaybackTile extends AbstractAnimationPlayback<Tile> {
+    public static class AnimationPlaybackLibgdxTile extends AbstractAnimationPlaybackLibgdx<Tile> {
 
-        public AnimationPlaybackTile(TextureAtlas atlas,
-                                     Array<TextureAtlas.AtlasRegion> regions,
-                                     Map<Tile, int[]> animationBlueprint) {
+        public AnimationPlaybackLibgdxTile(TextureAtlas atlas,
+                                           Array<TextureAtlas.AtlasRegion> regions,
+                                           Map<Tile, int[]> animationBlueprint) {
             super(atlas, regions, animationBlueprint, Tile.class);
         }
 

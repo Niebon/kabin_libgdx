@@ -1,10 +1,10 @@
 package dev.kabin.components;
 
 
-import dev.kabin.collections.Id;
 import dev.kabin.components.worldmodel.FloatArrayPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
 import dev.kabin.util.Functions;
+import dev.kabin.util.collections.Id;
 import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
 import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
 import dev.kabin.util.functioninterfaces.IntBinaryOperator;
@@ -402,7 +402,7 @@ public class Component implements Id {
                     }
                 } else
                     throw new RuntimeException(
-                            String.format("The data of type '%s' at position (%s,%s) for this sub-component was empty. "
+                            String.format("The data of classification '%s' at position (%s,%s) for this sub-component was empty. "
                                     + "This method should not have been called.", key.name(), x, y));
             }
         }

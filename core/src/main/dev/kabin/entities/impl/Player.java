@@ -1,15 +1,18 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.Entity;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.animation.AbstractAnimationPlayback;
-import dev.kabin.entities.animation.enums.Animate;
+import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.impl.animation.enums.Animate;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
 import dev.kabin.util.TangentFinder;
 import dev.kabin.util.eventhandlers.KeyCode;
+import dev.kabin.util.functioninterfaces.BiIntPredicate;
+import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,30 +30,26 @@ public class Player extends EntityAnimate {
             Animate.STANDARD2_LEFT,
             Animate.STANDARD3_LEFT
     );
+    private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;
+    private static final float RUN_SPEED_METERS_PER_SECONDS = 8f;
+    private static final float WALK_SPEED_METERS_PER_SECONDS = 3f;
     private static Player instance;
     private final float throwMomentum;
     private boolean handleInput = true;
     private int jumpFrame;
-
     // Cached velocity caused by environment.
     private float vx0;
     private float vy0;
-
     // Cached total velocity: (velocity caused by player) + (velocity caused by environment)
     private float cachedVx;
     private float cachedVy;
-
-
     private boolean inAir;
     private float dx, dy;
     private int r, l, u, d;
     private float vAbsDividedBySquareRoot;
-    private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;
     private int jump;
     private float jumpCooldown;
     private int frameCounter;
-    private static final float RUN_SPEED_METERS_PER_SECONDS = 8f;
-    private static final float WALK_SPEED_METERS_PER_SECONDS = 3f;
     private float vAbsMetersPerSecond;
     private boolean beganMoving;
     private boolean facingRight;
@@ -59,7 +58,9 @@ public class Player extends EntityAnimate {
 
     Player(EntityParameters parameters) {
         super(parameters);
-        if (instance != null) throw new IllegalArgumentException("Player already exists.");
+        if (instance != null) {
+            throw new IllegalArgumentException("Player already exists.");
+        }
         // Physics
         jumpFrame = 0;
         toggleRunSpeed();
@@ -75,9 +76,49 @@ public class Player extends EntityAnimate {
         return Optional.ofNullable(instance);
     }
 
+    /**
+     * Acts on an entity with the present vector field and returns the vector of the action.
+     *
+     * @param entity the entity to be acted on.
+     * @return the point representing the vector (vx,vy) which acted on the entity.
+     */
+    public static boolean action(@NotNull Entity<?, ?, ?> entity,
+                                 BiIntToFloatFunction vectorFieldX,
+                                 BiIntToFloatFunction vectorFieldY,
+                                 float dt) {
+        final int x = entity.getUnscaledX();
+        final int y = entity.getUnscaledY();
+        for (int i = 0; i < 4; i++) {
+            final float
+                    vx = vectorFieldX.eval(x, y + i),
+                    vy = vectorFieldY.eval(x, y + i);
+            if (vx != 0 || vy != 0) {
+                entity.setX(entity.getX() + vx * dt);
+                entity.setY(entity.getY() + vy * dt);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Method for finding the displacement dy such that
+     * y - dy corresponds to the first point where the given entity is placed
+     * strictly above the ground/collision surface.
+     */
+    public static float findLiftAboveGround(int x,
+                                            int y,
+                                            float scale,
+                                            @NotNull BiIntPredicate collisionPredicate) {
+
+        int j = 0;
+        while (collisionPredicate.test(x, y + j)) j++;
+        return scale * j;
+    }
+
     @Override
-    public EntityFactory.EntityType getType() {
-        return EntityFactory.EntityType.PLAYER;
+    public EntityType getType() {
+        return EntityType.PLAYER;
     }
 
     public void setHandleInput(boolean b) {
@@ -115,8 +156,8 @@ public class Player extends EntityAnimate {
     }
 
     @Override
-    public void updateGraphics(GraphicsParameters params) {
-        final AbstractAnimationPlayback<Animate> animationPlaybackImpl = getAnimationPlaybackImpl();
+    public void updateGraphics(GraphicsParametersLibgdx params) {
+        final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl == null) return;
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
@@ -161,6 +202,7 @@ public class Player extends EntityAnimate {
 
     /**
      * Helper method to set input controls.
+     *
      * @param params input.
      */
     private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
@@ -194,7 +236,7 @@ public class Player extends EntityAnimate {
         // Get initial conditions.
         final int xPrevUnscaled = getUnscaledX();
         final int yPrevUnscaled = getUnscaledY();
-        final boolean affectedByVectorField = Entity.action(this, params::getVectorFieldX, params::getVectorFieldY);
+        final boolean affectedByVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY, params.dt());
 
         // Ladder movement
         if (params.isLadderAt(xPrevUnscaled, yPrevUnscaled)) {
@@ -254,15 +296,14 @@ public class Player extends EntityAnimate {
                     jumpCooldown = 0;
                     jumpFrame = 0; // start jump frame
                     frameCounter = 10; // big number => greater than play new frame threshold => next frame played is start jump frame
-                    Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlayback::reset);
+                    Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
                     if (affectedByVectorField) {
                         int i = 0;
                         while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)
                             i++;
                         vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i);
                         vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled - i);
-                    }
-                    else {
+                    } else {
                         vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
                     }
                 }
@@ -281,7 +322,7 @@ public class Player extends EntityAnimate {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(Entity.findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsMetersPerSecond * params.meter() * params.dt());
+            dy = Math.min(findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsMetersPerSecond * params.meter() * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;

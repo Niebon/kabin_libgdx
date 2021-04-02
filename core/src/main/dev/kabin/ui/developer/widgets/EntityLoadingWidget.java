@@ -9,14 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import dev.kabin.entities.GraphicsParameters;
-import dev.kabin.entities.animation.AbstractAnimationPlayback;
-import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.AnimationPlayback;
-import dev.kabin.entities.impl.Entity;
-import dev.kabin.entities.impl.EntityCollectionProvider;
-import dev.kabin.entities.impl.EntityFactory;
-import dev.kabin.entities.impl.EntityParameters;
+import dev.kabin.entities.impl.*;
+import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.impl.animation.AnimationBundleFactory;
+import dev.kabin.entities.impl.animation.AnimationPlaybackLibgdx;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import org.json.JSONObject;
 
@@ -40,13 +36,13 @@ public class EntityLoadingWidget {
     private final FloatSupplier mouseRelativeToWorldX;
     private final FloatSupplier mouseRelativeToWorldY;
     private final FloatSupplier scale;
-    private final Consumer<Entity> registerEntityToWorld;
+    private final Consumer<EntityLibgdx> registerEntityToWorld;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
 
     // Class variables:
-    private AbstractAnimationPlayback<?> preview = null;
+    private AbstractAnimationPlaybackLibgdx<?> preview = null;
     private String selectedAsset = "";
-    private EntityFactory.EntityType entityType = EntityFactory.EntityType.ENTITY_ANIMATE; // Default.
+    private EntityType entityType = EntityType.ENTITY_ANIMATE; // Default.
     private Enum<?> animationType = entityType.animationClass().getEnumConstants()[0];
     private int layer;
 
@@ -56,7 +52,7 @@ public class EntityLoadingWidget {
             FloatSupplier mouseRelativeToWorldX,
             FloatSupplier mouseRelativeToWorldY,
             FloatSupplier scale,
-            Consumer<Entity> registerEntityToWorld,
+            Consumer<EntityLibgdx> registerEntityToWorld,
             Supplier<TextureAtlas> textureAtlasSupplier) {
         this.stage = stage;
         this.mouseRelativeToWorldX = mouseRelativeToWorldX;
@@ -119,18 +115,18 @@ public class EntityLoadingWidget {
     }
 
     private static <T extends Enum<T>> void setCurrentAnimationOfPreviewTo(
-            AnimationPlayback<?> ap,
+            AnimationPlaybackLibgdx<?> ap,
             Enum<?> animType
     ) {
         //noinspection unchecked
-        ((AnimationPlayback<T>) ap).setCurrentAnimation((T) animType);
+        ((AnimationPlaybackLibgdx<T>) ap).setCurrentAnimation((T) animType);
     }
 
 
     public JSONObject toJson() {
         return new JSONObject()
                 .put("asset", selectedAsset.isEmpty() ? "player" : selectedAsset)
-                .put("type", entityType)
+                .put("classification", entityType)
                 .put("animation_type", animationType)
                 .put("layer", layer)
                 .put("collapsed", widget.isCollapsed());
@@ -161,7 +157,7 @@ public class EntityLoadingWidget {
         widget.refreshContentTableMessage(contentTableMessage);
     }
 
-    public Optional<Entity> addEntity() {
+    public Optional<EntityLibgdx> addEntity() {
 
         // Early exit, no asset selected.
         if (selectedAsset == null || selectedAsset.equals("")) {
@@ -179,7 +175,7 @@ public class EntityLoadingWidget {
                 .build();
 
 
-        final Entity e = entityType.getParameterConstructor().construct(parameters);
+        final EntityLibgdx e = entityType.getParameterConstructor().construct(parameters);
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
 
@@ -188,7 +184,7 @@ public class EntityLoadingWidget {
 
     public void loadSettings(JSONObject settings) {
         selectedAsset = settings.getString("asset");
-        entityType = EntityFactory.EntityType.valueOf(settings.getString("type"));
+        entityType = EntityType.valueOf(settings.getString("type"));
         final String animationType = settings.getString("animation_type");
         this.animationType = getAnimationTypeByName(animationType, entityType.animationClass());
         layer = settings.getInt("layer");
@@ -220,10 +216,10 @@ public class EntityLoadingWidget {
         final var selectBox = new SelectBox<String>(skin, "default");
         selectBox.setItems(
                 Arrays
-                        .stream(EntityFactory.EntityType.values())
-                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.BACKGROUND)
-                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.BACKGROUND_LAYER_2)
-                        .filter(type -> type.groupType() != EntityCollectionProvider.Type.SKY)
+                        .stream(EntityType.values())
+                        .filter(classification -> classification.getGroupType() != EntityGroup.BACKGROUND)
+                        .filter(classification -> classification.getGroupType() != EntityGroup.BACKGROUND_LAYER_2)
+                        .filter(classification -> classification.getGroupType() != EntityGroup.SKY)
                         .map(Enum::name)
                         .toArray(String[]::new)
         );
@@ -241,7 +237,7 @@ public class EntityLoadingWidget {
         dialog.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                entityType = EntityFactory.EntityType.valueOf(selectBox.getSelected());
+                entityType = EntityType.valueOf(selectBox.getSelected());
                 widget.removeActor(dialog);
                 refreshContentTableMessage();
             }
@@ -302,7 +298,7 @@ public class EntityLoadingWidget {
         });
     }
 
-    public void render(GraphicsParameters params) {
+    public void render(GraphicsParametersLibgdx params) {
         if (widget.isVisible() && !widget.isCollapsed() && preview != null) {
             if (preview.getCurrentAnimation() != animationType) {
                 setCurrentAnimationOfPreviewTo(preview, animationType);

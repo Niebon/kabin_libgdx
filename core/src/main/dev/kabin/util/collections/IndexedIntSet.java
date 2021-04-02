@@ -1,4 +1,4 @@
-package dev.kabin.collections;
+package dev.kabin.util.collections;
 
 import java.util.Arrays;
 

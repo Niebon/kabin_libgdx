@@ -1,6 +1,6 @@
 package dev.kabin.util;
 
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.AbstractRectBoxed;
@@ -75,12 +75,12 @@ public class Functions {
         return distance(r1.getCenterX(), r1.getMinY().doubleValue(), r2.getCenterX(), r2.getMinY().doubleValue());
     }
 
-    public static double distance(@NotNull Entity entity1, @NotNull Entity entity2) {
+    public static double distance(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
         return distance(entity1.getX(), entity1.getY(), entity2.getX(), entity2.getY());
     }
 
     @Contract("_, _ -> new")
-    public static double[] getDisplacement(@NotNull Entity fromEntity, @NotNull Entity toEntity) {
+    public static double[] getDisplacement(@NotNull Entity<?, ?, ?> fromEntity, @NotNull Entity<?, ?, ?> toEntity) {
         return new double[]{toEntity.getX() - fromEntity.getX(), toEntity.getY() - fromEntity.getY()};
     }
 
@@ -89,11 +89,11 @@ public class Functions {
         return new double[]{to.getCenterX() - from.getCenterX(), to.getMinY().doubleValue() - from.getMinY().doubleValue()};
     }
 
-    public static double distance(@NotNull Entity entity, @NotNull AbstractRectBoxed<?> r) {
+    public static double distance(@NotNull Entity<?, ?, ?> entity, @NotNull AbstractRectBoxed<?> r) {
         return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
     }
 
-    public static double distance(@NotNull AbstractRectBoxed<?> r, @NotNull Entity entity) {
+    public static double distance(@NotNull AbstractRectBoxed<?> r, @NotNull Entity<?, ?, ?> entity) {
         return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
     }
 
@@ -101,11 +101,11 @@ public class Functions {
         return Math.abs(a - b);
     }
 
-    public static double distanceX(@NotNull Entity entity1, @NotNull Entity entity2) {
+    public static double distanceX(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
         return distance(entity1.getX(), entity2.getX());
     }
 
-    public static double distanceY(@NotNull Entity entity1, @NotNull Entity entity2) {
+    public static double distanceY(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
         return distance(entity1.getY(), entity2.getY());
     }
 

@@ -12,9 +12,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.GraphicsParameters;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityGroup;
+import dev.kabin.entities.impl.EntityLibgdx;
+import dev.kabin.entities.impl.GraphicsParametersLibgdx;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
@@ -39,7 +40,7 @@ public class MainGame extends ApplicationAdapter {
 
     // Protected data:
     protected final KeyEventUtil keyEventUtil = new KeyEventUtil();
-    protected WorldRepresentation worldRepresentation;
+    protected WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
 
     // Private fields:
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
@@ -88,7 +89,7 @@ public class MainGame extends ApplicationAdapter {
     private float stateTime = 0f;
     private SpriteBatch spriteBatch;
 
-    protected WorldRepresentation getWorldRepresentation() {
+    protected WorldRepresentation<EntityGroup, EntityLibgdx> getWorldRepresentation() {
         return worldRepresentation;
     }
 
@@ -189,14 +190,16 @@ public class MainGame extends ApplicationAdapter {
 
         // Render graphics
         if (worldRepresentation != null) {
+            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
+                    camera.getCamera(),
+                    consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
+                    stateTime,
+                    scaleFactor,
+                    screenWidth,
+                    screenHeight);
             worldRepresentation.forEachEntityInCameraNeighborhood(e ->
-                    e.updateGraphics(new GraphicsParametersImpl(spriteBatch,
-                            camera.getCamera(),
-                            worldRepresentation::forEachEntityInCameraNeighborhood,
-                            stateTime,
-                            scaleFactor,
-                            screenWidth,
-                            screenHeight)));
+                    e.updateGraphics(graphicsParameters)
+            );
         }
 
         //bundle.renderFrameByIndex(0);
@@ -223,67 +226,18 @@ public class MainGame extends ApplicationAdapter {
         return getCameraWrapper().currentCameraBounds();
     }
 
-    class PhysicsParametersImpl implements PhysicsParameters {
-
-        @NotNull
-        private final WorldRepresentation worldRepresentation;
-        @NotNull
-        private final KeyEventUtil keyEventUtil;
-
-        PhysicsParametersImpl(@NotNull WorldRepresentation worldRepresentation,
-                              @NotNull KeyEventUtil keyEventUtil) {
-            this.worldRepresentation = worldRepresentation;
-            this.keyEventUtil = keyEventUtil;
-        }
-
-        @Override
-        public boolean isCollisionAt(int x, int y) {
-            return worldRepresentation.isCollisionAt(x, y);
-        }
-
-        @Override
-        public boolean isLadderAt(int x, int y) {
-            return worldRepresentation.isLadderAt(x, y);
-        }
-
-        @Override
-        public float getVectorFieldX(int x, int y) {
-            return worldRepresentation.getVectorFieldX(x, y);
-        }
-
-        @Override
-        public float getVectorFieldY(int x, int y) {
-            return worldRepresentation.getVectorFieldY(x, y);
-        }
-
-        @Override
-        public boolean isPressed(KeyCode keycode) {
-            return keyEventUtil.isPressed(keycode);
-        }
-
-        @Override
-        public float dt() {
-            return PhysicsEngine.DT;
-        }
-
-        @Override
-        public float meter() {
-            return PhysicsEngine.METER * scaleFactor;
-        }
-    }
-
-    static class GraphicsParametersImpl implements GraphicsParameters {
+    static class GraphicsParametersImpl implements GraphicsParametersLibgdx {
 
         @NotNull
         private final SpriteBatch spriteBatch;
         private final float stateTime, scale, screenWidth, screenHeight;
         @NotNull
         private final Camera camera;
-        private final Consumer<Consumer<Entity>> forEachEntityInCameraNeighborhood;
+        private final Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood;
 
         GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
                                @NotNull Camera camera,
-                               Consumer<Consumer<Entity>> forEachEntityInCameraNeighborhood, float stateTime,
+                               Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood, float stateTime,
                                float scale,
                                float screenWidth,
                                float screenHeight) {
@@ -332,10 +286,59 @@ public class MainGame extends ApplicationAdapter {
         }
 
         @Override
-        public Consumer<Consumer<Entity>> forEachEntityInCameraNeighborhood() {
+        public Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood() {
             return forEachEntityInCameraNeighborhood;
         }
 
+    }
+
+    class PhysicsParametersImpl implements PhysicsParameters {
+
+        @NotNull
+        private final WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
+        @NotNull
+        private final KeyEventUtil keyEventUtil;
+
+        PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
+                              @NotNull KeyEventUtil keyEventUtil) {
+            this.worldRepresentation = worldRepresentation;
+            this.keyEventUtil = keyEventUtil;
+        }
+
+        @Override
+        public boolean isCollisionAt(int x, int y) {
+            return worldRepresentation.isCollisionAt(x, y);
+        }
+
+        @Override
+        public boolean isLadderAt(int x, int y) {
+            return worldRepresentation.isLadderAt(x, y);
+        }
+
+        @Override
+        public float getVectorFieldX(int x, int y) {
+            return worldRepresentation.getVectorFieldX(x, y);
+        }
+
+        @Override
+        public float getVectorFieldY(int x, int y) {
+            return worldRepresentation.getVectorFieldY(x, y);
+        }
+
+        @Override
+        public boolean isPressed(KeyCode keycode) {
+            return keyEventUtil.isPressed(keycode);
+        }
+
+        @Override
+        public float dt() {
+            return PhysicsEngine.DT;
+        }
+
+        @Override
+        public float meter() {
+            return PhysicsEngine.METER * scaleFactor;
+        }
     }
 
 

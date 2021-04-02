@@ -1,5 +1,6 @@
-package dev.kabin.entities.animation;
+package dev.kabin.entities.impl.animation;
 
+import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.util.Direction;
 
 public final class AnimationMetadataImpl implements AnimationMetadata {

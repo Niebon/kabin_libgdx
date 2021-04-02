@@ -3,8 +3,10 @@ package dev.kabin;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.impl.Entity;
-import dev.kabin.entities.impl.EntityFactory;
+import dev.kabin.entities.Entity;
+import dev.kabin.entities.impl.EntityGroup;
+import dev.kabin.entities.impl.EntityLibgdx;
+import dev.kabin.entities.impl.EntityType;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -21,8 +23,8 @@ public class Serializer {
     public static final String WORLD_SIZE_Y = "worldSizeY";
     public static final String ENTITIES = "entities";
 
-    public static JSONObject recordWorldState(WorldRepresentation worldRepresentation) {
-        final List<Entity> allEntities = new ArrayList<>();
+    public static JSONObject recordWorldState(WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation) {
+        final List<EntityLibgdx> allEntities = new ArrayList<>();
         worldRepresentation.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
@@ -31,23 +33,23 @@ public class Serializer {
         return o;
     }
 
-    public static WorldRepresentation loadWorldState(Stage stage, TextureAtlas textureAtlas, JSONObject o, float scale) {
-        final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityFactory.EntityType.values()).map(Enum::name)
+    public static WorldRepresentation<EntityGroup, EntityLibgdx> loadWorldState(Stage stage, TextureAtlas textureAtlas, JSONObject o, float scale) {
+        final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        final var worldRepresentation = new WorldRepresentation(o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
+        final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
             if (!(entry instanceof JSONObject)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
                 System.exit(1);
             } else {
                 JSONObject json = (JSONObject) entry;
-                String primitiveType = json.getString("primitiveType");
-                if (!admissibleEntityTypes.contains(primitiveType)) {
-                    logger.warning(() -> "A recorded entity primitiveType was inadmissible." + json);
+                String type = json.getString("type");
+                if (!admissibleEntityTypes.contains(type)) {
+                    logger.warning(() -> "A recorded entity type was inadmissible." + json);
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    Entity e = EntityFactory.EntityType.valueOf(primitiveType).getJsonConstructor(textureAtlas, scale).construct(json);
+                    EntityLibgdx e = EntityType.valueOf(type).getJsonConstructor(textureAtlas, scale).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(stage::addActor);
                 }

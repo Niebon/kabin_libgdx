@@ -1,6 +1,6 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.entities.animation.enums.Inanimate;
+import dev.kabin.entities.impl.animation.enums.Inanimate;
 
 public class CollisionEntityInanimate extends CollisionEntity<Inanimate> {
 

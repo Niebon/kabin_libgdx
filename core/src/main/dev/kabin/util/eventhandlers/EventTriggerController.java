@@ -2,7 +2,9 @@ package dev.kabin.util.eventhandlers;
 
 
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.Entity;
+import dev.kabin.entities.impl.EntityGroup;
+import dev.kabin.entities.impl.EntityLibgdx;
 import dev.kabin.entities.impl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
@@ -17,7 +19,7 @@ public class EventTriggerController {
     private LastActive lastActive = LastActive.MOUSE;
     private final KeyEventUtil keyEventUtil;
     private final MouseEventUtil mouseEventUtil;
-    private final Supplier<WorldRepresentation> representation;
+    private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> representation;
     private Supplier<DeveloperUI> developerUISupplier;
     private final FloatSupplier scaleSupplier;
     private boolean developerMode = false;
@@ -25,7 +27,7 @@ public class EventTriggerController {
     public EventTriggerController(@NotNull EventTriggerController.InputOptions options,
                                   @NotNull KeyEventUtil keyEventUtil,
                                   @NotNull MouseEventUtil mouseEventUtil,
-                                  @NotNull Supplier<WorldRepresentation> representation,
+                                  @NotNull Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> representation,
                                   @NotNull Supplier<DeveloperUI> developerUISupplier,
                                   @NotNull FloatSupplier scaleSupplier) {
         this.keyEventUtil = keyEventUtil;

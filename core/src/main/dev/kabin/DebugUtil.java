@@ -2,7 +2,7 @@ package dev.kabin;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public class DebugUtil {
     /**
      * Draws root of each entity.
      */
-    static void renderEachRoot(Consumer<Consumer<Entity>> forEachEntity,
+    static void renderEachRoot(Consumer<Consumer<Entity<?, ?, ?>>> forEachEntity,
                                ShapeRenderer renderer,
                                MutableRectInt currentCameraBounds,
                                float scaleFactor) {

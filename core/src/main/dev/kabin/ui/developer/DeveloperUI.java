@@ -14,8 +14,9 @@ import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.Serializer;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.GraphicsParameters;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityGroup;
+import dev.kabin.entities.impl.EntityLibgdx;
+import dev.kabin.entities.impl.GraphicsParametersLibgdx;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
@@ -50,7 +51,7 @@ public class DeveloperUI {
     private final Set<DraggedEntity> draggedEntities = new HashSet<>();
     private final Executor executorService = Executors.newSingleThreadExecutor();
     private final SelectBox<Button> fileDropDownMenu = new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default");
-    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
     private final Supplier<MouseEventUtil> mouseEventUtilSupplier;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
     private final FloatSupplier scale;
@@ -85,7 +86,7 @@ public class DeveloperUI {
     }
 
     public DeveloperUI(Stage stage,
-                       Supplier<WorldRepresentation> worldRepresentationSupplier,
+                       Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier,
                        Supplier<MouseEventUtil> mouseEventUtilSupplier,
                        Supplier<KeyEventUtil> keyEventUtilSupplier,
                        Supplier<TextureAtlas> textureAtlasSupplier,
@@ -168,7 +169,7 @@ public class DeveloperUI {
         worldRepresentationSupplier.get().actionForEachEntityOrderedByType(this::addDragListenerToEntity);
     }
 
-    private void initializeModificationDialogBoxFor(Entity e) {
+    private void initializeModificationDialogBoxFor(EntityLibgdx e) {
         e.getActor().ifPresent(a -> a.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -195,8 +196,8 @@ public class DeveloperUI {
                             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
                                 // Find all dev.kabin.entities scheduled for removal.
-                                final Set<Entity> entitiesScheduledForRemoval = new HashSet<>();
-                                final Set<Entity> currentlySelectedEntities = getEntitySelection()
+                                final Set<EntityLibgdx> entitiesScheduledForRemoval = new HashSet<>();
+                                final Set<EntityLibgdx> currentlySelectedEntities = getEntitySelection()
                                         .getCurrentlySelectedEntities();
                                 if (currentlySelectedEntities.contains(e)) {
                                     entitiesScheduledForRemoval.addAll(currentlySelectedEntities);
@@ -257,7 +258,7 @@ public class DeveloperUI {
         });
     }
 
-    public void addEntityToDraggedEntities(Entity e) {
+    public void addEntityToDraggedEntities(EntityLibgdx e) {
         draggedEntities.add(new DraggedEntity(
                 e.getX(),
                 e.getY(),
@@ -266,7 +267,7 @@ public class DeveloperUI {
                 e));
     }
 
-    public void render(GraphicsParameters params) {
+    public void render(GraphicsParametersLibgdx params) {
         entitySelection.render(params.forEachEntityInCameraNeighborhood());
         entityLoadingWidget.render(params);
         tileSelectionWidget.render(params);
@@ -278,7 +279,7 @@ public class DeveloperUI {
 
     public void updatePositionsOfDraggedEntities() {
         for (DraggedEntity de : draggedEntities) {
-            final Entity e = de.getEntity();
+            final EntityLibgdx e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
             e.setX(Functions.snapToPixel(de.getEntityOriginalX() + mouseEventUtilSupplier.get().getMouseXRelativeToWorld() - de.getInitialMouseX(), scale.get()));
@@ -371,7 +372,7 @@ public class DeveloperUI {
      *
      * @param e the entity whose actor to modify by adding a drag listener.
      */
-    private void addDragListenerToEntity(Entity e) {
+    private void addDragListenerToEntity(EntityLibgdx e) {
         e.getActor().ifPresent(
                 actor -> actor.addListener(new DragListener() {
                     @Override

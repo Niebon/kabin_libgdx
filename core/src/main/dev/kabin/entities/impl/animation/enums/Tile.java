@@ -1,6 +1,6 @@
-package dev.kabin.entities.animation.enums;
+package dev.kabin.entities.impl.animation.enums;
 
-import dev.kabin.entities.animation.AnimationMetadataImpl;
+import dev.kabin.entities.impl.animation.AnimationMetadataImpl;
 import dev.kabin.util.Direction;
 
 public enum Tile {

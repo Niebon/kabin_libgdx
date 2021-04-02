@@ -1,8 +1,7 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.entities.GraphicsParameters;
-import dev.kabin.entities.animation.AbstractAnimationPlayback;
-import dev.kabin.entities.animation.enums.Tile;
+import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.impl.animation.enums.Tile;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.ImmutablePointInt;
 import dev.kabin.util.points.PointInt;
@@ -32,10 +31,10 @@ public class CollisionTile extends CollisionEntity<Tile> {
     public CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
-        final Optional<AbstractAnimationPlayback<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
+        final Optional<AbstractAnimationPlaybackLibgdx<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
         animationPlaybackImpl.ifPresent(a -> a.setCurrentAnimation(tile));
         index = animationPlaybackImpl
-                .map(AbstractAnimationPlayback::getCurrentAnimationLength)
+                .map(AbstractAnimationPlaybackLibgdx::getCurrentAnimationLength)
                 .map(i -> Math.floorMod(parameters.<Integer>getMaybe(FRAME_INDEX).orElseThrow(), i))
                 .orElse(0);
         if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {
@@ -62,7 +61,7 @@ public class CollisionTile extends CollisionEntity<Tile> {
     }
 
     @Override
-    public void updateGraphics(GraphicsParameters params) {
+    public void updateGraphics(GraphicsParametersLibgdx params) {
         final var animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
@@ -101,8 +100,8 @@ public class CollisionTile extends CollisionEntity<Tile> {
     }
 
     @Override
-    public EntityFactory.EntityType getType() {
-        return EntityFactory.EntityType.COLLISION_TILE;
+    public EntityType getType() {
+        return EntityType.COLLISION_TILE;
     }
 
     @Override

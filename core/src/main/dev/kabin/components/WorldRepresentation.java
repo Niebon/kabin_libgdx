@@ -1,11 +1,12 @@
 package dev.kabin.components;
 
-import dev.kabin.collections.IndexedSet;
 import dev.kabin.components.worldmodel.ComponentArrayListPool;
 import dev.kabin.components.worldmodel.IndexedSetPool;
+import dev.kabin.entities.Entity;
+import dev.kabin.entities.EntityCollectionProvider;
+import dev.kabin.entities.Layer;
 import dev.kabin.entities.impl.CollisionData;
-import dev.kabin.entities.impl.Entity;
-import dev.kabin.entities.impl.EntityCollectionProvider;
+import dev.kabin.util.collections.IndexedSet;
 import dev.kabin.util.pools.objectpool.Borrowed;
 import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.Contract;
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class WorldRepresentation {
+public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, EntityType extends Entity<GroupType, ?, ?>> {
 
     public static final int
             AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
@@ -26,24 +27,25 @@ public class WorldRepresentation {
             AVAILABLE_COMPONENT_HASHSETS = 10_000,
             AVAILABLE_ENTITY_HASHSETS = 10_000;
 
-    public static final Logger LOGGER = Logger.getLogger(Component.class.getName());
-    private final EntityCollectionProvider entityCollectionProvider = new EntityCollectionProvider();
+    public static final Logger logger = Logger.getLogger(Component.class.getName());
+    private final EntityCollectionProvider<GroupType, EntityType> entityCollectionProvider;
     private final IndexedSetPool<Component> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
-    private final IndexedSetPool<Entity> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
+    private final IndexedSetPool<EntityType> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
     // Keep an object pool for ArrayList<Component> instances.
     private final ComponentArrayListPool componentArrayListPool = new ComponentArrayListPool(
             AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
     );
     private final Component rootComponent;
     private long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
-    private ArrayList<Entity> entitiesInCameraNeighborhoodCached;
+    private ArrayList<EntityType> entitiesInCameraNeighborhoodCached;
     private final long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
-    private ArrayList<Entity> entitiesInCameraBoundsCached;
+    private ArrayList<EntityType> entitiesInCameraBoundsCached;
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
-    private Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-    private Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
+    private Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
+    private Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-    public WorldRepresentation(int width, int height, float scaleFactor) {
+    public WorldRepresentation(Class<GroupType> entityGroups, int width, int height, float scaleFactor) {
+        entityCollectionProvider = new EntityCollectionProvider<>(entityGroups);
         rootComponent = makeRepresentationOf(width, height, scaleFactor);
     }
 
@@ -55,16 +57,16 @@ public class WorldRepresentation {
             x *= 2;
             y *= 2;
         }
-        LOGGER.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
+        logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
         return Component.make(ComponentParameters.builder().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor).build());
     }
 
-    public void actionForEachEntityOrderedByType(Consumer<Entity> renderEntityGlobalStateTime) {
-        entityCollectionProvider.actionForEachEntityOrderedByType(renderEntityGlobalStateTime);
+    public void actionForEachEntityOrderedByType(Consumer<EntityType> renderEntityGlobalStateTime) {
+        entityCollectionProvider.actionForEachEntityOrderedByGroup(renderEntityGlobalStateTime);
     }
 
 
-    public List<Entity> getEntitiesWithinCameraBoundsCached(RectInt cameraPosition) {
+    public List<EntityType> getEntitiesWithinCameraBoundsCached(RectInt cameraPosition) {
         if (entitiesInCameraBoundsLastUpdated <= timeStampLastEntityWhereaboutsRegistered) {
             entitiesInCameraBoundsLastUpdated = System.currentTimeMillis();
             return entitiesInCameraBoundsCached = getContainedEntities(cameraPosition);
@@ -72,7 +74,7 @@ public class WorldRepresentation {
         return entitiesInCameraBoundsCached;
     }
 
-    public void updateLocation(@NotNull Entity entity) {
+    public void updateLocation(@NotNull EntityType entity) {
         updateLocation(entityToIndivisibleComponentMapping,
                 indivisibleComponentToEntityMapping,
                 entity,
@@ -88,9 +90,9 @@ public class WorldRepresentation {
      * @param entity the entity whose whereabouts are stored.
      */
     private void updateLocation(
-            Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping,
-            Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping,
-            @NotNull Entity entity,
+            Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping,
+            Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping,
+            @NotNull EntityType entity,
             /* Caching the below calculation makes a big difference.*/
             @NotNull RectInt cachedEntityNodeNeighborhood,
             @NotNull Component component
@@ -122,27 +124,27 @@ public class WorldRepresentation {
      * Finds list of entities which are are in the given component such that their nbd meets the given nbd.
      */
     @NotNull
-    private ArrayList<Entity> getContainedEntities(@NotNull RectInt neighborhood) {
+    private ArrayList<EntityType> getContainedEntities(@NotNull RectInt neighborhood) {
         ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> c.getUnderlyingRectInt().meets(neighborhood)
         );
 
         // TODO: deal with this new.
-        final ArrayList<Entity> containedEntities = new ArrayList<>();
+        final ArrayList<EntityType> containedEntities = new ArrayList<>();
 
-        final IndexedSet<Entity> setOfEntitiesToReturn = entityIndexedSetPool.borrow();
+        final IndexedSet<EntityType> setOfEntitiesToReturn = entityIndexedSetPool.borrow();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
 
             if (treeSearchResult.get(i) == null) continue;
 
-            IndexedSet<Entity> entitiesInComponent = indivisibleComponentToEntityMapping.get(treeSearchResult.get(i));
+            IndexedSet<EntityType> entitiesInComponent = indivisibleComponentToEntityMapping.get(treeSearchResult.get(i));
 
             // Goto next iteration
             if (entitiesInComponent == null) continue;
 
             for (int j = 0, m = entitiesInComponent.size(); j < m; j++) {
-                final Entity entityToAdd = entitiesInComponent.get(j);
+                final EntityType entityToAdd = entitiesInComponent.get(j);
                 // Finds unique entities to return.
                 if (setOfEntitiesToReturn.add(entityToAdd)) {
                     containedEntities.add(entityToAdd);
@@ -154,13 +156,13 @@ public class WorldRepresentation {
         entityIndexedSetPool.giveBack(setOfEntitiesToReturn);
 
 
-        LOGGER.log(Level.FINE, "A call to getContainedEntities() returned " + containedEntities.size()
+        logger.log(Level.FINE, "A call to getContainedEntities() returned " + containedEntities.size()
                 + " entities.");
         return containedEntities;
     }
 
-    public void forEachEntityInCameraNeighborhood(Consumer<Entity> action) {
-        ArrayList<Entity> entities = entitiesInCameraNeighborhoodCached;
+    public void forEachEntityInCameraNeighborhood(Consumer<EntityType> action) {
+        ArrayList<EntityType> entities = entitiesInCameraNeighborhoodCached;
         if (entities == null) return;
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = entities.size(); i < n; i++) {
@@ -170,12 +172,12 @@ public class WorldRepresentation {
 
     /**
      * Registers the whereabouts of all entities from the given list.
-     * This updates the information returned by
-     * @param currentCameraNeighborhood
+     *
+     * @param region Each entity found inside this region gets its whereabouts updated.
      */
-    public void registerEntityWhereabouts(RectInt currentCameraNeighborhood) {
+    public void registerEntityWhereabouts(RectInt region) {
 
-    	// Free resources from previous iteration.
+        // Free resources from previous iteration.
         {
 
             // Give back data to pools.
@@ -192,10 +194,10 @@ public class WorldRepresentation {
         }
 
 
-        final Map<Entity, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-        final Map<Component, IndexedSet<Entity>> indivisibleComponentToEntityMapping = new HashMap<>();
+        final Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
+        final Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-        entityCollectionProvider.actionForEachEntityOrderedByType(entity ->
+        entityCollectionProvider.actionForEachEntityOrderedByGroup(entity ->
                 updateLocation(entityToIndivisibleComponentMapping, // Should NOT be this.entityToIndivisibleComponentMapping
                         indivisibleComponentToEntityMapping,  // Should NOT be this.indivisibleComponentToEntityMapping
                         entity,
@@ -208,7 +210,7 @@ public class WorldRepresentation {
         this.indivisibleComponentToEntityMapping = indivisibleComponentToEntityMapping;
 
 
-        entitiesInCameraNeighborhoodCached = getContainedEntities(currentCameraNeighborhood);
+        entitiesInCameraNeighborhoodCached = getContainedEntities(region);
         Collections.sort(entitiesInCameraNeighborhoodCached);
 
 
@@ -275,9 +277,9 @@ public class WorldRepresentation {
             final Component c = treeSearchResult.get(i);
             if (c.isInactive() && indivisibleComponentToEntityMapping.containsKey(c)) {
 
-                final IndexedSet<Entity> entities = indivisibleComponentToEntityMapping.get(c);
+                final IndexedSet<EntityType> entities = indivisibleComponentToEntityMapping.get(c);
                 for (int j = 0, m = entities.size(); j < m; j++) {
-                    final Entity entity = entities.get(j);
+                    final EntityType entity = entities.get(j);
                     if (entity instanceof CollisionData) {
                         ((CollisionData) entity).actionEachCollisionPoint(c::incrementCollisionAt);
                     }
@@ -326,15 +328,16 @@ public class WorldRepresentation {
         return rootComponent.getCollision(x, y);
     }
 
-    public boolean unregisterEntity(Entity e) {
+    public boolean unregisterEntity(EntityType e) {
         return entityCollectionProvider.unregisterEntity(e);
     }
 
-    public void registerEntity(Entity e) {
+    public void registerEntity(EntityType e) {
         entityCollectionProvider.registerEntity(e);
     }
 
-    public void populateCollection(Collection<Entity> allEntities, Predicate<Entity> criterion) {
+    public void populateCollection(Collection<EntityType> allEntities,
+                                   Predicate<EntityType> criterion) {
         entityCollectionProvider.populateCollection(allEntities, criterion);
     }
 

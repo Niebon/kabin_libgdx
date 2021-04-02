@@ -1,13 +1,13 @@
 package dev.kabin.physics;
 
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityLibgdx;
 
 import java.util.function.Consumer;
 
 /**
  * In order to make rendering deterministic,
- * use a standard dt of 60 fps.
+ * use a standard dt of 120 fps.
  */
 public class PhysicsEngine {
 
@@ -26,14 +26,14 @@ public class PhysicsEngine {
 		return frames - 1;
 	}
 
-	public static void renderOutstandingFrames(float stateTime, PhysicsParameters params, Consumer<Consumer<Entity>> forEachEntity) {
+	public static void renderOutstandingFrames(float stateTime, PhysicsParameters params, Consumer<Consumer<EntityLibgdx>> forEachEntity) {
 		int numberOfFramesToRender = findNumberOfFramesToRender(stateTime);
 		for (int i = 0; i < numberOfFramesToRender; i++) {
 			renderExactlyOneFrame(params, forEachEntity);
 		}
 	}
 
-	public static void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<Entity>> forEachEntity) {
+	public static void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<EntityLibgdx>> forEachEntity) {
 		forEachEntity.accept(e -> e.updatePhysics(params));
 	}
 

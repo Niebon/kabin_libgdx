@@ -2,7 +2,7 @@ package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.MainGame;
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityLibgdx;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.points.ImmutablePointFloat;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class EntitySelection {
 
-    private final Set<Entity> currentlySelectedEntities = new HashSet<>();
+    private final Set<EntityLibgdx> currentlySelectedEntities = new HashSet<>();
     private final Supplier<MouseEventUtil> mouseEventUtil;
     private final FloatSupplier camPosX;
     private final FloatSupplier camPosY;
@@ -33,7 +33,7 @@ public class EntitySelection {
         this.camPosY = camPosY;
     }
 
-    public void render(Consumer<Consumer<Entity>> forEachEntity) {
+    public void render(Consumer<Consumer<EntityLibgdx>> forEachEntity) {
         if (begin != null) {
             float minX = Math.min(begin.x(), mouseEventUtil.get().getXRelativeToUI());
             float minY = Math.min(begin.y(), mouseEventUtil.get().getYRelativeToUI());
@@ -74,7 +74,7 @@ public class EntitySelection {
         begin = null;
     }
 
-    public Set<Entity> getCurrentlySelectedEntities() {
+    public Set<EntityLibgdx> getCurrentlySelectedEntities() {
         return Collections.unmodifiableSet(currentlySelectedEntities);
     }
 }

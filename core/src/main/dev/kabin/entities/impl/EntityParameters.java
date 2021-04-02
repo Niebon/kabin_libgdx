@@ -1,7 +1,6 @@
 package dev.kabin.entities.impl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.MainGame;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.Optional;
 
 public class EntityParameters {
 
-    private final RuntimeContext runtimeContext;
     private final Map<String, Object> backingMap;
     private final float x;
     private final float y;
@@ -26,8 +24,7 @@ public class EntityParameters {
                              float scale,
                              int layer,
                              Map<String, Object> backingMap,
-                             RuntimeContext runtimeContext, TextureAtlas textureAtlas) {
-        this.runtimeContext = runtimeContext;
+                             TextureAtlas textureAtlas) {
         this.x = x;
         this.y = y;
         this.atlasPath = atlasPath;
@@ -62,15 +59,13 @@ public class EntityParameters {
         return atlasPath;
     }
 
-    public RuntimeContext getContext() {
-        return runtimeContext;
-    }
-
     int layer() {
         return layer;
     }
 
-    public enum RuntimeContext {TEST, PRODUCTION}
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static class Builder {
         private float x;
@@ -79,7 +74,6 @@ public class EntityParameters {
         private float scale;
         private int layer;
         private Map<String, Object> backingMap = new HashMap<>();
-        private RuntimeContext runtimeContext = RuntimeContext.PRODUCTION;
         private TextureAtlas textureAtlas;
 
         public Builder(JSONObject o, float scale) {
@@ -97,9 +91,6 @@ public class EntityParameters {
 
         }
 
-        public static Builder testParameters(){
-            return new Builder().setContext(RuntimeContext.TEST);
-        }
 
         public Builder setX(float x) {
             this.x = x;
@@ -108,11 +99,6 @@ public class EntityParameters {
 
         public Builder setY(float y) {
             this.y = y;
-            return this;
-        }
-
-        public Builder setContext(RuntimeContext runtimeContext) {
-            this.runtimeContext = runtimeContext;
             return this;
         }
 
@@ -136,11 +122,6 @@ public class EntityParameters {
             return this;
         }
 
-        public Builder setBackingMap(Map<String, Object> backingMap) {
-            this.backingMap = backingMap;
-            return this;
-        }
-
         public Builder put(String key, Object value) {
             Optional.ofNullable(backingMap).or(() -> {
                 backingMap = new HashMap<>();
@@ -151,7 +132,7 @@ public class EntityParameters {
 
         public EntityParameters build() {
             return new EntityParameters(
-                    x, y, atlasPath, scale, layer, backingMap, runtimeContext,
+                    x, y, atlasPath, scale, layer, backingMap,
                     textureAtlas);
         }
 

@@ -1,8 +1,8 @@
 package dev.kabin.entities;
 
-import dev.kabin.entities.animation.enums.Tile;
 import dev.kabin.entities.impl.CollisionTile;
 import dev.kabin.entities.impl.EntityParameters;
+import dev.kabin.entities.impl.animation.enums.Tile;
 import dev.kabin.util.Procedures;
 import dev.kabin.util.Statistics;
 import org.json.JSONObject;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class CollisionTileTest {
 
     private EntityParameters generateParameters(int x, int y, float scale) {
-        return EntityParameters.Builder.testParameters()
+        return EntityParameters.builder()
                 .setX(x * scale)
                 .setY(y * scale)
                 .setLayer(0)

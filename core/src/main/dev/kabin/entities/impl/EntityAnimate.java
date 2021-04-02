@@ -1,16 +1,16 @@
 package dev.kabin.entities.impl;
 
-import dev.kabin.entities.animation.enums.Animate;
+import dev.kabin.entities.impl.animation.enums.Animate;
 
-public class EntityAnimate extends AbstractEntity<Animate> {
+public class EntityAnimate extends AbstractLibgdxEntity<Animate> {
 
     EntityAnimate(EntityParameters parameters) {
         super(parameters);
     }
 
     @Override
-    public EntityFactory.EntityType getType() {
-        return EntityFactory.EntityType.ENTITY_ANIMATE;
+    public EntityType getType() {
+        return EntityType.ENTITY_ANIMATE;
     }
 
 }

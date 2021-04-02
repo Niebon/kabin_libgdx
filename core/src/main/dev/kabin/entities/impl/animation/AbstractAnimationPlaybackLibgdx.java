@@ -1,11 +1,12 @@
-package dev.kabin.entities.animation;
+package dev.kabin.entities.impl.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import dev.kabin.entities.GraphicsParameters;
+import dev.kabin.entities.AnimationMetadata;
+import dev.kabin.entities.impl.GraphicsParametersLibgdx;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntFunction;
@@ -16,35 +17,38 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements AnimationPlayback<E>, Disposable {
+/**
+ * @param <AnimationType>
+ */
+public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum<AnimationType>>
+        implements AnimationPlaybackLibgdx<AnimationType>,
+        Disposable {
 
     // Constants:
     private static final float DURATION_SECONDS = 0.1f; // 100 ms.
 
     // Class fields:
     private final int width, height;
-    private final Map<E, Animation<TextureAtlas.AtlasRegion>> animationsMap;
+    private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final TextureAtlas atlas;
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
-    private final Map<E, int[]> animationBlueprint;
+    private final Map<AnimationType, int[]> animationBlueprint;
     private final int maxPixelHeight;
-    private final Class<E> enumClass;
 
 
     // Class variables:
-    private E currentAnimationEnum;
+    private AnimationType currentAnimationEnum;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private WeightedAverage2D weightedAverage2D;
     private float scale;
 
-    public AbstractAnimationPlayback(
+    public AbstractAnimationPlaybackLibgdx(
             TextureAtlas atlas,
             Array<TextureAtlas.AtlasRegion> regions,
-            Map<E, int[]> animationBlueprint,
-            Class<E> enumClass
+            Map<AnimationType, int[]> animationBlueprint,
+            Class<AnimationType> enumClass
     ) {
-        this.enumClass = enumClass;
         if (regions.isEmpty()) {
             throw new IllegalArgumentException("The parameter regions must be non-empty.");
         }
@@ -74,11 +78,6 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     }
 
     @Override
-    public Class<E> getAnimationEnumClass() {
-        return enumClass;
-    }
-
-    @Override
     public int getMaxPixelHeight() {
         return maxPixelHeight;
     }
@@ -88,7 +87,7 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     }
 
     @Override
-    public E getCurrentAnimation() {
+    public AnimationType getCurrentAnimation() {
         return currentAnimationEnum;
     }
 
@@ -112,10 +111,10 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     }
 
     @Override
-    public void setCurrentAnimation(E animationEnum) {
+    public void setCurrentAnimation(AnimationType animationEnum) {
         this.currentAnimationEnum = animationEnum;
         if (regions != null && animationBlueprint != null) {
-            final E currentAnimationClass = this.currentAnimationEnum;
+            final AnimationType currentAnimationClass = this.currentAnimationEnum;
             if (animationBlueprint.containsKey(currentAnimationClass)) {
                 cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[0]);
             } else {
@@ -125,10 +124,10 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     }
 
     @Override
-    public void renderNextAnimationFrame(GraphicsParameters params) {
+    public void renderNextAnimationFrame(GraphicsParametersLibgdx params) {
         float stateTime = params.getStateTime();
 
-        final E currentAnimation = this.currentAnimationEnum;
+        final AnimationType currentAnimation = this.currentAnimationEnum;
         if (!animationsMap.containsKey(currentAnimation)) {
             return;
         }
@@ -151,8 +150,8 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     }
 
     @Override
-    public void renderFrameByIndex(GraphicsParameters params, int index) {
-        final E currentAnimationClass = this.currentAnimationEnum;
+    public void renderFrameByIndex(GraphicsParametersLibgdx params, int index) {
+        final AnimationType currentAnimationClass = this.currentAnimationEnum;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
         final SpriteBatch batch = params.getBatch();
         batch.begin();
@@ -173,11 +172,6 @@ public abstract class AbstractAnimationPlayback<E extends Enum<E>> implements An
     @Override
     public ImageAnalysisPool.Analysis getPixelAnalysis() {
         return ImageAnalysisPool.findAnalysis(atlas, getCurrentImageAssetPath(), getCurrentImageAssetIndex());
-    }
-
-    @Override
-    public void reset() {
-        currentAnimationEnum = toDefaultAnimation(currentAnimationEnum);
     }
 
     @Override

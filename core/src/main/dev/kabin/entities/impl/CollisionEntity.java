@@ -1,7 +1,7 @@
 package dev.kabin.entities.impl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import dev.kabin.entities.animation.AbstractAnimationPlayback;
+import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.CollisionPool;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class CollisionEntity<T extends Enum<T>> extends AbstractEntity<T> implements CollisionData {
+public abstract class CollisionEntity<T extends Enum<T>> extends AbstractLibgdxEntity<T> implements CollisionData {
 
 	private final TextureAtlas atlas;
 
@@ -20,7 +20,7 @@ public abstract class CollisionEntity<T extends Enum<T>> extends AbstractEntity<
 
 	@Override
 	public @NotNull List<PointInt> getCollisionProfile() {
-		final AbstractAnimationPlayback<?> animationPlaybackImpl = getAnimationPlaybackImpl();
+		final AbstractAnimationPlaybackLibgdx<?> animationPlaybackImpl = getAnimationPlaybackImpl();
 		if (animationPlaybackImpl == null) return Collections.emptyList();
 		return CollisionPool.findCollisionProfile(
 				atlas,
@@ -31,7 +31,7 @@ public abstract class CollisionEntity<T extends Enum<T>> extends AbstractEntity<
 
 	@Override
 	public @NotNull List<PointInt> getSurfaceContourProfile() {
-		final AbstractAnimationPlayback<?> animationPlaybackImpl = getAnimationPlaybackImpl();
+		final AbstractAnimationPlaybackLibgdx<?> animationPlaybackImpl = getAnimationPlaybackImpl();
 		if (animationPlaybackImpl == null) return Collections.emptyList();
 		return CollisionPool.findSurfaceContourProfile(
 				atlas,
@@ -41,8 +41,8 @@ public abstract class CollisionEntity<T extends Enum<T>> extends AbstractEntity<
 	}
 
 	@Override
-	public EntityFactory.EntityType getType() {
-		return EntityFactory.EntityType.COLLISION_ENTITY;
+	public EntityType getType() {
+		return EntityType.COLLISION_ENTITY;
 	}
 
 	@Override

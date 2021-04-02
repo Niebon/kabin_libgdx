@@ -10,10 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.GraphicsParameters;
-import dev.kabin.entities.animation.AnimationBundleFactory;
-import dev.kabin.entities.animation.enums.Tile;
+import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.entities.impl.*;
+import dev.kabin.entities.impl.animation.AnimationBundleFactory;
+import dev.kabin.entities.impl.animation.enums.Tile;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -46,7 +46,7 @@ public class TileSelectionWidget {
     private Tile currentType = Tile.SURFACE;
     private final FloatSupplier scale;
     private final Supplier<RectInt> currCamBounds;
-    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
     private final Consumer<Runnable> synchronizer;
 
 
@@ -58,7 +58,7 @@ public class TileSelectionWidget {
             FloatSupplier mouseRelativeToWorldY,
             FloatSupplier scale,
             Supplier<RectInt> currCamBounds,
-            Supplier<WorldRepresentation> worldRepresentationSupplier,
+            Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier,
             Consumer<Runnable> synchronizer
     ) {
         this.stage = stage;
@@ -115,9 +115,9 @@ public class TileSelectionWidget {
             matchingCt.actionEachCollisionPoint(worldRepresentationSupplier.get()::decrementCollisionAt);
             worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).remove(matchingCt);
         } else {
-            final Iterator<Entity> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
+            final Iterator<EntityLibgdx> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
             while (entityIterator.hasNext()) {
-                final Entity e = entityIterator.next();
+                final EntityLibgdx e = entityIterator.next();
                 if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
                     final var ct = (CollisionTile) e;
                     if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
@@ -134,7 +134,7 @@ public class TileSelectionWidget {
     }
 
     /**
-     * Finds any entity on screen. Deletes any of type {@link CollisionTile collision tile} with position matching
+     * Finds any entity on screen. Deletes any of classification {@link CollisionTile collision tile} with position matching
      * the current mouse position.
      */
     public void removeGroundTileAtCurrentMousePositionThreadLocked() {
@@ -157,7 +157,7 @@ public class TileSelectionWidget {
     public JSONObject toJson() {
         return new JSONObject()
                 .put("asset", selectedAsset.isEmpty() ? "ground" : selectedAsset)
-                .put("type", currentType)
+                .put("classification", currentType)
                 .put("collapsed", widget.isCollapsed());
     }
 
@@ -187,7 +187,7 @@ public class TileSelectionWidget {
 
             // Get the new instance.
             final CollisionTile newCollisionTile
-                    = (CollisionTile) EntityFactory.EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
+                    = (CollisionTile) EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
 
             // Init the data.
             newCollisionTile.getActor().ifPresent(stage::addActor);
@@ -272,7 +272,7 @@ public class TileSelectionWidget {
     }
 
 
-    public void render(GraphicsParameters params) {
+    public void render(GraphicsParametersLibgdx params) {
         if (widget.isVisible() && !widget.isCollapsed() && typeToAtlasRegionsMapping != null) {
 
             for (var entry : typeToAtlasRegionsMapping.entrySet()) {

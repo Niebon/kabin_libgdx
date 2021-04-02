@@ -1,6 +1,6 @@
 package dev.kabin.ui.developer.widgets;
 
-import dev.kabin.entities.impl.Entity;
+import dev.kabin.entities.impl.EntityLibgdx;
 
 /**
  * Keeps a record of an entity, its current position (x,y), and a mouse position (x,y).
@@ -13,9 +13,9 @@ import dev.kabin.entities.impl.Entity;
 public class DraggedEntity {
     private final float entityOriginalX, entityOriginalY;
     private final float initialMouseX, getInitialMouseY;
-    private final Entity entity;
+    private final EntityLibgdx entity;
 
-    public DraggedEntity(float originalX, float entityOriginalY, float initialMouseX, float getInitialMouseY, Entity entity) {
+    public DraggedEntity(float originalX, float entityOriginalY, float initialMouseX, float getInitialMouseY, EntityLibgdx entity) {
         this.entityOriginalX = originalX;
         this.entityOriginalY = entityOriginalY;
         this.initialMouseX = initialMouseX;
@@ -31,7 +31,7 @@ public class DraggedEntity {
         return entityOriginalY;
     }
 
-    public Entity getEntity() {
+    public EntityLibgdx getEntity() {
         return entity;
     }
 
