@@ -169,7 +169,7 @@ public class TileSelectionWidget {
         synchronizer.accept(() -> {
             if (selectedAsset == null) return;
             if (currentType == null) return;
-            final EntityParameters parameters = new EntityParameters.Builder()
+            final EntityParameters parameters = EntityParameters.builder()
                     .setX(mouseRelativeToWorldX.get())
                     .setY(mouseRelativeToWorldY.get())
                     .setLayer(0)
@@ -187,7 +187,7 @@ public class TileSelectionWidget {
 
             // Get the new instance.
             final CollisionTile newCollisionTile
-                    = (CollisionTile) EntityType.COLLISION_TILE.getParameterConstructor().construct(parameters);
+                    = (CollisionTile) EntityType.parameterConstructorOf(EntityType.COLLISION_TILE).construct(parameters);
 
             // Init the data.
             newCollisionTile.getActor().ifPresent(stage::addActor);

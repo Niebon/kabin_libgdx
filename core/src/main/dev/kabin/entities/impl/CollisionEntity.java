@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class CollisionEntity<T extends Enum<T>> extends AbstractLibgdxEntity<T> implements CollisionData {
+public class CollisionEntity extends AbstractLibgdxEntity implements CollisionData {
 
 	private final TextureAtlas atlas;
 
@@ -32,17 +32,14 @@ public abstract class CollisionEntity<T extends Enum<T>> extends AbstractLibgdxE
 	@Override
 	public @NotNull List<PointInt> getSurfaceContourProfile() {
 		final AbstractAnimationPlaybackLibgdx<?> animationPlaybackImpl = getAnimationPlaybackImpl();
-		if (animationPlaybackImpl == null) return Collections.emptyList();
+		if (animationPlaybackImpl == null) {
+			return Collections.emptyList();
+		}
 		return CollisionPool.findSurfaceContourProfile(
 				atlas,
 				animationPlaybackImpl.getCurrentImageAssetPath(),
 				animationPlaybackImpl.getCurrentImageAssetIndex()
 		);
-	}
-
-	@Override
-	public EntityType getType() {
-		return EntityType.COLLISION_ENTITY;
 	}
 
 	@Override

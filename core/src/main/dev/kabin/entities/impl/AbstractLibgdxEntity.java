@@ -18,13 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 
-abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>> implements EntityLibgdx {
+abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     private static final Logger logger = Logger.getLogger(AbstractLibgdxEntity.class.getName());
     private static final AtomicInteger createdInstances = new AtomicInteger(1);
 
     // Protected data:
-    private final AbstractAnimationPlaybackLibgdx<AnimationClass> animationPlaybackImpl;
+    private final AbstractAnimationPlaybackLibgdx<?> animationPlaybackImpl;
 
     // Class fields:
     private final String atlasPath;
@@ -35,6 +35,7 @@ abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>>
     private final MutableRectInt graphicsNbd;
     private final RectIntView graphicsNbdView;
     private float x, y, scale;
+    private final EntityType type;
 
     // Class variables:
     private int layer;
@@ -44,10 +45,11 @@ abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>>
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
+        type = parameters.getType();
         animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
                 parameters.getTextureAtlas(),
                 atlasPath,
-                getAnimationClass()
+                getType().animationClass()
         );
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setSmoothParameter(0.5f);
@@ -69,14 +71,30 @@ abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>>
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Class<AnimationClass> getAnimationClass() {
-        return (Class<AnimationClass>) getType().animationClass();
+    @Override
+    public final EntityType getType() {
+        return type;
     }
 
-
+    /**
+     * @param clazz the guessed class of the animation playback of this instance.
+     * @param <T>   class parameter.
+     * @return the animation playback of this entity, or {@code null}, if the wrong class was provided.
+     * @see #getAnimationPlaybackImpl()
+     */
+    @SuppressWarnings("unchecked") // Explicitly checked runtime.
     @Nullable
-    protected AbstractAnimationPlaybackLibgdx<AnimationClass> getAnimationPlaybackImpl() {
+    protected final <T extends Enum<T>> AbstractAnimationPlaybackLibgdx<T> getAnimationPlaybackImpl(Class<T> clazz) {
+        if (animationPlaybackImpl.getAnimationClass().isAssignableFrom(clazz)) {
+            return (AbstractAnimationPlaybackLibgdx<T>) animationPlaybackImpl;
+        } else return null;
+    }
+
+    /**
+     * @return the animation playback of this instance.
+     * @see #getAnimationPlaybackImpl(Class)
+     */
+    protected final AbstractAnimationPlaybackLibgdx<?> getAnimationPlaybackImpl() {
         return animationPlaybackImpl;
     }
 
@@ -97,7 +115,6 @@ abstract class AbstractLibgdxEntity<AnimationClass extends Enum<AnimationClass>>
     }
 
     private void handleMouseClickRight() {
-
     }
 
     @Override

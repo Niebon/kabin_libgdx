@@ -42,14 +42,14 @@ public class Serializer {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
                 System.exit(1);
             } else {
-                JSONObject json = (JSONObject) entry;
-                String type = json.getString("type");
+                final JSONObject json = (JSONObject) entry;
+                final String type = json.getString("type");
                 if (!admissibleEntityTypes.contains(type)) {
                     logger.warning(() -> "A recorded entity type was inadmissible." + json);
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    EntityLibgdx e = EntityType.valueOf(type).getJsonConstructor(textureAtlas, scale).construct(json);
+                    final EntityLibgdx e = EntityType.JSONConstructorOf(EntityType.valueOf(type), textureAtlas, scale).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(stage::addActor);
                 }

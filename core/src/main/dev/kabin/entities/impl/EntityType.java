@@ -8,12 +8,12 @@ import dev.kabin.entities.impl.animation.enums.Inanimate;
 import dev.kabin.entities.impl.animation.enums.Tile;
 
 /**
- * This enum is a converter class that converts enum constants to actual implementations.
+ * This enum is a converter class that converts enum constants that represent entity types to actual implementations.
  */
 public enum EntityType implements Layer, GroupTyped<EntityGroup> {
     //BEAR(Bear::new, Bear::new, EntityGroupProvider.Type.FOCAL_POINT),
     //CAT(Cat::new, Cat::new, EntityGroupProvider.Type.FOCAL_POINT),
-    COLLISION_ENTITY(CollisionEntityInanimate::new, EntityGroup.FOCAL_POINT, Inanimate.class),
+    COLLISION_ENTITY(CollisionEntity::new, EntityGroup.FOCAL_POINT, Inanimate.class),
     COLLISION_TILE(CollisionTile::new, EntityGroup.FOREGROUND, Tile.class),
     //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
@@ -22,8 +22,8 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
     //ENTITY_FOREGROUND(EntityForeground::new, EntityForeground::newFromMouseClick, EntityGroupProvider.Type.FOREGROUND),
     //ENTITY_MOVABLE(EntityMovable::new, EntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //ENTITY_LUMINATING(EntityLuminating::new, EntityLuminating::new, EntityGroupProvider.Type.FOCAL_POINT),
-    ENTITY_ANIMATE(EntityAnimate::new, EntityGroup.FOCAL_POINT, Animate.class),
-    ENTITY_INANIMATE(EntityInanimate::new, EntityGroup.FOCAL_POINT, Inanimate.class),
+    ENTITY_ANIMATE(EntitySimple::new, EntityGroup.FOCAL_POINT, Animate.class),
+    ENTITY_INANIMATE(EntitySimple::new, EntityGroup.FOCAL_POINT, Inanimate.class),
 
     //ENTITY_THROWABLE(EntityThrowable::new, EntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //FOX(Fox::new, Fox::new, EntityGroupProvider.Type.FOCAL_POINT),
@@ -51,12 +51,18 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
         this.animationClass = animationClass;
     }
 
-    public JsonConstructor getJsonConstructor(TextureAtlas textureAtlas, float scale) {
-        return jsonObject -> entityConstructor.construct(new EntityParameters.Builder(jsonObject, scale).setTextureAtlas(textureAtlas).build());
+    public static JSONConstructor JSONConstructorOf(EntityType type, TextureAtlas textureAtlas, float scale) {
+        return json -> {
+            final EntityParameters build = EntityParameters
+                    .builder(json, scale)
+                    .setEntityType(type)
+                    .setTextureAtlas(textureAtlas).build();
+            return type.entityConstructor.construct(build);
+        };
     }
 
-    public EntityConstructor getParameterConstructor() {
-        return entityConstructor;
+    public static EntityConstructor parameterConstructorOf(EntityType type) {
+        return type.entityConstructor;
     }
 
     @Override

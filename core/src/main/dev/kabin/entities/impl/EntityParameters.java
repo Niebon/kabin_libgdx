@@ -16,6 +16,7 @@ public class EntityParameters {
     private final float scale;
     private final int layer;
     private final TextureAtlas textureAtlas;
+    private final EntityType type;
 
 
     private EntityParameters(float x,
@@ -24,7 +25,7 @@ public class EntityParameters {
                              float scale,
                              int layer,
                              Map<String, Object> backingMap,
-                             TextureAtlas textureAtlas) {
+                             TextureAtlas textureAtlas, EntityType type) {
         this.x = x;
         this.y = y;
         this.atlasPath = atlasPath;
@@ -32,6 +33,15 @@ public class EntityParameters {
         this.layer = layer;
         this.backingMap = backingMap;
         this.textureAtlas = textureAtlas;
+        this.type = type;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(JSONObject o, float scale) {
+        return new Builder(o, scale);
     }
 
     public <T> Optional<T> getMaybe(String key) {
@@ -59,12 +69,12 @@ public class EntityParameters {
         return atlasPath;
     }
 
-    int layer() {
+    public int layer() {
         return layer;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public EntityType getType() {
+        return type;
     }
 
     public static class Builder {
@@ -75,8 +85,9 @@ public class EntityParameters {
         private int layer;
         private Map<String, Object> backingMap = new HashMap<>();
         private TextureAtlas textureAtlas;
+        private EntityType type;
 
-        public Builder(JSONObject o, float scale) {
+        private Builder(JSONObject o, float scale) {
             this.scale = scale;
             x = o.getInt("x") * scale;
             y = o.getInt("y") * scale;
@@ -87,7 +98,7 @@ public class EntityParameters {
             backingMap.putAll(o.toMap());
         }
 
-        public Builder() {
+        private Builder() {
 
         }
 
@@ -122,6 +133,12 @@ public class EntityParameters {
             return this;
         }
 
+        public Builder setEntityType(EntityType type) {
+            this.type = type;
+            return this;
+        }
+
+
         public Builder put(String key, Object value) {
             Optional.ofNullable(backingMap).or(() -> {
                 backingMap = new HashMap<>();
@@ -133,7 +150,7 @@ public class EntityParameters {
         public EntityParameters build() {
             return new EntityParameters(
                     x, y, atlasPath, scale, layer, backingMap,
-                    textureAtlas);
+                    textureAtlas, type);
         }
 
 

@@ -3,6 +3,6 @@ package dev.kabin.entities.impl;
 import org.json.JSONObject;
 
 @FunctionalInterface
-public interface JsonConstructor {
+public interface JSONConstructor {
     EntityLibgdx construct(JSONObject jsonObject);
 }

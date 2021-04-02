@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Player extends EntityAnimate {
+public class Player extends EntitySimple {
 
     // Constants
     private static final List<Animate> STANDARD_RIGHT_LIST = List.of(
@@ -32,8 +32,8 @@ public class Player extends EntityAnimate {
             Animate.STANDARD3_LEFT
     );
     private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;
-    private static final float RUN_SPEED_METERS_PER_SECONDS = 8f;
-    private static final float WALK_SPEED_METERS_PER_SECONDS = 3f;
+    private static final float RUN_SPEED_PER_SECONDS = 8f;
+    private static final float WALK_SPEED_PER_SECONDS = 3f;
 
     // Static variables:
     private static Player instance;
@@ -52,7 +52,7 @@ public class Player extends EntityAnimate {
     private int r, l, u, d;
     private int jump;
     private float jumpCooldown = Float.MAX_VALUE / 2f;
-    private float vAbsMetersPerSecond;
+    private float vAbsPerSecond;
     private boolean facingRight;
     private boolean onLadder;
     private boolean running;
@@ -112,11 +112,6 @@ public class Player extends EntityAnimate {
         return scale * j;
     }
 
-    @Override
-    public EntityType getType() {
-        return EntityType.PLAYER;
-    }
-
     public void setHandleInput(boolean b) {
         handleInput = b;
         r = l = u = r = jump = 0;
@@ -130,12 +125,12 @@ public class Player extends EntityAnimate {
 
     public void toggleRunSpeed() {
         running = true;
-        vAbsMetersPerSecond = RUN_SPEED_METERS_PER_SECONDS;
+        vAbsPerSecond = RUN_SPEED_PER_SECONDS;
     }
 
     public void toggleWalkSpeed() {
         running = false;
-        vAbsMetersPerSecond = WALK_SPEED_METERS_PER_SECONDS;
+        vAbsPerSecond = WALK_SPEED_PER_SECONDS;
     }
 
     public void interactWithNearestIntractable() {
@@ -153,7 +148,7 @@ public class Player extends EntityAnimate {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
-        final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl();
+        final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl(Animate.class);
         if (animationPlaybackImpl == null) return;
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
@@ -235,8 +230,8 @@ public class Player extends EntityAnimate {
             if (inAir) inAir = false;
             onLadder = true;
 
-            dx = WALK_SPEED_METERS_PER_SECONDS * (r - l) * params.dt();
-            dy = WALK_SPEED_METERS_PER_SECONDS * (d - u) * params.dt();
+            dx = WALK_SPEED_PER_SECONDS * (r - l) * params.dt();
+            dy = WALK_SPEED_PER_SECONDS * (d - u) * params.dt();
 
             if (dx == 0) {
                 dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
@@ -250,7 +245,7 @@ public class Player extends EntityAnimate {
 
             onLadder = false;
 
-            dx = vAbsMetersPerSecond * params.meter() * (r - l) * params.dt();
+            dx = vAbsPerSecond * params.meter() * (r - l) * params.dt();
 
             // Handle jump input
             if (jump == 1) {
@@ -285,7 +280,7 @@ public class Player extends EntityAnimate {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsMetersPerSecond * params.meter() * params.dt());
+            dy = Math.min(findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsPerSecond * params.meter() * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -341,8 +336,8 @@ public class Player extends EntityAnimate {
                         Direction.valueOf(dx),
                         params::isCollisionAt);
 
-                dy = (float) (vAbsMetersPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
-                dx = (float) (vAbsMetersPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
+                dy = (float) (vAbsPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
+                dx = (float) (vAbsPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
 
             }
         }

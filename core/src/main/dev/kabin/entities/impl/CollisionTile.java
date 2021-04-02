@@ -11,14 +11,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CollisionTile extends CollisionEntity<Tile> {
+public class CollisionTile extends CollisionEntity {
 
+    // Constants
     public static final String FRAME_INDEX = "frameIndex";
     public static final String TILE = "tile";
     public static final int TILE_SIZE = 16;
+
+    // Static variables
     private static final Map<ImmutablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
+
+    // Fields
     private final Tile tile;
     private final int index;
+
+    // Variables
     private int unscaledX;
     private int unscaledY;
 
@@ -31,7 +38,7 @@ public class CollisionTile extends CollisionEntity<Tile> {
     public CollisionTile(EntityParameters parameters) {
         super(parameters);
         tile = Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
-        final Optional<AbstractAnimationPlaybackLibgdx<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl());
+        final Optional<AbstractAnimationPlaybackLibgdx<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl(Tile.class));
         animationPlaybackImpl.ifPresent(a -> a.setCurrentAnimation(tile));
         index = animationPlaybackImpl
                 .map(AbstractAnimationPlaybackLibgdx::getCurrentAnimationLength)
@@ -62,7 +69,7 @@ public class CollisionTile extends CollisionEntity<Tile> {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
-        final var animationPlaybackImpl = getAnimationPlaybackImpl();
+        final AbstractAnimationPlaybackLibgdx<Tile> animationPlaybackImpl = getAnimationPlaybackImpl(Tile.class);
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
             animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
@@ -100,11 +107,6 @@ public class CollisionTile extends CollisionEntity<Tile> {
     }
 
     @Override
-    public EntityType getType() {
-        return EntityType.COLLISION_TILE;
-    }
-
-    @Override
     public JSONObject toJSONObject() {
         return super.toJSONObject()
                 .put(FRAME_INDEX, index)
@@ -131,4 +133,6 @@ public class CollisionTile extends CollisionEntity<Tile> {
     public float getPixelMassCenterY() {
         return 0.5f * TILE_SIZE;
     }
+
+
 }

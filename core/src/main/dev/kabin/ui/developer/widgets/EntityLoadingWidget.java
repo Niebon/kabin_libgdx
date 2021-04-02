@@ -165,7 +165,7 @@ public class EntityLoadingWidget {
         }
 
 
-        final EntityParameters parameters = new EntityParameters.Builder()
+        final EntityParameters parameters = EntityParameters.builder()
                 .setX(mouseRelativeToWorldX.get())
                 .setY(mouseRelativeToWorldY.get())
                 .setLayer(layer)
@@ -175,7 +175,7 @@ public class EntityLoadingWidget {
                 .build();
 
 
-        final EntityLibgdx e = entityType.getParameterConstructor().construct(parameters);
+        final EntityLibgdx e = EntityType.parameterConstructorOf(entityType).construct(parameters);
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
 

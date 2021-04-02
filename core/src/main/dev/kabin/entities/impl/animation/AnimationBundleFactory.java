@@ -59,24 +59,23 @@ public class AnimationBundleFactory {
                 .toArray(TextureAtlas.AtlasRegion[]::new));
     }
 
-    @SuppressWarnings("unchecked") // Casts are checked explicitly in the if, then, else branch.
     @Nullable
-    public static <T extends Enum<T>> AbstractAnimationPlaybackLibgdx<T> loadFromAtlasPath(@Nullable TextureAtlas textureAtlas,
-                                                                                           String atlasPath,
-                                                                                           Class<T> clazz) {
+    public static AbstractAnimationPlaybackLibgdx<?> loadFromAtlasPath(@Nullable TextureAtlas textureAtlas,
+                                                                       String atlasPath,
+                                                                       Class<?> clazz) {
         if (textureAtlas == null) return null;
         if (clazz == Animate.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Animate.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Animate.class);
-            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxAnimate(textureAtlas, regions, animations);
+            return new AnimationPlaybackLibgdxAnimate(textureAtlas, regions, animations);
         } else if (clazz == Inanimate.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Inanimate.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Inanimate.class);
-            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxInanimate(textureAtlas, regions, animations);
+            return new AnimationPlaybackLibgdxInanimate(textureAtlas, regions, animations);
         } else if (clazz == Tile.class) {
             var regions = findAllAnimations(textureAtlas, atlasPath, Tile.class);
             var animations = findEnumTypeToIntArrayMapping(textureAtlas, atlasPath, Tile.class);
-            return (AbstractAnimationPlaybackLibgdx<T>) new AnimationPlaybackLibgdxTile(textureAtlas, regions, animations);
+            return new AnimationPlaybackLibgdxTile(textureAtlas, regions, animations);
         } else throw new IllegalArgumentException();
     }
 
@@ -96,6 +95,11 @@ public class AnimationBundleFactory {
         @Override
         public AnimationMetadata metadataOf(Animate animationEnum) {
             return animationEnum.getMetadata();
+        }
+
+        @Override
+        public Class<Animate> getAnimationClass() {
+            return Animate.class;
         }
 
     }
@@ -118,6 +122,10 @@ public class AnimationBundleFactory {
             return Inanimate.ANIMATION_METADATA;
         }
 
+        @Override
+        public Class<Inanimate> getAnimationClass() {
+            return Inanimate.class;
+        }
     }
 
     public static class AnimationPlaybackLibgdxTile extends AbstractAnimationPlaybackLibgdx<Tile> {
@@ -136,6 +144,11 @@ public class AnimationBundleFactory {
         @Override
         public AnimationMetadata metadataOf(Tile animationEnum) {
             return Tile.ANIMATION_METADATA;
+        }
+
+        @Override
+        public Class<Tile> getAnimationClass() {
+            return Tile.class;
         }
 
     }

@@ -2,7 +2,7 @@ package dev.kabin.entities.impl;
 
 import java.util.Optional;
 
-public class StaticBackground extends EntityInanimate {
+public class StaticBackground extends AbstractLibgdxEntity {
 
     private static StaticBackground instance;
 
@@ -33,11 +33,6 @@ public class StaticBackground extends EntityInanimate {
 
     public static StaticBackground getInstance() {
         return instance;
-    }
-
-    @Override
-    public EntityType getType() {
-        return EntityType.STATIC_BACKGROUND;
     }
 
 }

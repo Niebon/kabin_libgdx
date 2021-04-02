@@ -227,4 +227,6 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         regions.forEach(r -> r.getTexture().dispose());
     }
 
+    public abstract Class<AnimationType> getAnimationClass();
+
 }
