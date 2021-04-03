@@ -1,7 +1,7 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
-import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
-import dev.kabin.entities.impl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.util.Functions;
 import dev.kabin.util.points.ImmutablePointInt;
 import dev.kabin.util.points.PointInt;

@@ -1,13 +1,14 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
-import dev.kabin.entities.impl.animation.AnimationBundleFactory;
-import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx;
+import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +50,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
                 parameters.getTextureAtlas(),
                 atlasPath,
+                parameters.getImageAnalysisPool(),
                 getType().animationClass()
         );
         if (animationPlaybackImpl != null) {
@@ -214,8 +216,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageAnalysisPool.Analysis.emptyAnalysis();
+    public ImageMetadata getMetadata() {
+        return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageMetadataLibgdx.emptyAnalysis();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.entities.Entity;

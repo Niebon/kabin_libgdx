@@ -3,7 +3,7 @@ package dev.kabin.entities;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.RectangularArea;
 import dev.kabin.util.helperinterfaces.Scalable;
-import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
 /**
  * An animation playbacks. Implementations should to draw to screen using some underlying renderer.
@@ -56,7 +56,7 @@ public interface AnimationPlayback<
      */
     int getCurrentImageAssetIndex();
 
-    ImageAnalysisPool.Analysis getPixelAnalysis();
+    ImageMetadata getPixelAnalysis();
 
     /**
      * Reset this animation playback to its default from the current animation being played.

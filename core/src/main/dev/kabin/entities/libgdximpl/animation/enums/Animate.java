@@ -1,7 +1,7 @@
-package dev.kabin.entities.impl.animation.enums;
+package dev.kabin.entities.libgdximpl.animation.enums;
 
 import dev.kabin.entities.AnimationMetadata;
-import dev.kabin.entities.impl.animation.AnimationMetadataImpl;
+import dev.kabin.entities.libgdximpl.animation.AnimationMetadataImpl;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 
@@ -21,7 +21,7 @@ public enum Animate {
     JUMP_LEFT(false, true, Direction.LEFT), JUMP_RIGHT(false, true, Direction.RIGHT),
     CLIMB(false, false, Direction.NONE), STANDARD_CLIMB(false, false, Direction.NONE);
 
-    private static final EnumMap<dev.kabin.entities.impl.animation.enums.Animate, AnimationMetadata> METADATA_MAP = Arrays
+    private static final EnumMap<dev.kabin.entities.libgdximpl.animation.enums.Animate, AnimationMetadata> METADATA_MAP = Arrays
             .stream(Animate.values())
             .collect(Collectors.toMap(
                     Function.identity(),

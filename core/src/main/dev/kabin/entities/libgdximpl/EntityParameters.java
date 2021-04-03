@@ -1,6 +1,7 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class EntityParameters {
     private final int layer;
     private final TextureAtlas textureAtlas;
     private final EntityType type;
+    private final ImageMetadataPoolLibgdx imageAnalysisPool;
 
 
     private EntityParameters(float x,
@@ -25,7 +27,8 @@ public class EntityParameters {
                              float scale,
                              int layer,
                              Map<String, Object> backingMap,
-                             TextureAtlas textureAtlas, EntityType type) {
+                             TextureAtlas textureAtlas, EntityType type,
+                             ImageMetadataPoolLibgdx imageAnalysisPool) {
         this.x = x;
         this.y = y;
         this.atlasPath = atlasPath;
@@ -34,6 +37,7 @@ public class EntityParameters {
         this.backingMap = backingMap;
         this.textureAtlas = textureAtlas;
         this.type = type;
+        this.imageAnalysisPool = imageAnalysisPool;
     }
 
     public static Builder builder() {
@@ -77,6 +81,10 @@ public class EntityParameters {
         return type;
     }
 
+    public ImageMetadataPoolLibgdx getImageAnalysisPool() {
+        return imageAnalysisPool;
+    }
+
     public static class Builder {
         private float x;
         private float y;
@@ -86,6 +94,7 @@ public class EntityParameters {
         private Map<String, Object> backingMap = new HashMap<>();
         private TextureAtlas textureAtlas;
         private EntityType type;
+        private ImageMetadataPoolLibgdx imageAnalysisPool;
 
         private Builder(JSONObject o, float scale) {
             this.scale = scale;
@@ -147,10 +156,15 @@ public class EntityParameters {
             return this;
         }
 
+        public Builder setImageAnalysisPool(ImageMetadataPoolLibgdx imageAnalysisPool) {
+            this.imageAnalysisPool = imageAnalysisPool;
+            return this;
+        }
+
         public EntityParameters build() {
             return new EntityParameters(
                     x, y, atlasPath, scale, layer, backingMap,
-                    textureAtlas, type);
+                    textureAtlas, type, imageAnalysisPool);
         }
 
 

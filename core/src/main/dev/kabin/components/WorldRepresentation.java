@@ -5,7 +5,7 @@ import dev.kabin.components.worldmodel.IndexedSetPool;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.entities.Layer;
-import dev.kabin.entities.impl.CollisionData;
+import dev.kabin.entities.libgdximpl.CollisionData;
 import dev.kabin.util.collections.IndexedSet;
 import dev.kabin.util.pools.objectpool.Borrowed;
 import dev.kabin.util.shapes.primitive.RectInt;

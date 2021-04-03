@@ -1,9 +1,9 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
-import dev.kabin.entities.impl.animation.enums.Animate;
+import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.animation.enums.Animate;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;

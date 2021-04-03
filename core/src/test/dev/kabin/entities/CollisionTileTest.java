@@ -1,8 +1,8 @@
 package dev.kabin.entities;
 
-import dev.kabin.entities.impl.CollisionTile;
-import dev.kabin.entities.impl.EntityParameters;
-import dev.kabin.entities.impl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.CollisionTile;
+import dev.kabin.entities.libgdximpl.EntityParameters;
+import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.util.Procedures;
 import dev.kabin.util.Statistics;
 import org.json.JSONObject;

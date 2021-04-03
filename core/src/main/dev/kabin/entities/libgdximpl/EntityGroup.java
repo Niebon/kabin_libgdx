@@ -1,4 +1,4 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import dev.kabin.entities.Layer;
 

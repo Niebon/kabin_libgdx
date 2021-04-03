@@ -14,9 +14,10 @@ import dev.kabin.GlobalData;
 import dev.kabin.MainGame;
 import dev.kabin.Serializer;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.impl.EntityGroup;
-import dev.kabin.entities.impl.EntityLibgdx;
-import dev.kabin.entities.impl.GraphicsParametersLibgdx;
+import dev.kabin.entities.libgdximpl.EntityGroup;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.ui.developer.widgets.DraggedEntity;
 import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
 import dev.kabin.ui.developer.widgets.TileSelectionWidget;
@@ -48,15 +49,17 @@ public class DeveloperUI {
     public static final String OPEN = "open";
     public static final String SAVE = "save";
     public static final String SAVE_AS = "save as";
+
+    // Class fields
     private final Set<DraggedEntity> draggedEntities = new HashSet<>();
     private final Executor executorService = Executors.newSingleThreadExecutor();
     private final SelectBox<Button> fileDropDownMenu = new SelectBox<>(new Skin(Gdx.files.internal("default/skin/uiskin.json")), "default");
     private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
     private final Supplier<MouseEventUtil> mouseEventUtilSupplier;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
+    private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier;
     private final FloatSupplier scale;
     private final EntitySelection entitySelection;
-    // Class fields
     private final DragListener selectionEnd = new DragListener() {
         @Override
         public void dragStop(InputEvent event, float x, float y, int pointer) {
@@ -95,11 +98,13 @@ public class DeveloperUI {
                        Supplier<RectInt> camBounds,
                        Consumer<Runnable> synchronizer,
                        FloatSupplier scale,
-                       BooleanSupplier developerMode) {
+                       BooleanSupplier developerMode,
+                       Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier) {
         this.textureAtlasSupplier = textureAtlasSupplier;
 
         this.scale = scale;
         this.stage = stage;
+        this.imageAnalysisPoolSupplier = imageAnalysisPoolSupplier;
 
         entitySelection = new EntitySelection(mouseEventUtilSupplier, camPosX, camPosY);
 
@@ -110,7 +115,8 @@ public class DeveloperUI {
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 scale,
                 e -> worldRepresentationSupplier.get().registerEntity(e),
-                textureAtlasSupplier);
+                textureAtlasSupplier,
+                this.imageAnalysisPoolSupplier);
         tileSelectionWidget = new TileSelectionWidget(
                 stage,
                 textureAtlasSupplier,
@@ -337,9 +343,11 @@ public class DeveloperUI {
                 File selectedFile = chooser.getSelectedFile();
                 GlobalData.currentWorld = selectedFile.getName();
                 try {
-
-                    // TODO: deal with.
-                    Serializer.loadWorldState(stage, textureAtlasSupplier.get(), new JSONObject(Files.readString(selectedFile.toPath())), scale.get());
+                    Serializer.loadWorldState(stage,
+                            textureAtlasSupplier.get(),
+                            imageAnalysisPoolSupplier.get(),
+                            new JSONObject(Files.readString(selectedFile.toPath())),
+                            scale.get());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

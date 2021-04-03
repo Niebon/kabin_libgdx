@@ -1,4 +1,4 @@
-package dev.kabin.entities.impl.animation;
+package dev.kabin.entities.libgdximpl.animation;
 
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.util.Direction;

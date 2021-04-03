@@ -4,7 +4,7 @@ import dev.kabin.util.collections.Id;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.Scalable;
-import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public interface Entity<
         Scalable,
         ModifiableFloatCoordinates,
         Comparable<Entity<GroupType, EntityType, GraphicsParamType>>,
-        ImageAnalysisPool.Analysis.Analyzable,
+        MetadataDelegator,
         JSONSerializable,
         Id,
         Layer {
@@ -105,11 +105,11 @@ public interface Entity<
     }
 
     default int getRootIntX() {
-        return getUnscaledX() - getPixelAnalysis().getPixelMassCenterXInt();
+        return getUnscaledX() - getMetadata().getPixelMassCenterXInt();
     }
 
     default int getRootIntY() {
-        return getUnscaledY() - getPixelAnalysis().getLowestPixel();
+        return getUnscaledY() - getMetadata().getLowestPixel();
     }
 
     default float getRootX() {

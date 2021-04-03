@@ -9,10 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import dev.kabin.entities.impl.*;
-import dev.kabin.entities.impl.animation.AbstractAnimationPlaybackLibgdx;
-import dev.kabin.entities.impl.animation.AnimationBundleFactory;
-import dev.kabin.entities.impl.animation.AnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.*;
+import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
+import dev.kabin.entities.libgdximpl.animation.AnimationPlaybackLibgdx;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import org.json.JSONObject;
 
@@ -38,6 +39,8 @@ public class EntityLoadingWidget {
     private final FloatSupplier scale;
     private final Consumer<EntityLibgdx> registerEntityToWorld;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
+    private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier;
+
 
     // Class variables:
     private AbstractAnimationPlaybackLibgdx<?> preview = null;
@@ -53,7 +56,8 @@ public class EntityLoadingWidget {
             FloatSupplier mouseRelativeToWorldY,
             FloatSupplier scale,
             Consumer<EntityLibgdx> registerEntityToWorld,
-            Supplier<TextureAtlas> textureAtlasSupplier) {
+            Supplier<TextureAtlas> textureAtlasSupplier,
+            Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier) {
         this.stage = stage;
         this.mouseRelativeToWorldX = mouseRelativeToWorldX;
         this.mouseRelativeToWorldY = mouseRelativeToWorldY;
@@ -67,6 +71,7 @@ public class EntityLoadingWidget {
                 .setHeight(HEIGHT)
                 .setCollapsedWindowWidth(WIDTH)
                 .build();
+        this.imageAnalysisPoolSupplier = imageAnalysisPoolSupplier;
 
         final var loadImageAssetButton = new TextButton("Asset", dev.kabin.ui.Widget.Builder.DEFAULT_SKIN, "default");
         loadImageAssetButton.setWidth(100);
@@ -175,7 +180,7 @@ public class EntityLoadingWidget {
                 .build();
 
 
-        final EntityLibgdx e = EntityType.parameterConstructorOf(entityType).construct(parameters);
+        final EntityLibgdx e = EntityType.Factory.parameterConstructorOf(entityType).construct(parameters);
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
 
@@ -192,10 +197,10 @@ public class EntityLoadingWidget {
 
 
         // Finally, show content:
-        //noinspection unchecked
         preview = AnimationBundleFactory.loadFromAtlasPath(
                 textureAtlasSupplier.get(),
                 selectedAsset,
+                imageAnalysisPoolSupplier.get(),
                 entityType.animationClass().getEnumConstants()[0].getClass()
         );
         refreshContentTableMessage();
@@ -262,8 +267,10 @@ public class EntityLoadingWidget {
                         .getAbsolutePath()
                         .replace("\\", "/")
                         .replace(relativePath, "");
-                //noinspection unchecked
-                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(), selectedAsset, animationType.getClass());
+                preview = AnimationBundleFactory.loadFromAtlasPath(textureAtlasSupplier.get(),
+                        selectedAsset,
+                        imageAnalysisPoolSupplier.get(),
+                        animationType.getClass());
             }
             refreshContentTableMessage();
         });

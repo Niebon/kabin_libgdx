@@ -13,10 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.EntityGroup;
-import dev.kabin.entities.impl.EntityLibgdx;
-import dev.kabin.entities.impl.GraphicsParametersLibgdx;
-import dev.kabin.entities.impl.Player;
+import dev.kabin.entities.libgdximpl.EntityGroup;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
+import dev.kabin.entities.libgdximpl.Player;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
@@ -55,11 +56,13 @@ public class MainGame extends ApplicationAdapter {
             Functions::getNull,
             this::getScale
     );
-    private Stage stage;
+
 
     // Private data:
     private float scaleFactor = 1.0f;
     private CameraWrapper camera;
+    private ImageMetadataPoolLibgdx imageAnalysisPool;
+    private Stage stage;
 
     /**
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
@@ -113,6 +116,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void create() {
         textureAtlas = new TextureAtlas("textures.atlas");
+        imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
         stage = new Stage(new ScreenViewport());
 
 
@@ -224,6 +228,10 @@ public class MainGame extends ApplicationAdapter {
 
     protected RectInt getCamBounds() {
         return getCameraWrapper().currentCameraBounds();
+    }
+
+    public ImageMetadataPoolLibgdx getImageAnalysisPool() {
+        return imageAnalysisPool;
     }
 
     static class GraphicsParametersImpl implements GraphicsParametersLibgdx {

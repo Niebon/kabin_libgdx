@@ -3,9 +3,9 @@ package dev.kabin.util.eventhandlers;
 
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.impl.EntityGroup;
-import dev.kabin.entities.impl.EntityLibgdx;
-import dev.kabin.entities.impl.Player;
+import dev.kabin.entities.libgdximpl.EntityGroup;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.shapes.primitive.MutableRectInt;

@@ -2,7 +2,7 @@ package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.MainGame;
-import dev.kabin.entities.impl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
 import dev.kabin.util.points.ImmutablePointFloat;

@@ -1,4 +1,4 @@
-package dev.kabin.entities.impl.animation;
+package dev.kabin.entities.libgdximpl.animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.AnimationMetadata;
-import dev.kabin.entities.impl.GraphicsParametersLibgdx;
+import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntFunction;
-import dev.kabin.util.pools.ImageAnalysisPool;
+import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -30,11 +30,11 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     // Class fields:
     private final int width, height;
     private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animationsMap;
-    private final TextureAtlas atlas;
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
     private final Map<AnimationType, int[]> animationBlueprint;
     private final int maxPixelHeight;
+    private final ImageAnalysisSupplier imageAnalysisSupplier;
 
 
     // Class variables:
@@ -43,16 +43,16 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     private WeightedAverage2D weightedAverage2D;
     private float scale;
 
-    public AbstractAnimationPlaybackLibgdx(
-            TextureAtlas atlas,
+    AbstractAnimationPlaybackLibgdx(
+            ImageAnalysisSupplier imageAnalysisSupplier,
             Array<TextureAtlas.AtlasRegion> regions,
             Map<AnimationType, int[]> animationBlueprint,
             Class<AnimationType> enumClass
     ) {
+        this.imageAnalysisSupplier = imageAnalysisSupplier;
         if (regions.isEmpty()) {
             throw new IllegalArgumentException("The parameter regions must be non-empty.");
         }
-        this.atlas = atlas;
         this.regions = regions;
         this.animationsMap = animationBlueprint.entrySet().stream().collect(
                 Collectors.toMap(
@@ -72,8 +72,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
 
         maxPixelHeight = Arrays.stream(regions.items)
-                .map(region -> ImageAnalysisPool.findAnalysis(atlas, String.valueOf(region), region.index))
-                .mapToInt(ImageAnalysisPool.Analysis::getPixelHeight)
+                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .mapToInt(ImageMetadata::getPixelHeight)
                 .max().orElse(0);
     }
 
@@ -170,8 +170,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     }
 
     @Override
-    public ImageAnalysisPool.Analysis getPixelAnalysis() {
-        return ImageAnalysisPool.findAnalysis(atlas, getCurrentImageAssetPath(), getCurrentImageAssetIndex());
+    public ImageMetadata getPixelAnalysis() {
+        return imageAnalysisSupplier.get(getCurrentImageAssetPath(), getCurrentImageAssetIndex());
     }
 
     @Override

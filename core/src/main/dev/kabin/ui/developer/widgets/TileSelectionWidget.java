@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.EntityCollectionProvider;
-import dev.kabin.entities.impl.*;
-import dev.kabin.entities.impl.animation.AnimationBundleFactory;
-import dev.kabin.entities.impl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.*;
+import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
+import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -187,7 +187,7 @@ public class TileSelectionWidget {
 
             // Get the new instance.
             final CollisionTile newCollisionTile
-                    = (CollisionTile) EntityType.parameterConstructorOf(EntityType.COLLISION_TILE).construct(parameters);
+                    = (CollisionTile) EntityType.Factory.parameterConstructorOf(EntityType.COLLISION_TILE).construct(parameters);
 
             // Init the data.
             newCollisionTile.getActor().ifPresent(stage::addActor);

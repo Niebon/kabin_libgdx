@@ -2,7 +2,7 @@ package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import dev.kabin.entities.impl.Player;
+import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.KeyCode;
 import org.json.JSONObject;
@@ -27,7 +27,11 @@ public class MainGameDeveloper extends MainGame {
         try {
             final JSONObject session = new JSONObject(Files.readString(Path.of(devSessionData)));
             final String pathToWorld = GlobalData.WORLDS_PATH + session.getString("world");
-            worldRepresentation = Serializer.loadWorldState(getStage(), getTextureAtlas(), new JSONObject(Files.readString(Path.of(pathToWorld))), getScale());
+            worldRepresentation = Serializer.loadWorldState(getStage(),
+                    getTextureAtlas(),
+                    getImageAnalysisPool(),
+                    new JSONObject(Files.readString(Path.of(pathToWorld))),
+                    getScale());
             entityLoadingWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("entity_selection");
             tileSelectionWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("tile_selection");
         } catch (IOException e) {
@@ -48,7 +52,8 @@ public class MainGameDeveloper extends MainGame {
                 this::getCamBounds,
                 this::synchronizer,
                 this::getScale,
-                this::isDeveloperMode);
+                this::isDeveloperMode,
+                this::getImageAnalysisPool);
         developerUI.loadEntityLoadingWidgetSettings(entityLoadingWidgetSettings);
         developerUI.loadTileLoadingWidgetSettings(tileSelectionWidgetSettings);
         developerUI.setVisible(isDeveloperMode());

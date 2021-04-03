@@ -1,7 +1,7 @@
-package dev.kabin.entities.impl.animation;
+package dev.kabin.entities.libgdximpl.animation;
 
 import dev.kabin.entities.AnimationPlayback;
-import dev.kabin.entities.impl.GraphicsParametersLibgdx;
+import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 
 /**
  * All animation playbacks used for the libgdx implementation should extend this interface.

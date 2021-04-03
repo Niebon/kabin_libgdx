@@ -1,11 +1,12 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.GroupTyped;
 import dev.kabin.entities.Layer;
-import dev.kabin.entities.impl.animation.enums.Animate;
-import dev.kabin.entities.impl.animation.enums.Inanimate;
-import dev.kabin.entities.impl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.animation.enums.Animate;
+import dev.kabin.entities.libgdximpl.animation.enums.Inanimate;
+import dev.kabin.entities.libgdximpl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 
 /**
  * This enum is a converter class that converts enum constants that represent entity types to actual implementations.
@@ -13,7 +14,16 @@ import dev.kabin.entities.impl.animation.enums.Tile;
 public enum EntityType implements Layer, GroupTyped<EntityGroup> {
     //BEAR(Bear::new, Bear::new, EntityGroupProvider.Type.FOCAL_POINT),
     //CAT(Cat::new, Cat::new, EntityGroupProvider.Type.FOCAL_POINT),
+    /**
+     * An inanimate entity with collision data.
+     */
     COLLISION_ENTITY(CollisionEntity::new, EntityGroup.FOCAL_POINT, Inanimate.class),
+
+    /**
+     * A tile with collision.
+     *
+     * @see Tile
+     */
     COLLISION_TILE(CollisionTile::new, EntityGroup.FOREGROUND, Tile.class),
     //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
@@ -51,20 +61,6 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
         this.animationClass = animationClass;
     }
 
-    public static JSONConstructor JSONConstructorOf(EntityType type, TextureAtlas textureAtlas, float scale) {
-        return json -> {
-            final EntityParameters build = EntityParameters
-                    .builder(json, scale)
-                    .setEntityType(type)
-                    .setTextureAtlas(textureAtlas).build();
-            return type.entityConstructor.construct(build);
-        };
-    }
-
-    public static EntityConstructor parameterConstructorOf(EntityType type) {
-        return type.entityConstructor;
-    }
-
     @Override
     public EntityGroup getGroupType() {
         return groupEntityGroup;
@@ -77,6 +73,45 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
     @Override
     public int getLayer() {
         return groupEntityGroup.getLayer();
+    }
+
+
+    /**
+     * This inner class acts as a factory for entity type.
+     */
+    public static class Factory {
+
+        /**
+         * An entity constructor that takes a set of {@link EntityParameters} and creates a new instance of {@link EntityLibgdx}.
+         *
+         * @param type the type of the entity to be created.
+         * @return a new instance of {@link EntityLibgdx} matching the parameters.
+         */
+        public static EntityConstructor parameterConstructorOf(EntityType type) {
+            return type.entityConstructor;
+        }
+
+        /**
+         * An entity constructor that takes json and constructs a a new instance of {@link EntityLibgdx}.
+         *
+         * @param type                    the type of the entity to be created.
+         * @param imageMetadataPoolLibgdx the metadata pool that caches entity image data.
+         * @param textureAtlas            the atlas from where entity textures are fetched.
+         * @return a new instance of {@link EntityLibgdx} matching the parameters.
+         */
+        public static JSONConstructor JSONConstructorOf(EntityType type,
+                                                        TextureAtlas textureAtlas,
+                                                        ImageMetadataPoolLibgdx imageMetadataPoolLibgdx,
+                                                        float scale) {
+            return json -> {
+                final EntityParameters build = EntityParameters
+                        .builder(json, scale)
+                        .setEntityType(type)
+                        .setImageAnalysisPool(imageMetadataPoolLibgdx)
+                        .setTextureAtlas(textureAtlas).build();
+                return type.entityConstructor.construct(build);
+            };
+        }
     }
 
 }

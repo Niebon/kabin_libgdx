@@ -4,9 +4,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.impl.EntityGroup;
-import dev.kabin.entities.impl.EntityLibgdx;
-import dev.kabin.entities.impl.EntityType;
+import dev.kabin.entities.libgdximpl.EntityGroup;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.EntityType;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,7 +34,11 @@ public class Serializer {
         return o;
     }
 
-    public static WorldRepresentation<EntityGroup, EntityLibgdx> loadWorldState(Stage stage, TextureAtlas textureAtlas, JSONObject o, float scale) {
+    public static WorldRepresentation<EntityGroup, EntityLibgdx> loadWorldState(Stage stage,
+                                                                                TextureAtlas textureAtlas,
+                                                                                ImageMetadataPoolLibgdx imageAnalysisPool,
+                                                                                JSONObject o,
+                                                                                float scale) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
@@ -49,7 +54,10 @@ public class Serializer {
                     System.exit(1);
                 } else {
                     logger.info(() -> "Loaded the entity: " + json);
-                    final EntityLibgdx e = EntityType.JSONConstructorOf(EntityType.valueOf(type), textureAtlas, scale).construct(json);
+                    final EntityLibgdx e = EntityType.Factory.JSONConstructorOf(EntityType.valueOf(type),
+                            textureAtlas,
+                            imageAnalysisPool,
+                            scale).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(stage::addActor);
                 }

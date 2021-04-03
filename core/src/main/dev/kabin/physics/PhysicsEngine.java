@@ -1,7 +1,7 @@
 package dev.kabin.physics;
 
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.impl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.EntityLibgdx;
 
 import java.util.function.Consumer;
 

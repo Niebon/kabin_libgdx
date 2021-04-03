@@ -1,4 +1,4 @@
-package dev.kabin.entities.impl;
+package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
