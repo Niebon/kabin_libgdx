@@ -89,8 +89,7 @@ public class Player extends EntitySimple {
                     vx = vectorFieldX.eval(x, y + i),
                     vy = vectorFieldY.eval(x, y + i);
             if (vx != 0 || vy != 0) {
-                entity.setX(entity.getX() + vx * dt);
-                entity.setY(entity.getY() + vy * dt);
+                entity.setPos(entity.getX() + vx * dt, entity.getY() + vy * dt);
                 return true;
             }
         }
@@ -343,8 +342,7 @@ public class Player extends EntitySimple {
         }
 
         // Update physics
-        setX(getX() + dx);
-        setY(getY() + dy);
+        setPos(getX() + dx, getY() + dy);
         cachedVx = dx / params.dt();
         cachedVy = dy / params.dt();
 

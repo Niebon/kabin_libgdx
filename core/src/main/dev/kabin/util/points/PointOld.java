@@ -37,7 +37,4 @@ public interface PointOld<T extends Number> {
     @Contract("_->this")
     PointOld<T> rotate(double angleRadians);
 
-    default boolean equalsOrigin() {
-        return getX().doubleValue() == 0 && getY().doubleValue() == 0;
-    }
 }

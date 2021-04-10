@@ -1,9 +1,6 @@
 package dev.kabin.entities.libgdximpl;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
@@ -46,23 +43,16 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
-        type = parameters.getType();
+        type = parameters.type();
         animationPlaybackImpl = AnimationBundleFactory.loadFromAtlasPath(
-                parameters.getTextureAtlas(),
+                parameters.textureAtlas(),
                 atlasPath,
-                parameters.getImageAnalysisPool(),
+                parameters.imageAnalysisPool(),
                 getType().animationClass()
         );
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setSmoothParameter(0.5f);
         }
-
-        actor.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return AbstractLibgdxEntity.this.touchDown(button);
-            }
-        });
         setPos(parameters.x(), parameters.y());
         {
             positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
@@ -104,21 +94,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         return actor;
     }
 
-    public boolean touchDown(int button) {
-        logger.warning(() -> "Click registered.");
-        switch (button) {
-            case Input.Buttons.RIGHT -> handleMouseClickRight();
-            case Input.Buttons.LEFT -> handleMouseClickLeft();
-        }
-        return true;
-    }
-
-    private void handleMouseClickLeft() {
-    }
-
-    private void handleMouseClickRight() {
-    }
-
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
         setScale(params.getScale());
@@ -127,8 +102,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         final float graphicsRootY = getRootY();
 
 
-        animationPlaybackImpl.setX(graphicsRootX);
-        animationPlaybackImpl.setY(graphicsRootY);
+        animationPlaybackImpl.setPos(graphicsRootX, graphicsRootY);
         animationPlaybackImpl.setScale(params.getScale());
         animationPlaybackImpl.renderNextAnimationFrame(params);
 

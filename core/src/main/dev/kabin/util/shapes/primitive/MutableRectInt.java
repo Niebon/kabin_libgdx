@@ -70,10 +70,6 @@ public class MutableRectInt implements RectInt {
         return o;
     }
 
-    public int calculateArea() {
-        return getWidth() * getHeight();
-    }
-
     @Override
     public String toString() {
         return "{" + "x:" + minX + "," +

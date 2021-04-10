@@ -8,37 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class EntityParameters {
-
-    private final Map<String, Object> backingMap;
-    private final float x;
-    private final float y;
-    private final String atlasPath;
-    private final float scale;
-    private final int layer;
-    private final TextureAtlas textureAtlas;
-    private final EntityType type;
-    private final ImageMetadataPoolLibgdx imageAnalysisPool;
-
-
-    private EntityParameters(float x,
-                             float y,
-                             String atlasPath,
-                             float scale,
-                             int layer,
-                             Map<String, Object> backingMap,
-                             TextureAtlas textureAtlas, EntityType type,
-                             ImageMetadataPoolLibgdx imageAnalysisPool) {
-        this.x = x;
-        this.y = y;
-        this.atlasPath = atlasPath;
-        this.scale = scale;
-        this.layer = layer;
-        this.backingMap = backingMap;
-        this.textureAtlas = textureAtlas;
-        this.type = type;
-        this.imageAnalysisPool = imageAnalysisPool;
-    }
+public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
+                               Map<String, Object> backingMap,
+                               TextureAtlas textureAtlas,
+                               EntityType type,
+                               ImageMetadataPoolLibgdx imageAnalysisPool) {
 
     public static Builder builder() {
         return new Builder();
@@ -53,36 +27,8 @@ public class EntityParameters {
         return Optional.ofNullable((T) backingMap.get(key));
     }
 
-    public TextureAtlas getTextureAtlas() {
-        return textureAtlas;
-    }
-
-    public float x() {
-        return x;
-    }
-
-    public float y() {
-        return y;
-    }
-
-    public float scale() {
-        return scale;
-    }
-
-    public String atlasPath() {
-        return atlasPath;
-    }
-
-    public int layer() {
-        return layer;
-    }
-
-    public EntityType getType() {
-        return type;
-    }
-
-    public ImageMetadataPoolLibgdx getImageAnalysisPool() {
-        return imageAnalysisPool;
+    public <T extends Enum<T>> Optional<T> getMaybe(String key, Class<T> clazz) {
+        return this.<String>getMaybe(key).map(s -> Enum.valueOf(clazz, s));
     }
 
     public static class Builder {

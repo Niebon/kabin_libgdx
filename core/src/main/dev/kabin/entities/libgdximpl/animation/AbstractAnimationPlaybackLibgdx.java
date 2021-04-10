@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import dev.kabin.MainGame;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.Functions;
@@ -144,9 +145,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         }
 
         SpriteBatch batch = params.getBatch();
-        batch.begin();
+        batch.setShader(MainGame.lightSourceShaders);
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
-        batch.end();
     }
 
     @Override
@@ -154,9 +154,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         final AnimationType currentAnimationClass = this.currentAnimationEnum;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
         final SpriteBatch batch = params.getBatch();
-        batch.begin();
+        batch.setShader(MainGame.lightSourceShaders);
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
-        batch.end();
     }
 
     @Override

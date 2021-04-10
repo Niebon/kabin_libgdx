@@ -15,7 +15,6 @@ public interface ModifiableFloatCoordinates {
         setY(y);
     }
 
-
     default void translate(float deltaX, float deltaY) {
         setPos(getX() + deltaX, getY() + deltaY);
     }

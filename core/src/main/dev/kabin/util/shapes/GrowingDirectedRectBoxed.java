@@ -3,12 +3,13 @@ package dev.kabin.util.shapes;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class GrowingDirectedRectBoxed<T extends Number & Comparable<T>> extends GrowingRectBoxed<T> implements Directed {
+@Deprecated
+public abstract class GrowingDirectedRectBoxed<T extends Number & Comparable<T>> extends GrowingRectBoxed<T> implements DirectedOld {
 
-    private final Set<Directed> arrows = new HashSet<>();
+    private final Set<DirectedOld> arrows = new HashSet<>();
 
     @Override
-    public Set<Directed> arrows() {
+    public Set<DirectedOld> arrows() {
         return arrows;
     }
 

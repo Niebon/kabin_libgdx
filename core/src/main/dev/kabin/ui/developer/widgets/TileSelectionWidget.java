@@ -33,10 +33,14 @@ import java.util.function.Supplier;
 
 public class TileSelectionWidget {
 
+    // Constants
     private static final int WIDTH = 600;
     private static final int HEIGHT = 200;
+
+
     private static final Map<Tile, @NotNull Button> typeToButton = new HashMap<>();
     private static Map<Tile, TextureAtlas.@NotNull AtlasRegion[]> typeToAtlasRegionsMapping;
+
     private final dev.kabin.ui.Widget widget;
     private String selectedAsset = "";
     private final FloatSupplier mouseRelativeToWorldX;
@@ -118,8 +122,7 @@ public class TileSelectionWidget {
             final Iterator<EntityLibgdx> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
             while (entityIterator.hasNext()) {
                 final EntityLibgdx e = entityIterator.next();
-                if (e instanceof CollisionTile && e.getX() == x && e.getY() == y) {
-                    final var ct = (CollisionTile) e;
+                if (e instanceof final CollisionTile ct && e.getX() == x && e.getY() == y) {
                     if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
                         throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                     }
@@ -290,13 +293,11 @@ public class TileSelectionWidget {
 
 
                 SpriteBatch batch = params.getBatch();
-                batch.begin();
                 batch.draw(entry.getValue()[0],
                         x,
                         y,
                         width,
                         height);
-                batch.end();
             }
         }
     }

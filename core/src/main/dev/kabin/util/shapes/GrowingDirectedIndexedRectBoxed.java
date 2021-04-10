@@ -1,5 +1,6 @@
 package dev.kabin.util.shapes;
 
+@Deprecated
 public abstract class GrowingDirectedIndexedRectBoxed<T extends Number & Comparable<T>> extends GrowingDirectedRectBoxed<T> implements Indexed {
     private int index;
 

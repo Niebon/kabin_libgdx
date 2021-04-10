@@ -3,6 +3,7 @@ package dev.kabin.util.shapes;
 import dev.kabin.util.points.PointOld;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public abstract class GrowingRectBoxed<T extends Number & Comparable<T>> extends AbstractRectBoxed<T> implements Growing<T> {
 
     public GrowingRectBoxed() {

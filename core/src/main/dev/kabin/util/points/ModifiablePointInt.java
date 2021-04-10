@@ -59,8 +59,7 @@ public final class ModifiablePointInt implements PointInt {
 	@Override
 	final public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof PointInt)) return false;
-		PointInt that = (PointInt) o;
+		if (!(o instanceof PointInt that)) return false;
 		return x == that.x() &&
 				y == that.y();
 	}

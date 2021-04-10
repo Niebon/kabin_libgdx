@@ -288,8 +288,11 @@ public class DeveloperUI {
             final EntityLibgdx e = de.getEntity();
 
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
-            e.setX(Functions.snapToPixel(de.getEntityOriginalX() + mouseEventUtilSupplier.get().getMouseXRelativeToWorld() - de.getInitialMouseX(), scale.get()));
-            e.setY(Functions.snapToPixel(de.getEntityOriginalY() + mouseEventUtilSupplier.get().getMouseYRelativeToWorld() - de.getInitialMouseY(), scale.get()));
+            final float targetX = de.getEntityOriginalX() + mouseEventUtilSupplier.get().getMouseXRelativeToWorld() - de.getInitialMouseX();
+            final float targetY = de.getEntityOriginalY() + mouseEventUtilSupplier.get().getMouseYRelativeToWorld() - de.getInitialMouseY();
+            final float x = Functions.snapToPixel(targetX, scale.get());
+            final float y = Functions.snapToPixel(targetY, scale.get());
+            e.setPos(x, y);
         }
     }
 

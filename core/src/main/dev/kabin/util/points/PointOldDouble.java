@@ -23,8 +23,7 @@ public class PointOldDouble implements PointOld<Double> {
     }
 
     public boolean equals(Object p) {
-        if (p instanceof PointOldDouble) {
-            PointOldDouble other = (PointOldDouble) p;
+        if (p instanceof PointOldDouble other) {
             return (x == other.x && y == other.y);
         } else return false;
     }

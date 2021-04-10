@@ -14,9 +14,9 @@ public class CollisionEntity extends AbstractLibgdxEntity implements CollisionDa
 	private final TextureAtlas atlas;
 
 	CollisionEntity(EntityParameters parameters) {
-		super(parameters);
-		atlas = parameters.getTextureAtlas();
-	}
+        super(parameters);
+        atlas = parameters.textureAtlas();
+    }
 
 	@Override
 	public @NotNull List<PointInt> getCollisionProfile() {

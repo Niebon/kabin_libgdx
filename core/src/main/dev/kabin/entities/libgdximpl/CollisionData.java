@@ -62,7 +62,7 @@ public interface CollisionData extends MetadataDelegator {
     /**
      * The current orientation.
      *
-     * @return
+     * @return the orientation of this collision data.
      */
     default double angleRad() {
         return 0;

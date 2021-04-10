@@ -19,10 +19,6 @@ public class RectFloat {
         maxY = y + height;
     }
 
-    public static RectFloat centeredAt(float x, float y, float width, float height) {
-        return new RectFloat(x - width * 0.5f, y - height * 0.5f, width, height);
-    }
-
     public float getWidth() {
         return maxX - minX;
     }

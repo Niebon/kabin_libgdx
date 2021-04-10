@@ -84,6 +84,7 @@ public class MainGameDeveloper extends MainGame {
 
         super.render();
 
+        developerUISpriteBatch.begin();
         // Render interface:
         if (isDeveloperMode()) {
             developerUI.updatePositionsOfDraggedEntities();
@@ -95,6 +96,7 @@ public class MainGameDeveloper extends MainGame {
                     screenWidth,
                     screenHeight));
         }
+        developerUISpriteBatch.end();
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+@Deprecated
 public abstract class AbstractRectBoxed<T extends Number & Comparable<T>> implements RectBoxed<T> {
 
     private T minX = null, maxX = null, minY = null, maxY = null;

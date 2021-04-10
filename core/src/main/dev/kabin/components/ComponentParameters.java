@@ -4,74 +4,25 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 
-public class ComponentParameters {
+public record ComponentParameters(int x, int y, int width, int height, float scaleFactor, boolean hasSubcomponents) {
 
     public static final int COARSENESS_PARAMETER = 64; // 256;
-
-    private final int x, y;
-    private final int width, height;
-    private final float scaleFactor;
-    private final boolean hasSubcomponents;
-
-
-    private ComponentParameters(int x,
-                                int y,
-                                int width,
-                                int height,
-                                float scaleFactor,
-                                boolean hasSubcomponents) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.scaleFactor = scaleFactor;
-        this.hasSubcomponents = hasSubcomponents;
-    }
 
     public static Builder builder() {
         return new Builder();
     }
 
 
-    /**
-     * @return false iff the parameters are invalid.
-     */
-    public boolean hasSubcomponents() {
-        return hasSubcomponents;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public float getScaleFactor() {
-        return scaleFactor;
-    }
-
-
     @Override
     public String toString() {
-        return new HashMap<>(){
+        return new HashMap<>() {
             {
-                put("x", getX());
-                put("y", getY());
-                put("width", getWidth());
-                put("height", getHeight());
-                put("scaleFactor", getScaleFactor());
+                put("x", x());
+                put("y", y());
+                put("width", width());
+                put("height", height());
+                put("scaleFactor", scaleFactor());
                 put("hasSubcomponents", hasSubcomponents());
-
             }
         }.toString();
 

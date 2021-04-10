@@ -4,6 +4,7 @@ import dev.kabin.util.points.PointOld;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+@Deprecated
 public interface RectBoxed<T extends Number & Comparable<T>> {
 
     default boolean meets(@NotNull AbstractRectBoxed<T> other) {

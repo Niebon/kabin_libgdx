@@ -11,6 +11,7 @@ import java.util.Objects;
  * Preferably, use this class instead of the boxed version {@link RectBoxedDouble} if utilized in the main loop.
  * For the boxed version, see {@link RectBoxedDouble}.
  */
+@Deprecated
 public class RectDouble {
 
     private double minX, maxX, minY, maxY;

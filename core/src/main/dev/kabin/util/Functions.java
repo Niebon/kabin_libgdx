@@ -1,14 +1,9 @@
 package dev.kabin.util;
 
-import dev.kabin.entities.Entity;
 import dev.kabin.util.functioninterfaces.BiIntPredicate;
 import dev.kabin.util.points.PointFloat;
-import dev.kabin.util.shapes.AbstractRectBoxed;
-import dev.kabin.util.shapes.RectBoxed;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.function.Predicate;
 
@@ -69,44 +64,6 @@ public class Functions {
         double dx = x1 - x2;
         double dy = y1 - y2;
         return (Math.sqrt(dx * dx + dy * dy));
-    }
-
-    public static double distance(@NotNull RectBoxed<?> r1, @NotNull RectBoxed<?> r2) {
-        return distance(r1.getCenterX(), r1.getMinY().doubleValue(), r2.getCenterX(), r2.getMinY().doubleValue());
-    }
-
-    public static double distance(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
-        return distance(entity1.getX(), entity1.getY(), entity2.getX(), entity2.getY());
-    }
-
-    @Contract("_, _ -> new")
-    public static double[] getDisplacement(@NotNull Entity<?, ?, ?> fromEntity, @NotNull Entity<?, ?, ?> toEntity) {
-        return new double[]{toEntity.getX() - fromEntity.getX(), toEntity.getY() - fromEntity.getY()};
-    }
-
-    @Contract("_, _ -> new")
-    public static double[] getDisplacement(@NotNull RectBoxed<?> from, @NotNull RectBoxed<?> to) {
-        return new double[]{to.getCenterX() - from.getCenterX(), to.getMinY().doubleValue() - from.getMinY().doubleValue()};
-    }
-
-    public static double distance(@NotNull Entity<?, ?, ?> entity, @NotNull AbstractRectBoxed<?> r) {
-        return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
-    }
-
-    public static double distance(@NotNull AbstractRectBoxed<?> r, @NotNull Entity<?, ?, ?> entity) {
-        return distance(entity.getX(), entity.getY(), r.getCenterX(), r.getMinY().doubleValue());
-    }
-
-    public static double distance(double a, double b) {
-        return Math.abs(a - b);
-    }
-
-    public static double distanceX(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
-        return distance(entity1.getX(), entity2.getX());
-    }
-
-    public static double distanceY(@NotNull Entity<?, ?, ?> entity1, @NotNull Entity<?, ?, ?> entity2) {
-        return distance(entity1.getY(), entity2.getY());
     }
 
     /**
@@ -201,19 +158,6 @@ public class Functions {
         return startDeg <= midDeg && midDeg <= endDeg;
     }
 
-
-    /**
-     * Hacky function which checks that a string is json formatted.
-     */
-    public static boolean validStringJson(String onTrial) {
-        try {
-            new JSONObject(onTrial);
-            return true;
-        } catch (JSONException jsonException) {
-            System.out.printf("Got error '%s' while trying to parse json string '%s...'.%n", jsonException.getMessage(), onTrial.substring(0, 10));
-            return false;
-        }
-    }
 
     @NotNull
     @Contract(pure = true)

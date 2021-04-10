@@ -21,8 +21,7 @@ public class PointFloatOld implements PointOld<Float> {
     }
 
     public boolean equals(Object p) {
-        if (p instanceof PointFloatOld) {
-            PointFloatOld other = (PointFloatOld) p;
+        if (p instanceof PointFloatOld other) {
             return (x == other.x && y == other.y);
         } else return false;
     }

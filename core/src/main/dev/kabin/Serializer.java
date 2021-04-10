@@ -43,11 +43,10 @@ public class Serializer {
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
-            if (!(entry instanceof JSONObject)) {
+            if (!(entry instanceof final JSONObject json)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
                 System.exit(1);
             } else {
-                final JSONObject json = (JSONObject) entry;
                 final String type = json.getString("type");
                 if (!admissibleEntityTypes.contains(type)) {
                     logger.warning(() -> "A recorded entity type was inadmissible." + json);

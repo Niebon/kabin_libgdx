@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * This class uses boxed doubles for numbers and should (if possible) be avoided in main thread calls.
  * For main method call, use {@link RectDouble}.
  */
+@Deprecated
 public class RectBoxedDouble extends AbstractRectBoxed<Double> {
 
     public RectBoxedDouble(double x, double y, double width, double height) {

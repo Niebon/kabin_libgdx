@@ -3,6 +3,7 @@ package dev.kabin.util.shapes;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class RectBoxedInt extends AbstractRectBoxed<Integer> {
 
     public RectBoxedInt(int x, int y, int width, int height) {

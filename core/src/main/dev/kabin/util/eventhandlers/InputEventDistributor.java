@@ -12,15 +12,8 @@ import com.badlogic.gdx.InputProcessor;
  *     <li>{@link MouseEventUtil}</li>
  * </ul>
  */
-public class InputEventDistributor implements InputProcessor {
-
-	private final MouseEventUtil mouseEventUtil;
-	private final KeyEventUtil keyEventUtil;
-
-	public InputEventDistributor(MouseEventUtil mouseEventUtil, KeyEventUtil keyEventUtil) {
-		this.mouseEventUtil = mouseEventUtil;
-		this.keyEventUtil = keyEventUtil;
-	}
+public record InputEventDistributor(MouseEventUtil mouseEventUtil,
+									KeyEventUtil keyEventUtil) implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {

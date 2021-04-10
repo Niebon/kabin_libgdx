@@ -37,7 +37,7 @@ public class CollisionTile extends CollisionEntity {
      */
     public CollisionTile(EntityParameters parameters) {
         super(parameters);
-        tile = Tile.valueOf(parameters.<String>getMaybe(TILE).orElseThrow());
+        tile = parameters.getMaybe(TILE, Tile.class).orElseThrow();
         final Optional<AbstractAnimationPlaybackLibgdx<Tile>> animationPlaybackImpl = Optional.ofNullable(getAnimationPlaybackImpl(Tile.class));
         animationPlaybackImpl.ifPresent(a -> a.setCurrentAnimation(tile));
         index = animationPlaybackImpl
@@ -71,8 +71,7 @@ public class CollisionTile extends CollisionEntity {
     public void updateGraphics(GraphicsParametersLibgdx params) {
         final AbstractAnimationPlaybackLibgdx<Tile> animationPlaybackImpl = getAnimationPlaybackImpl(Tile.class);
         if (animationPlaybackImpl != null) {
-            animationPlaybackImpl.setX(getX() - getPixelMassCenterX() * getScale());
-            animationPlaybackImpl.setY(getY() - (getPixelMassCenterY() - 1) * getScale());
+            animationPlaybackImpl.setPos(getX() - getPixelMassCenterX() * getScale(), getY() - (getPixelMassCenterY() - 1) * getScale());
             animationPlaybackImpl.setScale(getScale() * 1.01f);
             animationPlaybackImpl.setCurrentAnimation(tile);
             animationPlaybackImpl.renderFrameByIndex(params, index);

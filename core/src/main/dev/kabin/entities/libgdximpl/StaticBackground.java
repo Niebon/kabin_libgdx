@@ -14,11 +14,6 @@ public class StaticBackground extends AbstractLibgdxEntity {
     }
 
     @Override
-    public boolean touchDown(int button) {
-        return false;
-    }
-
-    @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
         final var animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl != null) {

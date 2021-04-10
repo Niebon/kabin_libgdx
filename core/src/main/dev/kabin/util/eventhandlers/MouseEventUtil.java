@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseButton> {
 
-    private static final Logger LOGGER = Logger.getLogger(EnumWithBoolHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
     private final List<EventListener> changeListeners = new ArrayList<>();
     private final Map<MouseButton, Boolean> currentMouseStates = new EnumMap<>(MouseButton.class);
@@ -23,16 +23,16 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
     private final List<EventListener> defaultListeners = new ArrayList<>();
     private final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
-    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier;
     private final FloatSupplier camPosX;
 	private final FloatSupplier camPosY;
 	private float xRelativeToWorld, yRelativeToWorld;
     private float xRelativeToUI, yRelativeToUI;
     private final FloatSupplier scale;
 
-    public MouseEventUtil(Supplier<WorldRepresentation> worldRepresentationSupplier,
-						  FloatSupplier camPosX,
-						  FloatSupplier camPosY,
+    public MouseEventUtil(Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier,
+                          FloatSupplier camPosX,
+                          FloatSupplier camPosY,
                           FloatSupplier scale) {
         initUnmodifiableListeners();
         this.worldRepresentationSupplier = worldRepresentationSupplier;
@@ -76,11 +76,11 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
             addListener(b, false, () -> dragStart.remove(b));
         }
 
-        addListener(MouseButton.LEFT, true, () -> LOGGER.warning(this::infoCurrentHover));
+        addListener(MouseButton.LEFT, true, () -> logger.warning(this::infoCurrentHover));
     }
 
     private String infoCurrentHover() {
-        var worldState = worldRepresentationSupplier.get();
+        final WorldRepresentation<?, ?> worldState = worldRepresentationSupplier.get();
         return "Info found about point: \n" +
                 "mouseRelToWorld: " + getPositionRelativeToWorld() + "\n" +
                 "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleBy(1 / scale.get()).toPointInt() + "\n" +
@@ -102,7 +102,7 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
         xRelativeToWorld = x + offsetX;
         yRelativeToWorld = Functions.transformY(y, MainGame.screenHeight) + offsetY;
-        LOGGER.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
+        logger.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }
 

@@ -2,7 +2,6 @@ package dev.kabin.util.points;
 
 import dev.kabin.util.HashCodeUtil;
 import dev.kabin.util.functioninterfaces.FloatToFloatFunction;
-import dev.kabin.util.functioninterfaces.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -60,8 +59,7 @@ public final class ModifiablePointFloat implements PointFloat {
 	@Override
 	final public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof PointFloat)) return false;
-		PointFloat that = (PointFloat) o;
+		if (!(o instanceof PointFloat that)) return false;
 		return x == that.x() &&
 				y == that.y();
 	}
@@ -77,15 +75,6 @@ public final class ModifiablePointFloat implements PointFloat {
 				"x=" + x +
 				", y=" + y +
 				'}';
-	}
-
-	public PointOldDouble toPointDouble(double scale) {
-		return PointOld.of(x * scale, y * scale);
-	}
-
-	public PointOldDouble toPointDouble() {
-		//noinspection RedundantCast: I'd rather have the code look symmetric and look at a silly warning to remove one of the casts.
-		return PointOld.of((double) x, (double) y);
 	}
 
 	public ModifiablePointFloat translate(@NotNull ModifiablePointFloat amount) {

@@ -114,11 +114,12 @@ public class CollisionPool {
                                 && !((0xFF & (bufferedImage.getRGB(i, j - 1) >> 24)) > 0);
                     }
                 } else pointOfPath = false;
+                final ImmutablePointInt immutablePointInt = new ImmutablePointInt(i - x, j - y);
                 if (collision) {
-                    pathIndexPairToCollisionProfile.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
+                    pathIndexPairToCollisionProfile.get(path).get(index).add(immutablePointInt);
                 }
                 if (pointOfPath) {
-                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(new ImmutablePointInt(i - x, j - y));
+                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(immutablePointInt);
                 }
             }
         }

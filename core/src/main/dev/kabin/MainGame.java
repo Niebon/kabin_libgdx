@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
@@ -19,6 +19,7 @@ import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
+import dev.kabin.shaders.LightSourceShader;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
@@ -63,6 +64,10 @@ public class MainGame extends ApplicationAdapter {
     private CameraWrapper camera;
     private ImageMetadataPoolLibgdx imageAnalysisPool;
     private Stage stage;
+
+
+    public static ShaderProgram lightSourceShaders;
+
 
     /**
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
@@ -117,20 +122,25 @@ public class MainGame extends ApplicationAdapter {
     public void create() {
         textureAtlas = new TextureAtlas("textures.atlas");
         imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage();
 
 
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
 
-        InputMultiplexer imp = new InputMultiplexer();
-        imp.setProcessors(inputProcessor, stage);
-        Gdx.input.setInputProcessor(imp);
+        {
+            final InputMultiplexer imp = new InputMultiplexer();
+            imp.setProcessors(inputProcessor, stage);
+            Gdx.input.setInputProcessor(imp);
+        }
+
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
         spriteBatch = new SpriteBatch();
 
+
+        lightSourceShaders = LightSourceShader.make();
 
         camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         threadHandler.reload();
@@ -174,6 +184,8 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
+        spriteBatch.begin();
+        spriteBatch.setShader(lightSourceShaders);
 
 
         // Render physics
@@ -206,17 +218,19 @@ public class MainGame extends ApplicationAdapter {
             );
         }
 
+        spriteBatch.setShader(null);
+
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
         //System.out.println(bundle.getCurrentImageAssetPath());
 
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
         stage.act(stateTime);
+        spriteBatch.end();
         stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
         //DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);
-
 
     }
 
@@ -234,14 +248,11 @@ public class MainGame extends ApplicationAdapter {
         return imageAnalysisPool;
     }
 
-    static class GraphicsParametersImpl implements GraphicsParametersLibgdx {
-
-        @NotNull
-        private final SpriteBatch spriteBatch;
-        private final float stateTime, scale, screenWidth, screenHeight;
-        @NotNull
-        private final Camera camera;
-        private final Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood;
+    record GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
+                                  @NotNull Camera camera,
+                                  Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood,
+                                  float stateTime, float scale, float screenWidth,
+                                  float screenHeight) implements GraphicsParametersLibgdx {
 
         GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
                                @NotNull Camera camera,
@@ -259,7 +270,8 @@ public class MainGame extends ApplicationAdapter {
         }
 
         @Override
-        public @NotNull SpriteBatch getBatch() {
+        public @NotNull
+        SpriteBatch getBatch() {
             return spriteBatch;
         }
 
@@ -291,11 +303,6 @@ public class MainGame extends ApplicationAdapter {
         @Override
         public float getScale() {
             return scale;
-        }
-
-        @Override
-        public Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood() {
-            return forEachEntityInCameraNeighborhood;
         }
 
     }

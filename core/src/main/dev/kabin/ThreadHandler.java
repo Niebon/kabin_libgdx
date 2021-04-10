@@ -17,13 +17,13 @@ public class ThreadHandler {
     // A lock for order sensitive operations.
     private final Object threadLock = new Object();
     private final Logger logger = Logger.getLogger(ThreadHandler.class.getName());
-    private final Supplier<WorldRepresentation> worldRepresentationSupplier;
+    private final Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier;
     private final Supplier<RectInt> camNbd;
     private final Supplier<DeveloperUI> developerUISupplier;
     private final BooleanSupplier devMod;
     private ScheduledExecutorService periodicBackgroundTasks;
 
-    public ThreadHandler(Supplier<WorldRepresentation> worldRepresentationSupplier,
+    public ThreadHandler(Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier,
                          Supplier<RectInt> camNbd,
                          Supplier<DeveloperUI> developerUISupplier,
                          BooleanSupplier devMod) {
@@ -57,7 +57,7 @@ public class ThreadHandler {
     private void handle() {
         synchronized (threadLock) {
             // Load & unload data.
-            final WorldRepresentation worldRepresentation = worldRepresentationSupplier.get();
+            final WorldRepresentation<?, ?> worldRepresentation = worldRepresentationSupplier.get();
             if (worldRepresentation == null) return;
 
             worldRepresentation.registerEntityWhereabouts(camNbd.get());

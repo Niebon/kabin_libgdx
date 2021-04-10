@@ -81,30 +81,30 @@ public class Component implements Id {
 
         // Early exit.
         if (!parameters.hasSubcomponents()) {
-            throw new IllegalArgumentException("Received invalid parameters: " + parameters.toString());
+            throw new IllegalArgumentException("Received invalid parameters: " + parameters);
         }
 
-        underlyingRectInt = new ImmutableRectInt(parameters.getX(), parameters.getY(), parameters.getWidth() - 1,
-                parameters.getHeight() - 1);
-        scaleFactor = parameters.getScaleFactor();
+        underlyingRectInt = new ImmutableRectInt(parameters.x(), parameters.y(), parameters.width() - 1,
+                parameters.height() - 1);
+        scaleFactor = parameters.scaleFactor();
         underlyingRectFloat = new RectFloat(
-                parameters.getX() * scaleFactor,
-                parameters.getY() * scaleFactor,
-                parameters.getWidth() * scaleFactor,
-                parameters.getHeight() * scaleFactor
+                parameters.x() * scaleFactor,
+                parameters.y() * scaleFactor,
+                parameters.width() * scaleFactor,
+                parameters.height() * scaleFactor
         );
-        minX = parameters.getX();
-        minY = parameters.getY();
+        minX = parameters.x();
+        minY = parameters.y();
 
         this.parameters = parameters;
 
         final List<ComponentParameters> componentParametersList = IntStream.range(0, 4).mapToObj(
                 integer -> ComponentParameters
                         .builder()
-                        .setX(parameters.getX() + COMPONENT_INDEX_TO_X_MAPPING.apply(integer) * parameters.getWidth() / 2)
-                        .setY(parameters.getY() + COMPONENT_INDEX_TO_Y_MAPPING.apply(integer) * parameters.getHeight() / 2)
-                        .setWidth(parameters.getWidth() / 2)
-                        .setHeight(parameters.getHeight() / 2)
+                        .setX(parameters.x() + COMPONENT_INDEX_TO_X_MAPPING.apply(integer) * parameters.width() / 2)
+                        .setY(parameters.y() + COMPONENT_INDEX_TO_Y_MAPPING.apply(integer) * parameters.height() / 2)
+                        .setWidth(parameters.width() / 2)
+                        .setHeight(parameters.height() / 2)
                         .setScaleFactor(scaleFactor)
                         .build()
         ).collect(Collectors.toList());
@@ -116,8 +116,8 @@ public class Component implements Id {
                     .map(Component::new)
                     .toArray(Component[]::new);
 
-            final int midPointX = minX + parameters.getWidth() / 2;
-            final int midPointY = minY + parameters.getHeight() / 2;
+            final int midPointX = minX + parameters.width() / 2;
+            final int midPointY = minY + parameters.height() / 2;
 
             // Glue functions together on boundaries:
             for (Data key : Data.values()) {
@@ -229,19 +229,19 @@ public class Component implements Id {
     }
 
     public int getPositionX() {
-        return parameters.getX();
+        return parameters.x();
     }
 
     public int getPositionY() {
-        return parameters.getY();
+        return parameters.y();
     }
 
     public int getWidth() {
-        return parameters.getWidth();
+        return parameters.width();
     }
 
     public int getHeight() {
-        return parameters.getHeight();
+        return parameters.height();
     }
 
     public RectFloat getUnderlyingRectFloat() {
