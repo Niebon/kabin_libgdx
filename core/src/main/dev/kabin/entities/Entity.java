@@ -105,19 +105,19 @@ public interface Entity<
     }
 
     default int getRootIntX() {
-        return getUnscaledX() - getMetadata().getPixelMassCenterXInt();
+        return getUnscaledX() - Math.round(getAvgMassCenterX());
     }
 
     default int getRootIntY() {
-        return getUnscaledY() - getMetadata().getLowestPixel();
+        return getUnscaledY() - (getAvgLowestPixel() - 2);
     }
 
     default float getRootX() {
-        return getX() - getPixelMassCenterX() * getScale();
+        return getX() - getAvgMassCenterX() * getScale();
     }
 
     default float getRootY() {
-        return getY() - (getLowestPixel() - 2) * getScale();
+        return getY() - (getAvgLowestPixel() - 2) * getScale();
     }
 
     RectIntView graphicsNbd();
@@ -125,6 +125,12 @@ public interface Entity<
     RectIntView positionNbd();
 
     int getMaxPixelHeight();
+
+    int getAvgLowestPixel();
+
+    float getAvgMassCenterX();
+
+    float getAvgMassCenterY();
 
 
 }

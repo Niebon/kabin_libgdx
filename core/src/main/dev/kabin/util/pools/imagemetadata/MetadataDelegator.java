@@ -7,54 +7,54 @@ package dev.kabin.util.pools.imagemetadata;
  */
 public interface MetadataDelegator {
 
-    ImageMetadata getMetadata();
+    ImageMetadata getImageMetadata();
 
     default int getPixelsX() {
-        return getMetadata().getPixelsX();
+        return getImageMetadata().getPixelsX();
     }
 
     default int getPixelsY() {
-        return getMetadata().getPixelsY();
+        return getImageMetadata().getPixelsY();
     }
 
     default int getLowestPixel() {
-        return getMetadata().getLowestPixel();
+        return getImageMetadata().getLowestPixel();
     }
 
     default int getHighestPixel() {
-        return getMetadata().getHighestPixel();
+        return getImageMetadata().getHighestPixel();
     }
 
     default int getLeftmostPixel() {
-        return getMetadata().getLeftmostPixel();
+        return getImageMetadata().getLeftmostPixel();
     }
 
     default int getRightmostPixel() {
-        return getMetadata().getRightmostPixel();
+        return getImageMetadata().getRightmostPixel();
     }
 
     default float getPixelMassCenterX() {
-        return getMetadata().getPixelMassCenterX();
+        return getImageMetadata().getPixelMassCenterX();
     }
 
     default float getPixelMassCenterY() {
-        return getMetadata().getPixelMassCenterY();
+        return getImageMetadata().getPixelMassCenterY();
     }
 
     default int getLowestPixelFromAbove() {
-        return getMetadata().getLowestPixelFromAbove();
+        return getImageMetadata().getLowestPixelFromAbove();
     }
 
     default int getHighestPixelFromBelow() {
-        return getMetadata().getHighestPixelFromBelow();
+        return getImageMetadata().getHighestPixelFromBelow();
     }
 
     default int getPixelHeight() {
-        return getMetadata().getPixelHeight();
+        return getImageMetadata().getPixelHeight();
     }
 
     default int getPixelWidth() {
-        return getMetadata().getPixelWidth();
+        return getImageMetadata().getPixelWidth();
     }
 
 }

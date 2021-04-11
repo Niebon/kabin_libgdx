@@ -83,6 +83,13 @@ public interface AnimationPlayback<
      */
     int getMaxPixelHeight();
 
+    int getAvgLowestPixel();
+
+    float getAvgMassCenterX();
+
+    float getAvgMassCenterY();
+
+
     /**
      * Return metadata associated with the given constant.
      *

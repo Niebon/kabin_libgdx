@@ -67,10 +67,9 @@ public class MainGame extends ApplicationAdapter {
     // Private data:
     private float scaleFactor = 1.0f;
     private TextureAtlas textureAtlas;
-    private SpriteBatch spriteBatchShaded;
+    private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
     private ShaderProgram lightShader;
-
 
     /**
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
@@ -121,7 +120,6 @@ public class MainGame extends ApplicationAdapter {
         imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
         stage = new Stage();
 
-
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
@@ -134,7 +132,7 @@ public class MainGame extends ApplicationAdapter {
 
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
-        spriteBatchShaded = new SpriteBatch();
+        spriteBatch = new SpriteBatch();
 
         camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         threadHandler.reload();
@@ -156,6 +154,10 @@ public class MainGame extends ApplicationAdapter {
             shaderProgramMap.put(EntityGroup.STATIC_BACKGROUND, ambientShader);
             shaderProgramMap.put(EntityGroup.GROUND, ambientShader);
         }
+
+        //textureAtlas.getTextures().forEach(t -> t.setFilter(Texture.TextureFilter.Nearest , Texture.TextureFilter.Nearest ));
+
+
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -208,13 +210,11 @@ public class MainGame extends ApplicationAdapter {
 
         updateCamera(camera);
 
-        // Shading
-        // Pixmap p = new Pixmap(new byte[0], 0, 0);
 
+        spriteBatch.setProjectionMatrix(camera.getCamera().combined);
 
-        spriteBatchShaded.setProjectionMatrix(camera.getCamera().combined);
-
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
         // Render graphics
         if (worldRepresentation != null) {
@@ -225,7 +225,7 @@ public class MainGame extends ApplicationAdapter {
             ));
             prg.setUniformf("r02", 100f);
 
-            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatchShaded,
+            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
                     timeSinceLastFrame,
@@ -244,9 +244,12 @@ public class MainGame extends ApplicationAdapter {
 
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
         stage.act(timeSinceLastFrame);
+
+
         stage.draw();
 
-        //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
+
+        //DebugUtil.renderEachCollisionPoint(worldRepresentation::isCollisionAt, camera.currentCameraBounds, scaleFactor);
         //DebugUtil.renderEachRoot(shapeRenderer, currentCameraBounds, scaleFactor);
 
     }
@@ -254,7 +257,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         super.dispose();
-        spriteBatchShaded.dispose();
+        spriteBatch.dispose();
     }
 
     protected RectInt getCamBounds() {

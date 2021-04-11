@@ -25,6 +25,7 @@ public class DeveloperLauncher {
         settings.paddingX = 1;
         settings.paddingY = 1;
         settings.edgePadding = true;
+
         TexturePacker.process(settings, "core/assets/raw_textures", "./core/assets/", "textures");
 
         application = new LwjglApplication(new MainGameDeveloper(), config);

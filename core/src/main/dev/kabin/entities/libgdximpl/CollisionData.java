@@ -38,8 +38,8 @@ public interface CollisionData extends MetadataDelegator {
             double angleRad = angleRad();
             double cs = Math.cos(angleRad);
             double sn = Math.sin(angleRad);
-            int pixelMassCenterX = getMetadata().getPixelMassCenterXInt();
-            int pixelMassCenterY = getMetadata().getPixelMassCenterYInt();
+            int pixelMassCenterX = getImageMetadata().getPixelMassCenterXInt();
+            int pixelMassCenterY = getImageMetadata().getPixelMassCenterYInt();
 
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = profile.size(); i < n; i++) {

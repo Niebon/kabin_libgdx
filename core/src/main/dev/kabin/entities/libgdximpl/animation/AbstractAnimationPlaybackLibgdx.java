@@ -44,6 +44,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private ShaderProgram shaderProgram;
     private float scale;
     private float stateTime = 0f;
+    private final float avgMassCenterY;
+    private final float avgMassCenterX;
+    private final int avgLowestPixel;
 
     AbstractAnimationPlaybackLibgdx(
             ImageAnalysisSupplier imageAnalysisSupplier,
@@ -77,11 +80,42 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
                 .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
                 .mapToInt(ImageMetadata::getPixelHeight)
                 .max().orElse(0);
+
+        avgMassCenterX = (float) Arrays.stream(regions.items)
+                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .mapToDouble(ImageMetadata::getPixelMassCenterX)
+                .average().orElse(0);
+
+        avgMassCenterY = (float) Arrays.stream(regions.items)
+                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .mapToDouble(ImageMetadata::getPixelMassCenterY)
+                .average().orElse(0);
+
+
+        avgLowestPixel = (int) Arrays.stream(regions.items)
+                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .mapToInt(ImageMetadata::getLowestPixel)
+                .average().orElse(0);
     }
 
     @Override
     public int getMaxPixelHeight() {
         return maxPixelHeight;
+    }
+
+    @Override
+    public int getAvgLowestPixel() {
+        return avgLowestPixel;
+    }
+
+    @Override
+    public float getAvgMassCenterX() {
+        return avgMassCenterX;
+    }
+
+    @Override
+    public float getAvgMassCenterY() {
+        return avgMassCenterY;
     }
 
     public int getCurrentAnimationLength() {

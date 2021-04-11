@@ -148,6 +148,7 @@ public class Player extends EntitySimple {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
+        System.out.println(getAvgLowestPixel());
         final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl(Animate.class);
         if (animationPlaybackImpl == null) return;
 

@@ -192,7 +192,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public ImageMetadata getMetadata() {
+    public ImageMetadata getImageMetadata() {
         return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageMetadataLibgdx.emptyAnalysis();
     }
 
@@ -239,5 +239,21 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     @Override
     public int getMaxPixelHeight() {
         return animationPlaybackImpl.getMaxPixelHeight();
+    }
+
+    @Override
+    public int getAvgLowestPixel() {
+        return animationPlaybackImpl.getAvgLowestPixel();
+    }
+
+
+    @Override
+    public float getAvgMassCenterX() {
+        return animationPlaybackImpl.getAvgMassCenterX();
+    }
+
+    @Override
+    public float getAvgMassCenterY() {
+        return animationPlaybackImpl.getAvgMassCenterY();
     }
 }

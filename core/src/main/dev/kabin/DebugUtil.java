@@ -17,9 +17,9 @@ public class DebugUtil {
      */
     static void renderEachCollisionPoint(
             @NotNull BiIntPredicate collisionPredicate,
-            @NotNull ShapeRenderer renderer,
             @NotNull MutableRectInt currentCameraBounds,
             float scaleFactor) {
+        ShapeRenderer renderer = new ShapeRenderer();
         for (int i = currentCameraBounds.getMinX(); i < currentCameraBounds.getMaxX(); i++) {
             for (int j = currentCameraBounds.getMinY(); j < currentCameraBounds.getMaxY(); j++) {
                 if (collisionPredicate.test(i, j)) {
