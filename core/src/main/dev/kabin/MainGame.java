@@ -67,7 +67,6 @@ public class MainGame extends ApplicationAdapter {
     // Private data:
     private float scaleFactor = 1.0f;
     private TextureAtlas textureAtlas;
-    private float stateTime = 0f;
     private SpriteBatch spriteBatchShaded;
     private ShaderProgram ambientShader;
     private ShaderProgram lightShader;
@@ -102,9 +101,6 @@ public class MainGame extends ApplicationAdapter {
         return worldRepresentation;
     }
 
-    protected float getStateTime() {
-        return stateTime;
-    }
 
     protected void synchronizer(Runnable r) {
         threadHandler.synchronize(r);
@@ -198,14 +194,16 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
+        final float timeSinceLastFrame = Gdx.graphics.getDeltaTime();
+
         ambientShader.bind();
         lightShader.bind();
-        stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
 
         // Render physics
         if (worldRepresentation != null) {
             final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil);
-            PhysicsEngine.renderOutstandingFrames(stateTime, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+
+            PhysicsEngine.renderOutstandingFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
         updateCamera(camera);
@@ -230,7 +228,7 @@ public class MainGame extends ApplicationAdapter {
             final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatchShaded,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
-                    stateTime,
+                    timeSinceLastFrame,
                     scaleFactor,
                     screenWidth,
                     screenHeight,
@@ -245,7 +243,7 @@ public class MainGame extends ApplicationAdapter {
         //System.out.println(bundle.getCurrentImageAssetPath());
 
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
-        stage.act(stateTime);
+        stage.act(timeSinceLastFrame);
         stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
@@ -270,7 +268,7 @@ public class MainGame extends ApplicationAdapter {
     record GraphicsParametersImpl(@NotNull SpriteBatch batch,
                                   @NotNull Camera camera,
                                   @NotNull Consumer<@NotNull Consumer<@NotNull EntityLibgdx>> forEachEntityInCameraNeighborhood,
-                                  float stateTime,
+                                  float timeElapsedSinceLastFrame,
                                   float scale,
                                   float screenWidth,
                                   float screenHeight,

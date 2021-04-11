@@ -56,6 +56,7 @@ public class Player extends EntitySimple {
     private boolean facingRight;
     private boolean onLadder;
     private boolean running;
+    private int debugCounter;
 
     Player(EntityParameters parameters) {
         super(parameters);
@@ -151,6 +152,8 @@ public class Player extends EntitySimple {
         if (animationPlaybackImpl == null) return;
 
         facingRight = (r == l) ? facingRight : (r == 1 && l == 0);
+
+        debugCounter++;
 
         // If in air
         if (inAir || jumpCooldown < 0.5) {

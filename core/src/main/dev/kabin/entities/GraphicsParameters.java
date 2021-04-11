@@ -5,7 +5,7 @@ package dev.kabin.entities;
  */
 public interface GraphicsParameters {
 
-    float stateTime();
+    float timeElapsedSinceLastFrame();
 
     float screenWidth();
 

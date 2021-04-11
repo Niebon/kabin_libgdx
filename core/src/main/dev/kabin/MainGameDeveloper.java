@@ -91,7 +91,7 @@ public class MainGameDeveloper extends MainGame {
             developerUI.render(new GraphicsParametersImpl(developerUISpriteBatch,
                     getCameraWrapper().getCamera(),
                     worldRepresentation::forEachEntityInCameraNeighborhood,
-                    getStateTime(),
+                    Gdx.graphics.getDeltaTime(),
                     getScale(),
                     screenWidth,
                     screenHeight,

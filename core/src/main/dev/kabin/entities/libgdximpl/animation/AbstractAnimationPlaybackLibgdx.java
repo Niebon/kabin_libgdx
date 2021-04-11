@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @param <AnimationType>
+ * @param <T> an enum that classifies the animations that can be played by this animation playback.
  */
-public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum<AnimationType>>
-        implements AnimationPlaybackLibgdx<AnimationType>,
+public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
+        implements AnimationPlaybackLibgdx<T>,
         Disposable {
 
     // Constants:
@@ -30,25 +30,26 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
 
     // Class fields:
     private final int width, height;
-    private final Map<AnimationType, Animation<TextureAtlas.AtlasRegion>> animationsMap;
+    private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final Array<TextureAtlas.AtlasRegion> regions;
     private final IntToIntFunction animationClassIndexToAnimationLength;
-    private final Map<AnimationType, int[]> animationBlueprint;
+    private final Map<T, int[]> animationBlueprint;
     private final int maxPixelHeight;
     private final ImageAnalysisSupplier imageAnalysisSupplier;
 
     // Class variables:
-    private AnimationType currentAnimationEnum;
+    private T currentAnimation;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private WeightedAverage2D weightedAverage2D;
     private ShaderProgram shaderProgram;
     private float scale;
+    private float stateTime = 0f;
 
     AbstractAnimationPlaybackLibgdx(
             ImageAnalysisSupplier imageAnalysisSupplier,
             Array<TextureAtlas.AtlasRegion> regions,
-            Map<AnimationType, int[]> animationBlueprint,
-            Class<AnimationType> enumClass
+            Map<T, int[]> animationBlueprint,
+            Class<T> enumClass
     ) {
         this.imageAnalysisSupplier = imageAnalysisSupplier;
         if (regions.isEmpty()) {
@@ -67,7 +68,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         width = regions.get(0).originalWidth;
         height = regions.get(0).originalHeight;
         cachedTextureRegion = regions.get(0);
-        currentAnimationEnum = enumClass.getEnumConstants()[0];
+        currentAnimation = enumClass.getEnumConstants()[0];
         animationClassIndexToAnimationLength = new IntToIntFunction(enumClass.getEnumConstants().length);
         weightedAverage2D = new WeightedAverage2D(0.5f);
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
@@ -84,12 +85,12 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     }
 
     public int getCurrentAnimationLength() {
-        return animationClassIndexToAnimationLength.eval(currentAnimationEnum.ordinal());
+        return animationClassIndexToAnimationLength.eval(currentAnimation.ordinal());
     }
 
     @Override
-    public AnimationType getCurrentAnimation() {
-        return currentAnimationEnum;
+    public T getCurrentAnimation() {
+        return currentAnimation;
     }
 
     public void setShaderProgram(ShaderProgram shaderProgram) {
@@ -115,12 +116,14 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     }
 
     @Override
-    public void setCurrentAnimation(AnimationType animationEnum) {
-        this.currentAnimationEnum = animationEnum;
+    public void setCurrentAnimation(T animation) {
+        if (animation != currentAnimation) {
+            stateTime = 0f;
+            currentAnimation = animation;
+        }
         if (regions != null && animationBlueprint != null) {
-            final AnimationType currentAnimationClass = this.currentAnimationEnum;
-            if (animationBlueprint.containsKey(currentAnimationClass)) {
-                cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[0]);
+            if (animationBlueprint.containsKey(currentAnimation)) {
+                cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimation)[0]);
             } else {
                 cachedTextureRegion = regions.get(0);
             }
@@ -129,9 +132,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
 
     @Override
     public void renderNextAnimationFrame(GraphicsParametersLibgdx params) {
-        float stateTime = params.stateTime();
+        stateTime += params.timeElapsedSinceLastFrame();
 
-        final AnimationType currentAnimation = this.currentAnimationEnum;
         if (!animationsMap.containsKey(currentAnimation)) {
             return;
         }
@@ -144,7 +146,10 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         if (!animationMetadata.isLastFrameRepeating() &&
                 !animationMetadata.isLooping() &&
                 animationsMap.get(currentAnimation).isAnimationFinished(stateTime)) {
-            this.currentAnimationEnum = toDefaultAnimation(currentAnimation);
+
+            // The method setCurrentAnimation should be used, rather than updating the variable directly, since
+            // it resets the state time of this instance.
+            setCurrentAnimation(toDefaultAnimation(currentAnimation));
         }
 
         final SpriteBatch batch = params.batch();
@@ -156,8 +161,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
 
     @Override
     public void renderFrameByIndex(GraphicsParametersLibgdx params, int index) {
-        final AnimationType currentAnimationClass = this.currentAnimationEnum;
-        cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
+        stateTime = 0f;
+        cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimation)[index]);
 
         final SpriteBatch batch = params.batch();
         batch.setShader(shaderProgram);
@@ -234,6 +239,6 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         regions.forEach(r -> r.getTexture().dispose());
     }
 
-    public abstract Class<AnimationType> getAnimationClass();
+    public abstract Class<T> getAnimationClass();
 
 }
