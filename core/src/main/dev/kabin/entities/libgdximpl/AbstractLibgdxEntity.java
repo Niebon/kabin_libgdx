@@ -96,20 +96,22 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
-        setScale(params.getScale());
+        setScale(params.scale());
 
         final float graphicsRootX = getRootX();
         final float graphicsRootY = getRootY();
 
 
         animationPlaybackImpl.setPos(graphicsRootX, graphicsRootY);
-        animationPlaybackImpl.setScale(params.getScale());
+        animationPlaybackImpl.setScale(params.scale());
+        // Sets the canonical shader for the group of this.
+        animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
         animationPlaybackImpl.renderNextAnimationFrame(params);
 
         // Configure actor.
         {
-            final float offsetX = params.getCamX() - params.getScreenWidth() * 0.5f;
-            final float offsetY = params.getCamY() - params.getScreenHeight() * 0.5f;
+            final float offsetX = params.camX() - params.screenWidth() * 0.5f;
+            final float offsetY = params.camY() - params.screenHeight() * 0.5f;
             final float x = graphicsRootX - offsetX;
             final float y = graphicsRootY - offsetY;
             actor.setBounds(

@@ -126,6 +126,7 @@ public class DeveloperUI {
                 scale,
                 camBounds,
                 worldRepresentationSupplier,
+                imageAnalysisPoolSupplier,
                 synchronizer
         );
 

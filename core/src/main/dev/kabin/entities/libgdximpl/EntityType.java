@@ -24,7 +24,7 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
      *
      * @see Tile
      */
-    COLLISION_TILE(CollisionTile::new, EntityGroup.FOREGROUND, Tile.class),
+    COLLISION_TILE(CollisionTile::new, EntityGroup.GROUND, Tile.class),
     //COLLISION_ENTITY_MOVABLE(CollisionEntityMovable::new, CollisionEntityMovable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //COLLISION_ENTITY_THROWABLE(CollisionEntityThrowable::new, CollisionEntityThrowable::new, EntityGroupProvider.Type.FOCAL_POINT),
     //ENTITY_BACKGROUND(EntityBackground::new, EntityBackground::newFromMouseClick, EntityGroupProvider.Type.BACKGROUND),

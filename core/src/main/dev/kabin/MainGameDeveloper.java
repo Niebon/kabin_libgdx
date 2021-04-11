@@ -28,7 +28,7 @@ public class MainGameDeveloper extends MainGame {
             final JSONObject session = new JSONObject(Files.readString(Path.of(devSessionData)));
             final String pathToWorld = GlobalData.WORLDS_PATH + session.getString("world");
             worldRepresentation = Serializer.loadWorldState(getStage(),
-                    getTextureAtlas(),
+                    getTextureAtlasShaded(),
                     getImageAnalysisPool(),
                     new JSONObject(Files.readString(Path.of(pathToWorld))),
                     getScale());
@@ -46,7 +46,7 @@ public class MainGameDeveloper extends MainGame {
                 this::getWorldRepresentation,
                 this::getMouseEventUtil,
                 this::getKeyEventUtil,
-                this::getTextureAtlas,
+                this::getTextureAtlasShaded,
                 this.getCameraWrapper()::getCameraX,
                 this.getCameraWrapper()::getCameraY,
                 this::getCamBounds,
@@ -84,19 +84,19 @@ public class MainGameDeveloper extends MainGame {
 
         super.render();
 
-        developerUISpriteBatch.begin();
         // Render interface:
         if (isDeveloperMode()) {
             developerUI.updatePositionsOfDraggedEntities();
+            developerUISpriteBatch.setShader(null);
             developerUI.render(new GraphicsParametersImpl(developerUISpriteBatch,
                     getCameraWrapper().getCamera(),
                     worldRepresentation::forEachEntityInCameraNeighborhood,
                     getStateTime(),
                     getScale(),
                     screenWidth,
-                    screenHeight));
+                    screenHeight,
+                    shaderProgramMap));
         }
-        developerUISpriteBatch.end();
     }
 
     @Override

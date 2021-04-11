@@ -74,6 +74,7 @@ public class CollisionTile extends CollisionEntity {
             animationPlaybackImpl.setPos(getX() - getPixelMassCenterX() * getScale(), getY() - (getPixelMassCenterY() - 1) * getScale());
             animationPlaybackImpl.setScale(getScale() * 1.01f);
             animationPlaybackImpl.setCurrentAnimation(tile);
+            animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
             animationPlaybackImpl.renderFrameByIndex(params, index);
             actor().setBounds(
                     getX(), getY(),
@@ -82,6 +83,7 @@ public class CollisionTile extends CollisionEntity {
             );
         }
     }
+
 
     @Override
     public void setX(float x) {

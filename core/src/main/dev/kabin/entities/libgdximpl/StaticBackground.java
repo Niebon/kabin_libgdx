@@ -18,11 +18,12 @@ public class StaticBackground extends AbstractLibgdxEntity {
         final var animationPlaybackImpl = getAnimationPlaybackImpl();
         if (animationPlaybackImpl != null) {
             animationPlaybackImpl.setPos(
-                    params.getCamX() - 0.5f * params.getScreenWidth(),
-                    params.getCamY() - 0.5f * params.getScreenHeight()
+                    params.camX() - 0.5f * params.screenWidth(),
+                    params.camY() - 0.5f * params.screenHeight()
             );
+            animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
             animationPlaybackImpl.renderNextAnimationFrame(params);
-            animationPlaybackImpl.setScale(params.getScale());
+            animationPlaybackImpl.setScale(params.scale());
         }
     }
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.PhysicsParameters;
@@ -19,7 +20,7 @@ import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
-import dev.kabin.shaders.LightSourceShader;
+import dev.kabin.shaders.ShaderFactory;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
@@ -30,6 +31,8 @@ import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -47,6 +50,7 @@ public class MainGame extends ApplicationAdapter {
     // Private fields:
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
+    protected final Map<EntityGroup, ShaderProgram> shaderProgramMap = new EnumMap<>(EntityGroup.class);
     private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
     private final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
     private final EventTriggerController eventTriggerController = new EventTriggerController(
@@ -57,16 +61,16 @@ public class MainGame extends ApplicationAdapter {
             Functions::getNull,
             this::getScale
     );
-
-
-    // Private data:
-    private float scaleFactor = 1.0f;
     private CameraWrapper camera;
     private ImageMetadataPoolLibgdx imageAnalysisPool;
     private Stage stage;
-
-
-    public static ShaderProgram lightSourceShaders;
+    // Private data:
+    private float scaleFactor = 1.0f;
+    private TextureAtlas textureAtlas;
+    private float stateTime = 0f;
+    private SpriteBatch spriteBatchShaded;
+    private ShaderProgram ambientShader;
+    private ShaderProgram lightShader;
 
 
     /**
@@ -93,9 +97,6 @@ public class MainGame extends ApplicationAdapter {
         return stage;
     }
 
-    private TextureAtlas textureAtlas;
-    private float stateTime = 0f;
-    private SpriteBatch spriteBatch;
 
     protected WorldRepresentation<EntityGroup, EntityLibgdx> getWorldRepresentation() {
         return worldRepresentation;
@@ -137,14 +138,28 @@ public class MainGame extends ApplicationAdapter {
 
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
-        spriteBatch = new SpriteBatch();
-
-
-        lightSourceShaders = LightSourceShader.make();
+        spriteBatchShaded = new SpriteBatch();
 
         camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         threadHandler.reload();
         Player.getInstance().ifPresent(p -> p.setHandleInput(true));
+
+
+        {
+            ambientShader = ShaderFactory.ambientShader();
+            lightShader = ShaderFactory.lightSourceShader();
+
+
+//            shaderProgramMap.put(EntityGroup.BACKGROUND, ShaderFactory.ambientShader());
+//            shaderProgramMap.put(EntityGroup.BACKGROUND_LAYER_2, ShaderFactory.ambientShader());
+//            shaderProgramMap.put(EntityGroup.SKY, null);
+//            shaderProgramMap.put(EntityGroup.CLOUDS, null);
+//            shaderProgramMap.put(EntityGroup.CLOUDS_LAYER_2, null);
+            shaderProgramMap.put(EntityGroup.FOCAL_POINT, lightShader);
+//            shaderProgramMap.put(EntityGroup.FOREGROUND, ShaderFactory.lightSourceShader());
+            shaderProgramMap.put(EntityGroup.STATIC_BACKGROUND, ambientShader);
+            shaderProgramMap.put(EntityGroup.GROUND, ambientShader);
+        }
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -155,7 +170,7 @@ public class MainGame extends ApplicationAdapter {
         return mouseEventUtil;
     }
 
-    protected TextureAtlas getTextureAtlas() {
+    protected TextureAtlas getTextureAtlasShaded() {
         return textureAtlas;
     }
 
@@ -183,10 +198,9 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
+        ambientShader.bind();
+        lightShader.bind();
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time.
-        spriteBatch.begin();
-        spriteBatch.setShader(lightSourceShaders);
-
 
         // Render physics
         if (worldRepresentation != null) {
@@ -200,25 +214,31 @@ public class MainGame extends ApplicationAdapter {
         // Pixmap p = new Pixmap(new byte[0], 0, 0);
 
 
-        spriteBatch.setProjectionMatrix(camera.getCamera().combined);
+        spriteBatchShaded.setProjectionMatrix(camera.getCamera().combined);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
 
         // Render graphics
         if (worldRepresentation != null) {
-            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
+            final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
+            prg.setUniformf("light_source", new Vector2(
+                    Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f,
+                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50
+            ));
+            prg.setUniformf("r02", 100f);
+
+            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatchShaded,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
                     stateTime,
                     scaleFactor,
                     screenWidth,
-                    screenHeight);
+                    screenHeight,
+                    shaderProgramMap);
             worldRepresentation.forEachEntityInCameraNeighborhood(e ->
                     e.updateGraphics(graphicsParameters)
             );
         }
-
-        spriteBatch.setShader(null);
 
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
@@ -226,7 +246,6 @@ public class MainGame extends ApplicationAdapter {
 
         // Drawing stage last ensures that it occurs before dev.kabin.entities.
         stage.act(stateTime);
-        spriteBatch.end();
         stage.draw();
 
         //DebugUtil.renderEachCollisionPoint(shapeRenderer, currentCameraBounds, scaleFactor);
@@ -237,7 +256,7 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         super.dispose();
-        spriteBatch.dispose();
+        spriteBatchShaded.dispose();
     }
 
     protected RectInt getCamBounds() {
@@ -248,63 +267,30 @@ public class MainGame extends ApplicationAdapter {
         return imageAnalysisPool;
     }
 
-    record GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
+    record GraphicsParametersImpl(@NotNull SpriteBatch batch,
                                   @NotNull Camera camera,
-                                  Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood,
-                                  float stateTime, float scale, float screenWidth,
-                                  float screenHeight) implements GraphicsParametersLibgdx {
+                                  @NotNull Consumer<@NotNull Consumer<@NotNull EntityLibgdx>> forEachEntityInCameraNeighborhood,
+                                  float stateTime,
+                                  float scale,
+                                  float screenWidth,
+                                  float screenHeight,
+                                  Map<EntityGroup, ShaderProgram> shaders) implements GraphicsParametersLibgdx {
 
-        GraphicsParametersImpl(@NotNull SpriteBatch spriteBatch,
-                               @NotNull Camera camera,
-                               Consumer<Consumer<EntityLibgdx>> forEachEntityInCameraNeighborhood, float stateTime,
-                               float scale,
-                               float screenWidth,
-                               float screenHeight) {
-            this.spriteBatch = spriteBatch;
-            this.forEachEntityInCameraNeighborhood = forEachEntityInCameraNeighborhood;
-            this.stateTime = stateTime;
-            this.camera = camera;
-            this.scale = scale;
-            this.screenWidth = screenWidth;
-            this.screenHeight = screenHeight;
-        }
 
         @Override
-        public @NotNull
-        SpriteBatch getBatch() {
-            return spriteBatch;
-        }
-
-        @Override
-        public float getStateTime() {
-            return stateTime;
-        }
-
-        @Override
-        public float getScreenWidth() {
-            return screenWidth;
-        }
-
-        @Override
-        public float getScreenHeight() {
-            return screenHeight;
-        }
-
-        @Override
-        public float getCamX() {
+        public float camX() {
             return camera.position.x;
         }
 
         @Override
-        public float getCamY() {
+        public float camY() {
             return camera.position.y;
         }
 
         @Override
-        public float getScale() {
-            return scale;
+        public @Nullable ShaderProgram shaderFor(EntityGroup group) {
+            return shaders.get(group);
         }
-
     }
 
     class PhysicsParametersImpl implements PhysicsParameters {

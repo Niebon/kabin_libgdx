@@ -14,6 +14,7 @@ import dev.kabin.entities.EntityCollectionProvider;
 import dev.kabin.entities.libgdximpl.*;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
+import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -51,6 +52,7 @@ public class TileSelectionWidget {
     private final FloatSupplier scale;
     private final Supplier<RectInt> currCamBounds;
     private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
+    private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPool;
     private final Consumer<Runnable> synchronizer;
 
 
@@ -63,6 +65,7 @@ public class TileSelectionWidget {
             FloatSupplier scale,
             Supplier<RectInt> currCamBounds,
             Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier,
+            Supplier<ImageMetadataPoolLibgdx> imageAnalysisPool,
             Consumer<Runnable> synchronizer
     ) {
         this.stage = stage;
@@ -72,6 +75,7 @@ public class TileSelectionWidget {
         this.scale = scale;
         this.currCamBounds = currCamBounds;
         this.worldRepresentationSupplier = worldRepresentationSupplier;
+        this.imageAnalysisPool = imageAnalysisPool;
         this.synchronizer = synchronizer;
         widget = new dev.kabin.ui.Widget.Builder()
                 .setStage(stage)
@@ -181,6 +185,8 @@ public class TileSelectionWidget {
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                     .put(CollisionTile.TILE, currentType.name())
                     .setTextureAtlas(textureAtlasSupplier.get())
+                    .setEntityType(EntityType.COLLISION_TILE)
+                    .setImageAnalysisPool(imageAnalysisPool.get())
                     .build();
 
             //System.out.println("Position: " + MouseEventUtil.getPositionRelativeToWorld());
@@ -292,12 +298,14 @@ public class TileSelectionWidget {
                 float y = widget.getY() + offsetY;
 
 
-                SpriteBatch batch = params.getBatch();
+                SpriteBatch batch = params.batch();
+                batch.begin();
                 batch.draw(entry.getValue()[0],
                         x,
                         y,
                         width,
                         height);
+                batch.end();
             }
         }
     }

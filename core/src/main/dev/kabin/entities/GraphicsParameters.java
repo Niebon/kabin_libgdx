@@ -5,16 +5,16 @@ package dev.kabin.entities;
  */
 public interface GraphicsParameters {
 
-	float getStateTime();
+    float stateTime();
 
-	float getScreenWidth();
+    float screenWidth();
 
-	float getScreenHeight();
+    float screenHeight();
 
-	float getCamX();
+    float camX();
 
-	float getCamY();
+    float camY();
 
-	float getScale();
+    float scale();
 
 }

@@ -3,9 +3,9 @@ package dev.kabin.entities.libgdximpl.animation;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import dev.kabin.MainGame;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.Functions;
@@ -37,11 +37,11 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
     private final int maxPixelHeight;
     private final ImageAnalysisSupplier imageAnalysisSupplier;
 
-
     // Class variables:
     private AnimationType currentAnimationEnum;
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private WeightedAverage2D weightedAverage2D;
+    private ShaderProgram shaderProgram;
     private float scale;
 
     AbstractAnimationPlaybackLibgdx(
@@ -92,6 +92,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
         return currentAnimationEnum;
     }
 
+    public void setShaderProgram(ShaderProgram shaderProgram) {
+        this.shaderProgram = shaderProgram;
+    }
 
     public int getOriginalWidth() {
         return regions.get(0).originalWidth;
@@ -126,7 +129,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
 
     @Override
     public void renderNextAnimationFrame(GraphicsParametersLibgdx params) {
-        float stateTime = params.getStateTime();
+        float stateTime = params.stateTime();
 
         final AnimationType currentAnimation = this.currentAnimationEnum;
         if (!animationsMap.containsKey(currentAnimation)) {
@@ -144,18 +147,23 @@ public abstract class AbstractAnimationPlaybackLibgdx<AnimationType extends Enum
             this.currentAnimationEnum = toDefaultAnimation(currentAnimation);
         }
 
-        SpriteBatch batch = params.getBatch();
-        batch.setShader(MainGame.lightSourceShaders);
+        final SpriteBatch batch = params.batch();
+        batch.setShader(shaderProgram);
+        batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
+        batch.end();
     }
 
     @Override
     public void renderFrameByIndex(GraphicsParametersLibgdx params, int index) {
         final AnimationType currentAnimationClass = this.currentAnimationEnum;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimationClass)[index]);
-        final SpriteBatch batch = params.getBatch();
-        batch.setShader(MainGame.lightSourceShaders);
+
+        final SpriteBatch batch = params.batch();
+        batch.setShader(shaderProgram);
+        batch.begin();
         batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
+        batch.end();
     }
 
     @Override
