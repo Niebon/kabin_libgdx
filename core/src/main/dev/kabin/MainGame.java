@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.PhysicsParameters;
@@ -20,7 +19,10 @@ import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
+import dev.kabin.shaders.LightSourceShaderBinder;
+import dev.kabin.shaders.LightType;
 import dev.kabin.shaders.ShaderFactory;
+import dev.kabin.shaders.Tint;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
@@ -219,11 +221,37 @@ public class MainGame extends ApplicationAdapter {
         // Render graphics
         if (worldRepresentation != null) {
             final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
-            prg.setUniformf("light_source", new Vector2(
+
+            LightSourceShaderBinder binder = new LightSourceShaderBinder(prg);
+            binder.bindData(
+                    i -> LightType.SPHERE,
+                    i -> Tint.of(1f, 1f, 1f),
+                    i -> Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f + 50 * i,
+                    i -> Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50 * (i + 1),
+                    i -> 100,
+                    2);
+            binder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
+
+            final float[] xy = {
                     Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f,
-                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50
-            ));
-            prg.setUniformf("r02", 100f);
+                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50,
+                    Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f + 50,
+                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 150
+            };
+            final float[] tints = {
+                    1f, 1f, 1f,
+                    1f, 1f, 1f
+            };
+            final float[] types = {
+                    LightType.SPHERE.getFloatValue(), LightType.SPHERE.getFloatValue()
+            };
+            final float[] radii = {100f, 100f};
+            prg.setUniform2fv("light_sources", xy, 0, 4);
+            prg.setUniform3fv("light_tints", tints, 0, 6);
+            prg.setUniform1fv("types", types, 0, 2);
+            prg.setUniform1fv("radii", radii, 0, 2);
+            prg.setUniformi("number_of_sources", 2);
+            prg.setUniformf("ambient", 0.1f, 0.1f, 0.1f, 1);
 
             final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
                     camera.getCamera(),

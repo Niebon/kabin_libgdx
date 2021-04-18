@@ -102,10 +102,10 @@ public class Player extends EntitySimple {
      * y - dy corresponds to the first point where the given entity is placed
      * strictly above the ground/collision surface.
      */
-    public static float findLiftAboveGround(int x,
-                                            int y,
-                                            float scale,
-                                            @NotNull BiIntPredicate collisionPredicate) {
+    private static float findLiftAboveGround(int x,
+                                             int y,
+                                             float scale,
+                                             @NotNull BiIntPredicate collisionPredicate) {
 
         int j = 0;
         while (collisionPredicate.test(x, y + j)) j++;
@@ -148,7 +148,6 @@ public class Player extends EntitySimple {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
-        System.out.println(getAvgLowestPixel());
         final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl(Animate.class);
         if (animationPlaybackImpl == null) return;
 

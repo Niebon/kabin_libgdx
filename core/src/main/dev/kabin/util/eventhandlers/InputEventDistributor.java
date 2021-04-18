@@ -110,9 +110,10 @@ public record InputEventDistributor(MouseEventUtil mouseEventUtil,
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		mouseEventUtil.registerMouseScroll(amount);
-		return false;
-	}
+    public boolean scrolled(float amountX, float amountY) {
+        mouseEventUtil.registerMouseScroll(amountY);
+        return false;
+    }
+
 
 }

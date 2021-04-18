@@ -13,13 +13,11 @@ import org.json.JSONObject;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
 
 abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
-    private static final Logger logger = Logger.getLogger(AbstractLibgdxEntity.class.getName());
-    private static final AtomicInteger createdInstances = new AtomicInteger(1);
+    private static final AtomicInteger createdInstances = new AtomicInteger();
 
     // Protected data:
     private final AbstractAnimationPlaybackLibgdx<?> animationPlaybackImpl;
