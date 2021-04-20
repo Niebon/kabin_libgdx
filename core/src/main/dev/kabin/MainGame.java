@@ -20,7 +20,7 @@ import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.shaders.LightSourceShaderBinder;
-import dev.kabin.shaders.LightType;
+import dev.kabin.shaders.LightSourceType;
 import dev.kabin.shaders.ShaderFactory;
 import dev.kabin.shaders.Tint;
 import dev.kabin.ui.developer.DeveloperUI;
@@ -47,14 +47,18 @@ public class MainGame extends ApplicationAdapter {
 
     // Protected data:
     protected final KeyEventUtil keyEventUtil = new KeyEventUtil();
-    protected WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
-
-    // Private fields:
-    private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
-    private final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
     protected final Map<EntityGroup, ShaderProgram> shaderProgramMap = new EnumMap<>(EntityGroup.class);
+    protected WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
+    private CameraWrapper camera;
+    private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
     private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
+    // Private data:
+    private ImageMetadataPoolLibgdx imageAnalysisPool;
     private final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
+    private Stage stage;
+    private float scaleFactor = 1.0f;
+    // Private fields:
+    private final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
     private final EventTriggerController eventTriggerController = new EventTriggerController(
             EventTriggerController.InputOptions.registerAll(),
             keyEventUtil,
@@ -63,11 +67,6 @@ public class MainGame extends ApplicationAdapter {
             Functions::getNull,
             this::getScale
     );
-    private CameraWrapper camera;
-    private ImageMetadataPoolLibgdx imageAnalysisPool;
-    private Stage stage;
-    // Private data:
-    private float scaleFactor = 1.0f;
     private TextureAtlas textureAtlas;
     private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
@@ -224,7 +223,7 @@ public class MainGame extends ApplicationAdapter {
 
             LightSourceShaderBinder binder = new LightSourceShaderBinder(prg);
             binder.bindData(
-                    i -> LightType.SPHERE,
+                    i -> LightSourceType.SPHERE,
                     i -> Tint.of(1f, 1f, 1f),
                     i -> Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f + 50 * i,
                     i -> Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50 * (i + 1),
@@ -243,7 +242,7 @@ public class MainGame extends ApplicationAdapter {
                     1f, 1f, 1f
             };
             final float[] types = {
-                    LightType.SPHERE.getFloatValue(), LightType.SPHERE.getFloatValue()
+                    LightSourceType.SPHERE.getFloatValue(), LightSourceType.SPHERE.getFloatValue()
             };
             final float[] radii = {100f, 100f};
             prg.setUniform2fv("light_sources", xy, 0, 4);
@@ -391,6 +390,8 @@ public class MainGame extends ApplicationAdapter {
         }
 
         public void setPos(float x, float y) {
+
+
             camera.position.set(x, y, camera.position.z);
             camera.update();
             // Find new camera position:
@@ -423,9 +424,9 @@ public class MainGame extends ApplicationAdapter {
             directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy()) * unit + 0.5f * unit));
             directionalFinalSmoothening.appendSignalX(directionalPreSmoothening.x());
             directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
-            setPos(player.getX() + directionalFinalSmoothening.x(),
-                    player.getY() + directionalFinalSmoothening.y()
-            );
+            final float x = directionalFinalSmoothening.x();
+            final float y = directionalFinalSmoothening.y();
+            setPos(player.getX() + x, player.getY() + y);
         }
 
         public RectIntView currentCameraBounds() {

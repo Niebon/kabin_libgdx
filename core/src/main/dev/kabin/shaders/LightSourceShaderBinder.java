@@ -46,7 +46,7 @@ public class LightSourceShaderBinder {
      * @param r                  the radius.
      * @param numberLightSources the number of light sources to iterate over by index, starting from zero.
      */
-    public void bindData(IntFunction<LightType> types,
+    public void bindData(IntFunction<LightSourceType> types,
                          IntFunction<Tint> tints,
                          IntToFloatFunction x,
                          IntToFloatFunction y,

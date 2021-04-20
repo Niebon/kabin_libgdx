@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CollisionTile extends CollisionEntity {
 
     // Constants
-    public static final String FRAME_INDEX = "frameIndex";
+    public static final String FRAME_INDEX = "frame_index";
     public static final String TILE = "tile";
     public static final int TILE_SIZE = 16;
 

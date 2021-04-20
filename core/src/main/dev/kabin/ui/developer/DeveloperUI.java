@@ -224,6 +224,18 @@ public class DeveloperUI {
                 );
                 dialog.getContentTable().add(removeButton).size(100, 30);
 
+
+                final var modifyShaderButton = new TextButton("Modify Shader", skin, "default");
+                modifyShaderButton.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        showShaderModificationWindowFor(e);
+                        return super.touchDown(event, x, y, pointer, button);
+                    }
+                });
+                dialog.getContentTable().add(modifyShaderButton).size(100, 30);
+
+
                 // Exit button.
                 final var exitButton = new TextButton("x", skin, "default");
                 exitButton.addListener(
@@ -243,6 +255,10 @@ public class DeveloperUI {
                 return true;
             }
         }));
+    }
+
+    private void showShaderModificationWindowFor(EntityLibgdx e) {
+        new ModifyShaderWindow(stage, mouseEventUtilSupplier.get(), e);
     }
 
     private void saveWorldAs() {

@@ -5,6 +5,8 @@ import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx;
+import dev.kabin.shaders.LightSourceData;
+import dev.kabin.shaders.LightSourceDataImpl;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -32,6 +34,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final RectIntView graphicsNbdView;
     private float x, y, scale;
     private final EntityType type;
+    private final LightSourceDataImpl lightSourceData;
 
     // Class variables:
     private int layer;
@@ -59,6 +62,12 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
+        lightSourceData = parameters.lightSourceData();
+    }
+
+    @Override
+    public final LightSourceData getLightSourceData() {
+        return lightSourceData;
     }
 
     @Override
@@ -214,7 +223,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         return new JSONObject()
                 .put("x", getUnscaledX())
                 .put("y", getUnscaledY())
-                .put("atlasPath", atlasPath)
+                .put("atlas_path", atlasPath)
+                .put("light_source", lightSourceData.toJSONObject())
                 .put("layer", getLayer())
                 .put("type", getType().name());
     }

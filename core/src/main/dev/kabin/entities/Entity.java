@@ -1,5 +1,6 @@
 package dev.kabin.entities;
 
+import dev.kabin.shaders.LightSourceData;
 import dev.kabin.util.collections.Id;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
@@ -131,6 +132,11 @@ public interface Entity<
     float getAvgMassCenterX();
 
     float getAvgMassCenterY();
+
+    /**
+     * @return the light source data associated with this instance. This is used for shaders.
+     */
+    LightSourceData getLightSourceData();
 
 
 }

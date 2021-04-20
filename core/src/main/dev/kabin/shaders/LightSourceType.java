@@ -1,10 +1,24 @@
 package dev.kabin.shaders;
 
 
-public enum LightType {
+public enum LightSourceType {
+
+    NONE {
+        final static int VALUE = 0;
+        final static float VALUE_AS_FLOAT = Float.intBitsToFloat(VALUE);
+
+        @Override
+        public int getValue() {
+            return VALUE;
+        }
+
+        @Override
+        public float getFloatValue() {
+            return VALUE_AS_FLOAT;
+        }
+    },
 
     CONE {
-
         final static int VALUE = 10;
         final static float VALUE_AS_FLOAT = Float.intBitsToFloat(VALUE);
 
@@ -20,9 +34,7 @@ public enum LightType {
     },
 
     SPHERE {
-
         final static int VALUE = 20;
-
         final static float VALUE_AS_FLOAT = Float.intBitsToFloat(VALUE);
 
         @Override
@@ -38,9 +50,7 @@ public enum LightType {
     },
 
     BEAM {
-
         final static int VALUE = 30;
-
         final static float VALUE_AS_FLOAT = Float.intBitsToFloat(VALUE);
 
         @Override

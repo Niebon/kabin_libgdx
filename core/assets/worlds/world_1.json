@@ -1,1683 +1,3740 @@
 {
   "entities": [
     {
-      "atlasPath": "background",
+      "atlas_path": "background",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "y": 0,
       "type": "STATIC_BACKGROUND",
       "layer": 0
     },
     {
-      "atlasPath": "spruce",
+      "atlas_path": "spruce",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 55,
       "y": -57,
       "type": "ENTITY_INANIMATE",
       "layer": -2
     },
     {
-      "atlasPath": "player",
+      "atlas_path": "player",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -29,
       "y": -23,
       "type": "PLAYER",
       "layer": 1
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": -5
+      "layer": -5,
+      "frame_index": 6
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "SURFACE",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "DIAGONAL_45",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER_135",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "DIAGONAL_45",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -176,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER_135",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 112,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 128,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 144,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 160,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 176,
       "tile": "SURFACE",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 192,
       "tile": "SURFACE",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 208,
       "tile": "SURFACE",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 224,
       "tile": "SURFACE",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 112,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 128,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 144,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 160,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 112,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 128,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 144,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 160,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 176,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 192,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 208,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 192,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 176,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 160,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 144,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 128,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 112,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -176,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -224,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -208,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -208,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -192,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -192,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -176,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -176,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -176,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -224,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -192,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -208,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -224,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -240,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -256,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -288,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -272,
       "tile": "INNER",
       "y": -80,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -272,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -256,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -240,
       "tile": "INNER",
       "y": -96,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -240,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -224,
       "tile": "INNER",
       "y": -112,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -208,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -192,
       "tile": "INNER",
       "y": -128,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -160,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -144,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -128,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -112,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -96,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 6,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -80,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 6
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -64,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -176,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 4,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -176,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 4
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -48,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -32,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 2
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 5
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": -16,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 3
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -144,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 0
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 7,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 7
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 80,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 96,
       "tile": "INNER",
       "y": -160,
       "type": "COLLISION_TILE",
-      "layer": 0
+      "layer": 0,
+      "frame_index": 1
     },
     {
-      "frameIndex": 5,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 64,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 5
     },
     {
-      "frameIndex": 1,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "INNER_45",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 1
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER_45",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 0
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 3
     },
     {
-      "frameIndex": 3,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 48,
       "tile": "SURFACE",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 3
     },
     {
-      "frameIndex": 0,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 16,
       "tile": "DIAGONAL_135",
       "y": -32,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 0
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 32,
       "tile": "DIAGONAL_135",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 2
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -48,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 2
     },
     {
-      "frameIndex": 2,
-      "atlasPath": "ground",
+      "atlas_path": "ground",
+      "light_source": {
+        "x": 0,
+        "y": 0,
+        "r": 0,
+        "type": "NONE",
+        "tint": {
+          "b": 1,
+          "r": 1,
+          "g": 1
+        }
+      },
       "x": 0,
       "tile": "INNER",
       "y": -64,
       "type": "COLLISION_TILE",
-      "layer": 1
+      "layer": 1,
+      "frame_index": 2
     }
   ],
-  "worldSizeY": 5000,
-  "worldSizeX": 10000
+  "worldSizeY": 65536,
+  "worldSizeX": 65536
 }

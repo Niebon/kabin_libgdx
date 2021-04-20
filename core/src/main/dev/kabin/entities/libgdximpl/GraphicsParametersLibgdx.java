@@ -31,8 +31,9 @@ public interface GraphicsParametersLibgdx extends GraphicsParameters {
      * A reference to the shader program to be used for a given entity group.
      *
      * @param group which group.
-     * @return the shader.
+     * @return the shader, or no shader, if no shader applies.
      */
     @Nullable
     ShaderProgram shaderFor(EntityGroup group);
+
 }

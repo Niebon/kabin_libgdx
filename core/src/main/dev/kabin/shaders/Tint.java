@@ -1,10 +1,15 @@
 package dev.kabin.shaders;
 
+import dev.kabin.util.helperinterfaces.JSONSerializable;
+import org.json.JSONObject;
+
+import java.util.Map;
+
 /**
  * A <b>tint</b> is a triple of {@code float} values (red, green, blue) normalized to unit length as a vector -
  * ready to be multiplied by some ambient color in shader calculations.
  */
-public class Tint {
+public class Tint implements JSONSerializable {
 
     private float red, green, blue;
 
@@ -81,5 +86,24 @@ public class Tint {
      */
     public float blue() {
         return blue;
+    }
+
+    /**
+     * A factory method for constructing an instance of {@link Tint} from json.
+     *
+     * @param o the object.
+     * @return an instance matching the data.
+     */
+    public static Tint of(JSONObject o) {
+        return Tint.of(o.getInt("r"), o.getInt("g"), o.getInt("b"));
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        return new JSONObject(Map.of(
+                "r", red,
+                "g", green,
+                "b", blue
+        ));
     }
 }

@@ -2,6 +2,7 @@ package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
+import dev.kabin.shaders.LightSourceDataImpl;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
+                               LightSourceDataImpl lightSourceData,
                                Map<String, Object> backingMap,
                                TextureAtlas textureAtlas,
                                EntityType type,
@@ -41,13 +43,21 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
         private TextureAtlas textureAtlas;
         private EntityType type;
         private ImageMetadataPoolLibgdx imageAnalysisPool;
+        private LightSourceDataImpl lightSourceData;
 
         private Builder(JSONObject o, float scale) {
             this.scale = scale;
             x = o.getInt("x") * scale;
             y = o.getInt("y") * scale;
-            atlasPath = o.getString("atlasPath");
+            atlasPath = o.getString("atlas_path");
             layer = o.getInt("layer");
+            lightSourceData = LightSourceDataImpl.of(
+                    o.getJSONObject("light_source"),
+                    scale);
+//                    o.has("light_source")
+//                            // TODO, remove after rewriting worlds.
+//                    ? LightSourceDataImpl.of(o.getJSONObject("light_source"), scale)
+//                    : LightSourceDataImpl.builder().build();
 
             // Miscellaneous:
             backingMap.putAll(o.toMap());
@@ -57,6 +67,10 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
 
         }
 
+        public Builder setLightSourceData(LightSourceDataImpl lightSourceData) {
+            this.lightSourceData = lightSourceData;
+            return this;
+        }
 
         public Builder setX(float x) {
             this.x = x;
@@ -109,7 +123,7 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
 
         public EntityParameters build() {
             return new EntityParameters(
-                    x, y, atlasPath, scale, layer, backingMap,
+                    x, y, atlasPath, scale, layer, lightSourceData, backingMap,
                     textureAtlas, type, imageAnalysisPool);
         }
 
