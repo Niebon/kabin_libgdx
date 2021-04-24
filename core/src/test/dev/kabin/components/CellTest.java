@@ -1,6 +1,10 @@
 package dev.kabin.components;
 
+import dev.kabin.components.worldmodel.FloatMatrixPool;
+import dev.kabin.components.worldmodel.IntMatrixPool;
 import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.util.linalg.FloatMatrix;
+import dev.kabin.util.linalg.IntMatrix;
 import dev.kabin.util.points.PointInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,29 +17,33 @@ import java.util.stream.IntStream;
 
 class CellTest {
 
+    public static final int MINIMAL_CELL_SIZE = 128;
+
     @Test
     public void componentsRecursionTerminatesAndHasCorrectDimensions() {
-        final Cell mainCell = Cell.make(
-                CellParameters.builder()
+        final var mainCell = new Cell(
+                CellParameters.builder(128)
                         .setX(0)
                         .setY(0)
-                        .setWidth(CellParameters.COARSENESS_PARAMETER * 2)
-                        .setHeight(CellParameters.COARSENESS_PARAMETER * 2)
+                        .setWidth(MINIMAL_CELL_SIZE * 2)
+                        .setHeight(128 * 2)
                         .setScaleFactor(1)
+                        .setIntMatrixPool(new IntMatrixPool(10, () -> new IntMatrix(128, 128)))
+                        .setFloatArrayPool(new FloatMatrixPool(10, () -> new FloatMatrix(128, 128)))
                         .build()
         );
 
         // Check sub-component x-position
         Assertions.assertEquals(0, mainCell.getSubComponents().get(0).getPositionX());
-        Assertions.assertEquals(CellParameters.COARSENESS_PARAMETER, mainCell.getSubComponents().get(1).getPositionX());
+        Assertions.assertEquals(128, mainCell.getSubComponents().get(1).getPositionX());
         Assertions.assertEquals(0, mainCell.getSubComponents().get(2).getPositionX());
-        Assertions.assertEquals(CellParameters.COARSENESS_PARAMETER, mainCell.getSubComponents().get(3).getPositionX());
+        Assertions.assertEquals(128, mainCell.getSubComponents().get(3).getPositionX());
 
         // Check sub-component y-position
         Assertions.assertEquals(0, mainCell.getSubComponents().get(0).getPositionY());
         Assertions.assertEquals(0, mainCell.getSubComponents().get(1).getPositionY());
-        Assertions.assertEquals(CellParameters.COARSENESS_PARAMETER, mainCell.getSubComponents().get(2).getPositionY());
-        Assertions.assertEquals(CellParameters.COARSENESS_PARAMETER, mainCell.getSubComponents().get(3).getPositionY());
+        Assertions.assertEquals(128, mainCell.getSubComponents().get(2).getPositionY());
+        Assertions.assertEquals(128, mainCell.getSubComponents().get(3).getPositionY());
 
         // Check that sub-components are final
         Assertions.assertFalse(mainCell.getSubComponents().get(0).hasSubComponents());
@@ -46,13 +54,15 @@ class CellTest {
 
     @Test
     public void dataRemovalThrowsForEmptyLists() {
-        final Cell mainCell = Cell.make(
-                CellParameters.builder()
+        final var mainCell = new Cell(
+                CellParameters.builder(128)
                         .setX(0)
                         .setY(0)
-                        .setWidth(CellParameters.COARSENESS_PARAMETER * 2)
-                        .setHeight(CellParameters.COARSENESS_PARAMETER * 2)
+                        .setWidth(MINIMAL_CELL_SIZE * 2)
+                        .setHeight(128 * 2)
                         .setScaleFactor(1)
+                        .setIntMatrixPool(new IntMatrixPool(10, () -> new IntMatrix(128, 128)))
+                        .setFloatArrayPool(new FloatMatrixPool(10, () -> new FloatMatrix(128, 128)))
                         .build()
         );
 
@@ -63,16 +73,18 @@ class CellTest {
     @Test
     public void dataInsertionIncreaseAndRetrieve() {
 
-        final int width = CellParameters.COARSENESS_PARAMETER * 8,
-                height = CellParameters.COARSENESS_PARAMETER * 8;
+        final int width = MINIMAL_CELL_SIZE * 8,
+                height = MINIMAL_CELL_SIZE * 8;
 
-        final Cell mainCell = Cell.make(
-                CellParameters.builder()
+        final var mainCell = new Cell(
+                CellParameters.builder(128)
                         .setX(0)
                         .setY(0)
                         .setWidth(width)
                         .setHeight(height)
                         .setScaleFactor(1)
+                        .setIntMatrixPool(new IntMatrixPool(128, () -> new IntMatrix(128, 128)))
+                        .setFloatArrayPool(new FloatMatrixPool(128, () -> new FloatMatrix(128, 128)))
                         .build()
         );
 

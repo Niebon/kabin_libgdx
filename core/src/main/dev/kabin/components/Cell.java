@@ -64,7 +64,7 @@ public class Cell implements Id {
     private final int id;
     private boolean active = false;
 
-    private Cell(@NotNull CellParameters parameters) {
+    Cell(@NotNull CellParameters parameters) {
 
         id = instancesInitiated++;
 

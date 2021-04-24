@@ -3,6 +3,7 @@ package dev.kabin.entities.libgdximpl;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.shaders.LightSourceDataImpl;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
-                               LightSourceDataImpl lightSourceData,
+                               @Nullable LightSourceDataImpl lightSourceData,
                                Map<String, Object> backingMap,
                                TextureAtlas textureAtlas,
                                EntityType type,

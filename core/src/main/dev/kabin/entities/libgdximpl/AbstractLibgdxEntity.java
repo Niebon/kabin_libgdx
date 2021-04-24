@@ -61,7 +61,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
-        lightSourceData = new AnchoredLightSourceData(parameters.lightSourceData(), this::getX, this::getY);
+        lightSourceData = AnchoredLightSourceData.ofNullables(parameters.lightSourceData(), this::getX, this::getY);
     }
 
     @Override
@@ -83,7 +83,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     @SuppressWarnings("unchecked") // Explicitly checked runtime.
     @Nullable
     protected final <T extends Enum<T>> AbstractAnimationPlaybackLibgdx<T> getAnimationPlaybackImpl(Class<T> clazz) {
-        if (animationPlaybackImpl.getAnimationClass().isAssignableFrom(clazz)) {
+        if (animationPlaybackImpl != null && animationPlaybackImpl.getAnimationClass().isAssignableFrom(clazz)) {
             return (AbstractAnimationPlaybackLibgdx<T>) animationPlaybackImpl;
         } else return null;
     }
@@ -219,13 +219,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public JSONObject toJSONObject() {
-        return new JSONObject()
+        final JSONObject returnValue = new JSONObject()
                 .put("x", getUnscaledX())
                 .put("y", getUnscaledY())
                 .put("atlas_path", atlasPath)
-                .put("light_source", lightSourceData.toJSONObject())
                 .put("layer", getLayer())
                 .put("type", getType().name());
+        return lightSourceData == null ? returnValue : returnValue.put("light_source", lightSourceData.toJSONObject());
     }
 
     @Override

@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 class AbstractObjectPoolTest {
 
     @Test
     void takeAndGiveBackObjects() {
-        StringListPool pool = new StringListPool(10, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(10, ArrayList::new, List::clear);
         List<String> takenObject = pool.borrow();
         pool.borrow();
         pool.giveBack(takenObject);
@@ -21,7 +21,7 @@ class AbstractObjectPoolTest {
 
     @Test
     void takeAndGiveBackObjectsInTheMiddle() {
-        StringListPool pool = new StringListPool(10, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(10, ArrayList::new, List::clear);
         pool.borrow();
         List<String> borrowedObjectNo2 = pool.borrow();
         pool.borrow();
@@ -32,7 +32,7 @@ class AbstractObjectPoolTest {
     @Test
     void giveBackAllExcept() {
         int availableObjects = 10;
-        StringListPool pool = new StringListPool(availableObjects, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(availableObjects, ArrayList::new, List::clear);
         List<String> takenObject = pool.borrow();
         pool.borrow();
         pool.borrow();
@@ -52,7 +52,7 @@ class AbstractObjectPoolTest {
     @Test
     void giveBackAllExceptLeavesTakenDataUntouched() {
         int availableObjects = 10;
-        StringListPool pool = new StringListPool(availableObjects, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(availableObjects, ArrayList::new, List::clear);
         List<String> takenObject = pool.borrow();
         takenObject.add("important data");
         pool.borrow();
@@ -70,7 +70,7 @@ class AbstractObjectPoolTest {
     @Test
     void stressTestPool() {
         int availableObjects = 3;
-        StringListPool pool = new StringListPool(availableObjects, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(availableObjects, ArrayList::new, List::clear);
 
         List<String> specialBorrow = null;
         for (int test = 0; test < 1000; test++) {
@@ -104,7 +104,7 @@ class AbstractObjectPoolTest {
     @Test
     void testMetadata() {
         int availableObjects = 10;
-        StringListPool pool = new StringListPool(availableObjects, i -> new ArrayList<>(), List::clear);
+        StringListPool pool = new StringListPool(availableObjects, ArrayList::new, List::clear);
         Assertions.assertEquals(10, pool.remaining());
         pool.borrow();
         pool.borrow();
@@ -113,7 +113,7 @@ class AbstractObjectPoolTest {
     }
 
     static class StringListPool extends AbstractObjectPool<List<String>> {
-        public StringListPool(int objectsAvailable, IntFunction<List<String>> mapper, Consumer<List<String>> clearDataProcedure) {
+        public StringListPool(int objectsAvailable, Supplier<List<String>> mapper, Consumer<List<String>> clearDataProcedure) {
             super(objectsAvailable, mapper, clearDataProcedure);
         }
     }

@@ -28,7 +28,7 @@ public class Serializer {
         final List<EntityLibgdx> allEntities = new ArrayList<>();
         worldRepresentation.populateCollection(allEntities, e -> true);
         JSONObject o = new JSONObject();
-        o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).collect(Collectors.toList()));
+        o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).toList());
         o.put(WORLD_SIZE_X, worldRepresentation.getWorldSizeX());
         o.put(WORLD_SIZE_Y, worldRepresentation.getWorldSizeY());
         return o;

@@ -1,11 +1,25 @@
 package dev.kabin.shaders;
 
 import dev.kabin.util.functioninterfaces.FloatSupplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
-                                      FloatSupplier anchorX,
-                                      FloatSupplier anchorY) implements LightSourceData {
+import java.util.Objects;
+
+public record AnchoredLightSourceData(@NotNull LightSourceDataImpl lightSourceData,
+                                      @NotNull FloatSupplier anchorX,
+                                      @NotNull FloatSupplier anchorY) implements LightSourceData {
+
+    public static AnchoredLightSourceData ofNullables(@Nullable LightSourceDataImpl lightSourceData,
+                                                      @Nullable FloatSupplier anchorX,
+                                                      @Nullable FloatSupplier anchorY) {
+        return new AnchoredLightSourceData(
+                Objects.requireNonNullElse(lightSourceData, LightSourceDataImpl.builder().build()),
+                Objects.requireNonNullElse(anchorX, () -> 0f),
+                Objects.requireNonNullElse(anchorY, () -> 0f)
+        );
+    }
 
     @Override
     public LightSourceType getType() {

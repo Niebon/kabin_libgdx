@@ -2,6 +2,7 @@ package dev.kabin.entities;
 
 import dev.kabin.entities.libgdximpl.CollisionTile;
 import dev.kabin.entities.libgdximpl.EntityParameters;
+import dev.kabin.entities.libgdximpl.EntityType;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.util.Procedures;
 import dev.kabin.util.Statistics;
@@ -21,6 +22,7 @@ class CollisionTileTest {
                 .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                 .put(CollisionTile.TILE, Tile.SURFACE.name())
                 .setScale(scale)
+                .setEntityType(EntityType.COLLISION_TILE)
                 .build();
     }
 
