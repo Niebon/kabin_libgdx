@@ -1,7 +1,7 @@
 package dev.kabin.ui.developer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import dev.kabin.MainGame;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
@@ -40,8 +40,8 @@ public class EntitySelection {
             float width = Math.abs(begin.x() - mouseEventUtil.get().getXRelativeToUI());
             float height = Math.abs(begin.y() - mouseEventUtil.get().getYRelativeToUI());
 
-            float offsetX = camPosX.get() - MainGame.screenWidth * 0.5f;
-            float offsetY = camPosY.get() - MainGame.screenHeight * 0.5f;
+            float offsetX = camPosX.get() - Gdx.graphics.getWidth() * 0.5f;
+            float offsetY = camPosY.get() - Gdx.graphics.getHeight() * 0.5f;
             backingRect = new RectFloat(minX + offsetX, minY + offsetY, width, height);
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

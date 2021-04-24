@@ -8,6 +8,6 @@ public enum Inanimate {
     WIND_LEVEL1,
     WIND_LEVEL2;
 
-    public static final AnimationMetadataImpl ANIMATION_METADATA = new AnimationMetadataImpl(false, Direction.NONE, false);
+    public static final AnimationMetadataImpl ANIMATION_METADATA = new AnimationMetadataImpl(true, Direction.NONE, false);
 
 }

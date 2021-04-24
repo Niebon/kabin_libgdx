@@ -177,10 +177,15 @@ class EntityLoadingWidget {
                 .setScale(scale.get())
                 .setAtlasPath(selectedAsset)
                 .setTextureAtlas(textureAtlasSupplier.get())
+                .setEntityType(entityType)
+                .setImageAnalysisPool(imageAnalysisPoolSupplier.get())
                 .build();
 
 
         final EntityLibgdx e = EntityType.Factory.parameterConstructorOf(entityType).construct(parameters);
+
+        System.out.printf("Added an entity at (x,y) = (%s,%s)%n", e.getX(), e.getY());
+
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
 
@@ -243,6 +248,7 @@ class EntityLoadingWidget {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 entityType = EntityType.valueOf(selectBox.getSelected());
+                animationType = entityType.animationClass().getEnumConstants()[0];
                 widget.removeActor(dialog);
                 refreshContentTableMessage();
             }

@@ -3,7 +3,6 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,10 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
@@ -23,26 +20,17 @@ import dev.kabin.shaders.LightSourceType;
 import dev.kabin.shaders.ShaderFactory;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
-import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.eventhandlers.*;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectInt;
-import dev.kabin.util.shapes.primitive.RectIntView;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class MainGame extends ApplicationAdapter {
-
-    // Statics
-    public static int screenWidth = 400;
-    public static int screenHeight = 225;
 
     // Fields
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
@@ -56,7 +44,7 @@ public class MainGame extends ApplicationAdapter {
     private CameraWrapper camera;
     private ImageMetadataPoolLibgdx imageAnalysisPool;
     private Stage stage;
-    private float scaleFactor = 1.0f;
+    private float scale = 1.0f;
     private MouseEventUtil mouseEventUtil;
     private EventTriggerController eventTriggerController;
     private ThreadHandler threadHandler;
@@ -69,7 +57,7 @@ public class MainGame extends ApplicationAdapter {
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
      */
     public float getScale() {
-        return scaleFactor;
+        return scale;
     }
 
     // Protected methods:
@@ -134,17 +122,14 @@ public class MainGame extends ApplicationAdapter {
 
         textureAtlas = new TextureAtlas("textures.atlas");
         imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
-
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
-        scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
+        scale = (float) Gdx.graphics.getWidth() / GlobalData.ART_WIDTH;
 
 
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
         spriteBatch = new SpriteBatch();
 
-        camera = new CameraWrapper(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        camera = new CameraWrapper(this::getScale, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         threadHandler.reload();
         Player.getInstance().ifPresent(p -> p.setHandleInput(true));
 
@@ -213,7 +198,7 @@ public class MainGame extends ApplicationAdapter {
 
         // Render physics
         if (worldRepresentation != null) {
-            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil);
+            final var parameters = new PhysicsParametersImpl(scale, worldRepresentation, keyEventUtil);
 
             PhysicsEngine.renderOutstandingFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
@@ -228,32 +213,34 @@ public class MainGame extends ApplicationAdapter {
 
         // Render graphics
         if (worldRepresentation != null) {
-            final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
-            final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
-            final ArrayList<EntityLibgdx> shaderEntities = new ArrayList<>();
-            getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> {
-                if (e.getLightSourceData().getType() != LightSourceType.NONE) {
-                    shaderEntities.add(e);
-                }
-            });
+            {
+                final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
+                final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
+                final ArrayList<EntityLibgdx> shaderEntities = new ArrayList<>();
+                getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> {
+                    if (e.getLightSourceData().getType() != LightSourceType.NONE) {
+                        shaderEntities.add(e);
+                    }
+                });
 
-            final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
-            final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;
-            lssBinder.bindData(
-                    i -> shaderEntities.get(i).getLightSourceData(),
-                    camXMinusHalfWidth,
-                    camYMinusHalfHeight,
-                    Math.min(64, shaderEntities.size())
-            );
-            lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
+                final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
+                final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;
+                lssBinder.bindData(
+                        i -> shaderEntities.get(i).getLightSourceData(),
+                        camXMinusHalfWidth,
+                        camYMinusHalfHeight,
+                        Math.min(64, shaderEntities.size())
+                );
+                lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
+            }
 
             final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
                     timeSinceLastFrame,
-                    scaleFactor,
-                    screenWidth,
-                    screenHeight,
+                    scale,
+                    Gdx.graphics.getWidth(),
+                    Gdx.graphics.getHeight(),
                     shaderProgramMap);
             worldRepresentation.forEachEntityInCameraNeighborhood(e ->
                     e.updateGraphics(graphicsParameters)
@@ -290,146 +277,5 @@ public class MainGame extends ApplicationAdapter {
         return imageAnalysisPool;
     }
 
-    record GraphicsParametersImpl(@NotNull SpriteBatch batch,
-                                  @NotNull Camera camera,
-                                  @NotNull Consumer<@NotNull Consumer<@NotNull EntityLibgdx>> forEachEntityInCameraNeighborhood,
-                                  float timeElapsedSinceLastFrame,
-                                  float scale,
-                                  float screenWidth,
-                                  float screenHeight,
-                                  Map<EntityGroup, ShaderProgram> shaders) implements GraphicsParametersLibgdx {
 
-
-        @Override
-        public float camX() {
-            return camera.position.x;
-        }
-
-        @Override
-        public float camY() {
-            return camera.position.y;
-        }
-
-        @Override
-        public @Nullable ShaderProgram shaderFor(EntityGroup group) {
-            return shaders.get(group);
-        }
-    }
-
-    class PhysicsParametersImpl implements PhysicsParameters {
-
-        @NotNull
-        private final WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
-        @NotNull
-        private final KeyEventUtil keyEventUtil;
-
-        PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
-                              @NotNull KeyEventUtil keyEventUtil) {
-            this.worldRepresentation = worldRepresentation;
-            this.keyEventUtil = keyEventUtil;
-        }
-
-        @Override
-        public boolean isCollisionAt(int x, int y) {
-            return worldRepresentation.isCollisionAt(x, y);
-        }
-
-        @Override
-        public boolean isLadderAt(int x, int y) {
-            return worldRepresentation.isLadderAt(x, y);
-        }
-
-        @Override
-        public float getVectorFieldX(int x, int y) {
-            return worldRepresentation.getVectorFieldX(x, y);
-        }
-
-        @Override
-        public float getVectorFieldY(int x, int y) {
-            return worldRepresentation.getVectorFieldY(x, y);
-        }
-
-        @Override
-        public boolean isPressed(KeyCode keycode) {
-            return keyEventUtil.isPressed(keycode);
-        }
-
-        @Override
-        public float dt() {
-            return PhysicsEngine.DT;
-        }
-
-        @Override
-        public float meter() {
-            return PhysicsEngine.METER * scaleFactor;
-        }
-    }
-
-
-    public class CameraWrapper {
-
-        // Bounds
-        public final MutableRectInt currentCameraBounds = MutableRectInt.centeredAt(0, 0, screenWidth, screenHeight);
-        public final RectIntView currentCameraBoundsView = new RectIntView(currentCameraBounds);
-        // Neighborhood
-        public final MutableRectInt currentCameraNeighborhood = MutableRectInt.centeredAt(0, 0, 2 * screenWidth, 2 * screenHeight);
-        public final RectIntView currentCameraNeighborhoodView = new RectIntView(currentCameraNeighborhood);
-        @NotNull
-        private final OrthographicCamera camera;
-        private final WeightedAverage2D directionalPreSmoothening = new WeightedAverage2D(0.1f);
-        private final WeightedAverage2D directionalFinalSmoothening = new WeightedAverage2D(0.005f);
-
-
-        public CameraWrapper(@NotNull OrthographicCamera camera) {
-            this.camera = camera;
-        }
-
-        public void setPos(float x, float y) {
-
-
-            camera.position.set(x, y, camera.position.z);
-            camera.update();
-            // Find new camera position:
-            currentCameraBounds.translate(
-                    Math.round(Functions.toIntDivideBy(x, scaleFactor) - currentCameraBounds.getCenterX()),
-                    Math.round(Functions.toIntDivideBy(y, scaleFactor) - currentCameraBounds.getCenterY())
-            );
-            currentCameraNeighborhood.translate(
-                    Math.round(Functions.toIntDivideBy(x, scaleFactor) - currentCameraNeighborhood.getCenterX()),
-                    Math.round(Functions.toIntDivideBy(y, scaleFactor) - currentCameraNeighborhood.getCenterY())
-            );
-        }
-
-        public float getCameraX() {
-            return camera.position.x;
-        }
-
-        public float getCameraY() {
-            return camera.position.y;
-        }
-
-        @NotNull
-        public OrthographicCamera getCamera() {
-            return camera;
-        }
-
-        public void follow(Player player) {
-            final float unit = 3 * player.getMaxPixelHeight() * scaleFactor;
-            directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx()) * unit));
-            directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy()) * unit + 0.5f * unit));
-            directionalFinalSmoothening.appendSignalX(directionalPreSmoothening.x());
-            directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
-            final float x = directionalFinalSmoothening.x();
-            final float y = directionalFinalSmoothening.y();
-            setPos(player.getX() + x, player.getY() + y);
-        }
-
-        public RectIntView currentCameraBounds() {
-            return currentCameraBoundsView;
-        }
-
-        public RectIntView getCameraNeighborhood() {
-            return currentCameraNeighborhoodView;
-        }
-    }
 }

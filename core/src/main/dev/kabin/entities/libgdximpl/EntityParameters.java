@@ -3,7 +3,6 @@ package dev.kabin.entities.libgdximpl;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.shaders.LightSourceDataImpl;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
-                               @Nullable LightSourceDataImpl lightSourceData,
+                               LightSourceDataImpl lightSourceData,
                                Map<String, Object> backingMap,
                                TextureAtlas textureAtlas,
                                EntityType type,
@@ -55,11 +54,6 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
             lightSourceData = LightSourceDataImpl.of(
                     o.getJSONObject("light_source"),
                     scale);
-//                    o.has("light_source")
-//                            // TODO, remove after rewriting worlds.
-//                    ? LightSourceDataImpl.of(o.getJSONObject("light_source"), scale)
-//                    : LightSourceDataImpl.builder().build();
-
             // Miscellaneous:
             backingMap.putAll(o.toMap());
         }
@@ -123,9 +117,16 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
         }
 
         public EntityParameters build() {
-            return new EntityParameters(
-                    x, y, atlasPath, scale, layer, lightSourceData, backingMap,
-                    textureAtlas, type, imageAnalysisPool);
+            return new EntityParameters(x,
+                    y,
+                    atlasPath,
+                    scale,
+                    layer,
+                    lightSourceData,
+                    backingMap,
+                    textureAtlas,
+                    type,
+                    imageAnalysisPool);
         }
 
 

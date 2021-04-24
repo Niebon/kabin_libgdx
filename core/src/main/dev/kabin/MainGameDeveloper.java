@@ -93,8 +93,8 @@ public class MainGameDeveloper extends MainGame {
                     worldRepresentation::forEachEntityInCameraNeighborhood,
                     Gdx.graphics.getDeltaTime(),
                     getScale(),
-                    screenWidth,
-                    screenHeight,
+                    Gdx.graphics.getWidth(),
+                    Gdx.graphics.getHeight(),
                     shaderProgramMap));
         }
     }

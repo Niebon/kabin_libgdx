@@ -1,19 +1,17 @@
 package dev.kabin.shaders;
 
 import dev.kabin.util.functioninterfaces.FloatSupplier;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.Objects;
 
-public record AnchoredLightSourceData(@NotNull LightSourceDataImpl lightSourceData,
-                                      @NotNull FloatSupplier anchorX,
-                                      @NotNull FloatSupplier anchorY) implements LightSourceData {
+public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
+                                      FloatSupplier anchorX,
+                                      FloatSupplier anchorY) implements LightSourceData {
 
-    public static AnchoredLightSourceData ofNullables(@Nullable LightSourceDataImpl lightSourceData,
-                                                      @Nullable FloatSupplier anchorX,
-                                                      @Nullable FloatSupplier anchorY) {
+    public static AnchoredLightSourceData ofNullables(LightSourceDataImpl lightSourceData,
+                                                      FloatSupplier anchorX,
+                                                      FloatSupplier anchorY) {
         return new AnchoredLightSourceData(
                 Objects.requireNonNullElse(lightSourceData, LightSourceDataImpl.builder().build()),
                 Objects.requireNonNullElse(anchorX, () -> 0f),
@@ -48,7 +46,6 @@ public record AnchoredLightSourceData(@NotNull LightSourceDataImpl lightSourceDa
 
     @Override
     public float getX() {
-        System.out.printf("X was %s, anchorX was %s%n", lightSourceData.getX(), anchorX.get());
         return lightSourceData.getX() + anchorX.get();
     }
 
@@ -63,7 +60,6 @@ public record AnchoredLightSourceData(@NotNull LightSourceDataImpl lightSourceDa
 
     @Override
     public float getY() {
-        System.out.printf("Y was %s, anchorY was %s%n", lightSourceData.getY(), anchorY.get());
         return lightSourceData.getY() + anchorY.get();
     }
 

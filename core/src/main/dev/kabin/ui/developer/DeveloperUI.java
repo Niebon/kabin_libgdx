@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import dev.kabin.GlobalData;
-import dev.kabin.MainGame;
 import dev.kabin.Serializer;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.libgdximpl.EntityGroup;
@@ -113,9 +112,11 @@ public class DeveloperUI {
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 scale,
-                e -> worldRepresentationSupplier.get().registerEntity(e),
+                e -> {
+                    worldRepresentationSupplier.get().registerEntity(e);
+                },
                 textureAtlasSupplier,
-                this.imageAnalysisPoolSupplier);
+                imageAnalysisPoolSupplier);
         tileSelectionWidget = new TileSelectionWidget(
                 stage,
                 textureAtlasSupplier,
@@ -151,7 +152,7 @@ public class DeveloperUI {
         buttonSaveAs.setName(SAVE_AS);
         fileDropDownMenu.setItems(buttonOpen, buttonSave, buttonSaveAs);
         fileDropDownMenu.setSelectedIndex(0);
-        fileDropDownMenu.setPosition(0f, MainGame.screenHeight - fileDropDownMenu.getHeight());
+        fileDropDownMenu.setPosition(0f, Gdx.graphics.getHeight() - fileDropDownMenu.getHeight());
         fileDropDownMenu.setName("File");
         fileDropDownMenu.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
@@ -274,7 +275,7 @@ public class DeveloperUI {
             f.setVisible(true);
             f.toFront();
             f.setVisible(false);
-            int res = chooser.showOpenDialog(f);
+            final int res = chooser.showOpenDialog(f);
             f.dispose();
             if (res == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = chooser.getSelectedFile();
@@ -360,7 +361,7 @@ public class DeveloperUI {
             f.setVisible(true);
             f.toFront();
             f.setVisible(false);
-            int res = chooser.showOpenDialog(f);
+            final int res = chooser.showOpenDialog(f);
             f.dispose();
             if (res == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = chooser.getSelectedFile();

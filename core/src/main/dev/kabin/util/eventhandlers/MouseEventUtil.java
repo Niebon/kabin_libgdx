@@ -1,6 +1,6 @@
 package dev.kabin.util.eventhandlers;
 
-import dev.kabin.MainGame;
+import com.badlogic.gdx.Gdx;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.util.Functions;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
@@ -94,14 +94,14 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
     public void registerMouseMoved(float x, float y) {
         xRelativeToUI = x;
-        yRelativeToUI = Functions.transformY(y, MainGame.screenHeight);
+        yRelativeToUI = Functions.transformY(y, Gdx.graphics.getHeight());
 
         // camera.x and camera.y are in the middle of the screen. Hence the offsets:
-        float offsetX = camPosX.get() - MainGame.screenWidth * 0.5f;
-        float offsetY = camPosY.get() - MainGame.screenHeight * 0.5f;
+        float offsetX = camPosX.get() - Gdx.graphics.getWidth() * 0.5f;
+        float offsetY = camPosY.get() - Gdx.graphics.getHeight() * 0.5f;
 
         xRelativeToWorld = x + offsetX;
-        yRelativeToWorld = Functions.transformY(y, MainGame.screenHeight) + offsetY;
+        yRelativeToWorld = Functions.transformY(y, Gdx.graphics.getHeight()) + offsetY;
         logger.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }
