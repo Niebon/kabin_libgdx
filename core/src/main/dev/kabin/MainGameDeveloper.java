@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.eventhandlers.KeyCode;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -104,4 +105,10 @@ public class MainGameDeveloper extends MainGame {
         super.dispose();
         developerUISpriteBatch.dispose();
     }
+
+    @Nullable
+    protected DeveloperUI getDevUI() {
+        return developerUI;
+    }
+
 }

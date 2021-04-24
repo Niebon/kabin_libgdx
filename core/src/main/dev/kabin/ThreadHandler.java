@@ -56,18 +56,23 @@ public class ThreadHandler {
 
     private void handle() {
         synchronized (threadLock) {
-            // Load & unload data.
-            final WorldRepresentation<?, ?> worldRepresentation = worldRepresentationSupplier.get();
-            if (worldRepresentation == null) return;
+            try {
+                System.out.println("I've been called: " + System.currentTimeMillis());
+                // Load & unload data.
+                final WorldRepresentation<?, ?> worldRepresentation = worldRepresentationSupplier.get();
+                if (worldRepresentation == null) return;
 
-            worldRepresentation.registerEntityWhereabouts(camNbd.get());
-            worldRepresentation.clearUnusedData(camNbd.get());
-            worldRepresentation.loadNearbyData(camNbd.get());
-            worldRepresentation.sortAllLayers();
+                worldRepresentation.registerEntityWhereabouts(camNbd.get());
+                worldRepresentation.clearUnusedData(camNbd.get());
+                worldRepresentation.loadNearbyData(camNbd.get());
+                worldRepresentation.sortAllLayers();
 
-            // Save dev session if applicable.
-            if (devMod.isTrue()) {
-                GlobalData.saveDevSession(developerUISupplier.get(), devMod.isTrue());
+                // Save dev session if applicable.
+                if (devMod.isTrue()) {
+                    GlobalData.saveDevSession(developerUISupplier.get(), devMod.isTrue());
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }

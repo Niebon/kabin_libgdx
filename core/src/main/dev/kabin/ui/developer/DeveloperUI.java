@@ -112,9 +112,7 @@ public class DeveloperUI {
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 scale,
-                e -> {
-                    worldRepresentationSupplier.get().registerEntity(e);
-                },
+                e -> worldRepresentationSupplier.get().registerEntity(e),
                 textureAtlasSupplier,
                 imageAnalysisPoolSupplier);
         tileSelectionWidget = new TileSelectionWidget(
@@ -396,7 +394,10 @@ public class DeveloperUI {
     }
 
     public void addEntity() {
-        entityLoadingWidget.addEntity().ifPresent(this::addDragListenerToEntity);
+        entityLoadingWidget.addEntity().ifPresent(e -> {
+            addDragListenerToEntity(e);
+            initializeModificationDialogBoxFor(e);
+        });
     }
 
     /**

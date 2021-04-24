@@ -131,7 +131,7 @@ class EntityLoadingWidget {
     public JSONObject toJson() {
         return new JSONObject()
                 .put("asset", selectedAsset.isEmpty() ? "player" : selectedAsset)
-                .put("classification", entityType)
+                .put("type", entityType)
                 .put("animation_type", animationType)
                 .put("layer", layer)
                 .put("collapsed", widget.isCollapsed());

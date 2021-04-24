@@ -96,7 +96,6 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         xRelativeToUI = x;
         yRelativeToUI = Functions.transformY(y, Gdx.graphics.getHeight());
 
-        // camera.x and camera.y are in the middle of the screen. Hence the offsets:
         float offsetX = camPosX.get() - Gdx.graphics.getWidth() * 0.5f;
         float offsetY = camPosY.get() - Gdx.graphics.getHeight() * 0.5f;
 
