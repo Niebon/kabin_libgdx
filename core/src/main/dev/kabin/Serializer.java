@@ -41,7 +41,7 @@ public class Serializer {
                                                                                 float scale) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
-        final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y), scale);
+        final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y));
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
             if (!(entry instanceof final JSONObject json)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);

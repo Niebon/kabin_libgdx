@@ -1,4 +1,4 @@
-package dev.kabin.ui.developer.widgets;
+package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -25,7 +25,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class EntityLoadingWidget {
+class EntityLoadingWidget {
 
     // Constants:
     private static final int WIDTH = 600;
@@ -49,7 +49,7 @@ public class EntityLoadingWidget {
     private Enum<?> animationType = entityType.animationClass().getEnumConstants()[0];
     private int layer;
 
-    public EntityLoadingWidget(
+    EntityLoadingWidget(
             Stage stage,
             Executor executor,
             FloatSupplier mouseRelativeToWorldX,

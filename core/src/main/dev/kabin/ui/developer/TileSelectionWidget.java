@@ -1,4 +1,4 @@
-package dev.kabin.ui.developer.widgets;
+package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

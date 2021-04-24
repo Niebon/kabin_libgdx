@@ -6,20 +6,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.shaders.LightSourceData;
+import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.shaders.LightSourceType;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 
 import java.util.Arrays;
 
-public class ModifyShaderWindow {
+class ModifyShaderWindow {
 
-    ModifyShaderWindow(
-            Stage stage,
-            MouseEventUtil msu,
-            EntityLibgdx e) {
+    public ModifyShaderWindow(Stage stage,
+                              MouseEventUtil msu,
+                              EntityLibgdx e) {
 
-        LightSourceData lsd = e.getLightSourceData();
+        final AnchoredLightSourceData lsd = e.getLightSourceData();
 
         final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         final var window = new Window("Actions", skin);
@@ -29,44 +28,44 @@ public class ModifyShaderWindow {
                 width, height);
 
         // Remove button.
-        final var setX = new TextField(String.valueOf(lsd.getUnscaledX()), skin, "default");
-        final var setY = new TextField(String.valueOf(lsd.getUnscaledY()), skin, "default");
-        final var setR = new TextField(String.valueOf(lsd.getUnscaledR()), skin, "default");
-        setX.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
-        setY.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
-        setR.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
+        final var txtFieldX = new TextField(String.valueOf(lsd.getUnscaledXRelToAnchor()), skin, "default");
+        final var txtFieldY = new TextField(String.valueOf(lsd.getUnscaledYRelToAnchor()), skin, "default");
+        final var txtFieldR = new TextField(String.valueOf(lsd.getUnscaledR()), skin, "default");
+        txtFieldX.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
+        txtFieldY.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
+        txtFieldR.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
 
         Label lx = new Label("x:", skin);
         lx.setX(5);
         lx.setY(150);
 
-        setX.setX(50);
-        setX.setY(150);
-        setX.setWidth(100);
-        setX.setHeight(25);
+        txtFieldX.setX(50);
+        txtFieldX.setY(150);
+        txtFieldX.setWidth(100);
+        txtFieldX.setHeight(25);
 
         Label ly = new Label("y:", skin);
         ly.setX(5);
         ly.setY(115);
-        setY.setX(50);
-        setY.setY(115);
-        setY.setWidth(100);
-        setY.setHeight(25);
+        txtFieldY.setX(50);
+        txtFieldY.setY(115);
+        txtFieldY.setWidth(100);
+        txtFieldY.setHeight(25);
 
         Label lr = new Label("r:", skin);
         lr.setX(5);
         lr.setY(80);
-        setR.setX(50);
-        setR.setY(80);
-        setR.setWidth(100);
-        setR.setHeight(25);
+        txtFieldR.setX(50);
+        txtFieldR.setY(80);
+        txtFieldR.setWidth(100);
+        txtFieldR.setHeight(25);
 
         window.addActor(lx);
         window.addActor(ly);
         window.addActor(lr);
-        window.addActor(setR);
-        window.addActor(setX);
-        window.addActor(setY);
+        window.addActor(txtFieldR);
+        window.addActor(txtFieldX);
+        window.addActor(txtFieldY);
 
 
         final var selectBox = new SelectBox<String>(skin, "default");
@@ -98,9 +97,9 @@ public class ModifyShaderWindow {
         changeButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                lsd.setX(Float.parseFloat(setX.getText()) * lsd.getScale());
-                lsd.setY(Float.parseFloat(setY.getText()) * lsd.getScale());
-                lsd.setR(Float.parseFloat(setR.getText()) * lsd.getScale());
+                lsd.setXRelToAnchor(Float.parseFloat(txtFieldX.getText()) * lsd.getScale());
+                lsd.setYRelToAnchor(Float.parseFloat(txtFieldY.getText()) * lsd.getScale());
+                lsd.setR(Float.parseFloat(txtFieldR.getText()) * lsd.getScale());
                 lsd.setType(LightSourceType.valueOf(selectBox.getSelected()));
                 window.remove();
                 return true;
@@ -124,7 +123,6 @@ public class ModifyShaderWindow {
                 .padRight(0).padTop(0);
         window.setModal(true);
         stage.addActor(window);
-
     }
 
 }

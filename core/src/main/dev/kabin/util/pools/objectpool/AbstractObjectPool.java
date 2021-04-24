@@ -1,7 +1,7 @@
 package dev.kabin.util.pools.objectpool;
 
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 /**
@@ -17,12 +17,12 @@ public class AbstractObjectPool<ObjectType> {
     private int nextFreeIndex = 0;
 
 
-    public AbstractObjectPool(int objectsAvailable, IntFunction<ObjectType> mapper,
+    public AbstractObjectPool(int objectsAvailable, Supplier<ObjectType> mapper,
                               Consumer<ObjectType> clearDataProcedure) {
         //noinspection unchecked
         objectHolder = (ObjectType[]) IntStream
                 .range(0, objectsAvailable)
-                .mapToObj(mapper)
+                .mapToObj(i -> mapper.get())
                 .toArray(Object[]::new);
         this.clearDataProcedure = clearDataProcedure;
     }

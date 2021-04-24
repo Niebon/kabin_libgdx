@@ -18,9 +18,6 @@ import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
-import dev.kabin.ui.developer.widgets.DraggedEntity;
-import dev.kabin.ui.developer.widgets.EntityLoadingWidget;
-import dev.kabin.ui.developer.widgets.TileSelectionWidget;
 import dev.kabin.util.Functions;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
@@ -57,6 +54,7 @@ public class DeveloperUI {
     private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
     private final Supplier<MouseEventUtil> mouseEventUtilSupplier;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
+    private final BooleanSupplier developerMode;
     private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier;
     private final FloatSupplier scale;
     private final EntitySelection entitySelection;
@@ -104,6 +102,7 @@ public class DeveloperUI {
 
         this.scale = scale;
         this.stage = stage;
+        this.developerMode = developerMode;
         this.imageAnalysisPoolSupplier = imageAnalysisPoolSupplier;
 
         entitySelection = new EntitySelection(mouseEventUtilSupplier, camPosX, camPosY);
@@ -181,6 +180,10 @@ public class DeveloperUI {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (button != Input.Buttons.RIGHT) {
+                    return false;
+                }
+
+                if (developerMode.isFalse()) {
                     return false;
                 }
 
@@ -405,6 +408,9 @@ public class DeveloperUI {
                 actor -> actor.addListener(new DragListener() {
                     @Override
                     public void dragStart(InputEvent event, float x, float y, int pointer) {
+                        if (developerMode.isFalse()) {
+                            return;
+                        }
                         if (DeveloperUI.this.getEntitySelection().getCurrentlySelectedEntities().isEmpty()) {
                             DeveloperUI.this.addEntityToDraggedEntities(e);
                         } else {

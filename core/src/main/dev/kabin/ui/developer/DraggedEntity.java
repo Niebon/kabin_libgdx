@@ -1,4 +1,4 @@
-package dev.kabin.ui.developer.widgets;
+package dev.kabin.ui.developer;
 
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 
@@ -10,7 +10,7 @@ import dev.kabin.entities.libgdximpl.EntityLibgdx;
  *     entity pos -> entity pos + delta mouse position
  * </pre>
  */
-public class DraggedEntity {
+class DraggedEntity {
     private final float entityOriginalX, entityOriginalY;
     private final float initialMouseX, getInitialMouseY;
     private final EntityLibgdx entity;

@@ -5,8 +5,7 @@ import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx;
-import dev.kabin.shaders.LightSourceData;
-import dev.kabin.shaders.LightSourceDataImpl;
+import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -34,7 +33,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final RectIntView graphicsNbdView;
     private float x, y, scale;
     private final EntityType type;
-    private final LightSourceDataImpl lightSourceData;
+    private final AnchoredLightSourceData lightSourceData;
 
     // Class variables:
     private int layer;
@@ -62,11 +61,11 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
-        lightSourceData = parameters.lightSourceData();
+        lightSourceData = new AnchoredLightSourceData(parameters.lightSourceData(), this::getX, this::getY);
     }
 
     @Override
-    public final LightSourceData getLightSourceData() {
+    public final AnchoredLightSourceData getLightSourceData() {
         return lightSourceData;
     }
 
@@ -264,4 +263,5 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     public float getAvgMassCenterY() {
         return animationPlaybackImpl.getAvgMassCenterY();
     }
+
 }

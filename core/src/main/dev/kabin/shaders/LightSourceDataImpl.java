@@ -84,9 +84,9 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
     public JSONObject toJSONObject() {
         return new JSONObject(Map.of(
                 "tint", tint.toJSONObject(),
-                "x", Math.round(getX() / getScale()),
-                "y", Math.round(getY() / getScale()),
-                "r", Math.round(getR() / getScale()),
+                "x", Math.round(x / scale),
+                "y", Math.round(y / scale),
+                "r", Math.round(r / scale),
                 "type", type.name()
         ));
     }

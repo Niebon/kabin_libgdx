@@ -9,7 +9,6 @@ import dev.kabin.entities.libgdximpl.CollisionData;
 import dev.kabin.util.collections.IndexedSet;
 import dev.kabin.util.pools.objectpool.Borrowed;
 import dev.kabin.util.shapes.primitive.RectInt;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -22,43 +21,32 @@ import java.util.logging.Logger;
 public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, EntityType extends Entity<GroupType, ?, ?>> {
 
     public static final int
+            POOL_OBJECTS_AVAILABLE = 128,
+            INDIVISIBLE_COMPONENT_SIZE = 512,
             AVAILABLE_ARRAYLISTS_OF_COMPONENT = 200,
-            MAXIMAL_COMPONENT_SIZE = 512,
             AVAILABLE_COMPONENT_HASHSETS = 10_000,
             AVAILABLE_ENTITY_HASHSETS = 10_000;
 
-    public static final Logger logger = Logger.getLogger(Component.class.getName());
+    public static final Logger logger = Logger.getLogger(Cell.class.getName());
     private final EntityCollectionProvider<GroupType, EntityType> entityCollectionProvider;
-    private final IndexedSetPool<Component> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, i -> new IndexedSet<>());
-    private final IndexedSetPool<EntityType> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, i -> new IndexedSet<>());
+    private final IndexedSetPool<Cell> componentIndexedSetPool = new IndexedSetPool<>(AVAILABLE_COMPONENT_HASHSETS, IndexedSet::new);
+    private final IndexedSetPool<EntityType> entityIndexedSetPool = new IndexedSetPool<>(AVAILABLE_ENTITY_HASHSETS, IndexedSet::new);
     // Keep an object pool for ArrayList<Component> instances.
     private final ComponentArrayListPool componentArrayListPool = new ComponentArrayListPool(
-            AVAILABLE_ARRAYLISTS_OF_COMPONENT, i -> new ArrayList<>(), List::clear
+            AVAILABLE_ARRAYLISTS_OF_COMPONENT, ArrayList::new, List::clear
     );
-    private final Component rootComponent;
+    private final Cell rootCell;
+    private final long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
     private long timeStampLastEntityWhereaboutsRegistered = Long.MIN_VALUE;
     private ArrayList<EntityType> entitiesInCameraNeighborhoodCached;
-    private final long entitiesInCameraNeighborhoodLastUpdated = Long.MIN_VALUE;
     private ArrayList<EntityType> entitiesInCameraBoundsCached;
     private long entitiesInCameraBoundsLastUpdated = Long.MIN_VALUE;
-    private Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-    private Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
+    private Map<EntityType, IndexedSet<Cell>> entityToIndivisibleComponentMapping = new HashMap<>();
+    private Map<Cell, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
 
-    public WorldRepresentation(Class<GroupType> entityGroups, int width, int height, float scaleFactor) {
+    public WorldRepresentation(Class<GroupType> entityGroups, int width, int height) {
         entityCollectionProvider = new EntityCollectionProvider<>(entityGroups);
-        rootComponent = makeRepresentationOf(width, height, scaleFactor);
-    }
-
-    @NotNull
-    @Contract("_, _, _ -> new")
-    private static Component makeRepresentationOf(int width, int height, float scaleFactor) {
-        int x = MAXIMAL_COMPONENT_SIZE, y = MAXIMAL_COMPONENT_SIZE;
-        while (x < width * 2 || y < height * 2) {
-            x *= 2;
-            y *= 2;
-        }
-        logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
-        return Component.make(ComponentParameters.builder().setX(-x / 2).setY(-y / 2).setWidth(x).setHeight(y).setScaleFactor(scaleFactor).build());
+        rootCell = Cell.makeRepresentationOf(width, height, INDIVISIBLE_COMPONENT_SIZE, POOL_OBJECTS_AVAILABLE);
     }
 
     public void actionForEachEntityOrderedByType(Consumer<EntityType> renderEntityGlobalStateTime) {
@@ -79,7 +67,7 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
                 indivisibleComponentToEntityMapping,
                 entity,
                 entity.graphicsNbd(),
-                rootComponent);
+                rootCell);
     }
 
     /**
@@ -90,30 +78,30 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
      * @param entity the entity whose whereabouts are stored.
      */
     private void updateLocation(
-            Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping,
-            Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping,
+            Map<EntityType, IndexedSet<Cell>> entityToIndivisibleComponentMapping,
+            Map<Cell, IndexedSet<EntityType>> indivisibleComponentToEntityMapping,
             @NotNull EntityType entity,
             /* Caching the below calculation makes a big difference.*/
             @NotNull RectInt cachedEntityNodeNeighborhood,
-            @NotNull Component component
+            @NotNull Cell cell
     ) {
-        if (component.getUnderlyingRectInt().meets(cachedEntityNodeNeighborhood)) {
-            if (component.hasSubComponents()) {
-                for (Component subComponent : component.getSubComponents()) {
+        if (cell.getUnderlyingRectInt().meets(cachedEntityNodeNeighborhood)) {
+            if (cell.hasSubComponents()) {
+                for (Cell subCell : cell.getSubComponents()) {
                     updateLocation(entityToIndivisibleComponentMapping,
                             indivisibleComponentToEntityMapping,
                             entity,
                             cachedEntityNodeNeighborhood,
-                            subComponent);
+                            subCell);
                 }
             } else {
                 entityToIndivisibleComponentMapping.computeIfAbsent(
                         entity,
                         c -> componentIndexedSetPool.borrow()
-                ).add(component);
+                ).add(cell);
 
                 indivisibleComponentToEntityMapping.computeIfAbsent(
-                        component,
+                        cell,
                         c -> entityIndexedSetPool.borrow()
                 ).add(entity);
             }
@@ -125,7 +113,7 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
      */
     @NotNull
     private ArrayList<EntityType> getContainedEntities(@NotNull RectInt neighborhood) {
-        ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
+        ArrayList<Cell> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> c.getUnderlyingRectInt().meets(neighborhood)
         );
 
@@ -194,15 +182,15 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
         }
 
 
-        final Map<EntityType, IndexedSet<Component>> entityToIndivisibleComponentMapping = new HashMap<>();
-        final Map<Component, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
+        final Map<EntityType, IndexedSet<Cell>> entityToIndivisibleComponentMapping = new HashMap<>();
+        final Map<Cell, IndexedSet<EntityType>> indivisibleComponentToEntityMapping = new HashMap<>();
 
         entityCollectionProvider.actionForEachEntityOrderedByGroup(entity ->
                 updateLocation(entityToIndivisibleComponentMapping, // Should NOT be this.entityToIndivisibleComponentMapping
                         indivisibleComponentToEntityMapping,  // Should NOT be this.indivisibleComponentToEntityMapping
                         entity,
                         entity.graphicsNbd(),
-                        rootComponent
+                        rootCell
                 ));
 
         // Update references; keep the data ready to be cleared around until the beginning of the next iteration.
@@ -218,12 +206,12 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
     }
 
     @Borrowed(origin = "SEARCH_ALG_OBJECT_POOL")
-    public @NotNull ArrayList<Component> treeSearchFindIndivisibleComponentsMatching(
-            Predicate<Component> condition
+    public @NotNull ArrayList<Cell> treeSearchFindIndivisibleComponentsMatching(
+            Predicate<Cell> condition
     ) {
-        final ArrayList<Component> matches = componentArrayListPool.borrow();
-        final ArrayList<Component> layer = componentArrayListPool.borrow();
-        layer.add(rootComponent);
+        final ArrayList<Cell> matches = componentArrayListPool.borrow();
+        final ArrayList<Cell> layer = componentArrayListPool.borrow();
+        layer.add(rootCell);
         treeSearchRecursionStep(matches, layer, condition);
         componentArrayListPool.giveBackAllExcept(matches);
         if (componentArrayListPool.taken() != 1)
@@ -232,15 +220,15 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
     }
 
     private void treeSearchRecursionStep(
-            @NotNull ArrayList<Component> matches,
-            @NotNull ArrayList<Component> layer,
-            @NotNull Predicate<Component> condition
+            @NotNull ArrayList<Cell> matches,
+            @NotNull ArrayList<Cell> layer,
+            @NotNull Predicate<Cell> condition
     ) {
         if (layer.isEmpty()) {
             return;
         }
         if (layer.get(0).hasSubComponents()) {
-            final ArrayList<Component> newLayer = componentArrayListPool.borrow();
+            final ArrayList<Cell> newLayer = componentArrayListPool.borrow();
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < layer.size(); i++) {
                 layer.get(i).forEachMatching(newLayer::add, condition);
@@ -254,12 +242,12 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
 
 
     public void clearUnusedData(@NotNull RectInt rect) {
-        final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
+        final ArrayList<Cell> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> !c.getUnderlyingRectInt().meets(rect)
         );
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
-            final Component c = treeSearchResult.get(i);
+            final Cell c = treeSearchResult.get(i);
             if (c.isActive() && indivisibleComponentToEntityMapping.containsKey(c)) {
                 c.clearData();
                 c.setActive(false);
@@ -269,12 +257,12 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
     }
 
     public void loadNearbyData(@NotNull RectInt rect) {
-        final ArrayList<Component> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
+        final ArrayList<Cell> treeSearchResult = treeSearchFindIndivisibleComponentsMatching(
                 c -> c.getUnderlyingRectInt().meets(rect)
         );
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = treeSearchResult.size(); i < n; i++) {
-            final Component c = treeSearchResult.get(i);
+            final Cell c = treeSearchResult.get(i);
             if (c.isInactive() && indivisibleComponentToEntityMapping.containsKey(c)) {
 
                 final IndexedSet<EntityType> entities = indivisibleComponentToEntityMapping.get(c);
@@ -293,39 +281,39 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
 
 
     public void clearData() {
-        rootComponent.clearData();
+        rootCell.clearData();
     }
 
     public void activate(int x, int y) {
-        rootComponent.activate(x, y);
+        rootCell.activate(x, y);
     }
 
     public void incrementCollisionAt(int x, int y) {
-        rootComponent.incrementCollisionAt(x, y);
+        rootCell.incrementCollisionAt(x, y);
     }
 
     public void decrementCollisionAt(int x, int y) {
-        rootComponent.decrementCollisionAt(x, y);
+        rootCell.decrementCollisionAt(x, y);
     }
 
     public boolean isCollisionAt(int x, int y) {
-        return rootComponent.isCollisionAt(x, y);
+        return rootCell.isCollisionAt(x, y);
     }
 
     public float getVectorFieldX(int x, int y) {
-        return rootComponent.getVectorFieldX(x, y);
+        return rootCell.getVectorFieldX(x, y);
     }
 
     public float getVectorFieldY(int x, int y) {
-        return rootComponent.getVectorFieldY(x, y);
+        return rootCell.getVectorFieldY(x, y);
     }
 
     public boolean isLadderAt(int x, int y) {
-        return rootComponent.isLadderAt(x, y);
+        return rootCell.isLadderAt(x, y);
     }
 
     public int getCollision(int x, int y) {
-        return rootComponent.getCollision(x, y);
+        return rootCell.getCollision(x, y);
     }
 
     public boolean unregisterEntity(EntityType e) {
@@ -346,10 +334,10 @@ public class WorldRepresentation<GroupType extends Enum<GroupType> & Layer, Enti
     }
 
     public int getWorldSizeX() {
-        return rootComponent.getWidth();
+        return rootCell.getWidth();
     }
 
     public int getWorldSizeY() {
-        return rootComponent.getHeight();
+        return rootCell.getHeight();
     }
 }

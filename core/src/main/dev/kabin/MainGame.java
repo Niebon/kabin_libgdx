@@ -3,7 +3,6 @@ package dev.kabin;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -22,7 +21,6 @@ import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.shaders.LightSourceShaderBinder;
 import dev.kabin.shaders.LightSourceType;
 import dev.kabin.shaders.ShaderFactory;
-import dev.kabin.shaders.Tint;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
@@ -33,6 +31,7 @@ import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -45,28 +44,22 @@ public class MainGame extends ApplicationAdapter {
     public static int screenWidth = 400;
     public static int screenHeight = 225;
 
-    // Protected data:
-    protected final KeyEventUtil keyEventUtil = new KeyEventUtil();
-    protected final Map<EntityGroup, ShaderProgram> shaderProgramMap = new EnumMap<>(EntityGroup.class);
-    protected WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
-    private CameraWrapper camera;
+    // Fields
     private final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
-    private final InputProcessor inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
+
+    // Protected data:
+    protected Map<EntityGroup, ShaderProgram> shaderProgramMap;
+    protected KeyEventUtil keyEventUtil;
+    protected WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
+
     // Private data:
+    private CameraWrapper camera;
     private ImageMetadataPoolLibgdx imageAnalysisPool;
-    private final ThreadHandler threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
     private Stage stage;
     private float scaleFactor = 1.0f;
-    // Private fields:
-    private final MouseEventUtil mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
-    private final EventTriggerController eventTriggerController = new EventTriggerController(
-            EventTriggerController.InputOptions.registerAll(),
-            keyEventUtil,
-            mouseEventUtil,
-            this::getWorldRepresentation,
-            Functions::getNull,
-            this::getScale
-    );
+    private MouseEventUtil mouseEventUtil;
+    private EventTriggerController eventTriggerController;
+    private ThreadHandler threadHandler;
     private TextureAtlas textureAtlas;
     private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
@@ -117,19 +110,35 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void create() {
+        stage = new Stage();
+        // Setup input handling:
+        {
+            mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
+            keyEventUtil = new KeyEventUtil();
+            {
+                final var inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
+                final var imp = new InputMultiplexer();
+                imp.setProcessors(inputProcessor, stage);
+                Gdx.input.setInputProcessor(imp);
+            }
+            eventTriggerController = new EventTriggerController(
+                    EventTriggerController.InputOptions.registerAll(),
+                    keyEventUtil,
+                    mouseEventUtil,
+                    this::getWorldRepresentation,
+                    Functions::getNull,
+                    this::getScale
+            );
+        }
+        threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
+
         textureAtlas = new TextureAtlas("textures.atlas");
         imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
-        stage = new Stage();
 
         screenWidth = Gdx.graphics.getWidth();
         screenHeight = Gdx.graphics.getHeight();
         scaleFactor = (float) screenWidth / GlobalData.ART_WIDTH;
 
-        {
-            final InputMultiplexer imp = new InputMultiplexer();
-            imp.setProcessors(inputProcessor, stage);
-            Gdx.input.setInputProcessor(imp);
-        }
 
         logger.setLevel(GlobalData.getLogLevel());
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
@@ -143,7 +152,7 @@ public class MainGame extends ApplicationAdapter {
         {
             ambientShader = ShaderFactory.ambientShader();
             lightShader = ShaderFactory.lightSourceShader();
-
+            shaderProgramMap = new EnumMap<>(EntityGroup.class);
 
 //            shaderProgramMap.put(EntityGroup.BACKGROUND, ShaderFactory.ambientShader());
 //            shaderProgramMap.put(EntityGroup.BACKGROUND_LAYER_2, ShaderFactory.ambientShader());
@@ -214,43 +223,29 @@ public class MainGame extends ApplicationAdapter {
 
         spriteBatch.setProjectionMatrix(camera.getCamera().combined);
 
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
         // Render graphics
         if (worldRepresentation != null) {
             final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
+            final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
+            final ArrayList<EntityLibgdx> shaderEntities = new ArrayList<>();
+            getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> {
+                if (e.getLightSourceData().getType() != LightSourceType.NONE) {
+                    shaderEntities.add(e);
+                }
+            });
 
-            LightSourceShaderBinder binder = new LightSourceShaderBinder(prg);
-            binder.bindData(
-                    i -> LightSourceType.SPHERE,
-                    i -> Tint.of(1f, 1f, 1f),
-                    i -> Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f + 50 * i,
-                    i -> Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50 * (i + 1),
-                    i -> 100,
-                    2);
-            binder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
-
-            final float[] xy = {
-                    Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f,
-                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 50,
-                    Player.getInstance().map(Player::getX).orElse(0f) - getCameraX() + getCameraWrapper().getCamera().viewportWidth * 0.5f + 50,
-                    Player.getInstance().map(Player::getY).orElse(0f) - getCameraY() + getCameraWrapper().getCamera().viewportHeight * 0.5f + 150
-            };
-            final float[] tints = {
-                    1f, 1f, 1f,
-                    1f, 1f, 1f
-            };
-            final float[] types = {
-                    LightSourceType.SPHERE.getFloatValue(), LightSourceType.SPHERE.getFloatValue()
-            };
-            final float[] radii = {100f, 100f};
-            prg.setUniform2fv("light_sources", xy, 0, 4);
-            prg.setUniform3fv("light_tints", tints, 0, 6);
-            prg.setUniform1fv("types", types, 0, 2);
-            prg.setUniform1fv("radii", radii, 0, 2);
-            prg.setUniformi("number_of_sources", 2);
-            prg.setUniformf("ambient", 0.1f, 0.1f, 0.1f, 1);
+            final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
+            final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;
+            lssBinder.bindData(
+                    i -> shaderEntities.get(i).getLightSourceData(),
+                    camXMinusHalfWidth,
+                    camYMinusHalfHeight,
+                    Math.min(64, shaderEntities.size())
+            );
+            lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
 
             final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
                     camera.getCamera(),
