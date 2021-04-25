@@ -7,12 +7,16 @@ class CoordinatesTest {
 
     @Test
     void of() {
-
+        Assertions.assertDoesNotThrow(() -> Coordinates.of(0, 0, 0.5f, 0.99f));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Coordinates.of(0, 0, 1.5f, 0.5f));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Coordinates.of(0, 0, -1.5f, 0.5f));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Coordinates.of(0, 0, 0.5f, 1.5f));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Coordinates.of(0, 0, 0.5f, -1.5f));
     }
 
     @Test
     void addX_int() {
-        var coord = Coordinates.of(0, 0, 0.5f, 0.7f);
+        Coordinates coord = Coordinates.of(0, 0, 0.5f, 0.7f);
         coord.addX(1);
         Assertions.assertEquals(1, coord.getCellX());
     }
