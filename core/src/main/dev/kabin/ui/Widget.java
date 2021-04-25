@@ -180,6 +180,10 @@ public class Widget implements ModifiableFloatCoordinates {
         mainWindow.setY(y);
     }
 
+    public Window getWindow() {
+        return mainWindow;
+    }
+
     public static class Builder {
 
         public static final Skin DEFAULT_SKIN = new Skin(Gdx.files.internal("uiskin.json"));

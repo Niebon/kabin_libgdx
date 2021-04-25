@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -67,15 +66,14 @@ public class DeveloperUI {
     private final Supplier<KeyEventUtil> keyEventUtilSupplier;
     private final EntityLoadingWidget entityLoadingWidget;
     private final TileSelectionWidget tileSelectionWidget;
-    private final EntitySelectionMuters entitySelectionMuters = new EntitySelectionMuters();
     private final DragListener selectionBegin = new DragListener() {
         @Override
         public void dragStart(InputEvent event, float x, float y, int pointer) {
-            if (!entitySelectionMuters.shouldMuteDragging() && (
+            if (
                     !keyEventUtilSupplier.get().isAltDown() &&
-                            draggedEntities.isEmpty() &&
-                            !entityLoadingWidget.getWidget().isDragging() &&
-                            !tileSelectionWidget.getWidget().isDragging())
+                            draggedEntities.isEmpty()
+//                            !entityLoadingWidget.getWidget().isDragging() &&
+//                            !tileSelectionWidget.getWidget().isDragging()
             ) {
                 getEntitySelection().begin();
             }
@@ -103,7 +101,7 @@ public class DeveloperUI {
         this.developerMode = developerMode;
         this.imageAnalysisPoolSupplier = imageAnalysisPoolSupplier;
 
-        entitySelection = new EntitySelection(mouseEventUtilSupplier, camPosX, camPosY);
+
 
         entityLoadingWidget = new EntityLoadingWidget(
                 stage,
@@ -126,6 +124,10 @@ public class DeveloperUI {
                 imageAnalysisPoolSupplier,
                 synchronizer
         );
+        entitySelection = new EntitySelection(mouseEventUtilSupplier, camPosX, camPosY);
+
+        entitySelection.receiveDragListenerFrom(entityLoadingWidget.getWidget().getWindow());
+        entitySelection.receiveDragListenerFrom(tileSelectionWidget.getWidget().getWindow());
 
 
         stage.addListener(new DragListener() {
@@ -191,7 +193,7 @@ public class DeveloperUI {
 
                 final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
                 final var dialog = new Dialog("Actions", skin);
-                entitySelectionMuters.add(dialog::isDragging);
+                entitySelection.receiveDragListenerFrom(dialog);
                 final float width = 200;
                 final float height = 200;
                 dialog.setBounds(
@@ -249,7 +251,7 @@ public class DeveloperUI {
                             @Override
                             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                                 dialog.remove();
-                                entitySelectionMuters.remove(dialog::isDragging);
+                                entitySelection.removeDragListenerTo(dialog);
                                 return true;
                             }
                         }
@@ -266,7 +268,7 @@ public class DeveloperUI {
     }
 
     private void showShaderModificationWindowFor(EntityLibgdx e) {
-        new ModifyShaderWindow(stage, mouseEventUtilSupplier.get(), e);
+        new ModifyShaderWindow(stage, entitySelection, mouseEventUtilSupplier.get(), e);
 
     }
 
@@ -438,20 +440,4 @@ public class DeveloperUI {
         tileSelectionWidget.removeGroundTileAtCurrentMousePositionThreadLocked();
     }
 
-    static class EntitySelectionMuters {
-
-        private final ArrayList<BooleanSupplier> muters = new ArrayList<>();
-
-        private void add(BooleanSupplier shouldMute) {
-            muters.add(shouldMute);
-        }
-
-        boolean shouldMuteDragging() {
-            return muters.stream().anyMatch(BooleanSupplier::isTrue);
-        }
-
-        public boolean remove(BooleanSupplier o) {
-            return muters.remove(o);
-        }
-    }
 }

@@ -2,6 +2,7 @@ package dev.kabin.ui.developer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.functioninterfaces.FloatSupplier;
@@ -9,6 +10,7 @@ import dev.kabin.util.points.ImmutablePointFloat;
 import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.RectFloat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,7 @@ public class EntitySelection {
     private RectFloat backingRect;
     private ImmutablePointFloat begin;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final EntitySelectionMuters entitySelectionMuters = new EntitySelectionMuters();
 
     public EntitySelection(Supplier<MouseEventUtil> mouseEventUtil,
                            FloatSupplier camPosX,
@@ -34,6 +37,11 @@ public class EntitySelection {
     }
 
     public void render(Consumer<Consumer<EntityLibgdx>> forEachEntity) {
+
+        if (entitySelectionMuters.shouldMuteDragging()) {
+            return;
+        }
+
         if (begin != null) {
             float minX = Math.min(begin.x(), mouseEventUtil.get().getXRelativeToUI());
             float minY = Math.min(begin.y(), mouseEventUtil.get().getYRelativeToUI());
@@ -76,5 +84,34 @@ public class EntitySelection {
 
     public Set<EntityLibgdx> getCurrentlySelectedEntities() {
         return Collections.unmodifiableSet(currentlySelectedEntities);
+    }
+
+    public void receiveDragListenerFrom(Window window) {
+        entitySelectionMuters.add(window);
+    }
+
+    public void removeDragListenerTo(Window window) {
+        entitySelectionMuters.remove(window);
+    }
+
+    private class EntitySelectionMuters {
+
+        private final ArrayList<Window> muters = new ArrayList<>();
+
+        private void add(Window draggable) {
+            muters.add(draggable);
+        }
+
+        boolean shouldMuteDragging() {
+            float x = mouseEventUtil.get().getPositionRelativeToUI().x();
+            float y = mouseEventUtil.get().getPositionRelativeToUI().y();
+            return muters.stream()
+                    .map(w -> new RectFloat(w.getX(), w.getY(), w.getWidth(), w.getHeight()))
+                    .anyMatch(r -> r.contains(x, y));
+        }
+
+        public boolean remove(Window draggable) {
+            return muters.remove(draggable);
+        }
     }
 }

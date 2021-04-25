@@ -67,6 +67,18 @@ public class Tint implements JSONSerializable {
         this.blue = blue / r;
     }
 
+    public void setRed(float red) {
+        this.red = red;
+    }
+
+    public void setGreen(float green) {
+        this.green = green;
+    }
+
+    public void setBlue(float blue) {
+        this.blue = blue;
+    }
+
     /**
      * @return the red coordinate.
      */

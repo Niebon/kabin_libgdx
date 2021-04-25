@@ -57,7 +57,6 @@ public class ThreadHandler {
     private void handle() {
         synchronized (threadLock) {
             try {
-                System.out.println("I've been called: " + System.currentTimeMillis());
                 // Load & unload data.
                 final WorldRepresentation<?, ?> worldRepresentation = worldRepresentationSupplier.get();
                 if (worldRepresentation == null) return;
