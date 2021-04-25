@@ -1,4 +1,4 @@
-package dev.kabin.components;
+package dev.kabin.util.cell;
 
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;

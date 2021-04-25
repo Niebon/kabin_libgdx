@@ -9,63 +9,68 @@ import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.shaders.LightSourceType;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
 class ModifyShaderWindow {
 
-    public ModifyShaderWindow(Stage stage,
-                              MouseEventUtil msu,
-                              EntityLibgdx e) {
+    ModifyShaderWindow(Stage stage,
+                       MouseEventUtil msu,
+                       EntityLibgdx e) {
 
         final AnchoredLightSourceData lsd = e.getLightSourceData();
 
         final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         final var window = new Window("Actions", skin);
-        final float width = 200;
-        final float height = 200;
+        final float width = 250;
+        final float height = 300;
         window.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f,
                 width, height);
 
-        // Remove button.
-        final var txtFieldX = new TextField(String.valueOf(lsd.getUnscaledXRelToAnchor()), skin, "default");
-        final var txtFieldY = new TextField(String.valueOf(lsd.getUnscaledYRelToAnchor()), skin, "default");
-        final var txtFieldR = new TextField(String.valueOf(lsd.getUnscaledR()), skin, "default");
-        txtFieldX.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
-        txtFieldY.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
-        txtFieldR.setTextFieldFilter((textField, c) -> Character.isDigit(c) || c == '.');
+        final var sliderR = new Slider(0f, 264, 1.0f, false, skin);
+        sliderR.setX(50);
+        sliderR.setY(185);
+        sliderR.setWidth(100);
+        sliderR.setHeight(25);
+        window.addActor(sliderR);
+
+
+        final TextField txtFieldX = makeTextField(50, 150, 100, 25,
+                String.valueOf(lsd.getUnscaledXRelToAnchor()),
+                (textField, c) -> Character.isDigit(c) || c == '.',
+                skin);
+        window.addActor(txtFieldX);
+
+        final TextField txtFieldY = makeTextField(50, 115, 100, 25,
+                String.valueOf(lsd.getUnscaledXRelToAnchor()),
+                (textField, c) -> Character.isDigit(c) || c == '.',
+                skin);
+        window.addActor(txtFieldY);
+
+        final TextField txtFieldR = makeTextField(50, 80, 100, 25,
+                String.valueOf(lsd.getR()),
+                (textField, c) -> Character.isDigit(c) || c == '.',
+                skin);
+        window.addActor(txtFieldR);
+
 
         Label lx = new Label("x:", skin);
         lx.setX(5);
         lx.setY(150);
+        window.addActor(lx);
 
-        txtFieldX.setX(50);
-        txtFieldX.setY(150);
-        txtFieldX.setWidth(100);
-        txtFieldX.setHeight(25);
 
         Label ly = new Label("y:", skin);
         ly.setX(5);
         ly.setY(115);
-        txtFieldY.setX(50);
-        txtFieldY.setY(115);
-        txtFieldY.setWidth(100);
-        txtFieldY.setHeight(25);
+        window.addActor(ly);
+
 
         Label lr = new Label("r:", skin);
         lr.setX(5);
         lr.setY(80);
-        txtFieldR.setX(50);
-        txtFieldR.setY(80);
-        txtFieldR.setWidth(100);
-        txtFieldR.setHeight(25);
-
-        window.addActor(lx);
-        window.addActor(ly);
         window.addActor(lr);
-        window.addActor(txtFieldR);
-        window.addActor(txtFieldX);
-        window.addActor(txtFieldY);
 
 
         final var selectBox = new SelectBox<String>(skin, "default");
@@ -123,6 +128,25 @@ class ModifyShaderWindow {
                 .padRight(0).padTop(0);
         window.setModal(true);
         stage.addActor(window);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    @NotNull
+    private TextField makeTextField(
+            float x, // 50
+            float y, // 150
+            float width, // 100
+            float height, // 25
+            String initialText,
+            TextField.TextFieldFilter textFieldFilter,
+            Skin skin) {
+        final var txtFieldX = new TextField(initialText, skin, "default");
+        txtFieldX.setTextFieldFilter(textFieldFilter);
+        txtFieldX.setX(x);
+        txtFieldX.setY(y);
+        txtFieldX.setWidth(width);
+        txtFieldX.setHeight(height);
+        return txtFieldX;
     }
 
 }

@@ -1,6 +1,6 @@
 package dev.kabin.components.worldmodel;
 
-import dev.kabin.components.Cell;
+import dev.kabin.util.cell.Cell;
 import dev.kabin.util.pools.objectpool.AbstractObjectPool;
 
 import java.util.ArrayList;

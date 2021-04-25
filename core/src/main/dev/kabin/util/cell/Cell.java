@@ -1,4 +1,4 @@
-package dev.kabin.components;
+package dev.kabin.util.cell;
 
 
 import dev.kabin.components.worldmodel.FloatMatrixPool;
@@ -48,9 +48,11 @@ import java.util.stream.IntStream;
  */
 public class Cell implements Id {
 
-
+    // Statics:
     private static final Logger logger = Logger.getLogger(Cell.class.getName());
     private static int instancesInitiated = 0;
+
+    // Fields:
     private final int depth; // The level above root.
     private final CellParameters parameters;
     private final Cell[] subCells;
@@ -58,10 +60,11 @@ public class Cell implements Id {
     private final int minX;
     private final int minY;
     private final ImmutableRectInt underlyingRectInt;
-    // Functions of primitives.
     private final EnumMap<Data, IntBinaryOperator> intDataMapperByKey = new EnumMap<>(Data.class);
     private final EnumMap<Data, BiIntToFloatFunction> floatDataMapperByKey = new EnumMap<>(Data.class);
     private final int id;
+
+    // Variables.
     private boolean active = false;
 
     Cell(@NotNull CellParameters parameters) {
