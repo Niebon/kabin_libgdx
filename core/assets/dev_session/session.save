@@ -4,7 +4,7 @@
     "dev_mode" : true,
     "widgets" : {
       "entity_selection" : {"collapsed":false,"animation_type":"DEFAULT","asset":"torch","type":"ENTITY_INANIMATE","layer":0},
-      "tile_selection" : {"collapsed":false,"asset":"ground","classification":"SURFACE"}
+      "tile_selection" : {"collapsed":false,"asset":"ground","type":"SURFACE"}
     }
   }
 }

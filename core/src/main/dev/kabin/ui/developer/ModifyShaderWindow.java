@@ -89,7 +89,7 @@ class ModifyShaderWindow {
         window.addActor(selectBox);
 
 
-        Button changeButton = new TextButton("change", skin, "default");
+        final var changeButton = new TextButton("change", skin, "default");
         changeButton.setX(50);
         changeButton.setY(10);
         changeButton.setWidth(100);

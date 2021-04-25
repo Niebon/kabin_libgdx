@@ -62,6 +62,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             updateNeighborhood();
         }
         lightSourceData = AnchoredLightSourceData.ofNullables(parameters.lightSourceData(), this::getX, this::getY);
+        lightSourceData.setScale(scale);
     }
 
     @Override

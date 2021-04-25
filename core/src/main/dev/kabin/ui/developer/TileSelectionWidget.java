@@ -164,7 +164,7 @@ public class TileSelectionWidget {
     public JSONObject toJson() {
         return new JSONObject()
                 .put("asset", selectedAsset.isEmpty() ? "ground" : selectedAsset)
-                .put("classification", currentType)
+                .put("type", currentType)
                 .put("collapsed", widget.isCollapsed());
     }
 
