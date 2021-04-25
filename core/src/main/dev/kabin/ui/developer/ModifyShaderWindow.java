@@ -30,75 +30,76 @@ class ModifyShaderWindow {
         es.receiveDragListenerFrom(window);
         final float width = 250;
         final float height = 300;
-        window.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f,
-                width, height);
-
+        window.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f, width, height);
 
         final int columnX = 60;
 
-        final var sliderX = makeSlider(60, 255, 100, 25,
-                -128, 128, 1.0f, false, skin, lsd.getUnscaledXRelToAnchor(), lsd::setXRelToAnchor);
+        final var sliderX = makeSlider(60, 255, 100, 25, skin,
+                -128, 128, 1.0f, false, lsd.getUnscaledXRelToAnchor(), lsd::setXRelToAnchor);
         window.addActor(sliderX);
 
-        final var sliderY = makeSlider(60, 220, 100, 25,
-                -128, 128, 1.0f, false, skin, lsd.getUnscaledYRelToAnchor(), lsd::setYRelToAnchor);
+        final var sliderY = makeSlider(60, 220, 100, 25, skin,
+                -128, 128, 1.0f, false, lsd.getUnscaledYRelToAnchor(), lsd::setYRelToAnchor);
         window.addActor(sliderY);
 
-        final var sliderR = makeSlider(60, 185, 100, 25,
-                0f, 264, 1.0f, false, skin, lsd.getR(), lsd::setR);
+        final var sliderR = makeSlider(60, 185, 100, 25, skin,
+                0f, 264, 1.0f, false, lsd.getR(), lsd::setR);
         window.addActor(sliderR);
 
 
-        final TextField red = makeTextField(columnX, 150, 100, 25,
-                String.valueOf(lsd.getTint().red()),
-                (textField, c) -> Character.isDigit(c) || c == '.',
-                skin);
+        final var red = makeSlider(columnX, 150, 100, 25, skin,
+                0, 1, 1f / 255, false,
+                lsd.getTint().red(),
+                lsd.getTint()::setRed
+        );
         window.addActor(red);
 
-        final TextField green = makeTextField(columnX, 115, 100, 25,
-                String.valueOf(lsd.getTint().green()),
-                (textField, c) -> Character.isDigit(c) || c == '.',
-                skin);
+        final var green = makeSlider(columnX, 115, 100, 25, skin,
+                0, 1, 1f / 255, false,
+                lsd.getTint().green(),
+                lsd.getTint()::setGreen
+        );
         window.addActor(green);
 
-        final TextField blue = makeTextField(columnX, 80, 100, 25,
-                String.valueOf(lsd.getTint().blue()),
-                (textField, c) -> Character.isDigit(c) || c == '.',
-                skin);
+        final var blue = makeSlider(columnX, 80, 100, 25, skin,
+                0, 1, 1f / 255, false,
+                lsd.getTint().blue(),
+                lsd.getTint()::setBlue
+        );
         window.addActor(blue);
 
 
-        Label lx = new Label("x:", skin);
+        final var lx = new Label("x:", skin);
         lx.setX(5);
         lx.setY(255);
         window.addActor(lx);
 
 
-        Label ly = new Label("y:", skin);
+        final var ly = new Label("y:", skin);
         ly.setX(5);
         ly.setY(220);
         window.addActor(ly);
 
 
-        Label lr = new Label("r:", skin);
+        final var lr = new Label("r:", skin);
         lr.setX(5);
         lr.setY(185);
         window.addActor(lr);
 
 
-        Label lred = new Label("red:", skin);
+        final var lred = new Label("red:", skin);
         lred.setX(5);
         lred.setY(150);
         window.addActor(lred);
 
 
-        Label lgreen = new Label("green:", skin);
+        final var lgreen = new Label("green:", skin);
         lgreen.setX(5);
         lgreen.setY(115);
         window.addActor(lgreen);
 
 
-        Label lblue = new Label("blue:", skin);
+        final var lblue = new Label("blue:", skin);
         lblue.setX(5);
         lblue.setY(80);
         window.addActor(lblue);
@@ -133,20 +134,16 @@ class ModifyShaderWindow {
         changeButton.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-//                lsd.setXRelToAnchor(Float.parseFloat(red.getText()) * lsd.getScale());
-//                lsd.setYRelToAnchor(Float.parseFloat(green.getText()) * lsd.getScale());
-//                lsd.setR(Float.parseFloat(blue.getText()) * lsd.getScale());
-                lsd.getTint().setRed(Float.parseFloat(red.getText()));
-                lsd.getTint().setGreen(Float.parseFloat(green.getText()));
-                lsd.getTint().setBlue(Float.parseFloat(blue.getText()));
-                lsd.setType(LightSourceType.valueOf(selectBox.getSelected()));
+//                lsd.getTint().setRed(Float.parseFloat(red.getText()));
+//                lsd.getTint().setGreen(Float.parseFloat(green.getText()));
+//                lsd.getTint().setBlue(Float.parseFloat(blue.getText()));
+//                lsd.setType(LightSourceType.valueOf(selectBox.getSelected()));
                 window.remove();
                 es.removeDragListenerTo(window);
                 return true;
             }
         });
         window.addActor(changeButton);
-
 
         // Exit button.
         final var exitButton = new TextButton("x", skin, "default");
@@ -172,16 +169,23 @@ class ModifyShaderWindow {
             float y, // 150
             float width, // 100
             float height, // 25
+            Skin skin,
             String initialText,
             TextField.TextFieldFilter textFieldFilter,
-            Skin skin) {
-        final var txtFieldX = new TextField(initialText, skin, "default");
-        txtFieldX.setTextFieldFilter(textFieldFilter);
-        txtFieldX.setX(x);
-        txtFieldX.setY(y);
-        txtFieldX.setWidth(width);
-        txtFieldX.setHeight(height);
-        return txtFieldX;
+            Consumer<String> action) {
+        final var tf = new TextField(initialText, skin, "default");
+        tf.setTextFieldFilter(textFieldFilter);
+        tf.setX(x);
+        tf.setY(y);
+        tf.setWidth(width);
+        tf.setHeight(height);
+        tf.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                action.accept(tf.getText());
+            }
+        });
+        return tf;
     }
 
 
@@ -192,11 +196,10 @@ class ModifyShaderWindow {
             float y, // 150
             float width, // 100
             float height, // 25,
-            float min,
+            Skin skin, float min,
             float max,
             float step,
             boolean vertical,
-            Skin skin,
             float value,
             Consumer<Float> action) {
         var slider = new Slider(min, max, step, vertical, skin);

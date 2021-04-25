@@ -192,19 +192,22 @@ public class DeveloperUI {
                 }
 
                 final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-                final var dialog = new Dialog("Actions", skin);
-                entitySelection.receiveDragListenerFrom(dialog);
+                final var window = new Window("Actions", skin);
+                entitySelection.receiveDragListenerFrom(window);
                 final float width = 200;
                 final float height = 200;
-                dialog.setBounds(
+                window.setBounds(
                         mouseEventUtilSupplier.get().getXRelativeToUI() + width * 0.1f,
                         mouseEventUtilSupplier.get().getYRelativeToUI() + height * 0.1f,
                         width, height
                 );
-                dialog.getContentTable().defaults().pad(10);
 
                 // Remove button.
                 final var removeButton = new TextButton("Remove", skin, "default");
+                removeButton.setY(70);
+                removeButton.setX(50);
+                removeButton.setWidth(100);
+                removeButton.setHeight(25);
                 removeButton.addListener(
                         new ClickListener() {
                             @Override
@@ -225,15 +228,19 @@ public class DeveloperUI {
                                     e.getActor().ifPresent(Actor::remove);
                                 });
 
-                                dialog.remove();
+                                window.remove();
                                 return true;
                             }
                         }
                 );
-                dialog.getContentTable().add(removeButton).size(100, 30);
+                window.addActor(removeButton);
 
 
-                final var modifyShaderButton = new TextButton("Modify Shader", skin, "default");
+                final var modifyShaderButton = new TextButton("Shaders", skin, "default");
+                modifyShaderButton.setY(35);
+                modifyShaderButton.setX(50);
+                modifyShaderButton.setWidth(100);
+                modifyShaderButton.setHeight(25);
                 modifyShaderButton.addListener(new ClickListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -241,7 +248,7 @@ public class DeveloperUI {
                         return super.touchDown(event, x, y, pointer, button);
                     }
                 });
-                dialog.getContentTable().add(modifyShaderButton).size(100, 30);
+                window.addActor(modifyShaderButton);
 
 
                 // Exit button.
@@ -250,17 +257,17 @@ public class DeveloperUI {
                         new ClickListener() {
                             @Override
                             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                dialog.remove();
-                                entitySelection.removeDragListenerTo(dialog);
+                                window.remove();
+                                entitySelection.removeDragListenerTo(window);
                                 return true;
                             }
                         }
                 );
-                dialog.getTitleTable().add(exitButton)
+                window.getTitleTable().add(exitButton)
                         .size(20, 20)
                         .padRight(0).padTop(0);
-                dialog.setModal(true);
-                stage.addActor(dialog);
+                window.setModal(true);
+                stage.addActor(window);
 
                 return true;
             }
