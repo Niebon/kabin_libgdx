@@ -2,20 +2,20 @@ package dev.kabin.util.cell;
 
 public class Coordinates {
 
-    private int i, j; // cell coordinates.
+    private int cellX, cellY; // cell coordinates.
     private float x, y; // x,y relative to cell.
 
-    private Coordinates(int i, int j, float x, float y) {
-        this.i = i;
-        this.j = j;
+    private Coordinates(int cellX, int cellY, float x, float y) {
+        this.cellX = cellX;
+        this.cellY = cellY;
         this.x = x;
         this.y = y;
     }
 
-    public static Coordinates of(int i, int j, float x, float y) {
+    public static Coordinates of(int cellX, int cellY, float x, float y) {
         if (x < 0 || x >= 1) throw new IllegalArgumentException("x must be contained in [0,1).");
         if (y < 0 || y >= 1) throw new IllegalArgumentException("y must be contained in [0,1).");
-        return new Coordinates(i, j, x, y);
+        return new Coordinates(cellX, cellY, x, y);
     }
 
     private static int floorFloatToInt(float f) {
@@ -23,11 +23,11 @@ public class Coordinates {
     }
 
     public int getCellX() {
-        return i;
+        return cellX;
     }
 
     public int getCellY() {
-        return j;
+        return cellY;
     }
 
     public float getX() {
@@ -41,28 +41,28 @@ public class Coordinates {
     /**
      * Modifies this instance, by the given data induced by {@code +}.
      *
-     * @param i horizontal cell coordinate.
-     * @param j vertical cell coordinate.
+     * @param cellX horizontal cell coordinate.
+     * @param cellY vertical cell coordinate.
      */
-    public Coordinates add(int i, int j) {
-        return addX(i).addY(j);
+    public Coordinates add(int cellX, int cellY) {
+        return addX(cellX).addY(cellY);
     }
 
     /**
-     * @param i the horizontal cell coordinate to add.
+     * @param cellX the horizontal cell coordinate to add.
      * @return this.
      */
-    public Coordinates addX(int i) {
-        this.i = this.i + i;
+    public Coordinates addX(int cellX) {
+        this.cellX = this.cellX + cellX;
         return this;
     }
 
     /**
-     * @param j the horizontal cell coordinate to add.
+     * @param cellY the horizontal cell coordinate to add.
      * @return this.
      */
-    public Coordinates addY(int j) {
-        this.j = this.j + j;
+    public Coordinates addY(int cellY) {
+        this.cellY = this.cellY + cellY;
         return this;
     }
 
@@ -73,14 +73,10 @@ public class Coordinates {
      */
     public Coordinates addX(float x) {
         float xCandidate = this.x + x;
-        if (xCandidate >= 1f) {
-            int horizontalCellShift = floorFloatToInt(xCandidate);
-            this.i = this.i + horizontalCellShift;
-            this.x = xCandidate - horizontalCellShift;
-        } else if (xCandidate < 0f) {
-            int horizontalCellShift = floorFloatToInt(xCandidate);
-            this.i = this.i + horizontalCellShift;
-            this.x = xCandidate - horizontalCellShift;
+        if (xCandidate >= 1f || xCandidate < 0f) {
+            int cellXShift = floorFloatToInt(xCandidate);
+            this.cellX = this.cellX + cellXShift;
+            this.x = xCandidate - cellXShift;
         } else {
             this.x = xCandidate;
         }
@@ -94,14 +90,10 @@ public class Coordinates {
      */
     public Coordinates addY(float y) {
         float yCandidate = this.y + y;
-        if (yCandidate >= 1f) {
-            int verticalCellShift = floorFloatToInt(yCandidate);
-            this.j = this.j + verticalCellShift;
-            this.y = yCandidate - verticalCellShift;
-        } else if (yCandidate < 0f) {
-            int horizontalCellShift = floorFloatToInt(yCandidate);
-            this.j = this.j + horizontalCellShift;
-            this.y = yCandidate - horizontalCellShift;
+        if (yCandidate >= 1f || yCandidate < 0f) {
+            int cellYShift = floorFloatToInt(yCandidate);
+            this.cellY = this.cellY + cellYShift;
+            this.y = yCandidate - cellYShift;
         } else {
             this.y = yCandidate;
         }
