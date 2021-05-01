@@ -153,13 +153,6 @@ public class Widget implements ModifiableFloatCoordinates {
                 .toArray(Window[]::new);
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isDragging() {
-        return mainWindow.isDragging() ||
-                collapsedWindow.isDragging() ||
-                (popupWindows != null && Functions.anyTrue(popupWindows, Window::isDragging));
-    }
-
     @Override
     public float getX() {
         return mainWindow.getX();
@@ -273,14 +266,14 @@ public class Widget implements ModifiableFloatCoordinates {
             return new Widget(
                     stage,
                     x, y,
-                    Functions.requireNonNullElse(width, DEFAULT_WIDTH),
-                    Functions.requireNonNullElse(height, DEFAULT_HEIGHT),
+                    Functions.requireNonZeroElse(width, DEFAULT_WIDTH),
+                    Functions.requireNonZeroElse(height, DEFAULT_HEIGHT),
                     Objects.requireNonNullElse(title, DEFAULT_TITLE),
                     Objects.requireNonNullElse(skin, DEFAULT_SKIN),
-                    Functions.requireNonNullElse(collapsedWindowX, x),
-                    Functions.requireNonNullElse(collapsedWindowY, y),
-                    Functions.requireNonNullElse(collapsedWindowWidth, 20),
-                    Functions.requireNonNullElse(collapsedWindowHeight, 20),
+                    Functions.requireNonZeroElse(collapsedWindowX, x),
+                    Functions.requireNonZeroElse(collapsedWindowY, y),
+                    Functions.requireNonZeroElse(collapsedWindowWidth, 20),
+                    Functions.requireNonZeroElse(collapsedWindowHeight, 20),
                     contentTableMessage
             );
         }

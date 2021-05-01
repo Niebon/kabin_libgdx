@@ -5,44 +5,12 @@ import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Predicate;
 
-/**
- * Class containing static methods which may be interpreted as mathematical function.
- */
 public class Functions {
-
-    /**
-     * Parameters in {@link #intCircleCenteredAt(int, int, int)}
-     */
-    private static final int PIZZA_SLICE_DEGREES = 12;
-    public static final int NUMBER_OF_SLICES = 360 / PIZZA_SLICE_DEGREES;
-
-    @SuppressWarnings({"unused", "RedundantSuppression"})
-    @Contract(pure = true)
-    public static boolean anyTrue(boolean... array) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, size = array.length; i < size; i++) if (array[i]) return true;
-        return false;
-    }
-
-    @Contract(pure = true)
-    public static boolean anyFalse(boolean... array) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, size = array.length; i < size; i++) if (!array[i]) return true;
-        return false;
-    }
-
-    @Contract(pure = true)
-    public static boolean anyPositive(int... array) {
-        for (int b : array) if (b > 0) return true;
-        return false;
-    }
 
     public static float snapToPixel(float input, float scaleFactor) {
         return Math.round(input / scaleFactor) * scaleFactor;
     }
-
 
     /**
      * Snaps the given value to the grid. More precisely, given the partition:
@@ -127,67 +95,25 @@ public class Functions {
      * @return a double int array with dimension [CIRCLE_RES][2].
      */
     public static int[][] intCircleCenteredAt(int x, int y, int radius) {
-        final int[][] circle = new int[NUMBER_OF_SLICES][2];
-        for (int i = 0; i < NUMBER_OF_SLICES; i++) {
-            circle[i][0] = (int) Math.round(radius * Math.cos(Math.toRadians(i * PIZZA_SLICE_DEGREES))) + x;
-            circle[i][1] = (int) Math.round(radius * Math.sin(Math.toRadians(i * PIZZA_SLICE_DEGREES))) + y;
+
+        class Params {
+            static final int PIZZA_SLICE_DEGREES = 12;
+            static final int NUMBER_OF_SLICES = 360 / PIZZA_SLICE_DEGREES;
+        }
+
+        final int[][] circle = new int[Params.NUMBER_OF_SLICES][2];
+        for (int i = 0; i < Params.NUMBER_OF_SLICES; i++) {
+            circle[i][0] = (int) Math.round(radius * Math.cos(Math.toRadians(i * Params.PIZZA_SLICE_DEGREES))) + x;
+            circle[i][1] = (int) Math.round(radius * Math.sin(Math.toRadians(i * Params.PIZZA_SLICE_DEGREES))) + y;
         }
         return circle;
     }
 
 
-    /**
-     * A linear reparametrization f: [0,1]->[min,max]
-     *
-     * @param x   argument, assumed to lie in [0,1]. If this is not the case, this function will not
-     *            behave as expected.
-     * @param min min output
-     * @param max max output
-     */
-    public static double linearReparametrization(double x, double min, double max) {
-        return min + x * (max - min);
-    }
-
-
-    public static boolean isBetweenDeg(int startDeg, int endDeg, int midDeg) {
-        startDeg = Math.floorMod(startDeg, 360);
-        endDeg = Math.floorMod(endDeg, 360);
-        midDeg = Math.floorMod(midDeg, 360);
-        if (endDeg < startDeg) endDeg = endDeg + 360;
-        if (midDeg < startDeg) midDeg = midDeg + 360;
-        return startDeg <= midDeg && midDeg <= endDeg;
-    }
-
-
-    @NotNull
-    @Contract(pure = true)
-    public static BiIntPredicate indexValidator(
-            final int minX,
-            final int maxX,
-            final int minY,
-            final int maxY
-    ) {
-        return (x, y) -> minX <= x && x < maxX && minY <= y && y < maxY;
-    }
-
     public static int toIntDivideBy(float d, float divideBy) {
         return Math.round(d / divideBy);
     }
 
-
-    public static double clip(double x, double min, double max) {
-        if (x < min) return min;
-        return Math.min(x, max);
-    }
-
-    public static double sigmoid(double x) {
-        if (x >= 0) {
-            return 1 / (1 - Math.exp(x));
-        } else {
-            double ex = Math.exp(x);
-            return ex / (1 + ex);
-        }
-    }
 
     /**
      * A transform from a coordinate system where y points downwards to one where y points upwards; also
@@ -227,19 +153,8 @@ public class Functions {
         return -y + height;
     }
 
-
-    public static float requireNonNullElse(float val, float defaultVal) {
+    public static float requireNonZeroElse(float val, float defaultVal) {
         return val == 0 ? defaultVal : val;
-    }
-
-    public static <T> boolean anyTrue(T[] array, Predicate<T> predicate) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = array.length; i < n; i++) {
-            if (predicate.test(array[i])) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @SuppressWarnings("unused")
@@ -255,4 +170,5 @@ public class Functions {
     public static <T> T getNull() {
         return null;
     }
+
 }

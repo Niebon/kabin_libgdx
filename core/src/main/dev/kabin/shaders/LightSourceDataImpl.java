@@ -9,15 +9,17 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
 
     private final Tint tint;
     private LightSourceType type;
-    private float x, y, r, scale;
+    private float x, y, r, scale, angle, arcSpan;
 
-    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float scale) {
+    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float scale, float angle, float arcSpan) {
         this.type = type;
         this.tint = tint;
         this.x = x;
         this.y = y;
         this.r = r;
         this.scale = scale;
+        this.angle = angle;
+        this.arcSpan = arcSpan;
     }
 
     public static LightSourceDataImpl of(JSONObject o, float scale) {
@@ -25,6 +27,8 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
                 .setR(o.getInt("r") * scale)
                 .setX(o.getInt("x") * scale)
                 .setY(o.getInt("y") * scale)
+                .setAngle(o.getFloat("angle"))
+                .setAngle(o.getFloat("arcSpan"))
                 .setTint(Tint.of(o.getJSONObject("tint")))
                 .setType(o.getEnum(LightSourceType.class, "type"))
                 .setScale(scale)
@@ -80,6 +84,7 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
         this.y = y;
     }
 
+
     @Override
     public JSONObject toJSONObject() {
         return new JSONObject(Map.of(
@@ -89,6 +94,26 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
                 "r", Math.round(r / scale),
                 "type", type.name()
         ));
+    }
+
+    @Override
+    public float getAngle() {
+        return angle;
+    }
+
+    @Override
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
+
+    @Override
+    public float getArcSpan() {
+        return arcSpan;
+    }
+
+    @Override
+    public void setArcSpan(float arcSpan) {
+        this.arcSpan = arcSpan;
     }
 
     @Override
@@ -105,8 +130,7 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
 
         private LightSourceType type = LightSourceType.NONE;
         private Tint tint = Tint.of(1, 1, 1);
-        private float x, y, r;
-        private float scale;
+        private float x, y, r, angle, arcSpan, scale;
 
         public Builder setType(LightSourceType type) {
             this.type = type;
@@ -138,8 +162,18 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
             return this;
         }
 
+        public Builder setAngle(float angle) {
+            this.angle = angle;
+            return this;
+        }
+
+        public Builder setArcSpan(float arcSpan) {
+            this.arcSpan = arcSpan;
+            return this;
+        }
+
         public LightSourceDataImpl build() {
-            return new LightSourceDataImpl(type, tint, x, y, r, scale);
+            return new LightSourceDataImpl(type, tint, x, y, r, scale, angle, arcSpan);
         }
     }
 }

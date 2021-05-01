@@ -33,6 +33,26 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     @Override
+    public float getAngle() {
+        return lightSourceData.getAngle();
+    }
+
+    @Override
+    public void setAngle(float angle) {
+        lightSourceData.setAngle(angle);
+    }
+
+    @Override
+    public float getArcSpan() {
+        return lightSourceData.getArcSpan();
+    }
+
+    @Override
+    public void setArcSpan(float arcSpan) {
+        lightSourceData.setArcSpan(arcSpan);
+    }
+
+    @Override
     public LightSourceType getType() {
         return lightSourceData.getType();
     }
