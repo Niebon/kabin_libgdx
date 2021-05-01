@@ -5,6 +5,9 @@ import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+import java.util.concurrent.Callable;
+
 
 public class Functions {
 
@@ -169,6 +172,14 @@ public class Functions {
 
     public static <T> T getNull() {
         return null;
+    }
+
+    public static <T> Optional<T> tryGet(Callable<T> callable) {
+        try {
+            return Optional.of(callable.call());
+        } catch (Throwable t) {
+            return Optional.empty();
+        }
     }
 
 }

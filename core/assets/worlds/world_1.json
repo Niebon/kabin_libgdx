@@ -19,33 +19,37 @@
     {
       "light_sources": [
         {
-          "x": 0,
-          "y": 10,
           "r": 70,
+          "x": 0,
+          "width": 0,
+          "angle": 0,
+          "y": 10,
           "type": "SPHERE",
           "tint": {
-            "r": 1,
             "b": 1,
+            "r": 1,
             "g": 1
           }
         }
       ],
       "atlas_path": "torch",
-      "x": 4,
-      "y": -23,
+      "x": -67,
+      "y": -24,
       "type": "ENTITY_INANIMATE",
       "layer": 0
     },
     {
       "light_sources": [
         {
-          "x": 0,
-          "y": 0,
           "r": 70,
+          "x": 0,
+          "width": 0,
+          "angle": 0,
+          "y": 0,
           "type": "SPHERE",
           "tint": {
-            "r": 1,
             "b": 1,
+            "r": 1,
             "g": 1
           }
         }
@@ -57,9 +61,23 @@
       "layer": 0
     },
     {
-      "light_sources": [],
+      "light_sources": [
+        {
+          "r": 48,
+          "x": 0,
+          "width": 283.4,
+          "angle": 2.1000001,
+          "y": 0,
+          "type": "CONE",
+          "tint": {
+            "b": 1,
+            "r": 1,
+            "g": 1
+          }
+        }
+      ],
       "atlas_path": "player",
-      "x": 49,
+      "x": 65,
       "y": -55,
       "type": "PLAYER",
       "layer": 1
@@ -1905,6 +1923,6 @@
       "frame_index": 2
     }
   ],
-  "worldSizeY": 65536,
-  "worldSizeX": 65536
+  "worldSizeY": 16384,
+  "worldSizeX": 16384
 }

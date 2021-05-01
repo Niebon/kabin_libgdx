@@ -22,7 +22,7 @@ uniform vec3[64] light_tints;// Tints for light sources.
 uniform float[64] radii;// Radii of light sources (CONE/SPHERE) or distance (BEAM)
 
 uniform float[64] angles;// Light cone direction.
-uniform float[64] arc_spans;// Arc span (CONE).
+uniform float[64] widths;// Arc span - applicable to CONE (angular width) & BEAM - regular width.
 
 
 uniform int number_of_sources;
@@ -36,12 +36,6 @@ void main() {
         float dy = light_sources[i].y - gl_FragCoord.y;
         float r = sqrt(dx * dx + dy * dy);
         float r0 = radii[i];
-        if (r <= r0) {
-            float illum_factor = (r0 - r) / r0;
-            vec3 illum_factor_times_tint = illum_factor * light_tints[i];
-            vec4 final_color = vec4(illum_factor_times_tint, 1);
-            new_color = max(final_color * v_color * texture2D(u_texture, v_texCoords), new_color);
-        }
         switch (floatBitsToInt(types[i])) {
             case SPHERE: {
                 float dx = light_sources[i].x - gl_FragCoord.x;
@@ -60,14 +54,14 @@ void main() {
                 float dy = light_sources[i].y - gl_FragCoord.y;
                 float r = sqrt(dx * dx + dy * dy);
 
-                float angle = find_angle_deg(dx, dy);
-                float arc_lower_bound = angles[i] - 0.5 * arc_spans[i];
-                float arc_upper_bound = angles[i] + 0.5 * arc_spans[i];
-                bool inside_cone = (arc_lower_bound < angle && angle < arc_upper_bound)
-                ^^ (arc_lower_bound < angle + 360 && angle + 360 < arc_upper_bound)
-                ^^ (arc_lower_bound < angle - 360 && angle - 360 < arc_upper_bound);
+                float angle = degrees(atan(dy, dx));
+                float arc_lower_bound = angles[i] - 0.5 * widths[i];
+                float arc_upper_bound = angles[i] + 0.5 * widths[i];
+                bool inside_cone = (arc_lower_bound <= angle && angle <= arc_upper_bound)
+                ^^ (arc_lower_bound <= angle - 360 && angle - 360 <= arc_upper_bound)
+                ^^ (arc_lower_bound <= angle + 360 && angle + 360 <= arc_upper_bound);
 
-                if (r <= r0 && inside_cone) {
+                if (inside_cone && r <= r0) {
                     float illum_factor = (r0 - r) / r0;
                     vec3 illum_factor_times_tint = illum_factor * light_tints[i];
                     vec4 final_color = vec4(illum_factor_times_tint, 1);
@@ -85,7 +79,7 @@ void main() {
 
 float find_angle_deg(float dx, float dy) {
 
-    float angle = degrees(atan(dy / dx));
+    float angle = atan(dy / dx);
 
     if (dx < 0 && dy >= 0) angle = 180 + angle;// 2nd quadrant
     else if (dx < 0 && dy <= 0) angle = 180 + angle;// 3nd quadrant

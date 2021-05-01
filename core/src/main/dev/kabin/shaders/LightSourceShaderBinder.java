@@ -13,6 +13,8 @@ public class LightSourceShaderBinder {
     private final float[] tints = new float[NUMBER_OF_PARTICLES * 3];
     private final float[] xy = new float[NUMBER_OF_PARTICLES * 2];
     private final float[] r = new float[NUMBER_OF_PARTICLES];
+    private final float[] angles = new float[NUMBER_OF_PARTICLES];
+    private final float[] widths = new float[NUMBER_OF_PARTICLES];
 
     public LightSourceShaderBinder(ShaderProgram lightSourceShaderProgram) {
         this.prg = lightSourceShaderProgram;
@@ -54,6 +56,8 @@ public class LightSourceShaderBinder {
 
             this.r[i] = lightSourceDataIntFunction.apply(i).getR();
 
+            this.angles[i] = lightSourceDataIntFunction.apply(i).getAngle();
+            this.widths[i] = lightSourceDataIntFunction.apply(i).getWidth();
         }
 
         prg.setUniform2fv("light_sources", xy, 0, xy.length);
@@ -61,6 +65,9 @@ public class LightSourceShaderBinder {
         prg.setUniform1fv("types", this.types, 0, this.types.length);
         prg.setUniform1fv("radii", this.r, 0, this.r.length);
         prg.setUniformi("number_of_sources", numberLightSources);
+        prg.setUniform1fv("angles", angles, 0, this.angles.length);
+        prg.setUniform1fv("widths", widths, 0, this.widths.length);
+
     }
 
 }

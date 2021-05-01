@@ -12,6 +12,7 @@ import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.shaders.LightSourceDataImpl;
 import dev.kabin.shaders.LightSourceType;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
+import dev.kabin.util.functioninterfaces.FloatSupplier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -37,136 +38,132 @@ class ModifyShaderWindow {
         final var window = new Window("Actions", skin);
         es.receiveDragListenerFrom(window);
         final float width = 250;
-        final float height = 310;
+        final float height = 380;
         window.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f, width, height);
 
-        final int firstColumn = 60;
-        final int secondColumn = 170;
+        final int firstColumnX = 60;
+        final int secondColumnX = 170;
 
 
-        final var sliderX = makeSlider(firstColumn, 255, 100, 25, skin,
-                -128, 128, 1.0f, false, getLsd().getUnscaledXRelToAnchor(), getLsd()::setUnscaledXRelToAnchor);
-        window.addActor(sliderX);
-        final var tfX = makeTextField(secondColumn, 255, 50, 25, skin,
-                String.valueOf(getLsd().getUnscaledXRelToAnchor()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().setUnscaledXRelToAnchor(Float.parseFloat(s)));
-        window.addActor(tfX);
-        connect(sliderX, tfX, String::valueOf, Float::parseFloat);
+        addModifier("x",
+                skin,
+                window,
+                getLsd()::setUnscaledXRelToAnchor,
+                getLsd()::getUnscaledXRelToAnchor,
+                firstColumnX,
+                secondColumnX,
+                -128,
+                128,
+                1,
+                325);
 
-        final var sliderY = makeSlider(firstColumn, 220, 100, 25, skin,
-                -128, 128, 1.0f, false, getLsd().getUnscaledYRelToAnchor(), getLsd()::setUnscaledYRelToAnchor);
-        window.addActor(sliderY);
-        final var tfY = makeTextField(secondColumn, 220, 50, 25, skin,
-                String.valueOf(getLsd().getUnscaledYRelToAnchor()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().setUnscaledYRelToAnchor(Float.parseFloat(s)));
-        window.addActor(tfY);
-        connect(sliderY, tfY, String::valueOf, Float::parseFloat);
+        addModifier("y",
+                skin,
+                window,
+                getLsd()::setUnscaledYRelToAnchor,
+                getLsd()::getUnscaledYRelToAnchor,
+                firstColumnX,
+                secondColumnX,
+                -128,
+                128,
+                1,
+                290);
 
-        final var sliderR = makeSlider(firstColumn, 185, 100, 25, skin,
-                0f, 264, 1.0f, false, getLsd().getUnscaledR(), getLsd()::setUnscaledR);
-        window.addActor(sliderR);
-        final var tfR = makeTextField(secondColumn, 185, 50, 25, skin,
-                String.valueOf(getLsd().getR()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().setUnscaledR(Float.parseFloat(s)));
-        window.addActor(tfR);
-        connect(sliderR, tfR, String::valueOf, Float::parseFloat);
+        addModifier("r",
+                skin,
+                window,
+                getLsd()::setUnscaledR,
+                getLsd()::getUnscaledR,
+                firstColumnX,
+                secondColumnX,
+                0,
+                128,
+                1,
+                255);
 
-        final var red = makeSlider(firstColumn, 150, 100, 25, skin,
-                0, 1, 1f / 255, false, getLsd().getTint().red(), getLsd().getTint()::setRed);
-        window.addActor(red);
-        final var tfred = makeTextField(secondColumn, 150, 50, 25, skin,
-                String.valueOf(getLsd().getTint().red()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().setR(Float.parseFloat(s)));
-        window.addActor(tfred);
-        connect(red, tfred, String::valueOf, Float::parseFloat);
+        addModifier("angle",
+                skin,
+                window,
+                getLsd()::setAngle,
+                getLsd()::getAngle,
+                firstColumnX,
+                secondColumnX,
+                0,
+                360,
+                0.1f,
+                220);
 
-        final var green = makeSlider(firstColumn, 115, 100, 25, skin,
-                0, 1, 1f / 255, false, getLsd().getTint().green(), getLsd().getTint()::setGreen);
-        window.addActor(green);
-        final var tfgreen = makeTextField(secondColumn, 115, 50, 25, skin,
-                String.valueOf(getLsd().getTint().green()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().getTint().setGreen(Float.parseFloat(s)));
-        window.addActor(tfgreen);
-        connect(green, tfgreen, String::valueOf, Float::parseFloat);
+        addModifier("width",
+                skin,
+                window,
+                getLsd()::setWidth,
+                getLsd()::getWidth,
+                firstColumnX,
+                secondColumnX,
+                0,
+                360,
+                0.1f,
+                185);
 
-        final var blue = makeSlider(firstColumn, 80, 100, 25, skin,
-                0, 1, 1f / 255, false,
-                getLsd().getTint().blue(),
-                getLsd().getTint()::setBlue
-        );
-        window.addActor(blue);
-        final var tfblue = makeTextField(secondColumn, 80, 50, 25, skin,
-                String.valueOf(getLsd().getTint().blue()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> getLsd().getTint().setBlue(Float.parseFloat(s)));
-        window.addActor(tfblue);
-        connect(blue, tfblue, String::valueOf, Float::parseFloat);
+        addModifier("red",
+                skin,
+                window,
+                getLsd().getTint()::setRed,
+                getLsd().getTint()::red,
+                firstColumnX,
+                secondColumnX,
+                0,
+                1,
+                1f / 255,
+                150);
 
+        addModifier("green",
+                skin,
+                window,
+                getLsd().getTint()::setGreen,
+                getLsd().getTint()::green,
+                firstColumnX,
+                secondColumnX,
+                0,
+                1,
+                1f / 255,
+                115);
 
-        final var lx = new Label("x:", skin);
-        lx.setX(5);
-        lx.setY(255);
-        window.addActor(lx);
-
-
-        final var ly = new Label("y:", skin);
-        ly.setX(5);
-        ly.setY(220);
-        window.addActor(ly);
-
-
-        final var lr = new Label("r:", skin);
-        lr.setX(5);
-        lr.setY(185);
-        window.addActor(lr);
-
-
-        final var lred = new Label("red:", skin);
-        lred.setX(5);
-        lred.setY(150);
-        window.addActor(lred);
-
-
-        final var lgreen = new Label("green:", skin);
-        lgreen.setX(5);
-        lgreen.setY(115);
-        window.addActor(lgreen);
-
-
-        final var lblue = new Label("blue:", skin);
-        lblue.setX(5);
-        lblue.setY(80);
-        window.addActor(lblue);
+        addModifier("blue",
+                skin,
+                window,
+                getLsd().getTint()::setBlue,
+                getLsd().getTint()::blue,
+                firstColumnX,
+                secondColumnX,
+                0,
+                1,
+                1f / 255,
+                80);
 
 
-        final var selectBox = new SelectBox<String>(skin, "default");
-        selectBox.setItems(
+        final var typeSelectBox = new SelectBox<String>(skin, "default");
+        typeSelectBox.setItems(
                 Arrays.stream(LightSourceType.values())
                         .map(Enum::name)
                         .toArray(String[]::new)
         );
-        selectBox.setSelectedIndex(getLsd().getType().ordinal());
-        selectBox.setWidth(100);
-        selectBox.setHeight(25);
-        selectBox.setX(firstColumn);
-        selectBox.setY(45);
-        selectBox.addListener(new ClickListener() {
+        typeSelectBox.setSelectedIndex(getLsd().getType().ordinal());
+        typeSelectBox.setWidth(100);
+        typeSelectBox.setHeight(25);
+        typeSelectBox.setX(firstColumnX);
+        typeSelectBox.setY(45);
+        typeSelectBox.addListener(new ChangeListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                getLsd().setType(LightSourceType.values()[button]);
-                return true;
+            public void changed(ChangeEvent event, Actor actor) {
+                getLsd().setType(LightSourceType.valueOf(typeSelectBox.getSelected()));
             }
         });
-        window.addActor(selectBox);
+        window.addActor(typeSelectBox);
 
 
         final var changeButton = new TextButton("change", skin, "default");
-        changeButton.setX(firstColumn);
+        changeButton.setX(firstColumnX);
         changeButton.setY(10);
         changeButton.setWidth(100);
         changeButton.setHeight(25);
@@ -195,6 +192,32 @@ class ModifyShaderWindow {
                 .padRight(0).padTop(0);
         window.setModal(true);
         stage.addActor(window);
+    }
+
+    private void addModifier(String description,
+                             Skin skin,
+                             Window window,
+                             Consumer<Float> setter,
+                             FloatSupplier getter,
+                             int firstColumnX,
+                             int secondColumnX,
+                             float min,
+                             float max,
+                             float step,
+                             int y) {
+        final var desc = new Label(description, skin);
+        desc.setX(5);
+        desc.setY(y);
+        window.addActor(desc);
+        final var sliderX = makeSlider(firstColumnX, y, 100, 25, skin,
+                min, max, step, false, getter.get(), setter);
+        window.addActor(sliderX);
+        final var tfX = makeTextField(secondColumnX, y, 50, 25, skin,
+                String.valueOf(getter.get()),
+                (t, c) -> Character.isDefined(c) || c == '.',
+                s -> setter.accept(Float.parseFloat(s)));
+        window.addActor(tfX);
+        connect(sliderX, tfX, String::valueOf, Float::parseFloat);
     }
 
     private static void connect(Slider s,

@@ -5,13 +5,15 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import static dev.kabin.util.Functions.tryGet;
+
 public class LightSourceDataImpl implements LightSourceData, Scalable {
 
     private final Tint tint;
     private LightSourceType type;
-    private float x, y, r, scale, angle, arcSpan;
+    private float x, y, r, scale, angle, width;
 
-    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float scale, float angle, float arcSpan) {
+    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float scale, float angle, float width) {
         this.type = type;
         this.tint = tint;
         this.x = x;
@@ -19,16 +21,20 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
         this.r = r;
         this.scale = scale;
         this.angle = angle;
-        this.arcSpan = arcSpan;
+        this.width = width;
     }
 
     public static LightSourceDataImpl of(JSONObject o, float scale) {
         return new Builder()
-                .setR(o.getInt("r") * scale)
-                .setX(o.getInt("x") * scale)
-                .setY(o.getInt("y") * scale)
-                .setAngle(o.getFloat("angle"))
-                .setAngle(o.getFloat("arcSpan"))
+
+                // No big deal if some of these become zero...
+                .setR(tryGet(() -> o.getInt("r") * scale).orElse(0f))
+                .setX(tryGet(() -> o.getInt("x") * scale).orElse(0f))
+                .setY(tryGet(() -> o.getInt("y") * scale).orElse(0f))
+                .setAngle(tryGet(() -> o.getFloat("angle")).orElse(0f))
+                .setArcSpan(tryGet(() -> o.getFloat("arcSpan")).orElse(tryGet(() -> o.getFloat("width")).orElse(0f)))
+
+                // The rest should throw.
                 .setTint(Tint.of(o.getJSONObject("tint")))
                 .setType(o.getEnum(LightSourceType.class, "type"))
                 .setScale(scale)
@@ -92,6 +98,8 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
                 "x", Math.round(x / scale),
                 "y", Math.round(y / scale),
                 "r", Math.round(r / scale),
+                "angle", angle,
+                "width", width,
                 "type", type.name()
         ));
     }
@@ -107,13 +115,13 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
     }
 
     @Override
-    public float getArcSpan() {
-        return arcSpan;
+    public float getWidth() {
+        return width;
     }
 
     @Override
-    public void setArcSpan(float arcSpan) {
-        this.arcSpan = arcSpan;
+    public void setWidth(float width) {
+        this.width = width;
     }
 
     @Override

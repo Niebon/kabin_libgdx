@@ -12,9 +12,11 @@ import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 abstract class AbstractLibgdxEntity implements EntityLibgdx {
@@ -64,7 +66,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         lightSourceData = parameters.lightSourceData().stream()
                 .map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY))
                 .peek(l -> l.setScale(scale))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
