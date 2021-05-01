@@ -3,21 +3,21 @@ package dev.kabin.util.cell;
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
 
-public record CellParameters(int x,
-                             int y,
-                             int width,
-                             int height,
-                             float scaleFactor,
-                             boolean hasSubcomponents,
-                             int minimalCellSize,
-                             IntMatrixPool intMatrixPool,
-                             FloatMatrixPool floatMatrixPool) {
+record CellParameters(int x,
+                      int y,
+                      int width,
+                      int height,
+                      float scaleFactor,
+                      boolean hasSubcomponents,
+                      int minimalCellSize,
+                      IntMatrixPool intMatrixPool,
+                      FloatMatrixPool floatMatrixPool) {
 
-    public static Builder builder(int minimalCellSize) {
+    static Builder builder(int minimalCellSize) {
         return new Builder(minimalCellSize);
     }
 
-    public static class Builder {
+    static class Builder {
 
         private int x, y;
         private int width, height;

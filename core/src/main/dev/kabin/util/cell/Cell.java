@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
  * [minX, maxX) x [minY, maxY). A point in then said to be contained in a component
  * if it is contained in [minX, maxX) x [minY, maxY) for that component.
  */
-public class Cell implements Id {
+public final class Cell implements Id {
 
     // Statics:
     private static final Logger logger = Logger.getLogger(Cell.class.getName());
@@ -97,9 +97,7 @@ public class Cell implements Id {
         // One has subcomponents <=> all have subcomponents.
         if (cellParametersList.get(0).hasSubcomponents()) {
 
-            subCells = cellParametersList.stream()
-                    .map(Cell::new)
-                    .toArray(Cell[]::new);
+            subCells = cellParametersList.stream().map(Cell::new).toArray(Cell[]::new);
 
             final int midPointX = minX + parameters.width() / 2;
             final int midPointY = minY + parameters.height() / 2;
@@ -195,7 +193,6 @@ public class Cell implements Id {
         if (index == 2 || index == 3) return 1;
         throw new IllegalArgumentException();
     }
-
 
     @NotNull
     public static Cell makeRepresentationOf(int width,

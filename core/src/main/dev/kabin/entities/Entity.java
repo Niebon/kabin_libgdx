@@ -9,6 +9,8 @@ import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * An entity represents an actor in the game that has coordinates and a sprite.
  *
@@ -134,9 +136,9 @@ public interface Entity<
     float getAvgMassCenterY();
 
     /**
-     * @return the light source data associated with this instance. This is used for shaders.
+     * @return a list of light source data associated with this instance. This is used for shaders.
      */
-    LightSourceData getLightSourceData();
+    List<? extends LightSourceData> getLightSourceData();
 
 
 }

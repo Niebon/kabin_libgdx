@@ -1,108 +1,72 @@
 {
   "entities": [
     {
+      "light_sources": [],
       "atlas_path": "background",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "y": 0,
       "type": "STATIC_BACKGROUND",
       "layer": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "spruce",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 73,
       "y": -56,
       "type": "ENTITY_INANIMATE",
       "layer": -2
     },
     {
-      "atlas_path": "torch",
-      "light_source": {
-        "x": 0,
-        "y": 10,
-        "r": 70,
-        "type": "SPHERE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
+      "light_sources": [
+        {
+          "x": 0,
+          "y": 10,
+          "r": 70,
+          "type": "SPHERE",
+          "tint": {
+            "r": 1,
+            "b": 1,
+            "g": 1
+          }
         }
-      },
+      ],
+      "atlas_path": "torch",
       "x": 4,
       "y": -23,
       "type": "ENTITY_INANIMATE",
       "layer": 0
     },
     {
-      "atlas_path": "torch",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 70,
-        "type": "SPHERE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
+      "light_sources": [
+        {
+          "x": 0,
+          "y": 0,
+          "r": 70,
+          "type": "SPHERE",
+          "tint": {
+            "r": 1,
+            "b": 1,
+            "g": 1
+          }
         }
-      },
+      ],
+      "atlas_path": "torch",
       "x": 125,
       "y": -56,
       "type": "ENTITY_INANIMATE",
       "layer": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "player",
-      "light_source": {
-        "x": 0,
-        "y": 10,
-        "r": 50,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 49,
       "y": -55,
       "type": "PLAYER",
       "layer": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "SURFACE",
       "y": -32,
@@ -111,18 +75,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "SURFACE",
       "y": -32,
@@ -131,18 +85,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "SURFACE",
       "y": -32,
@@ -151,18 +95,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "SURFACE",
       "y": -32,
@@ -171,18 +105,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "SURFACE",
       "y": -32,
@@ -191,18 +115,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "SURFACE",
       "y": -32,
@@ -211,18 +125,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "DIAGONAL_45",
       "y": -32,
@@ -231,18 +135,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER_135",
       "y": -48,
@@ -251,18 +145,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "DIAGONAL_45",
       "y": -48,
@@ -271,18 +155,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -64,
@@ -291,18 +165,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -48,
@@ -311,18 +175,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -48,
@@ -331,18 +185,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -48,
@@ -351,18 +195,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -48,
@@ -371,18 +205,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -48,
@@ -391,18 +215,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -64,
@@ -411,18 +225,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -64,
@@ -431,18 +235,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -64,
@@ -451,18 +245,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -64,
@@ -471,18 +255,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -64,
@@ -491,18 +265,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -96,
@@ -511,18 +275,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -96,
@@ -531,18 +285,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -96,
@@ -551,18 +295,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -96,
@@ -571,18 +305,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -96,
@@ -591,18 +315,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -80,
@@ -611,18 +325,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -80,
@@ -631,18 +335,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -80,
@@ -651,18 +345,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -80,
@@ -671,18 +355,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -96,
@@ -691,18 +365,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -96,
@@ -711,18 +375,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -80,
@@ -731,18 +385,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -80,
@@ -751,18 +395,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -80,
@@ -771,18 +405,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -80,
@@ -791,18 +415,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "INNER",
       "y": -80,
@@ -811,18 +425,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "INNER",
       "y": -80,
@@ -831,18 +435,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "SURFACE",
       "y": -64,
@@ -851,18 +445,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -176,
       "tile": "SURFACE",
       "y": -64,
@@ -871,18 +455,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER_135",
       "y": -64,
@@ -891,18 +465,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "SURFACE",
       "y": -64,
@@ -911,18 +475,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "SURFACE",
       "y": -64,
@@ -931,18 +485,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "SURFACE",
       "y": -64,
@@ -951,18 +495,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "SURFACE",
       "y": -64,
@@ -971,18 +505,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 112,
       "tile": "SURFACE",
       "y": -64,
@@ -991,18 +515,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -80,
@@ -1011,18 +525,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -80,
@@ -1031,18 +535,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -80,
@@ -1051,18 +545,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "INNER",
       "y": -80,
@@ -1071,18 +555,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 128,
       "tile": "SURFACE",
       "y": -64,
@@ -1091,18 +565,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 144,
       "tile": "SURFACE",
       "y": -64,
@@ -1111,18 +575,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 160,
       "tile": "SURFACE",
       "y": -64,
@@ -1131,18 +585,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 176,
       "tile": "SURFACE",
       "y": -80,
@@ -1151,18 +595,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 192,
       "tile": "SURFACE",
       "y": -80,
@@ -1171,18 +605,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 208,
       "tile": "SURFACE",
       "y": -80,
@@ -1191,18 +615,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 224,
       "tile": "SURFACE",
       "y": -80,
@@ -1211,18 +625,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 112,
       "tile": "INNER",
       "y": -80,
@@ -1231,18 +635,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 128,
       "tile": "INNER",
       "y": -80,
@@ -1251,18 +645,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 144,
       "tile": "INNER",
       "y": -80,
@@ -1271,18 +655,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 160,
       "tile": "INNER",
       "y": -80,
@@ -1291,18 +665,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -96,
@@ -1311,18 +675,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "INNER",
       "y": -96,
@@ -1331,18 +685,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "INNER",
       "y": -96,
@@ -1351,18 +695,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "INNER",
       "y": -96,
@@ -1371,18 +705,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 112,
       "tile": "INNER",
       "y": -96,
@@ -1391,18 +715,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 128,
       "tile": "INNER",
       "y": -96,
@@ -1411,18 +725,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 144,
       "tile": "INNER",
       "y": -96,
@@ -1431,18 +735,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 160,
       "tile": "INNER",
       "y": -96,
@@ -1451,18 +745,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 176,
       "tile": "INNER",
       "y": -96,
@@ -1471,18 +755,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 192,
       "tile": "INNER",
       "y": -96,
@@ -1491,18 +765,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 208,
       "tile": "INNER",
       "y": -96,
@@ -1511,18 +775,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 192,
       "tile": "INNER",
       "y": -112,
@@ -1531,18 +785,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 176,
       "tile": "INNER",
       "y": -112,
@@ -1551,18 +795,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 160,
       "tile": "INNER",
       "y": -112,
@@ -1571,18 +805,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 144,
       "tile": "INNER",
       "y": -112,
@@ -1591,18 +815,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 128,
       "tile": "INNER",
       "y": -112,
@@ -1611,18 +825,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 112,
       "tile": "INNER",
       "y": -112,
@@ -1631,18 +835,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "INNER",
       "y": -128,
@@ -1651,18 +845,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "INNER",
       "y": -128,
@@ -1671,18 +855,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "INNER",
       "y": -128,
@@ -1691,18 +865,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -112,
@@ -1711,18 +875,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -112,
@@ -1731,18 +885,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -128,
@@ -1751,18 +895,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -128,
@@ -1771,18 +905,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -128,
@@ -1791,18 +915,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -128,
@@ -1811,18 +925,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -128,
@@ -1831,18 +935,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -128,
@@ -1851,18 +945,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -112,
@@ -1871,18 +955,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "INNER",
       "y": -112,
@@ -1891,18 +965,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "INNER",
       "y": -112,
@@ -1911,18 +975,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "INNER",
       "y": -112,
@@ -1931,18 +985,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -112,
@@ -1951,18 +995,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -112,
@@ -1971,18 +1005,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -112,
@@ -1991,18 +1015,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -112,
@@ -2011,18 +1025,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -112,
@@ -2031,18 +1035,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -112,
@@ -2051,18 +1045,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -112,
@@ -2071,18 +1055,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -128,
@@ -2091,18 +1065,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -128,
@@ -2111,18 +1075,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -128,
@@ -2131,18 +1085,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -128,
@@ -2151,18 +1095,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -128,
@@ -2171,18 +1105,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "INNER",
       "y": -96,
@@ -2191,18 +1115,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "INNER",
       "y": -80,
@@ -2211,18 +1125,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -80,
@@ -2231,18 +1135,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -96,
@@ -2251,18 +1145,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -96,
@@ -2271,18 +1155,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -96,
@@ -2291,18 +1165,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -96,
@@ -2311,18 +1175,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -112,
@@ -2331,18 +1185,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -112,
@@ -2351,18 +1195,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "INNER",
       "y": -112,
@@ -2371,18 +1205,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -176,
       "tile": "INNER",
       "y": -112,
@@ -2391,18 +1215,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -224,
       "tile": "INNER",
       "y": -80,
@@ -2411,18 +1225,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -208,
       "tile": "INNER",
       "y": -80,
@@ -2431,18 +1235,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -208,
       "tile": "INNER",
       "y": -112,
@@ -2451,18 +1245,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -192,
       "tile": "INNER",
       "y": -112,
@@ -2471,18 +1255,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "INNER",
       "y": -80,
@@ -2491,18 +1265,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -192,
       "tile": "INNER",
       "y": -80,
@@ -2511,18 +1275,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -176,
       "tile": "INNER",
       "y": -80,
@@ -2531,18 +1285,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -176,
       "tile": "INNER",
       "y": -96,
@@ -2551,18 +1295,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "INNER",
       "y": -96,
@@ -2571,18 +1305,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "INNER",
       "y": -112,
@@ -2591,18 +1315,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -128,
@@ -2611,18 +1325,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "INNER",
       "y": -128,
@@ -2631,18 +1335,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "INNER",
       "y": -128,
@@ -2651,18 +1345,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -176,
       "tile": "INNER",
       "y": -128,
@@ -2671,18 +1355,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -224,
       "tile": "INNER",
       "y": -128,
@@ -2691,18 +1365,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -192,
       "tile": "INNER",
       "y": -96,
@@ -2711,18 +1375,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -208,
       "tile": "INNER",
       "y": -96,
@@ -2731,18 +1385,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -224,
       "tile": "INNER",
       "y": -96,
@@ -2751,18 +1395,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -240,
       "tile": "INNER",
       "y": -80,
@@ -2771,18 +1405,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -256,
       "tile": "INNER",
       "y": -80,
@@ -2791,18 +1415,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -288,
       "tile": "INNER",
       "y": -80,
@@ -2811,18 +1425,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -272,
       "tile": "INNER",
       "y": -80,
@@ -2831,18 +1435,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -272,
       "tile": "INNER",
       "y": -96,
@@ -2851,18 +1445,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -256,
       "tile": "INNER",
       "y": -96,
@@ -2871,18 +1455,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -240,
       "tile": "INNER",
       "y": -96,
@@ -2891,18 +1465,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -240,
       "tile": "INNER",
       "y": -112,
@@ -2911,18 +1475,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -224,
       "tile": "INNER",
       "y": -112,
@@ -2931,18 +1485,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -208,
       "tile": "INNER",
       "y": -128,
@@ -2951,18 +1495,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -192,
       "tile": "INNER",
       "y": -128,
@@ -2971,18 +1505,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -160,
       "tile": "INNER",
       "y": -144,
@@ -2991,18 +1515,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -144,
@@ -3011,18 +1525,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -144,
@@ -3031,18 +1535,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -144,
@@ -3051,18 +1545,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -144,
@@ -3071,18 +1555,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -144,
@@ -3091,18 +1565,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -144,
@@ -3111,18 +1575,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -144,
       "tile": "INNER",
       "y": -144,
@@ -3131,18 +1585,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -144,
@@ -3151,18 +1595,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -128,
       "tile": "INNER",
       "y": -160,
@@ -3171,18 +1605,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -112,
       "tile": "INNER",
       "y": -160,
@@ -3191,18 +1615,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -96,
       "tile": "INNER",
       "y": -160,
@@ -3211,18 +1625,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -80,
       "tile": "INNER",
       "y": -160,
@@ -3231,18 +1635,8 @@
       "frame_index": 6
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -64,
       "tile": "INNER",
       "y": -160,
@@ -3251,18 +1645,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -176,
@@ -3271,18 +1655,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -176,
@@ -3291,18 +1665,8 @@
       "frame_index": 4
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -160,
@@ -3311,18 +1675,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "INNER",
       "y": -144,
@@ -3331,18 +1685,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -144,
@@ -3351,18 +1695,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -160,
@@ -3371,18 +1705,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -160,
@@ -3391,18 +1715,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -48,
       "tile": "INNER",
       "y": -160,
@@ -3411,18 +1725,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -32,
       "tile": "INNER",
       "y": -160,
@@ -3431,18 +1735,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -144,
@@ -3451,18 +1745,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -144,
@@ -3471,18 +1755,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": -16,
       "tile": "INNER",
       "y": -144,
@@ -3491,18 +1765,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -144,
@@ -3511,18 +1775,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER",
       "y": -160,
@@ -3531,18 +1785,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "INNER",
       "y": -160,
@@ -3551,18 +1795,8 @@
       "frame_index": 7
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 80,
       "tile": "INNER",
       "y": -160,
@@ -3571,18 +1805,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 96,
       "tile": "INNER",
       "y": -160,
@@ -3591,18 +1815,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 64,
       "tile": "SURFACE",
       "y": -64,
@@ -3611,18 +1825,8 @@
       "frame_index": 5
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "INNER_45",
       "y": -64,
@@ -3631,18 +1835,8 @@
       "frame_index": 1
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER_45",
       "y": -48,
@@ -3651,18 +1845,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "INNER",
       "y": -64,
@@ -3671,18 +1855,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 48,
       "tile": "SURFACE",
       "y": -64,
@@ -3691,18 +1865,8 @@
       "frame_index": 3
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 16,
       "tile": "DIAGONAL_135",
       "y": -32,
@@ -3711,18 +1875,8 @@
       "frame_index": 0
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 32,
       "tile": "DIAGONAL_135",
       "y": -48,
@@ -3731,18 +1885,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -48,
@@ -3751,18 +1895,8 @@
       "frame_index": 2
     },
     {
+      "light_sources": [],
       "atlas_path": "ground",
-      "light_source": {
-        "x": 0,
-        "y": 0,
-        "r": 0,
-        "type": "NONE",
-        "tint": {
-          "b": 1,
-          "r": 1,
-          "g": 1
-        }
-      },
       "x": 0,
       "tile": "INNER",
       "y": -64,
@@ -3771,6 +1905,6 @@
       "frame_index": 2
     }
   ],
-  "worldSizeY": 32768,
-  "worldSizeX": 32768
+  "worldSizeY": 65536,
+  "worldSizeX": 65536
 }

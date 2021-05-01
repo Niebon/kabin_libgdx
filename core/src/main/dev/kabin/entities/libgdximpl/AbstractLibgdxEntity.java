@@ -12,6 +12,7 @@ import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,10 +32,9 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final RectIntView positionNbdView;
     private final MutableRectInt graphicsNbd;
     private final RectIntView graphicsNbdView;
-    private float x, y, scale;
     private final EntityType type;
-    private final AnchoredLightSourceData lightSourceData;
-
+    private final List<AnchoredLightSourceData> lightSourceData;
+    private float x, y, scale;
     // Class variables:
     private int layer;
 
@@ -61,12 +61,14 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
-        lightSourceData = AnchoredLightSourceData.ofNullables(parameters.lightSourceData(), this::getX, this::getY);
-        lightSourceData.setScale(scale);
+        lightSourceData = parameters.lightSourceData().stream()
+                .map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY))
+                .peek(l -> l.setScale(scale))
+                .toList();
     }
 
     @Override
-    public final AnchoredLightSourceData getLightSourceData() {
+    public final List<AnchoredLightSourceData> getLightSourceData() {
         return lightSourceData;
     }
 
@@ -111,6 +113,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
         animationPlaybackImpl.setPos(graphicsRootX, graphicsRootY);
         animationPlaybackImpl.setScale(params.scale());
+
         // Sets the canonical shader for the group of this.
         animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
         animationPlaybackImpl.renderNextAnimationFrame(params);
@@ -220,13 +223,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public JSONObject toJSONObject() {
-        final JSONObject returnValue = new JSONObject()
+        return new JSONObject()
                 .put("x", getUnscaledX())
                 .put("y", getUnscaledY())
                 .put("atlas_path", atlasPath)
                 .put("layer", getLayer())
-                .put("type", getType().name());
-        return lightSourceData == null ? returnValue : returnValue.put("light_source", lightSourceData.toJSONObject());
+                .put("type", getType().name())
+                .put("light_sources", lightSourceData.stream().map(AnchoredLightSourceData::toJSONObject).toList());
     }
 
     @Override

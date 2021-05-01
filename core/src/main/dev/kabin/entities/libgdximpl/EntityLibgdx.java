@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.entities.Entity;
 import dev.kabin.shaders.AnchoredLightSourceData;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,6 +18,6 @@ public interface EntityLibgdx extends Entity<EntityGroup, EntityType, GraphicsPa
     Optional<Actor> getActor();
 
     @Override
-    AnchoredLightSourceData getLightSourceData();
+    List<AnchoredLightSourceData> getLightSourceData();
 
 }

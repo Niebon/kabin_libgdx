@@ -15,8 +15,8 @@ import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.physics.PhysicsEngine;
+import dev.kabin.shaders.LightSourceData;
 import dev.kabin.shaders.LightSourceShaderBinder;
-import dev.kabin.shaders.LightSourceType;
 import dev.kabin.shaders.ShaderFactory;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
@@ -216,20 +216,16 @@ public class MainGame extends ApplicationAdapter {
             {
                 final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
                 final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
-                final ArrayList<EntityLibgdx> shaderEntities = new ArrayList<>();
-                getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> {
-                    if (e.getLightSourceData().getType() != LightSourceType.NONE) {
-                        shaderEntities.add(e);
-                    }
-                });
+                final ArrayList<LightSourceData> lightSourceData = new ArrayList<>();
+                getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> lightSourceData.addAll(e.getLightSourceData()));
 
                 final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
                 final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;
                 lssBinder.bindData(
-                        i -> shaderEntities.get(i).getLightSourceData(),
+                        lightSourceData::get,
                         camXMinusHalfWidth,
                         camYMinusHalfHeight,
-                        Math.min(64, shaderEntities.size())
+                        Math.min(64, lightSourceData.size())
                 );
                 lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
             }

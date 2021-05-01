@@ -5,10 +5,23 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+/**
+ * An anchored light source data is a wrapper for a light source data that is attached relative
+ * to an anchor. The anchor may be modifiable, as such the anchor is supplied by lambdas.
+ */
 public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
                                       FloatSupplier anchorX,
                                       FloatSupplier anchorY) implements LightSourceData {
 
+    /**
+     * A helper constructors that accepts null values and which, if null values are provided,
+     * supplies nonnull values for these instead.
+     *
+     * @param lightSourceData the light source value.
+     * @param anchorX         the anchor for the horizontal coordinate.
+     * @param anchorY         the anchor for the vertical coordinate.
+     * @return a new instance of an anchored light source data.
+     */
     public static AnchoredLightSourceData ofNullables(LightSourceDataImpl lightSourceData,
                                                       FloatSupplier anchorX,
                                                       FloatSupplier anchorY) {
@@ -72,12 +85,12 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
         return lightSourceData.getUnscaledY();
     }
 
-    public void setXRelToAnchor(float x) {
-        lightSourceData.setX(x);
+    public void setUnscaledXRelToAnchor(float x) {
+        lightSourceData.setX(x * lightSourceData.getScale());
     }
 
-    public void setYRelToAnchor(float y) {
-        lightSourceData.setY(y);
+    public void setUnscaledYRelToAnchor(float y) {
+        lightSourceData.setY(y * lightSourceData.getScale());
     }
 
     @Override

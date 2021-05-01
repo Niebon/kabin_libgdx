@@ -6,11 +6,13 @@ import dev.kabin.shaders.LightSourceDataImpl;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
-                               LightSourceDataImpl lightSourceData,
+                               List<LightSourceDataImpl> lightSourceData,
                                Map<String, Object> backingMap,
                                TextureAtlas textureAtlas,
                                EntityType type,
@@ -43,7 +45,7 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
         private TextureAtlas textureAtlas;
         private EntityType type;
         private ImageMetadataPoolLibgdx imageAnalysisPool;
-        private LightSourceDataImpl lightSourceData;
+        private List<LightSourceDataImpl> lightSourceData;
 
         private Builder(JSONObject o, float scale) {
             this.scale = scale;
@@ -51,9 +53,11 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
             y = o.getInt("y") * scale;
             atlasPath = o.getString("atlas_path");
             layer = o.getInt("layer");
-            lightSourceData = LightSourceDataImpl.of(
-                    o.getJSONObject("light_source"),
-                    scale);
+            lightSourceData = StreamSupport.stream(o.getJSONArray("light_sources").spliterator(), false)
+                    .map(JSONObject.class::cast)
+                    .map(jso -> LightSourceDataImpl.of(jso, scale))
+                    .toList();
+
             // Miscellaneous:
             backingMap.putAll(o.toMap());
         }
@@ -62,7 +66,7 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
 
         }
 
-        public Builder setLightSourceData(LightSourceDataImpl lightSourceData) {
+        public Builder setLightSourceDataList(List<LightSourceDataImpl> lightSourceData) {
             this.lightSourceData = lightSourceData;
             return this;
         }

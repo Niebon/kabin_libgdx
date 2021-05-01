@@ -60,7 +60,7 @@ public class Tint implements JSONSerializable {
      * @param green the green value.
      * @param blue  the blue value.
      */
-    public void shift(float red, float green, float blue) {
+    public void set(float red, float green, float blue) {
         float r = (float) Math.sqrt(red * red + green * green + blue * blue);
         this.red = red / r;
         this.green = green / r;
