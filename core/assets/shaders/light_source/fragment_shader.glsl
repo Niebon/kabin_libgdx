@@ -69,6 +69,9 @@ void main() {
                 }
                 break;
             }
+            case BEAM: {
+                // TODO: implement
+            }
             default : {
                 break;
             }
