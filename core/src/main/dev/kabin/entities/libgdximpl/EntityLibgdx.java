@@ -3,8 +3,10 @@ package dev.kabin.entities.libgdximpl;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.entities.Entity;
 import dev.kabin.shaders.AnchoredLightSourceData;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -18,6 +20,29 @@ public interface EntityLibgdx extends Entity<EntityGroup, EntityType, GraphicsPa
     Optional<Actor> getActor();
 
     @Override
-    List<AnchoredLightSourceData> getLightSourceData();
+    @UnmodifiableView
+    List<AnchoredLightSourceData> getLightSourceDataList();
+
+    /**
+     * @return an unmodifiable map of light source data.
+     */
+    @UnmodifiableView
+    Map<String, AnchoredLightSourceData> getLightSourceDataMap();
+
+    /**
+     * Registers the a light source data of the given name.
+     *
+     * @param name            the name of the light source to be registered.
+     * @param lightSourceData the actual light source.
+     */
+    void addLightSourceData(String name, AnchoredLightSourceData lightSourceData);
+
+
+    /**
+     * Removes the given light source data from this instance.
+     *
+     * @param name the name of the light source data to remove.
+     */
+    void removeLightSourceData(String name);
 
 }

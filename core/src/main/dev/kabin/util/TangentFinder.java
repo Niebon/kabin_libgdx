@@ -1,6 +1,6 @@
 package dev.kabin.util;
 
-import dev.kabin.util.functioninterfaces.BiIntPredicate;
+import dev.kabin.util.fp.BiIntPredicate;
 
 import java.util.HashMap;
 import java.util.Map;

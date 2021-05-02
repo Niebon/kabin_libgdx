@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.HalfOpenRectangle;
-import dev.kabin.util.functioninterfaces.BiIntPredicate;
+import dev.kabin.util.fp.BiIntPredicate;
 import dev.kabin.util.points.ImmutablePointInt;
 import dev.kabin.util.points.PointInt;
 import org.jetbrains.annotations.NotNull;

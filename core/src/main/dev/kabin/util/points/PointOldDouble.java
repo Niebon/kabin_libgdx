@@ -1,7 +1,7 @@
 package dev.kabin.util.points;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.functioninterfaces.DoubleToDoubleFunction;
+import dev.kabin.util.fp.DoubleToDoubleFunction;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

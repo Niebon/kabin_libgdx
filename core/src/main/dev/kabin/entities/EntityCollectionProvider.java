@@ -2,11 +2,11 @@ package dev.kabin.entities;
 
 
 import dev.kabin.util.Functions;
+import dev.kabin.util.fp.Function;
 
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -34,7 +34,7 @@ public class EntityCollectionProvider<T extends Enum<T> & Layer, E extends Entit
         collectionMap = Arrays
                 .stream(groupTypeClass.getEnumConstants())
                 .collect(Collectors.toMap(
-                        Function.identity(),
+                        Function::identity,
                         val -> new ArrayList<>(),
                         Functions::projectLeft,
                         () -> new EnumMap<>(groupTypeClass)

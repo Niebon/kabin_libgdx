@@ -1,4 +1,4 @@
-package dev.kabin.util.functioninterfaces;
+package dev.kabin.util.fp;
 
 @FunctionalInterface
 public interface FloatToFloatFunction {

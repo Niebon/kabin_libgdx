@@ -1,7 +1,7 @@
 package dev.kabin.util.linalg;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.functioninterfaces.IntBinaryOperator;
+import dev.kabin.util.fp.IntBinaryOperator;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public final class IntMatrix {
         var floatMatrix = new IntMatrix(width, height);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                floatMatrix.set(i, j, dataSupplier.eval(i, j));
+                floatMatrix.set(i, j, dataSupplier.apply(i, j));
             }
         }
         return floatMatrix;

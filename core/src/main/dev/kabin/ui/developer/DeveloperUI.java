@@ -20,8 +20,8 @@ import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLi
 import dev.kabin.util.Functions;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
-import dev.kabin.util.functioninterfaces.BooleanSupplier;
-import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.fp.BooleanSupplier;
+import dev.kabin.util.fp.FloatSupplier;
 import dev.kabin.util.shapes.primitive.RectInt;
 import org.json.JSONObject;
 

@@ -2,7 +2,7 @@ package dev.kabin.util.cell;
 
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
-import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.util.fp.FloatUnaryOperation;
 import dev.kabin.util.linalg.FloatMatrix;
 import dev.kabin.util.linalg.IntMatrix;
 import dev.kabin.util.points.PointInt;
@@ -106,8 +106,8 @@ class CellTest {
 
 
                     if (type == Cell.Data.VECTOR_FIELD_X || type == Cell.Data.VECTOR_FIELD_Y) {
-                        FloatUnaryOperation operateX = type == Cell.Data.VECTOR_FIELD_X ? f -> f + 1f : FloatUnaryOperation.TRIVIAL;
-                        FloatUnaryOperation operateY = type == Cell.Data.VECTOR_FIELD_Y ? f -> f + 1f : FloatUnaryOperation.TRIVIAL;
+                        FloatUnaryOperation operateX = type == Cell.Data.VECTOR_FIELD_X ? f -> f + 1f : FloatUnaryOperation::identity;
+                        FloatUnaryOperation operateY = type == Cell.Data.VECTOR_FIELD_Y ? f -> f + 1f : FloatUnaryOperation::identity;
                         mainCell.modifyVectorFieldAt(x, y, operateX, operateY);
                         final float expected = 1.0f;
                         Assertions.assertEquals(expected, mainCell.getDataFloat(pointInt.x(), pointInt.y(), type), 0.01f,
@@ -125,8 +125,8 @@ class CellTest {
 
 
                     if (type == Cell.Data.VECTOR_FIELD_X || type == Cell.Data.VECTOR_FIELD_Y) {
-                        FloatUnaryOperation operateX = type == Cell.Data.VECTOR_FIELD_X ? f -> f - 1f : FloatUnaryOperation.TRIVIAL;
-                        FloatUnaryOperation operateY = type == Cell.Data.VECTOR_FIELD_Y ? f -> f - 1f : FloatUnaryOperation.TRIVIAL;
+                        FloatUnaryOperation operateX = type == Cell.Data.VECTOR_FIELD_X ? f -> f - 1f : FloatUnaryOperation::identity;
+                        FloatUnaryOperation operateY = type == Cell.Data.VECTOR_FIELD_Y ? f -> f - 1f : FloatUnaryOperation::identity;
                         mainCell.modifyVectorFieldAt(x, y, operateX, operateY);
                         final float expected = 0.0f;
                         Assertions.assertEquals(expected, mainCell.getDataFloat(pointInt.x(), pointInt.y(), type), 0.01f,

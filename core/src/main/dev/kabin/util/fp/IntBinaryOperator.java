@@ -1,4 +1,4 @@
-package dev.kabin.util.functioninterfaces;
+package dev.kabin.util.fp;
 
 /*
  * Javas implementation leads to silly warnings for parameter names if the provided parameter name does not
@@ -7,5 +7,5 @@ package dev.kabin.util.functioninterfaces;
 @FunctionalInterface
 public
 interface IntBinaryOperator {
-    int eval(int x, int y);
+    int apply(int x, int y);
 }

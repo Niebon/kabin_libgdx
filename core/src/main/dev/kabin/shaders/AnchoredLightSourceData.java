@@ -1,6 +1,6 @@
 package dev.kabin.shaders;
 
-import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.fp.FloatSupplier;
 import org.json.JSONObject;
 
 import java.util.Objects;
@@ -91,6 +91,10 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
         return lightSourceData.getUnscaledX();
     }
 
+    public void setUnscaledXRelToAnchor(float x) {
+        lightSourceData.setX(x * lightSourceData.getScale());
+    }
+
     @Override
     public float getY() {
         return lightSourceData.getY() + anchorY.get();
@@ -103,10 +107,6 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
 
     public float getUnscaledYRelToAnchor() {
         return lightSourceData.getUnscaledY();
-    }
-
-    public void setUnscaledXRelToAnchor(float x) {
-        lightSourceData.setX(x * lightSourceData.getScale());
     }
 
     public void setUnscaledYRelToAnchor(float y) {

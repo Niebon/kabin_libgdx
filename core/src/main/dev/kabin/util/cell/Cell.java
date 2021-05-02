@@ -4,9 +4,9 @@ package dev.kabin.util.cell;
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
 import dev.kabin.util.collections.Id;
-import dev.kabin.util.functioninterfaces.BiIntToFloatFunction;
-import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
-import dev.kabin.util.functioninterfaces.IntBinaryOperator;
+import dev.kabin.util.fp.BiIntToFloatFunction;
+import dev.kabin.util.fp.FloatUnaryOperation;
+import dev.kabin.util.fp.IntBinaryOperator;
 import dev.kabin.util.linalg.FloatMatrix;
 import dev.kabin.util.linalg.IntMatrix;
 import dev.kabin.util.shapes.primitive.ImmutableRectInt;
@@ -269,7 +269,7 @@ public final class Cell implements Id {
     }
 
     public int getDataInt(int x, int y, @NotNull Cell.Data key) {
-        return intDataMapperByKey.get(key).eval(x, y);
+        return intDataMapperByKey.get(key).apply(x, y);
     }
 
 
@@ -279,11 +279,11 @@ public final class Cell implements Id {
     }
 
     public int getCollision(int x, int y) {
-        return intDataMapperByKey.get(Data.COLLISION).eval(x, y);
+        return intDataMapperByKey.get(Data.COLLISION).apply(x, y);
     }
 
     public int getLadder(int x, int y) {
-        return intDataMapperByKey.get(Data.LADDER).eval(x, y);
+        return intDataMapperByKey.get(Data.LADDER).apply(x, y);
     }
 
     public float getVectorFieldX(int x, int y) {

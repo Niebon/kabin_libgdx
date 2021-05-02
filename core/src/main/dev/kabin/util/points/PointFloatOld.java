@@ -1,7 +1,7 @@
 package dev.kabin.util.points;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.functioninterfaces.FloatUnaryOperation;
+import dev.kabin.util.fp.FloatUnaryOperation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

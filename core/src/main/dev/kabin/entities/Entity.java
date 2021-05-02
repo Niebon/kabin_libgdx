@@ -136,9 +136,9 @@ public interface Entity<
     float getAvgMassCenterY();
 
     /**
-     * @return a list of light source data associated with this instance. This is used for shaders.
+     * @return an unmodifiable list light source data associated with this instance. This is used for shaders.
      */
-    List<? extends LightSourceData> getLightSourceData();
+    List<? extends LightSourceData> getLightSourceDataList();
 
 
 }

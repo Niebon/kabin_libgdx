@@ -6,14 +6,18 @@ import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx;
 import dev.kabin.shaders.AnchoredLightSourceData;
+import dev.kabin.util.NamedObj;
+import dev.kabin.util.collections.LazyList;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -35,7 +39,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final MutableRectInt graphicsNbd;
     private final RectIntView graphicsNbdView;
     private final EntityType type;
-    private final List<AnchoredLightSourceData> lightSourceData;
+    private final List<NamedObj<AnchoredLightSourceData>> namedLightSourceDataList;
+    private final LazyList<AnchoredLightSourceData> lightSourceDataList;
     private float x, y, scale;
     // Class variables:
     private int layer;
@@ -63,15 +68,34 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
         }
-        lightSourceData = parameters.lightSourceData().stream()
-                .map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY))
-                .peek(l -> l.setScale(scale))
+        namedLightSourceDataList = parameters.lightSourceData().stream()
+                .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY)))
+                .peek(namedLsd -> namedLsd.obj().setScale(scale))
                 .collect(Collectors.toCollection(ArrayList::new));
+        lightSourceDataList = new LazyList<>(i -> namedLightSourceDataList.get(i).obj(), namedLightSourceDataList.size());
+    }
+
+    @UnmodifiableView
+    @Override
+    public final List<AnchoredLightSourceData> getLightSourceDataList() {
+        return lightSourceDataList;
     }
 
     @Override
-    public final List<AnchoredLightSourceData> getLightSourceData() {
-        return lightSourceData;
+    public Map<String, AnchoredLightSourceData> getLightSourceDataMap() {
+        return namedLightSourceDataList.stream().collect(Collectors.toMap(NamedObj::name, NamedObj::obj));
+    }
+
+    @Override
+    public void addLightSourceData(String name, AnchoredLightSourceData lightSourceData) {
+        if (namedLightSourceDataList.stream().noneMatch(nlsd -> nlsd.name().equals(name))) {
+            namedLightSourceDataList.add(new NamedObj<>(lightSourceData, name));
+        }
+    }
+
+    @Override
+    public void removeLightSourceData(String name) {
+        namedLightSourceDataList.removeIf(nlsd -> nlsd.name().equals(name));
     }
 
     @Override
@@ -231,7 +255,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
                 .put("atlas_path", atlasPath)
                 .put("layer", getLayer())
                 .put("type", getType().name())
-                .put("light_sources", lightSourceData.stream().map(AnchoredLightSourceData::toJSONObject).toList());
+                .put("light_sources", namedLightSourceDataList.stream().collect(Collectors.toMap(NamedObj::name, NamedObj::obj)));
     }
 
     @Override

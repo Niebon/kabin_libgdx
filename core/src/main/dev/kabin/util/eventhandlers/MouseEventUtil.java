@@ -3,7 +3,7 @@ package dev.kabin.util.eventhandlers;
 import com.badlogic.gdx.Gdx;
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.util.Functions;
-import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.fp.FloatSupplier;
 import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.NotNull;
 

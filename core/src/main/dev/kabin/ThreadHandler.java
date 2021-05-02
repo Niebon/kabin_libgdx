@@ -2,7 +2,7 @@ package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.functioninterfaces.BooleanSupplier;
+import dev.kabin.util.fp.BooleanSupplier;
 import dev.kabin.util.shapes.primitive.RectInt;
 
 import java.util.Optional;

@@ -217,7 +217,7 @@ public class MainGame extends ApplicationAdapter {
                 final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
                 final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
                 final ArrayList<LightSourceData> lightSourceData = new ArrayList<>();
-                getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> lightSourceData.addAll(e.getLightSourceData()));
+                getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> lightSourceData.addAll(e.getLightSourceDataList()));
 
                 final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
                 final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;

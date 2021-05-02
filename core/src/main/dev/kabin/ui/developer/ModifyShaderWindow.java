@@ -12,42 +12,70 @@ import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.shaders.LightSourceDataImpl;
 import dev.kabin.shaders.LightSourceType;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
-import dev.kabin.util.functioninterfaces.FloatSupplier;
+import dev.kabin.util.fp.FloatSupplier;
+import dev.kabin.util.fp.Function;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 class ModifyShaderWindow {
 
-    private final int selectedLightSourceData = 0;
+    private final Stage stage;
+    private final EntitySelection es;
+    private final Skin skin;
     private final EntityLibgdx e;
+    private final Window window;
+    private int selectedLightSourceData = 0;
 
     ModifyShaderWindow(Stage stage,
                        EntitySelection es,
                        MouseEventUtil msu,
                        EntityLibgdx e) {
+        this.stage = stage;
+        this.es = es;
         this.e = e;
 
-        if (e.getLightSourceData().isEmpty()) {
-            e.getLightSourceData().add(AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::getX, e::getY));
+        if (e.getLightSourceDataList().isEmpty()) {
+            e.getLightSourceDataList().add(AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::getX, e::getY));
         }
 
-        final var skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
-        final var window = new Window("Actions", skin);
+        skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
+        window = new Window("Actions", skin);
         es.receiveDragListenerFrom(window);
         final float width = 250;
-        final float height = 380;
+        final float height = 415;
         window.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f, width, height);
 
         final int firstColumnX = 60;
         final int secondColumnX = 170;
 
 
+        final var desc = new Label("select", skin);
+        desc.setX(5);
+        desc.setY(355);
+        window.addActor(desc);
+
+
+        final var buttonPrev = new TextButton("prev", skin);
+        buttonPrev.setY(355);
+        buttonPrev.setX(firstColumnX);
+        buttonPrev.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                selectedLightSourceData--;
+                return true;
+            }
+        });
+        window.addActor(buttonPrev);
+
+        final var buttonNext = new TextButton("next", skin);
+        buttonNext.setY(355);
+        buttonNext.setX(secondColumnX);
+        window.addActor(buttonNext);
+
+
         addModifier("x",
-                skin,
-                window,
                 getLsd()::setUnscaledXRelToAnchor,
                 getLsd()::getUnscaledXRelToAnchor,
                 firstColumnX,
@@ -58,8 +86,6 @@ class ModifyShaderWindow {
                 325);
 
         addModifier("y",
-                skin,
-                window,
                 getLsd()::setUnscaledYRelToAnchor,
                 getLsd()::getUnscaledYRelToAnchor,
                 firstColumnX,
@@ -70,8 +96,6 @@ class ModifyShaderWindow {
                 290);
 
         addModifier("r",
-                skin,
-                window,
                 getLsd()::setUnscaledR,
                 getLsd()::getUnscaledR,
                 firstColumnX,
@@ -82,8 +106,6 @@ class ModifyShaderWindow {
                 255);
 
         addModifier("angle",
-                skin,
-                window,
                 getLsd()::setAngle,
                 getLsd()::getAngle,
                 firstColumnX,
@@ -94,8 +116,6 @@ class ModifyShaderWindow {
                 220);
 
         addModifier("width",
-                skin,
-                window,
                 getLsd()::setWidth,
                 getLsd()::getWidth,
                 firstColumnX,
@@ -106,8 +126,6 @@ class ModifyShaderWindow {
                 185);
 
         addModifier("red",
-                skin,
-                window,
                 getLsd().getTint()::setRed,
                 getLsd().getTint()::red,
                 firstColumnX,
@@ -118,8 +136,6 @@ class ModifyShaderWindow {
                 150);
 
         addModifier("green",
-                skin,
-                window,
                 getLsd().getTint()::setGreen,
                 getLsd().getTint()::green,
                 firstColumnX,
@@ -130,8 +146,6 @@ class ModifyShaderWindow {
                 115);
 
         addModifier("blue",
-                skin,
-                window,
                 getLsd().getTint()::setBlue,
                 getLsd().getTint()::blue,
                 firstColumnX,
@@ -143,11 +157,7 @@ class ModifyShaderWindow {
 
 
         final var typeSelectBox = new SelectBox<String>(skin, "default");
-        typeSelectBox.setItems(
-                Arrays.stream(LightSourceType.values())
-                        .map(Enum::name)
-                        .toArray(String[]::new)
-        );
+        typeSelectBox.setItems(Arrays.stream(LightSourceType.values()).map(Enum::name).toArray(String[]::new));
         typeSelectBox.setSelectedIndex(getLsd().getType().ordinal());
         typeSelectBox.setWidth(100);
         typeSelectBox.setHeight(25);
@@ -194,9 +204,13 @@ class ModifyShaderWindow {
         stage.addActor(window);
     }
 
+    void makeAddShaderWindow() {
+        var tempWindow = new Window("Add shader", skin);
+        es.receiveDragListenerFrom(window);
+
+    }
+
     private void addModifier(String description,
-                             Skin skin,
-                             Window window,
                              Consumer<Float> setter,
                              FloatSupplier getter,
                              int firstColumnX,
@@ -209,10 +223,10 @@ class ModifyShaderWindow {
         desc.setX(5);
         desc.setY(y);
         window.addActor(desc);
-        final var sliderX = makeSlider(firstColumnX, y, 100, 25, skin,
+        final var sliderX = makeSlider(firstColumnX, y, 100, 25,
                 min, max, step, false, getter.get(), setter);
         window.addActor(sliderX);
-        final var tfX = makeTextField(secondColumnX, y, 50, 25, skin,
+        final var tfX = makeTextField(secondColumnX, y, 50, 25,
                 String.valueOf(getter.get()),
                 (t, c) -> Character.isDefined(c) || c == '.',
                 s -> setter.accept(Float.parseFloat(s)));
@@ -240,7 +254,7 @@ class ModifyShaderWindow {
     }
 
     private AnchoredLightSourceData getLsd() {
-        return e.getLightSourceData().get(selectedLightSourceData);
+        return e.getLightSourceDataList().get(Math.floorMod(selectedLightSourceData, e.getLightSourceDataList().size()));
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -250,7 +264,6 @@ class ModifyShaderWindow {
             float y, // 150
             float width, // 100
             float height, // 25
-            Skin skin,
             String initialText,
             TextField.TextFieldFilter textFieldFilter,
             Consumer<String> action) {
@@ -276,7 +289,7 @@ class ModifyShaderWindow {
             float y, // 150
             float width, // 100
             float height, // 25,
-            Skin skin, float min,
+            float min,
             float max,
             float step,
             boolean vertical,

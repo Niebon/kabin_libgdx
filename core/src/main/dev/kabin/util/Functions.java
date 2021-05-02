@@ -1,6 +1,6 @@
 package dev.kabin.util;
 
-import dev.kabin.util.functioninterfaces.BiIntPredicate;
+import dev.kabin.util.fp.BiIntPredicate;
 import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
