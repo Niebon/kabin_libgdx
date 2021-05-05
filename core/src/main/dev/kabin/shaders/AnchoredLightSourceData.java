@@ -1,6 +1,6 @@
 package dev.kabin.shaders;
 
-import dev.kabin.util.fp.FloatSupplier;
+import dev.kabin.util.lambdas.FloatSupplier;
 import org.json.JSONObject;
 
 import java.util.Objects;

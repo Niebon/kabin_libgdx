@@ -10,8 +10,8 @@ import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
 import dev.kabin.util.TangentFinder;
 import dev.kabin.util.eventhandlers.KeyCode;
-import dev.kabin.util.fp.BiIntPredicate;
-import dev.kabin.util.fp.BiIntToFloatFunction;
+import dev.kabin.util.lambdas.BiIntPredicate;
+import dev.kabin.util.lambdas.BiIntToFloatFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

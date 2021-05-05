@@ -1,4 +1,4 @@
-package dev.kabin.util.fp;
+package dev.kabin.util.lambdas;
 
 @FunctionalInterface
 public

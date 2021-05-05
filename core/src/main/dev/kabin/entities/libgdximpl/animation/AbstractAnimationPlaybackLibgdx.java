@@ -8,9 +8,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
-import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntFunction;
+import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
 import java.util.Arrays;
@@ -63,7 +63,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
                 Collectors.toMap(
                         Map.Entry::getKey,
                         e -> generateAnimation(e.getValue()),
-                        Functions::projectLeft,
+                        BiFunction::projectLeft,
                         () -> new EnumMap<>(enumClass)
                 )
         );

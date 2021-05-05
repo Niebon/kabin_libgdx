@@ -1,8 +1,8 @@
 package dev.kabin.util.linalg;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.fp.BiIntToFloatFunction;
-import dev.kabin.util.fp.FloatUnaryOperation;
+import dev.kabin.util.lambdas.BiIntToFloatFunction;
+import dev.kabin.util.lambdas.FloatUnaryOperation;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Arrays;

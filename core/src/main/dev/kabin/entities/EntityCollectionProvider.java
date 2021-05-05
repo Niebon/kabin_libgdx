@@ -1,8 +1,8 @@
 package dev.kabin.entities;
 
 
-import dev.kabin.util.Functions;
-import dev.kabin.util.fp.Function;
+import dev.kabin.util.lambdas.BiFunction;
+import dev.kabin.util.lambdas.Function;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -36,7 +36,7 @@ public class EntityCollectionProvider<T extends Enum<T> & Layer, E extends Entit
                 .collect(Collectors.toMap(
                         Function::identity,
                         val -> new ArrayList<>(),
-                        Functions::projectLeft,
+                        BiFunction::projectLeft,
                         () -> new EnumMap<>(groupTypeClass)
                 ));
         this.groupTypeClass = groupTypeClass;

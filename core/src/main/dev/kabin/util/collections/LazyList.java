@@ -1,7 +1,7 @@
 package dev.kabin.util.collections;
 
-import dev.kabin.util.fp.Function;
-import dev.kabin.util.fp.IntFunction;
+import dev.kabin.util.lambdas.Function;
+import dev.kabin.util.lambdas.IntFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

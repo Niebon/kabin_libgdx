@@ -1,6 +1,6 @@
 package dev.kabin.util;
 
-import dev.kabin.util.fp.BiIntConsumer;
+import dev.kabin.util.lambdas.BiIntConsumer;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 
 import java.util.function.IntConsumer;

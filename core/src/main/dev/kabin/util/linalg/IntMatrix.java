@@ -1,7 +1,7 @@
 package dev.kabin.util.linalg;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.fp.IntBinaryOperator;
+import dev.kabin.util.lambdas.IntBinaryOperator;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Arrays;

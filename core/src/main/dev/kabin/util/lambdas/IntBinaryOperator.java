@@ -1,4 +1,4 @@
-package dev.kabin.util.fp;
+package dev.kabin.util.lambdas;
 
 /*
  * Javas implementation leads to silly warnings for parameter names if the provided parameter name does not

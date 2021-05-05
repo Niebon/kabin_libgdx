@@ -1,6 +1,6 @@
 package dev.kabin.util;
 
-import dev.kabin.util.fp.BiIntPredicate;
+import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -158,16 +158,6 @@ public class Functions {
 
     public static float requireNonZeroElse(float val, float defaultVal) {
         return val == 0 ? defaultVal : val;
-    }
-
-    @SuppressWarnings("unused")
-    public static <T> T projectLeft(T left, T right) {
-        return left;
-    }
-
-    @SuppressWarnings("unused")
-    public static <T> T projectRight(T left, T right) {
-        return right;
     }
 
     public static <T> T getNull() {

@@ -7,38 +7,40 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import dev.kabin.Cooldown;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.shaders.AnchoredLightSourceData;
-import dev.kabin.shaders.LightSourceDataImpl;
-import dev.kabin.shaders.LightSourceType;
+import dev.kabin.shaders.*;
+import dev.kabin.util.Lists;
+import dev.kabin.util.NamedObj;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
-import dev.kabin.util.fp.FloatSupplier;
-import dev.kabin.util.fp.Function;
+import dev.kabin.util.lambdas.Function;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 class ModifyShaderWindow {
 
-    private final Stage stage;
-    private final EntitySelection es;
+
     private final Skin skin;
     private final EntityLibgdx e;
     private final Window window;
-    private int selectedLightSourceData = 0;
+    private final ArrayList<Runnable> refreshRunnables = new ArrayList<Runnable>();
+    private final Cooldown addNewShaderCooldown = new Cooldown(100);
+    private String currLightSourceData;
+
 
     ModifyShaderWindow(Stage stage,
                        EntitySelection es,
                        MouseEventUtil msu,
                        EntityLibgdx e) {
-        this.stage = stage;
-        this.es = es;
         this.e = e;
 
-        if (e.getLightSourceDataList().isEmpty()) {
-            e.getLightSourceDataList().add(AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::getX, e::getY));
-        }
+        currLightSourceData = e.getLightSourceDataMap().keySet().stream().findFirst().orElse(null);
+
 
         skin = new Skin(Gdx.files.internal("default/skin/uiskin.json"));
         window = new Window("Actions", skin);
@@ -56,28 +58,138 @@ class ModifyShaderWindow {
         desc.setY(355);
         window.addActor(desc);
 
+        final var selectBoxLightData = new SelectBox<String>(skin);
+        final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
+        selectBoxLightData.setItems(items.toArray(String[]::new));
+        selectBoxLightData.setX(firstColumnX);
+        selectBoxLightData.setY(355);
+        selectBoxLightData.setWidth(90);
+        selectBoxLightData.setHeight(25);
+        selectBoxLightData.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (addNewShaderCooldown.isReady() && selectBoxLightData.getSelected().equals("--new--")) {
+                    float width = 200, height = 100;
 
-        final var buttonPrev = new TextButton("prev", skin);
-        buttonPrev.setY(355);
-        buttonPrev.setX(firstColumnX);
-        buttonPrev.addListener(new ClickListener() {
+                    var dialogSetName = new Dialog("Set name", skin);
+
+                    var tfSetName = new TextField("", skin);
+                    tfSetName.setX(width * 0.25f);
+                    tfSetName.setY(height * 0.25f + 5f);
+                    tfSetName.setWidth(100f);
+                    tfSetName.setTextFieldFilter((textField, c) -> Character.isAlphabetic(c) || Character.isDigit(c) || c == '_');
+                    dialogSetName.addActor(tfSetName);
+                    es.receiveDragListenerFrom(dialogSetName);
+
+                    var tb = new TextButton("Ok", skin);
+                    tb.setX(width * 0.25f);
+                    tb.setY(5f);
+                    tb.setHeight(25f);
+                    tb.setWidth(100f);
+                    tb.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            String text = tfSetName.getText();
+                            if (text.length() > 3) {
+                                e.addLightSourceData(text, AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().setScale(e.getScale()).build(), e::getX, e::getY));
+                                final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
+                                selectBoxLightData.setItems(items.toArray(String[]::new));
+                                selectBoxLightData.setSelected(text);
+                                dialogSetName.remove();
+                                refreshRunnables.forEach(Runnable::run);
+                                addNewShaderCooldown.trigger();
+                            }
+                        }
+                    });
+                    dialogSetName.addActor(tb);
+
+
+                    // Exit button.
+                    var exitButton = new TextButton("x", skin);
+                    exitButton.addListener(
+                            new ClickListener() {
+                                @Override
+                                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                                    return dialogSetName.remove();
+                                }
+                            }
+                    );
+                    dialogSetName.getTitleTable().add(exitButton).size(20, 20).padRight(0).padTop(0);
+                    dialogSetName.setModal(true);
+                    dialogSetName.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f, width, height);
+                    stage.addActor(dialogSetName);
+                } else {
+                    currLightSourceData = selectBoxLightData.getSelected();
+                }
+                refreshAll();
+            }
+        });
+        window.addActor(selectBoxLightData);
+
+        final var deleteLightSource = new TextButton("delete", skin);
+        deleteLightSource.setX(firstColumnX + 100);
+        deleteLightSource.setY(355);
+        deleteLightSource.setHeight(25);
+        deleteLightSource.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                selectedLightSourceData--;
+                var cw = new Dialog("Confirmation", skin); // confirmation window
+                es.receiveDragListenerFrom(cw);
+                float width = 175, height = 100;
+
+                var yes = new TextButton("yes", skin);
+                yes.setX(25);
+                yes.setY(25);
+                yes.setWidth(50);
+                yes.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        addNewShaderCooldown.trigger();
+                        e.removeLightSourceData(currLightSourceData);
+                        final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
+                        selectBoxLightData.setItems(items.toArray(String[]::new));
+                        selectBoxLightData.setSelected(items.size() > 1 ? items.get(0) : null);
+                        return cw.remove();
+                    }
+                });
+                cw.addActor(yes);
+
+
+                var cancel = new TextButton("cancel", skin);
+                cancel.setX(100);
+                cancel.setY(25);
+                cancel.setWidth(50);
+                cancel.addListener(new ClickListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        return cw.remove();
+                    }
+                });
+                cw.addActor(cancel);
+
+                stage.addActor(cw);
+                // Exit button.
+                var exitButton = new TextButton("x", skin);
+                exitButton.addListener(
+                        new ClickListener() {
+                            @Override
+                            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                                return cw.remove();
+                            }
+                        }
+                );
+                cw.getTitleTable().add(exitButton).size(20, 20).padRight(0).padTop(0);
+                cw.setModal(true);
+                cw.setBounds(msu.getXRelativeToUI() + width * 0.1f, msu.getYRelativeToUI() + height * 0.1f, width, height);
                 return true;
             }
         });
-        window.addActor(buttonPrev);
-
-        final var buttonNext = new TextButton("next", skin);
-        buttonNext.setY(355);
-        buttonNext.setX(secondColumnX);
-        window.addActor(buttonNext);
+        window.addActor(deleteLightSource);
 
 
         addModifier("x",
-                getLsd()::setUnscaledXRelToAnchor,
-                getLsd()::getUnscaledXRelToAnchor,
+                f -> getLsd().ifPresent(lsd -> lsd.setUnscaledXRelToAnchor(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getUnscaledXRelToAnchor).orElse(0f),
                 firstColumnX,
                 secondColumnX,
                 -128,
@@ -86,8 +198,8 @@ class ModifyShaderWindow {
                 325);
 
         addModifier("y",
-                getLsd()::setUnscaledYRelToAnchor,
-                getLsd()::getUnscaledYRelToAnchor,
+                f -> getLsd().ifPresent(lsd -> lsd.setUnscaledYRelToAnchor(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getUnscaledYRelToAnchor).orElse(0f),
                 firstColumnX,
                 secondColumnX,
                 -128,
@@ -96,8 +208,8 @@ class ModifyShaderWindow {
                 290);
 
         addModifier("r",
-                getLsd()::setUnscaledR,
-                getLsd()::getUnscaledR,
+                f -> getLsd().ifPresent(lsd -> lsd.setUnscaledR(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getUnscaledR).map(Integer::floatValue).orElse(32f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -106,8 +218,8 @@ class ModifyShaderWindow {
                 255);
 
         addModifier("angle",
-                getLsd()::setAngle,
-                getLsd()::getAngle,
+                f -> getLsd().ifPresent(lsd -> lsd.setAngle(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getAngle).orElse(0f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -116,8 +228,8 @@ class ModifyShaderWindow {
                 220);
 
         addModifier("width",
-                getLsd()::setWidth,
-                getLsd()::getWidth,
+                f -> getLsd().ifPresent(lsd -> lsd.setWidth(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getWidth).orElse(0f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -126,8 +238,8 @@ class ModifyShaderWindow {
                 185);
 
         addModifier("red",
-                getLsd().getTint()::setRed,
-                getLsd().getTint()::red,
+                f -> getLsd().ifPresent(lsd -> lsd.getTint().setRed(f)),
+                () -> getLsd().map(LightSourceData::getTint).map(Tint::red).orElse(1f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -136,8 +248,8 @@ class ModifyShaderWindow {
                 150);
 
         addModifier("green",
-                getLsd().getTint()::setGreen,
-                getLsd().getTint()::green,
+                f -> getLsd().ifPresent(lsd -> lsd.getTint().setGreen(f)),
+                () -> getLsd().map(LightSourceData::getTint).map(Tint::red).orElse(1f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -146,8 +258,8 @@ class ModifyShaderWindow {
                 115);
 
         addModifier("blue",
-                getLsd().getTint()::setBlue,
-                getLsd().getTint()::blue,
+                f -> getLsd().ifPresent(lsd -> lsd.getTint().setBlue(f)),
+                () -> getLsd().map(LightSourceData::getTint).map(Tint::red).orElse(1f),
                 firstColumnX,
                 secondColumnX,
                 0,
@@ -158,7 +270,7 @@ class ModifyShaderWindow {
 
         final var typeSelectBox = new SelectBox<String>(skin, "default");
         typeSelectBox.setItems(Arrays.stream(LightSourceType.values()).map(Enum::name).toArray(String[]::new));
-        typeSelectBox.setSelectedIndex(getLsd().getType().ordinal());
+        typeSelectBox.setSelectedIndex(getLsd().map(AnchoredLightSourceData::getType).map(Enum::ordinal).orElse(0));
         typeSelectBox.setWidth(100);
         typeSelectBox.setHeight(25);
         typeSelectBox.setX(firstColumnX);
@@ -166,7 +278,7 @@ class ModifyShaderWindow {
         typeSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getLsd().setType(LightSourceType.valueOf(typeSelectBox.getSelected()));
+                getLsd().ifPresent(lsd -> lsd.setType(LightSourceType.valueOf(typeSelectBox.getSelected())));
             }
         });
         window.addActor(typeSelectBox);
@@ -188,7 +300,7 @@ class ModifyShaderWindow {
         window.addActor(changeButton);
 
         // Exit button.
-        final var exitButton = new TextButton("x", skin, "default");
+        final var exitButton = new TextButton("x", skin);
         exitButton.addListener(
                 new ClickListener() {
                     @Override
@@ -202,36 +314,6 @@ class ModifyShaderWindow {
                 .padRight(0).padTop(0);
         window.setModal(true);
         stage.addActor(window);
-    }
-
-    void makeAddShaderWindow() {
-        var tempWindow = new Window("Add shader", skin);
-        es.receiveDragListenerFrom(window);
-
-    }
-
-    private void addModifier(String description,
-                             Consumer<Float> setter,
-                             FloatSupplier getter,
-                             int firstColumnX,
-                             int secondColumnX,
-                             float min,
-                             float max,
-                             float step,
-                             int y) {
-        final var desc = new Label(description, skin);
-        desc.setX(5);
-        desc.setY(y);
-        window.addActor(desc);
-        final var sliderX = makeSlider(firstColumnX, y, 100, 25,
-                min, max, step, false, getter.get(), setter);
-        window.addActor(sliderX);
-        final var tfX = makeTextField(secondColumnX, y, 50, 25,
-                String.valueOf(getter.get()),
-                (t, c) -> Character.isDefined(c) || c == '.',
-                s -> setter.accept(Float.parseFloat(s)));
-        window.addActor(tfX);
-        connect(sliderX, tfX, String::valueOf, Float::parseFloat);
     }
 
     private static void connect(Slider s,
@@ -253,8 +335,37 @@ class ModifyShaderWindow {
         });
     }
 
-    private AnchoredLightSourceData getLsd() {
-        return e.getLightSourceDataList().get(Math.floorMod(selectedLightSourceData, e.getLightSourceDataList().size()));
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "SameParameterValue"})
+    private void addModifier(String description,
+                             Consumer<Float> setter,
+                             Supplier<Float> getter,
+                             int firstColumnX,
+                             int secondColumnX,
+                             float min,
+                             float max,
+                             float step,
+                             int y) {
+        final var desc = new Label(description, skin);
+        desc.setX(5);
+        desc.setY(y);
+        window.addActor(desc);
+        final var sliderX = makeSlider(firstColumnX, y, 100, 25,
+                min, max, step, false, getter, setter);
+        window.addActor(sliderX);
+        final var tfX = makeTextField(secondColumnX, y, 50, 25,
+                () -> String.valueOf(getter.get()),
+                (t, c) -> Character.isDefined(c) || c == '.',
+                s -> setter.accept(Float.parseFloat(s)));
+        window.addActor(tfX);
+        connect(sliderX, tfX, String::valueOf, Float::parseFloat);
+    }
+
+    private Optional<AnchoredLightSourceData> getLsd() {
+        return getNamedLsd().map(NamedObj::obj);
+    }
+
+    private Optional<NamedObj<AnchoredLightSourceData>> getNamedLsd() {
+        return Optional.ofNullable(currLightSourceData).map(lsd -> new NamedObj<>(currLightSourceData, e.getLightSourceDataMap().get(lsd)));
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -264,10 +375,10 @@ class ModifyShaderWindow {
             float y, // 150
             float width, // 100
             float height, // 25
-            String initialText,
+            Supplier<String> initialText,
             TextField.TextFieldFilter textFieldFilter,
             Consumer<String> action) {
-        final var tf = new TextField(initialText, skin, "default");
+        final var tf = new TextField(initialText.get(), skin, "default");
         tf.setTextFieldFilter(textFieldFilter);
         tf.setX(x);
         tf.setY(y);
@@ -279,7 +390,13 @@ class ModifyShaderWindow {
                 action.accept(tf.getText());
             }
         });
+        refreshRunnables.add(() -> tf.setText(initialText.get()));
+        refreshAll();
         return tf;
+    }
+
+    void refreshAll() {
+        refreshRunnables.forEach(Runnable::run);
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -293,20 +410,21 @@ class ModifyShaderWindow {
             float max,
             float step,
             boolean vertical,
-            float value,
+            Supplier<Float> getter,
             Consumer<Float> action) {
         var slider = new Slider(min, max, step, vertical, skin);
         slider.setX(x);
         slider.setY(y);
         slider.setWidth(width);
         slider.setHeight(height);
-        slider.setValue(value);
+        slider.setValue(getter.get());
         slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 action.accept(slider.getValue());
             }
         });
+        refreshRunnables.add(() -> slider.setValue(getter.get()));
         return slider;
     }
 

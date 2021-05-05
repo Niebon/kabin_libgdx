@@ -3,7 +3,7 @@ package dev.kabin.entities.libgdximpl.animation.enums;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.libgdximpl.animation.AnimationMetadataImpl;
 import dev.kabin.util.Direction;
-import dev.kabin.util.Functions;
+import dev.kabin.util.lambdas.BiFunction;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -26,7 +26,7 @@ public enum Animate {
             .collect(Collectors.toMap(
                     Function.identity(),
                     e -> new AnimationMetadataImpl(e.looping, e.direction, e.lastFrameRepeating),
-                    Functions::projectLeft,
+                    BiFunction::projectLeft,
                     () -> new EnumMap<>(Animate.class)
             ));
 

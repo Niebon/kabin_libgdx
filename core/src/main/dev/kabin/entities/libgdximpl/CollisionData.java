@@ -1,6 +1,6 @@
 package dev.kabin.entities.libgdximpl;
 
-import dev.kabin.util.fp.PrimitiveIntPairConsumer;
+import dev.kabin.util.lambdas.PrimitiveIntPairConsumer;
 import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
 import org.jetbrains.annotations.NotNull;

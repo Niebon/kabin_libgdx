@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
-import dev.kabin.util.fp.FloatSupplier;
+import dev.kabin.util.lambdas.FloatSupplier;
 import dev.kabin.util.points.ImmutablePointFloat;
 import dev.kabin.util.points.PointFloat;
 import dev.kabin.util.shapes.RectFloat;

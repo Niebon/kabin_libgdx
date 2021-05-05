@@ -14,7 +14,7 @@ import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.AnimationBundleFactory;
 import dev.kabin.entities.libgdximpl.animation.AnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
-import dev.kabin.util.fp.FloatSupplier;
+import dev.kabin.util.lambdas.FloatSupplier;
 import org.json.JSONObject;
 
 import javax.swing.*;

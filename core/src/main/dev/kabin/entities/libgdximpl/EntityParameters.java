@@ -58,12 +58,12 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
             if (o.get("light_sources") instanceof JSONArray l) {
                 lightSourceData = StreamSupport.stream(l.spliterator(), false)
                         .map(JSONObject.class::cast)
-                        .map(jsonObject -> new NamedObj<>(jsonObject, "default"))
+                        .map(jsonObject -> new NamedObj<>("default", jsonObject))
                         .map(namedJson -> namedJson.map(jso -> LightSourceDataImpl.of(jso, scale)))
                         .toList();
             } else {
                 lightSourceData = o.getJSONObject("light_sources").keySet().stream()
-                        .map(key -> new NamedObj<>(o.getJSONObject("light_sources").get(key), key))
+                        .map(key -> new NamedObj<>(key, o.getJSONObject("light_sources").get(key)))
                         .map(namedJson -> namedJson.map(JSONObject.class::cast).map(jso -> LightSourceDataImpl.of(jso, scale)))
                         .toList();
             }

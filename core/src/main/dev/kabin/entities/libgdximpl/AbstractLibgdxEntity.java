@@ -8,6 +8,7 @@ import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx
 import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.util.NamedObj;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import dev.kabin.util.shapes.primitive.RectIntView;
@@ -15,10 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -83,13 +81,17 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public Map<String, AnchoredLightSourceData> getLightSourceDataMap() {
-        return namedLightSourceDataList.stream().collect(Collectors.toMap(NamedObj::name, NamedObj::obj));
+        return namedLightSourceDataList.stream().collect(Collectors.toMap(NamedObj::name,
+                NamedObj::obj,
+                BiFunction::projectLeft,
+                // Yields a sorted output.
+                TreeMap::new));
     }
 
     @Override
     public void addLightSourceData(String name, AnchoredLightSourceData lightSourceData) {
-        if (namedLightSourceDataList.stream().noneMatch(nlsd -> nlsd.name().equals(name))) {
-            namedLightSourceDataList.add(new NamedObj<>(lightSourceData, name));
+        if (namedLightSourceDataList.stream().noneMatch(nl -> nl.name().equals(name))) {
+            namedLightSourceDataList.add(new NamedObj<>(name, lightSourceData));
         }
     }
 

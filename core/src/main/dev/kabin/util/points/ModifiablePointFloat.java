@@ -1,7 +1,7 @@
 package dev.kabin.util.points;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.fp.FloatToFloatFunction;
+import dev.kabin.util.lambdas.FloatToFloatFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
