@@ -70,7 +70,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
                 .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY)))
                 .peek(namedLsd -> namedLsd.obj().setScale(scale))
                 .collect(Collectors.toCollection(ArrayList::new));
-        lightSourceDataList = new LazyList<>(i -> namedLightSourceDataList.get(i).obj(), namedLightSourceDataList.size());
+        lightSourceDataList = new LazyList<>(i -> namedLightSourceDataList.get(i).obj(), namedLightSourceDataList::size);
     }
 
     @UnmodifiableView
@@ -90,7 +90,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public void addLightSourceData(String name, AnchoredLightSourceData lightSourceData) {
-        if (namedLightSourceDataList.stream().noneMatch(nl -> nl.name().equals(name))) {
+        if (namedLightSourceDataList.stream().noneMatch(nlsd -> nlsd.name().equals(name))) {
             namedLightSourceDataList.add(new NamedObj<>(name, lightSourceData));
         }
     }

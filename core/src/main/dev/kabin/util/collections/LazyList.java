@@ -5,18 +5,19 @@ import dev.kabin.util.lambdas.IntFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.IntSupplier;
 
 public class LazyList<T> implements List<T>, IntFunction<T> {
 
     private final IntFunction<T> getter;
-    private final int size;
+    private final IntSupplier size;
 
     public LazyList(T[] entries) {
         this.getter = i -> entries[i];
-        this.size = entries.length;
+        this.size = () -> entries.length;
     }
 
-    public LazyList(IntFunction<T> getter, int size) {
+    public LazyList(IntFunction<T> getter, IntSupplier size) {
         this.getter = getter;
         this.size = size;
     }
@@ -28,16 +29,21 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @Override
     public int size() {
-        return size;
+        return internalSize();
+    }
+
+    private int internalSize() {
+        return size.getAsInt();
     }
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+        return internalSize() == 0;
     }
 
     @Override
     public boolean contains(Object o) {
+        int size = internalSize();
         for (int i = 0; i < size; i++) {
             var t = internalGet(i);
             if (t != null) return true;
@@ -58,6 +64,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     @NotNull
     @Override
     public Object @NotNull [] toArray() {
+        int size = internalSize();
         Object[] array = new Object[size];
         for (int i = 0; i < size; i++) {
             array[i] = internalGet(i);
@@ -67,7 +74,8 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @NotNull
     @Override
-    public <T1> T1 @NotNull [] toArray(@NotNull T1[] a) {
+    public <T1> T1 @NotNull [] toArray(@NotNull T1 @NotNull [] a) {
+        int size = internalSize();
         //noinspection unchecked
         T1[] array = (a.length < size) ? (T1[]) new Object[size] : a;
         for (int i = 0; i < size; i++) {
@@ -89,6 +97,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
+        int size = internalSize();
         for (int i = 0; i < size; i++) {
             if (!c.contains(internalGet(i))) return false;
         }
@@ -142,6 +151,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @Override
     public int indexOf(Object o) {
+        int size = internalSize();
         for (int i = 0; i < size; i++) {
             if (Objects.equals(o, internalGet(i))) {
                 return i;
@@ -152,6 +162,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @Override
     public int lastIndexOf(Object o) {
+        int size = internalSize();
         for (int i = size - 1; i > 0; i--) {
             if (Objects.equals(o, internalGet(i))) {
                 return i;
@@ -169,14 +180,15 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     @NotNull
     @Override
     public ListIterator<T> listIterator(int index) {
-        return new LazyListIterator<>(subList(index, size));
+        return new LazyListIterator<>(subList(index, internalSize()));
     }
 
     @NotNull
     @Override
     public LazyList<T> subList(int fromIndex, int toIndex) {
+        int size = internalSize();
         if (fromIndex > size) throw new IndexOutOfBoundsException(fromIndex);
-        return new LazyList<>(i -> internalGet(i + fromIndex), Math.min(size, toIndex));
+        return new LazyList<>(i -> internalGet(i + fromIndex), () -> Math.min(size, toIndex));
     }
 
     @Override
@@ -192,7 +204,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
         if (o instanceof List<?> l) {
 
-            if (size != l.size()) {
+            if (internalSize() != l.size()) {
                 return false;
             }
 
@@ -228,7 +240,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
         @Override
         public boolean hasNext() {
-            return curr < instance.size;
+            return curr < instance.internalSize();
         }
 
         @Override

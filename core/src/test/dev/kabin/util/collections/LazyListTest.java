@@ -10,17 +10,17 @@ class LazyListTest {
 
     @Test
     void size() {
-        Assertions.assertEquals(3, new LazyList<>(i -> "a", 3).size());
+        Assertions.assertEquals(3, new LazyList<>(i -> "a", () -> 3).size());
     }
 
     @Test
     void isEmpty() {
-        Assertions.assertTrue(new LazyList<>(i -> "a", 0).isEmpty());
+        Assertions.assertTrue(new LazyList<>(i -> "a", () -> 0).isEmpty());
     }
 
     @Test
     void contains() {
-        Assertions.assertTrue(new LazyList<>(i -> "a", 3).contains("a"));
+        Assertions.assertTrue(new LazyList<>(i -> "a", () -> 3).contains("a"));
     }
 
     @Test
