@@ -91,7 +91,7 @@ class ModifyShaderWindow {
                         public void clicked(InputEvent event, float x, float y) {
                             String text = tfSetName.getText();
                             if (text.length() > 3) {
-                                e.addLightSourceData(text, AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().setScale(e.getScale()).build(), e::getX, e::getY));
+                                e.addLightSourceData(text, AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::getX, e::getY));
                                 final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
                                 selectBoxLightData.setItems(items.toArray(String[]::new));
                                 selectBoxLightData.setSelected(text);
@@ -208,7 +208,7 @@ class ModifyShaderWindow {
                 290);
 
         addModifier("r",
-                f -> getLsd().ifPresent(lsd -> lsd.setUnscaledR(f)),
+                f -> getLsd().ifPresent(lsd -> lsd.setR(f)),
                 () -> getLsd().map(AnchoredLightSourceData::getUnscaledR).map(Integer::floatValue).orElse(32f),
                 firstColumnX,
                 secondColumnX,

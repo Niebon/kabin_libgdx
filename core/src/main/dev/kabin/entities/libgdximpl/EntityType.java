@@ -101,11 +101,10 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
          */
         public static JSONConstructor JSONConstructorOf(EntityType type,
                                                         TextureAtlas textureAtlas,
-                                                        ImageMetadataPoolLibgdx imageMetadataPoolLibgdx,
-                                                        float scale) {
+                                                        ImageMetadataPoolLibgdx imageMetadataPoolLibgdx) {
             return json -> {
                 final EntityParameters build = EntityParameters
-                        .builder(json, scale)
+                        .builder(json)
                         .setEntityType(type)
                         .setImageAnalysisPool(imageMetadataPoolLibgdx)
                         .setTextureAtlas(textureAtlas).build();

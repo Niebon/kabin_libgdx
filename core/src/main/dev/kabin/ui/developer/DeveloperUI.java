@@ -301,8 +301,8 @@ public class DeveloperUI {
 
     public void addEntityToDraggedEntities(EntityLibgdx e) {
         draggedEntities.add(new DraggedEntity(
-                e.getX(),
-                e.getY(),
+                e.getX() * scale.get(),
+                e.getY() * scale.get(),
                 mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 e));
@@ -327,7 +327,7 @@ public class DeveloperUI {
             final float targetY = de.getEntityOriginalY() + mouseEventUtilSupplier.get().getMouseYRelativeToWorld() - de.getInitialMouseY();
             final float x = Functions.snapToPixel(targetX, scale.get());
             final float y = Functions.snapToPixel(targetY, scale.get());
-            e.setPos(x, y);
+            e.setPos(x / scale.get(), y / scale.get());
         }
     }
 

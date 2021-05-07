@@ -37,25 +37,15 @@ public interface LightSourceData extends ModifiableFloatCoordinates, JSONSeriali
 
     void setWidth(float width);
 
-    default void setUnscaledR(int r) {
-        setR(r * getScale());
-    }
-
-    default void setUnscaledR(float r) {
-        setR(r * getScale());
-    }
-
-    float getScale();
-
     default int getUnscaledR() {
-        return Math.round(getR() / getScale());
+        return Math.round(getR());
     }
 
     default int getUnscaledX() {
-        return Math.round(getX() / getScale());
+        return Math.round(getX());
     }
 
     default int getUnscaledY() {
-        return Math.round(getY() / getScale());
+        return Math.round(getY());
     }
 }

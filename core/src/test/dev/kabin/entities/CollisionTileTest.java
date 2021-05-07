@@ -42,11 +42,11 @@ class CollisionTileTest {
 
 
             // Before
-            int unscaledXPrev = collisionTileBefore.getUnscaledX();
-            int unscaledYPrev = collisionTileBefore.getUnscaledY();
+            int unscaledXPrev = collisionTileBefore.getXAsInt();
+            int unscaledYPrev = collisionTileBefore.getYAsInt();
 
             // Record and load:
-            CollisionTile.clearAt(collisionTileBefore.getUnscaledX(), collisionTileBefore.getUnscaledY());
+            CollisionTile.clearAt(collisionTileBefore.getXAsInt(), collisionTileBefore.getYAsInt());
             CollisionTile collisionTileAfter;
             {
                 JSONObject o = collisionTileBefore.toJSONObject();
@@ -59,14 +59,14 @@ class CollisionTileTest {
             }
 
             // After
-            int unscaledX = collisionTileAfter.getUnscaledX();
-            int unscaledY = collisionTileAfter.getUnscaledY();
+            int unscaledX = collisionTileAfter.getXAsInt();
+            int unscaledY = collisionTileAfter.getYAsInt();
 
             Assertions.assertEquals(unscaledXPrev, unscaledX);
             Assertions.assertEquals(unscaledYPrev, unscaledY);
 
             // Clean up before the next iteration.
-            CollisionTile.clearAt(collisionTileAfter.getUnscaledX(), collisionTileAfter.getUnscaledY());
+            CollisionTile.clearAt(collisionTileAfter.getXAsInt(), collisionTileAfter.getYAsInt());
         });
     }
 

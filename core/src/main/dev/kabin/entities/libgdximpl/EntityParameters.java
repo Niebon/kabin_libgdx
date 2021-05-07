@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-public record EntityParameters(float x, float y, String atlasPath, float scale, int layer,
+public record EntityParameters(float x, float y, String atlasPath, int layer,
                                List<NamedObj<LightSourceDataImpl>> lightSourceData,
                                Map<String, Object> backingMap,
                                TextureAtlas textureAtlas,
@@ -24,8 +24,8 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
         return new Builder();
     }
 
-    public static Builder builder(JSONObject o, float scale) {
-        return new Builder(o, scale);
+    public static Builder builder(JSONObject o) {
+        return new Builder(o);
     }
 
     public <T> Optional<T> getMaybe(String key) {
@@ -41,30 +41,28 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
         private float x;
         private float y;
         private String atlasPath;
-        private float scale;
         private int layer;
         private Map<String, Object> backingMap = new HashMap<>();
         private TextureAtlas textureAtlas;
         private EntityType type;
         private ImageMetadataPoolLibgdx imageAnalysisPool;
-        private List<NamedObj<LightSourceDataImpl>> lightSourceData;
+        private List<NamedObj<LightSourceDataImpl>> lightSourceData = List.of();
 
-        private Builder(JSONObject o, float scale) {
-            this.scale = scale;
-            x = o.getInt("x") * scale;
-            y = o.getInt("y") * scale;
+        private Builder(JSONObject o) {
+            x = o.getInt("x");
+            y = o.getInt("y");
             atlasPath = o.getString("atlas_path");
             layer = o.getInt("layer");
             if (o.get("light_sources") instanceof JSONArray l) {
                 lightSourceData = StreamSupport.stream(l.spliterator(), false)
                         .map(JSONObject.class::cast)
                         .map(jsonObject -> new NamedObj<>("default", jsonObject))
-                        .map(namedJson -> namedJson.map(jso -> LightSourceDataImpl.of(jso, scale)))
+                        .map(namedJson -> namedJson.map(LightSourceDataImpl::of))
                         .toList();
             } else {
                 lightSourceData = o.getJSONObject("light_sources").keySet().stream()
                         .map(key -> new NamedObj<>(key, o.getJSONObject("light_sources").get(key)))
-                        .map(namedJson -> namedJson.map(JSONObject.class::cast).map(jso -> LightSourceDataImpl.of(jso, scale)))
+                        .map(namedJson -> namedJson.map(JSONObject.class::cast).map(LightSourceDataImpl::of))
                         .toList();
             }
 
@@ -93,11 +91,6 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
 
         public Builder setAtlasPath(String atlasPath) {
             this.atlasPath = atlasPath;
-            return this;
-        }
-
-        public Builder setScale(float scale) {
-            this.scale = scale;
             return this;
         }
 
@@ -134,7 +127,6 @@ public record EntityParameters(float x, float y, String atlasPath, float scale, 
             return new EntityParameters(x,
                     y,
                     atlasPath,
-                    scale,
                     layer,
                     lightSourceData,
                     backingMap,

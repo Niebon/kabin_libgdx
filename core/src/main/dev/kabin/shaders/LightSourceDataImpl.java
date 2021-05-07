@@ -1,43 +1,40 @@
 package dev.kabin.shaders;
 
-import dev.kabin.util.helperinterfaces.Scalable;
 import org.json.JSONObject;
 
 import java.util.Map;
 
 import static dev.kabin.util.Functions.tryGet;
 
-public class LightSourceDataImpl implements LightSourceData, Scalable {
+public class LightSourceDataImpl implements LightSourceData {
 
     private final Tint tint;
     private LightSourceType type;
-    private float x, y, r, scale, angle, width;
+    private float x, y, r, angle, width;
 
-    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float scale, float angle, float width) {
+    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float angle, float width) {
         this.type = type;
         this.tint = tint;
         this.x = x;
         this.y = y;
         this.r = r;
-        this.scale = scale;
         this.angle = angle;
         this.width = width;
     }
 
-    public static LightSourceDataImpl of(JSONObject o, float scale) {
+    public static LightSourceDataImpl of(JSONObject o) {
         return new Builder()
 
                 // No big deal if some of these become zero...
-                .setR(tryGet(() -> o.getInt("r") * scale).orElse(0f))
-                .setX(tryGet(() -> o.getInt("x") * scale).orElse(0f))
-                .setY(tryGet(() -> o.getInt("y") * scale).orElse(0f))
+                .setR(tryGet(() -> o.getFloat("r")).orElse(0f))
+                .setX(tryGet(() -> o.getFloat("x")).orElse(0f))
+                .setY(tryGet(() -> o.getFloat("y")).orElse(0f))
                 .setAngle(tryGet(() -> o.getFloat("angle")).orElse(0f))
                 .setArcSpan(tryGet(() -> o.getFloat("arcSpan")).orElse(tryGet(() -> o.getFloat("width")).orElse(0f)))
 
                 // The rest should throw.
                 .setTint(Tint.of(o.getJSONObject("tint")))
                 .setType(o.getEnum(LightSourceType.class, "type"))
-                .setScale(scale)
                 .build();
     }
 
@@ -95,9 +92,9 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
     public JSONObject toJSONObject() {
         return new JSONObject(Map.of(
                 "tint", tint.toJSONObject(),
-                "x", Math.round(x / scale),
-                "y", Math.round(y / scale),
-                "r", Math.round(r / scale),
+                "x", Math.round(x),
+                "y", Math.round(y),
+                "r", Math.round(r),
                 "angle", angle,
                 "width", width,
                 "type", type.name()
@@ -124,21 +121,11 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
         this.width = width;
     }
 
-    @Override
-    public float getScale() {
-        return scale;
-    }
-
-    @Override
-    public void setScale(float scale) {
-        this.scale = scale;
-    }
-
     public static class Builder {
 
         private LightSourceType type = LightSourceType.NONE;
         private Tint tint = Tint.of(1, 1, 1);
-        private float x, y, r, angle, arcSpan, scale;
+        private float x, y, r, angle, arcSpan;
 
         public Builder setType(LightSourceType type) {
             this.type = type;
@@ -147,11 +134,6 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
 
         public Builder setTint(Tint tint) {
             this.tint = tint;
-            return this;
-        }
-
-        public Builder setScale(float scale) {
-            this.scale = scale;
             return this;
         }
 
@@ -181,7 +163,7 @@ public class LightSourceDataImpl implements LightSourceData, Scalable {
         }
 
         public LightSourceDataImpl build() {
-            return new LightSourceDataImpl(type, tint, x, y, r, scale, angle, arcSpan);
+            return new LightSourceDataImpl(type, tint, x, y, r, angle, arcSpan);
         }
     }
 }

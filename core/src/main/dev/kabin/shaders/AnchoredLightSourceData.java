@@ -92,7 +92,7 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     public void setUnscaledXRelToAnchor(float x) {
-        lightSourceData.setX(x * lightSourceData.getScale());
+        lightSourceData.setX(x);
     }
 
     @Override
@@ -110,7 +110,7 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     public void setUnscaledYRelToAnchor(float y) {
-        lightSourceData.setY(y * lightSourceData.getScale());
+        lightSourceData.setY(y);
     }
 
     @Override
@@ -118,12 +118,4 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
         return lightSourceData.toJSONObject();
     }
 
-    @Override
-    public float getScale() {
-        return lightSourceData.getScale();
-    }
-
-    public void setScale(float scale) {
-        lightSourceData.setScale(scale);
-    }
 }

@@ -174,7 +174,6 @@ class EntityLoadingWidget {
                 .setX(mouseRelativeToWorldX.get())
                 .setY(mouseRelativeToWorldY.get())
                 .setLayer(layer)
-                .setScale(scale.get())
                 .setAtlasPath(selectedAsset)
                 .setTextureAtlas(textureAtlasSupplier.get())
                 .setEntityType(entityType)

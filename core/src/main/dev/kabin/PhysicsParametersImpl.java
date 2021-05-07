@@ -56,6 +56,6 @@ class PhysicsParametersImpl implements PhysicsParameters {
 
     @Override
     public float meter() {
-        return PhysicsEngine.METER * scale;
+        return PhysicsEngine.METER;
     }
 }

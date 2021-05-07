@@ -57,15 +57,19 @@ public class CameraWrapper {
         return camera;
     }
 
+    private float scale() {
+        return scale.get();
+    }
+
     public void follow(Player player) {
-        final float unit = 3 * player.getMaxPixelHeight() * scale.get();
-        directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx()) * unit));
-        directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy()) * unit + 0.5f * unit));
+        final float unit = 3 * player.getMaxPixelHeight() * scale();
+        directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx() * scale()) * unit));
+        directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy() * scale()) * unit + 0.5f * unit));
         directionalFinalSmoothening.appendSignalX(directionalPreSmoothening.x());
         directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
         final float x = directionalFinalSmoothening.x();
         final float y = directionalFinalSmoothening.y();
-        setPos(player.getX() + x, player.getY() + y);
+        setPos(player.getX() * scale() + x, player.getY() * scale() + y);
     }
 
     public RectIntView currentCameraBounds() {

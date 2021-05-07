@@ -4,7 +4,6 @@ import dev.kabin.shaders.LightSourceData;
 import dev.kabin.util.collections.Id;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
-import dev.kabin.util.helperinterfaces.Scalable;
 import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,6 @@ public interface Entity<
 
         > extends
 
-        Scalable,
         ModifiableFloatCoordinates,
         Comparable<Entity<GroupType, EntityType, GraphicsParamType>>,
         MetadataDelegator,
@@ -99,28 +97,28 @@ public interface Entity<
         return getType().getGroupType();
     }
 
-    default int getUnscaledX() {
-        return Math.round(getX() / getScale());
+    default int getXAsInt() {
+        return Math.round(getX());
     }
 
-    default int getUnscaledY() {
-        return Math.round(getY() / getScale());
+    default int getYAsInt() {
+        return Math.round(getY());
     }
 
     default int getRootIntX() {
-        return getUnscaledX() - Math.round(getAvgMassCenterX());
+        return getXAsInt() - Math.round(getAvgMassCenterX());
     }
 
     default int getRootIntY() {
-        return getUnscaledY() - (getAvgLowestPixel() - 2);
+        return getYAsInt() - (getAvgLowestPixel() - 2);
     }
 
     default float getRootX() {
-        return getX() - getAvgMassCenterX() * getScale();
+        return getX() - getAvgMassCenterX();
     }
 
     default float getRootY() {
-        return getY() - (getAvgLowestPixel() - 2) * getScale();
+        return getY() - (getAvgLowestPixel() - 2);
     }
 
     RectIntView graphicsNbd();

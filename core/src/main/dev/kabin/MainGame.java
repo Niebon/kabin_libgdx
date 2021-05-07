@@ -192,6 +192,8 @@ public class MainGame extends ApplicationAdapter {
     @Override
     public void render() {
         final float timeSinceLastFrame = Gdx.graphics.getDeltaTime();
+        stage.act(timeSinceLastFrame);
+
 
         ambientShader.bind();
         lightShader.bind();
@@ -225,7 +227,8 @@ public class MainGame extends ApplicationAdapter {
                         lightSourceData::get,
                         camXMinusHalfWidth,
                         camYMinusHalfHeight,
-                        Math.min(64, lightSourceData.size())
+                        Math.min(64, lightSourceData.size()),
+                        scale
                 );
                 lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
             }
@@ -246,10 +249,6 @@ public class MainGame extends ApplicationAdapter {
         //bundle.renderFrameByIndex(0);
         //bundle.renderNextAnimationFrame(stateTime);
         //System.out.println(bundle.getCurrentImageAssetPath());
-
-        // Drawing stage last ensures that it occurs before dev.kabin.entities.
-        stage.act(timeSinceLastFrame);
-
 
         stage.draw();
 

@@ -55,8 +55,8 @@ public class Serializer {
                     logger.info(() -> "Loaded the entity: " + json);
                     final EntityLibgdx e = EntityType.Factory.JSONConstructorOf(EntityType.valueOf(type),
                             textureAtlas,
-                            imageAnalysisPool,
-                            scale).construct(json);
+                            imageAnalysisPool
+                    ).construct(json);
                     worldRepresentation.registerEntity(e);
                     e.getActor().ifPresent(stage::addActor);
                 }

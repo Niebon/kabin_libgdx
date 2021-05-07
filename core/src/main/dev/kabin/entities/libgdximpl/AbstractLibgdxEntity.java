@@ -39,13 +39,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final EntityType type;
     private final List<NamedObj<AnchoredLightSourceData>> namedLightSourceDataList;
     private final LazyList<AnchoredLightSourceData> lightSourceDataList;
-    private float x, y, scale;
+    private float x;
+    private float y;
     // Class variables:
     private int layer;
 
     AbstractLibgdxEntity(EntityParameters parameters) {
         id = createdInstances.incrementAndGet();
-        scale = parameters.scale();
         atlasPath = parameters.atlasPath();
         layer = parameters.layer();
         type = parameters.type();
@@ -68,7 +68,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         }
         namedLightSourceDataList = parameters.lightSourceData().stream()
                 .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY)))
-                .peek(namedLsd -> namedLsd.obj().setScale(scale))
                 .collect(Collectors.toCollection(ArrayList::new));
         lightSourceDataList = new LazyList<>(i -> namedLightSourceDataList.get(i).obj(), namedLightSourceDataList::size);
     }
@@ -133,13 +132,12 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public void updateGraphics(GraphicsParametersLibgdx params) {
-        setScale(params.scale());
 
         final float graphicsRootX = getRootX();
         final float graphicsRootY = getRootY();
 
 
-        animationPlaybackImpl.setPos(graphicsRootX, graphicsRootY);
+        animationPlaybackImpl.setPos(graphicsRootX * params.scale(), graphicsRootY * params.scale());
         animationPlaybackImpl.setScale(params.scale());
 
         // Sets the canonical shader for the group of this.
@@ -150,8 +148,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         {
             final float offsetX = params.camX() - params.screenWidth() * 0.5f;
             final float offsetY = params.camY() - params.screenHeight() * 0.5f;
-            final float x = graphicsRootX - offsetX;
-            final float y = graphicsRootY - offsetY;
+            final float x = graphicsRootX * params.scale() - offsetX;
+            final float y = graphicsRootY * params.scale() - offsetY;
             actor.setBounds(
                     x, y,
                     animationPlaybackImpl.getWidth(),
@@ -165,13 +163,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     private void updateNeighborhood() {
         graphicsNbd.translate(
-                Math.round((getLeftmostPixel() + getX()) / getScale() - graphicsNbd.getCenterX()),
-                Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
+                Math.round(getLeftmostPixel() + getX() - graphicsNbd.getCenterX()),
+                Math.round(getHighestPixelFromBelow() + getY() - graphicsNbd.getCenterY())
         );
 
         positionNbd.translate(
-                Math.round((getLeftmostPixel() + getX()) / getScale() - graphicsNbd.getCenterX()),
-                Math.round((getHighestPixelFromBelow() + getY()) / getScale() - graphicsNbd.getCenterY())
+                Math.round(getLeftmostPixel() + getX() - graphicsNbd.getCenterX()),
+                Math.round(getHighestPixelFromBelow() + getY() - graphicsNbd.getCenterY())
         );
     }
 
@@ -212,24 +210,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public float getScale() {
-        return scale;
-    }
-
-    @Override
-    public void setScale(float scale) {
-        if (scale <= 0) throw new IllegalStateException("Scale should be positive.");
-
-        if (scale != 0 && scale != this.scale) {
-            x = x * scale / this.scale;
-            y = y * scale / this.scale;
-            this.scale = scale;
-        } else if (this.scale == 0) {
-            this.scale = scale;
-        }
-    }
-
-    @Override
     public ImageMetadata getImageMetadata() {
         return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageMetadataLibgdx.emptyAnalysis();
     }
@@ -252,8 +232,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     @Override
     public JSONObject toJSONObject() {
         return new JSONObject()
-                .put("x", getUnscaledX())
-                .put("y", getUnscaledY())
+                .put("x", getXAsInt())
+                .put("y", getYAsInt())
                 .put("atlas_path", atlasPath)
                 .put("layer", getLayer())
                 .put("type", getType().name())

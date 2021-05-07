@@ -83,8 +83,8 @@ public class Player extends EntitySimple {
                                  BiIntToFloatFunction vectorFieldX,
                                  BiIntToFloatFunction vectorFieldY,
                                  float dt) {
-        final int x = entity.getUnscaledX();
-        final int y = entity.getUnscaledY();
+        final int x = entity.getXAsInt();
+        final int y = entity.getYAsInt();
         for (int i = 0; i < 4; i++) {
             final float
                     vx = vectorFieldX.eval(x, y + i),
@@ -104,12 +104,11 @@ public class Player extends EntitySimple {
      */
     private static float findLiftAboveGround(int x,
                                              int y,
-                                             float scale,
                                              @NotNull BiIntPredicate collisionPredicate) {
 
         int j = 0;
         while (collisionPredicate.test(x, y + j)) j++;
-        return scale * j;
+        return j;
     }
 
     public void setHandleInput(boolean b) {
@@ -219,8 +218,8 @@ public class Player extends EntitySimple {
         handlePlayerInputMovementKeyboard(params);
 
         // Get initial conditions.
-        final int xPrevUnscaled = getUnscaledX();
-        final int yPrevUnscaled = getUnscaledY();
+        final int xPrevUnscaled = getXAsInt();
+        final int yPrevUnscaled = getYAsInt();
         final boolean affectedByVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY, params.dt());
 
         // Ladder movement
@@ -236,10 +235,10 @@ public class Player extends EntitySimple {
             dy = WALK_SPEED_PER_SECONDS * (d - u) * params.dt();
 
             if (dx == 0) {
-                dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy) / getScale()))) ? 0 : dy;
+                dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy)))) ? 0 : dy;
             }
 
-            dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((getY() - 8) / getScale()));
+            dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((getY() - 8)));
         }
 
         // Regular movement
@@ -277,12 +276,12 @@ public class Player extends EntitySimple {
 
 
         // Check the proposed new coordinates with respect to collision data
-        final int xNewUnscaled = Math.round((getX() + dx) / getScale());
-        final int yNewUnscaled = Math.round((getY() + dy) / getScale());
+        final int xNewUnscaled = Math.round((getX() + dx));
+        final int yNewUnscaled = Math.round((getY() + dy));
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(findLiftAboveGround(getUnscaledX(), getUnscaledY(), getScale(), params::isCollisionAt), vAbsPerSecond * params.meter() * params.dt());
+            dy = Math.min(findLiftAboveGround(getXAsInt(), getYAsInt(), params::isCollisionAt), vAbsPerSecond * params.meter() * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -354,8 +353,8 @@ public class Player extends EntitySimple {
         jumpCooldown += params.dt();
 
         // Check if player is in air.
-        final int xUpdatedInt = getUnscaledX();
-        final int yUpdatedInt = getUnscaledY();
+        final int xUpdatedInt = getXAsInt();
+        final int yUpdatedInt = getYAsInt();
         final boolean onLadder = params.isLadderAt(xUpdatedInt, yUpdatedInt);
 
         final boolean willSoonInterceptCollisionData;

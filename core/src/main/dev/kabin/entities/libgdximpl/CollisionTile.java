@@ -30,8 +30,8 @@ public class CollisionTile extends CollisionEntity {
     private int unscaledY;
 
     /**
-     * This constructor is removes any preexisting {@link CollisionTile} at the location specified by {@link #getUnscaledX()},
-     * {@link #getUnscaledY()}.
+     * This constructor is removes any preexisting {@link CollisionTile} at the location specified by {@link #getXAsInt()},
+     * {@link #getYAsInt()}.
      *
      * @param parameters constructor parameters.
      */
@@ -46,7 +46,7 @@ public class CollisionTile extends CollisionEntity {
                 .orElse(0);
         if (objectPool.containsKey(PointInt.immutable(unscaledX, unscaledY))) {
             throw new IllegalArgumentException(("The position at which this collision tile was placed was already occupied. " +
-                    "Use the clearAt method to clear. Here are the coordinates (%s,%s)").formatted(getUnscaledX(), getUnscaledY()));
+                    "Use the clearAt method to clear. Here are the coordinates (%s,%s)").formatted(getXAsInt(), getYAsInt()));
         }
         objectPool.put(PointInt.immutable(unscaledX, unscaledY), this);
         animationPlaybackImpl.ifPresent(a -> a.setSmoothParameter(1));
@@ -71,8 +71,8 @@ public class CollisionTile extends CollisionEntity {
     public void updateGraphics(GraphicsParametersLibgdx params) {
         final AbstractAnimationPlaybackLibgdx<Tile> animationPlaybackImpl = getAnimationPlaybackImpl(Tile.class);
         if (animationPlaybackImpl != null) {
-            animationPlaybackImpl.setPos(getX() - getPixelMassCenterX() * getScale(), getY() - (getPixelMassCenterY() - 1) * getScale());
-            animationPlaybackImpl.setScale(getScale() * 1.01f);
+            animationPlaybackImpl.setPos((getX() - getPixelMassCenterX()) * params.scale(), (getY() - (getPixelMassCenterY() - 1)) * params.scale());
+            animationPlaybackImpl.setScale(params.scale() * 1.01f);
             animationPlaybackImpl.setCurrentAnimation(tile);
             animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
             animationPlaybackImpl.renderFrameByIndex(params, index);
@@ -87,23 +87,23 @@ public class CollisionTile extends CollisionEntity {
 
     @Override
     public void setX(float x) {
-        unscaledX = Functions.snapToGrid(x / getScale(), TILE_SIZE);
-        super.setX(unscaledX * getScale());
+        unscaledX = Functions.snapToGrid(x, TILE_SIZE);
+        super.setX(unscaledX);
     }
 
     @Override
-    public int getUnscaledX() {
+    public int getXAsInt() {
         return unscaledX;
     }
 
     @Override
     public void setY(float y) {
-        unscaledY = Functions.snapToGrid(y / getScale(), TILE_SIZE);
-        super.setY(unscaledY * getScale());
+        unscaledY = Functions.snapToGrid(y, TILE_SIZE);
+        super.setY(unscaledY);
     }
 
     @Override
-    public int getUnscaledY() {
+    public int getYAsInt() {
         return unscaledY;
     }
 
@@ -117,12 +117,12 @@ public class CollisionTile extends CollisionEntity {
 
     @Override
     public int getRootIntX() {
-        return getUnscaledX() - TILE_SIZE / 2;
+        return getXAsInt() - TILE_SIZE / 2;
     }
 
     @Override
     public int getRootIntY() {
-        return getUnscaledY() - TILE_SIZE / 2;
+        return getYAsInt() - TILE_SIZE / 2;
     }
 
     @Override

@@ -130,7 +130,7 @@ public class TileSelectionWidget {
                     if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
                         throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                     }
-                    CollisionTile.clearAt(ct.getUnscaledX(), ct.getUnscaledY()).orElseThrow();
+                    CollisionTile.clearAt(ct.getXAsInt(), ct.getYAsInt()).orElseThrow();
                     ct.getActor().ifPresent(Actor::remove);
                     ct.actionEachCollisionPoint(worldRepresentationSupplier.get()::decrementCollisionAt);
                     // Finally remove from cache, so that the next time this method is called, the same entity is not erased twice.
@@ -180,7 +180,6 @@ public class TileSelectionWidget {
                     .setX(mouseRelativeToWorldX.get())
                     .setY(mouseRelativeToWorldY.get())
                     .setLayer(0)
-                    .setScale(scale.get())
                     .setAtlasPath(selectedAsset)
                     .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                     .put(CollisionTile.TILE, currentType.name())

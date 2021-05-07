@@ -41,7 +41,8 @@ public class LightSourceShaderBinder {
     public void bindData(IntFunction<LightSourceData> lightSourceDataIntFunction,
                          float camXMinusHalfWidth,
                          float camYMinusHalfHeight,
-                         int numberLightSources) {
+                         int numberLightSources,
+                         float scale) {
 
         for (int i = 0; i < numberLightSources; i++) {
 
@@ -51,10 +52,10 @@ public class LightSourceShaderBinder {
             this.tints[3 * i + 1] = lightSourceDataIntFunction.apply(i).getTint().green();
             this.tints[3 * i + 2] = lightSourceDataIntFunction.apply(i).getTint().blue();
 
-            this.xy[2 * i] = lightSourceDataIntFunction.apply(i).getX() - camXMinusHalfWidth;
-            this.xy[2 * i + 1] = lightSourceDataIntFunction.apply(i).getY() - camYMinusHalfHeight;
+            this.xy[2 * i] = lightSourceDataIntFunction.apply(i).getX() * scale - camXMinusHalfWidth;
+            this.xy[2 * i + 1] = lightSourceDataIntFunction.apply(i).getY() * scale - camYMinusHalfHeight;
 
-            this.r[i] = lightSourceDataIntFunction.apply(i).getR();
+            this.r[i] = lightSourceDataIntFunction.apply(i).getR() * scale;
 
             this.angles[i] = lightSourceDataIntFunction.apply(i).getAngle();
             this.widths[i] = lightSourceDataIntFunction.apply(i).getWidth();
