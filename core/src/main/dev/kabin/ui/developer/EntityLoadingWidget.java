@@ -36,7 +36,6 @@ class EntityLoadingWidget {
     private final Stage stage;
     private final FloatSupplier mouseRelativeToWorldX;
     private final FloatSupplier mouseRelativeToWorldY;
-    private final FloatSupplier scale;
     private final Consumer<EntityLibgdx> registerEntityToWorld;
     private final Supplier<TextureAtlas> textureAtlasSupplier;
     private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier;
@@ -54,14 +53,12 @@ class EntityLoadingWidget {
             Executor executor,
             FloatSupplier mouseRelativeToWorldX,
             FloatSupplier mouseRelativeToWorldY,
-            FloatSupplier scale,
             Consumer<EntityLibgdx> registerEntityToWorld,
             Supplier<TextureAtlas> textureAtlasSupplier,
             Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier) {
         this.stage = stage;
         this.mouseRelativeToWorldX = mouseRelativeToWorldX;
         this.mouseRelativeToWorldY = mouseRelativeToWorldY;
-        this.scale = scale;
         this.registerEntityToWorld = registerEntityToWorld;
         this.textureAtlasSupplier = textureAtlasSupplier;
         widget = new dev.kabin.ui.Widget.Builder()

@@ -54,7 +54,6 @@ public class DeveloperUI {
     private final Supplier<TextureAtlas> textureAtlasSupplier;
     private final BooleanSupplier developerMode;
     private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier;
-    private final FloatSupplier scale;
     private final EntitySelection entitySelection;
     private final DragListener selectionEnd = new DragListener() {
         @Override
@@ -90,12 +89,10 @@ public class DeveloperUI {
                        FloatSupplier camPosY,
                        Supplier<RectInt> camBounds,
                        Consumer<Runnable> synchronizer,
-                       FloatSupplier scale,
                        BooleanSupplier developerMode,
                        Supplier<ImageMetadataPoolLibgdx> imageAnalysisPoolSupplier) {
         this.textureAtlasSupplier = textureAtlasSupplier;
 
-        this.scale = scale;
         this.stage = stage;
         this.developerMode = developerMode;
         this.imageAnalysisPoolSupplier = imageAnalysisPoolSupplier;
@@ -107,7 +104,6 @@ public class DeveloperUI {
                 executorService,
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
-                scale,
                 e -> worldRepresentationSupplier.get().registerEntity(e),
                 textureAtlasSupplier,
                 imageAnalysisPoolSupplier);
@@ -380,8 +376,7 @@ public class DeveloperUI {
                     Serializer.loadWorldState(stage,
                             textureAtlasSupplier.get(),
                             imageAnalysisPoolSupplier.get(),
-                            new JSONObject(Files.readString(selectedFile.toPath())),
-                            scale.get());
+                            new JSONObject(Files.readString(selectedFile.toPath())));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -31,8 +31,8 @@ public class MainGameDeveloper extends MainGame {
             worldRepresentation = Serializer.loadWorldState(getStage(),
                     getTextureAtlasShaded(),
                     getImageAnalysisPool(),
-                    new JSONObject(Files.readString(Path.of(pathToWorld))),
-                    getScale());
+                    new JSONObject(Files.readString(Path.of(pathToWorld)))
+            );
             entityLoadingWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("entity_selection");
             tileSelectionWidgetSettings = session.getJSONObject("developer").getJSONObject("widgets").getJSONObject("tile_selection");
         } catch (IOException e) {
@@ -52,7 +52,6 @@ public class MainGameDeveloper extends MainGame {
                 this.getCameraWrapper()::getCameraY,
                 this::getCamBounds,
                 this::synchronizer,
-                this::getScale,
                 this::isDeveloperMode,
                 this::getImageAnalysisPool);
         developerUI.loadEntityLoadingWidgetSettings(entityLoadingWidgetSettings);

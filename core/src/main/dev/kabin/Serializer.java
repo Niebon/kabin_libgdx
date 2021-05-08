@@ -37,8 +37,7 @@ public class Serializer {
     public static WorldRepresentation<EntityGroup, EntityLibgdx> loadWorldState(Stage stage,
                                                                                 TextureAtlas textureAtlas,
                                                                                 ImageMetadataPoolLibgdx imageAnalysisPool,
-                                                                                JSONObject o,
-                                                                                float scale) {
+                                                                                JSONObject o) {
         final HashSet<String> admissibleEntityTypes = Arrays.stream(EntityType.values()).map(Enum::name)
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y));
