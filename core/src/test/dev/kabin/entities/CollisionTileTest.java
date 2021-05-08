@@ -12,16 +12,14 @@ import org.junit.jupiter.api.Test;
 
 class CollisionTileTest {
 
-    private EntityParameters generateParameters(int x, int y, float scale) {
+    private EntityParameters generateParameters(int x, int y) {
         return EntityParameters.builder()
-                .setX(x * scale)
-                .setY(y * scale)
+                .setX(x)
+                .setY(y)
                 .setLayer(0)
-                .setScale(1)
                 .setAtlasPath("raw_textures/ground")
                 .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
                 .put(CollisionTile.TILE, Tile.SURFACE.name())
-                .setScale(scale)
                 .setEntityType(EntityType.COLLISION_TILE)
                 .build();
     }
@@ -36,7 +34,7 @@ class CollisionTileTest {
 
             CollisionTile collisionTileBefore;
             {
-                EntityParameters parameters = generateParameters(x, y, scale);
+                EntityParameters parameters = generateParameters(x, y);
                 collisionTileBefore = new CollisionTile(parameters);
             }
 
@@ -52,8 +50,7 @@ class CollisionTileTest {
                 JSONObject o = collisionTileBefore.toJSONObject();
                 EntityParameters parametersAfterRecordAndLoad = generateParameters(
                         o.getInt("x"),
-                        o.getInt("y"),
-                        scale
+                        o.getInt("y")
                 );
                 collisionTileAfter = new CollisionTile(parametersAfterRecordAndLoad);
             }
