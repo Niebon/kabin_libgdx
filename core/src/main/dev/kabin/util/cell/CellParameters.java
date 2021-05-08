@@ -8,7 +8,7 @@ record CellParameters(int x,
                       int width,
                       int height,
                       float scaleFactor,
-                      boolean hasSubcomponents,
+                      boolean hasSubCells,
                       int minimalCellSize,
                       IntMatrixPool intMatrixPool,
                       FloatMatrixPool floatMatrixPool) {
@@ -22,7 +22,7 @@ record CellParameters(int x,
         private int x, y;
         private int width, height;
         private float scaleFactor;
-        private boolean hasSubcomponents = true;
+        private boolean hasSubCells = true;
         private final int minimalCellSize;
         private IntMatrixPool intMatrixPool;
         private FloatMatrixPool floatMatrixPool;
@@ -31,31 +31,31 @@ record CellParameters(int x,
             this.minimalCellSize = minimalCellSize;
         }
 
-        private boolean hasSubcomponents(int value) {
+        private boolean hasSubCells(int value) {
             return Math.floorMod(value, minimalCellSize) == 0;
         }
 
         public Builder setX(int x) {
-            if (hasSubcomponents(x)) this.x = x;
-            else hasSubcomponents = false;
+            if (hasSubCells(x)) this.x = x;
+            else hasSubCells = false;
             return this;
         }
 
         public Builder setY(int y) {
-            if (hasSubcomponents(y)) this.y = y;
-            else hasSubcomponents = false;
+            if (hasSubCells(y)) this.y = y;
+            else hasSubCells = false;
             return this;
         }
 
         public Builder setHeight(int height) {
-            if (hasSubcomponents(height)) this.height = height;
-            else hasSubcomponents = false;
+            if (hasSubCells(height)) this.height = height;
+            else hasSubCells = false;
             return this;
         }
 
         public Builder setWidth(int width) {
-            if (hasSubcomponents(width)) this.width = width;
-            else hasSubcomponents = false;
+            if (hasSubCells(width)) this.width = width;
+            else hasSubCells = false;
             return this;
         }
 
@@ -75,7 +75,7 @@ record CellParameters(int x,
         }
 
         public CellParameters build() {
-            return new CellParameters(x, y, width, height, scaleFactor, hasSubcomponents, minimalCellSize, intMatrixPool, floatMatrixPool);
+            return new CellParameters(x, y, width, height, scaleFactor, hasSubCells, minimalCellSize, intMatrixPool, floatMatrixPool);
         }
     }
 }

@@ -125,9 +125,7 @@ public class CollisionPool {
             }
         }
 
-        /*
-        Finally, calculate collision profile boundary.
-        */
+        // Finally, calculate collision profile boundary.
         pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
         // Finally, transform to game coordinates: positive y-direction points upwards ...
@@ -147,9 +145,9 @@ public class CollisionPool {
         }
     }
 
-    /*
-    A helper method for finding a convex representation of the collision profile boundary.
-    */
+    /**
+     * A helper method for finding a convex representation of the collision profile boundary.
+     */
     private static @NotNull List<PointInt> findCollisionProfileBoundary(int x, int y, int width, int height,
                                                                         BufferedImage bufferedImage) {
 

@@ -12,14 +12,14 @@ import dev.kabin.entities.libgdximpl.EntityLibgdx;
  */
 class DraggedEntity {
     private final float entityOriginalX, entityOriginalY;
-    private final float initialMouseX, getInitialMouseY;
+    private final float initialMouseX, initialMouseY;
     private final EntityLibgdx entity;
 
-    public DraggedEntity(float originalX, float entityOriginalY, float initialMouseX, float getInitialMouseY, EntityLibgdx entity) {
-        this.entityOriginalX = originalX;
-        this.entityOriginalY = entityOriginalY;
+    public DraggedEntity(float initialMouseX, float initialMouseY, EntityLibgdx entity) {
+        this.entityOriginalX = entity.getX();
+        this.entityOriginalY = entity.getY();
         this.initialMouseX = initialMouseX;
-        this.getInitialMouseY = getInitialMouseY;
+        this.initialMouseY = initialMouseY;
         this.entity = entity;
     }
 
@@ -40,6 +40,6 @@ class DraggedEntity {
     }
 
     public float getInitialMouseY() {
-        return getInitialMouseY;
+        return initialMouseY;
     }
 }

@@ -11,10 +11,6 @@ import java.util.concurrent.Callable;
 
 public class Functions {
 
-    public static float snapToPixel(float input, float scaleFactor) {
-        return Math.round(input / scaleFactor) * scaleFactor;
-    }
-
     /**
      * Snaps the given value to the grid. More precisely, given the partition:
      * <p>

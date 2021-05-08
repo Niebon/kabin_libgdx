@@ -49,7 +49,6 @@ public class TileSelectionWidget {
     private final Supplier<TextureAtlas> textureAtlasSupplier;
     private final FloatSupplier mouseRelativeToWorldY;
     private Tile currentType = Tile.SURFACE;
-    private final FloatSupplier scale;
     private final Supplier<RectInt> currCamBounds;
     private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier;
     private final Supplier<ImageMetadataPoolLibgdx> imageAnalysisPool;
@@ -62,7 +61,6 @@ public class TileSelectionWidget {
             Executor executor,
             FloatSupplier mouseRelativeToWorldX,
             FloatSupplier mouseRelativeToWorldY,
-            FloatSupplier scale,
             Supplier<RectInt> currCamBounds,
             Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> worldRepresentationSupplier,
             Supplier<ImageMetadataPoolLibgdx> imageAnalysisPool,
@@ -72,7 +70,6 @@ public class TileSelectionWidget {
         this.textureAtlasSupplier = atlas;
         this.mouseRelativeToWorldX = mouseRelativeToWorldX;
         this.mouseRelativeToWorldY = mouseRelativeToWorldY;
-        this.scale = scale;
         this.currCamBounds = currCamBounds;
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.imageAnalysisPool = imageAnalysisPool;
@@ -110,10 +107,8 @@ public class TileSelectionWidget {
      * @param mouseY the vertical coordinate of the given mouse position.
      */
     private void removeGroundTileAtCurrentMousePosition(float mouseX, float mouseY) {
-        final int intX = Functions.snapToGrid(mouseX / scale.get(), CollisionTile.TILE_SIZE);
-        final float x = intX * scale.get();
-        final int intY = Functions.snapToGrid(mouseY / scale.get(), CollisionTile.TILE_SIZE);
-        final float y = intY * scale.get();
+        final int intX = Functions.snapToGrid(mouseX, CollisionTile.TILE_SIZE);
+        final int intY = Functions.snapToGrid(mouseY, CollisionTile.TILE_SIZE);
         final CollisionTile matchingCt = CollisionTile.clearAt(intX, intY).orElse(null);
         if (matchingCt != null) {
             if (!worldRepresentationSupplier.get().unregisterEntity(matchingCt)) {
@@ -126,7 +121,7 @@ public class TileSelectionWidget {
             final Iterator<EntityLibgdx> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
             while (entityIterator.hasNext()) {
                 final EntityLibgdx e = entityIterator.next();
-                if (e instanceof final CollisionTile ct && e.getX() == x && e.getY() == y) {
+                if (e instanceof final CollisionTile ct && e.getX() == (float) intX && e.getY() == (float) intY) {
                     if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
                         throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                     }

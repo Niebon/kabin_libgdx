@@ -3,7 +3,13 @@ package dev.kabin.util.shapes.primitive;
 /**
  * Implements an <b>unmodifiable</b> view of a {@link RectInt}.
  */
-public record RectIntView(RectInt data) implements RectInt {
+public class RectIntView implements RectInt {
+
+    private final RectInt data;
+
+    public RectIntView(RectInt data) {
+        this.data = data;
+    }
 
     @Override
     public int getMinX() {

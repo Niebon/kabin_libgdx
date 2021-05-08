@@ -5,9 +5,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 /**
- * The implementor is responsible for returning objects.
- *
- * @param <ObjectType>
+ * @param <ObjectType> the type of the objects that this pool holds.
  */
 public class AbstractObjectPool<ObjectType> {
 

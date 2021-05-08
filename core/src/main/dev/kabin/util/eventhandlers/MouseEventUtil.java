@@ -49,18 +49,37 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         return PointFloat.immutable(getXRelativeToUI(), getYRelativeToUI());
     }
 
+    /**
+     * @return The horizontal coordinate of the mouse position relative to the UI measured in
+     * screen resolution coordinates. (If res = 1080p, then the output will be in the range [0, 1920)).
+     */
     public float getXRelativeToUI() {
         return xRelativeToUI;
     }
 
+    /**
+     * @return The vertical coordinate of the mouse position relative to the UI measured in
+     * screen resolution coordinates. (If res = 1080p, then the output will be in the range [0, 1080)).
+     * If y = 0, then the position is at the bottom of the screen.
+     */
     public float getYRelativeToUI() {
         return yRelativeToUI;
     }
 
+    /**
+     * @return The horizontal coordinate of the mouse in world coordinates. If the cameras bottom left corner is centered in the origin,
+     * then the rectangle determined by the screen resolution (e.g. [0, 1920) × [0, 1080)) corresponds exactly to the rectangle [0, 400) × [0, 240) in world coordinates.
+     * If the mouse stays perfectly in the mid-point of the screen, then this function returns 200.
+     */
     public float getMouseXRelativeToWorld() {
         return xRelativeToWorld;
     }
 
+    /**
+     * @return The vertical coordinate of the mouse in world coordinates. If the cameras bottom left corner is centered in the origin,
+     * then the rectangle determined by the screen resolution (e.g. [0, 1920) × [0, 1080)) corresponds exactly to the rectangle [0, 400) × [0, 240) in world coordinates.
+     * If the mouse stays perfectly in the mid-point of the screen, then this function returns 120.
+     */
     public float getMouseYRelativeToWorld() {
         return yRelativeToWorld;
     }
@@ -87,11 +106,12 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
                 "mouseRelToUI: " + getPositionRelativeToUI() + "\n" +
                 "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleBy(1 / scale.get()).toPointInt() + "\n" +
                 "collision: " + (worldState != null ? worldState.getCollision(
-                Math.round(getMouseXRelativeToWorld() / scale.get()),
-                Math.round(getMouseYRelativeToWorld() / scale.get())
+                Math.round(getMouseXRelativeToWorld()),
+                Math.round(getMouseYRelativeToWorld())
         ) : "");
     }
 
+    // TODO: Fix.
     public void registerMouseMoved(float x, float y) {
         xRelativeToUI = x;
         yRelativeToUI = Functions.transformY(y, Gdx.graphics.getHeight());
@@ -99,8 +119,8 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         float offsetX = camPosX.get() - Gdx.graphics.getWidth() * 0.5f;
         float offsetY = camPosY.get() - Gdx.graphics.getHeight() * 0.5f;
 
-        xRelativeToWorld = x + offsetX;
-        yRelativeToWorld = Functions.transformY(y, Gdx.graphics.getHeight()) + offsetY;
+        xRelativeToWorld = (x + offsetX) / scale.get();
+        yRelativeToWorld = (Functions.transformY(y, Gdx.graphics.getHeight()) + offsetY) / scale.get();
         logger.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }

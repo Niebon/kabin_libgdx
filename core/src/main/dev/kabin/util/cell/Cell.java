@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
  * |            |            |
  * |____________|____________|
  * </pre>
- * This instance will have sub-components iff the provided {@link CellParameters} have {@link CellParameters#hasSubcomponents()}
+ * This instance will have sub-components iff the provided {@link CellParameters} have {@link CellParameters#hasSubCells()}
  * equal to true.
  * <p>
  * In that case, we associate 0 -> (0,0), 1 -> (1,0), 2 -> (0,1), and 3 -> (1,1), where the pairs (m,n) determine the
@@ -72,7 +72,7 @@ public final class Cell implements Id {
         id = instancesInitiated++;
 
         // Early exit.
-        if (!parameters.hasSubcomponents()) {
+        if (!parameters.hasSubCells()) {
             throw new IllegalArgumentException("Received invalid parameters: " + parameters);
         }
 
@@ -95,7 +95,7 @@ public final class Cell implements Id {
                 ).toList();
 
         // One has subcomponents <=> all have subcomponents.
-        if (cellParametersList.get(0).hasSubcomponents()) {
+        if (cellParametersList.get(0).hasSubCells()) {
 
             subCells = cellParametersList.stream().map(Cell::new).toArray(Cell[]::new);
 

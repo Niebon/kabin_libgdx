@@ -13,8 +13,7 @@ public interface Node<T> {
     int size();
 
     /**
-     * Adds the given child to this node. This may make a modification
-     * to this instance.
+     * Adds the given child to this node.
      *
      * @param data data of the child to be added.
      * @return If the data already was present under one of the children of this node, then the index of that child is returned.

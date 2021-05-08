@@ -17,7 +17,6 @@ import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
-import dev.kabin.util.Functions;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.lambdas.BooleanSupplier;
@@ -118,7 +117,6 @@ public class DeveloperUI {
                 executorService,
                 () -> mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 () -> mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
-                scale,
                 camBounds,
                 worldRepresentationSupplier,
                 imageAnalysisPoolSupplier,
@@ -301,8 +299,6 @@ public class DeveloperUI {
 
     public void addEntityToDraggedEntities(EntityLibgdx e) {
         draggedEntities.add(new DraggedEntity(
-                e.getX() * scale.get(),
-                e.getY() * scale.get(),
                 mouseEventUtilSupplier.get().getMouseXRelativeToWorld(),
                 mouseEventUtilSupplier.get().getMouseYRelativeToWorld(),
                 e));
@@ -325,9 +321,9 @@ public class DeveloperUI {
             // The update scheme is r -> r + delta mouse. Also, snap to pixels (respecting pixel art).
             final float targetX = de.getEntityOriginalX() + mouseEventUtilSupplier.get().getMouseXRelativeToWorld() - de.getInitialMouseX();
             final float targetY = de.getEntityOriginalY() + mouseEventUtilSupplier.get().getMouseYRelativeToWorld() - de.getInitialMouseY();
-            final float x = Functions.snapToPixel(targetX, scale.get());
-            final float y = Functions.snapToPixel(targetY, scale.get());
-            e.setPos(x / scale.get(), y / scale.get());
+            final float x = (float) Math.round(targetX);
+            final float y = (float) Math.round(targetY);
+            e.setPos(x, y);
         }
     }
 
