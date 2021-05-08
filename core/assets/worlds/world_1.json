@@ -1923,6 +1923,6 @@
       "frame_index": 2
     }
   ],
-  "worldSizeY": 16384,
-  "worldSizeX": 16384
+  "worldSizeY": 5000,
+  "worldSizeX": 5000
 }

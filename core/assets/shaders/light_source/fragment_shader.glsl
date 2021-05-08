@@ -11,7 +11,7 @@ const int BEAM = 30;
 // Varying:
 varying vec4 v_color;
 varying vec2 v_texCoords;
-varying vec2 gl_FragCoord;
+varying vec4 gl_FragCoord;
 
 // Uniform:
 uniform sampler2D u_texture;

@@ -152,7 +152,6 @@ public class MainGame extends ApplicationAdapter {
 
         //textureAtlas.getTextures().forEach(t -> t.setFilter(Texture.TextureFilter.Nearest , Texture.TextureFilter.Nearest ));
 
-
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -223,6 +222,12 @@ public class MainGame extends ApplicationAdapter {
 
                 final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
                 final float camYMinusHalfHeight = getCameraY() - getCameraWrapper().getCamera().viewportHeight * 0.5f;
+
+                if (!prg.isCompiled()) {
+                    logger.warning(prg.getLog());
+                    System.exit(1);
+                }
+
                 lssBinder.bindData(
                         lightSourceData::get,
                         camXMinusHalfWidth,
@@ -230,7 +235,7 @@ public class MainGame extends ApplicationAdapter {
                         Math.min(64, lightSourceData.size()),
                         scale
                 );
-                lssBinder.setAmbient(0.1f, 0.1f, 0.1f, 1f);
+                lssBinder.setAmbient(0.4f, 0.4f, 0.4f, 4f);
             }
 
             final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
