@@ -9,6 +9,7 @@ import java.util.function.IntSupplier;
 
 public class LazyList<T> implements List<T>, IntFunction<T> {
 
+    private static final LazyList<?> EMPTY_LAZY_LIST = new LazyList<>(i -> 0, () -> 0);
     private final IntFunction<T> getter;
     private final IntSupplier size;
 
@@ -20,6 +21,11 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     public LazyList(IntFunction<T> getter, IntSupplier size) {
         this.getter = getter;
         this.size = size;
+    }
+
+    public static <T> LazyList<T> empty() {
+        //noinspection unchecked
+        return (LazyList<T>) EMPTY_LAZY_LIST;
     }
 
     @Override

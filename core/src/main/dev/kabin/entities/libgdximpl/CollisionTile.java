@@ -116,12 +116,12 @@ public class CollisionTile extends CollisionEntity {
 
 
     @Override
-    public int getRootIntX() {
+    public int getRootXAsInt() {
         return getXAsInt() - TILE_SIZE / 2;
     }
 
     @Override
-    public int getRootIntY() {
+    public int getRootYAsInt() {
         return getYAsInt() - TILE_SIZE / 2;
     }
 

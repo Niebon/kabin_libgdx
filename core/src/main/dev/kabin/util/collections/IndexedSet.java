@@ -32,22 +32,22 @@ public class IndexedSet<Param extends Id> {
     @SafeVarargs
     public IndexedSet(Param... values) {
         underlyingObjectArray = values;
-        Arrays.sort(values, Comparator.comparingInt(Id::getId));
+        Arrays.sort(values, Comparator.comparingInt(Id::id));
         underlyingIntArray = new int[values.length];
         for (int i = 0; i < values.length; i++) {
             //noinspection unchecked
-            underlyingIntArray[i] = ((Param) underlyingObjectArray[i]).getId();
+            underlyingIntArray[i] = ((Param) underlyingObjectArray[i]).id();
         }
         size = underlyingObjectArray.length;
     }
 
     public boolean contains(Param val) {
-        return Arrays.binarySearch(underlyingIntArray, 0, size, val.getId()) >= 0;
+        return Arrays.binarySearch(underlyingIntArray, 0, size, val.id()) >= 0;
     }
 
     public boolean add(Param val) {
 
-        int idOfVal = val.getId();
+        int idOfVal = val.id();
         int result = Arrays.binarySearch(underlyingIntArray, 0, size, idOfVal);
 
         if (result < 0) {

@@ -274,7 +274,7 @@ public final class Cell implements Id {
 
 
     @Override
-    public int getId() {
+    public int id() {
         return id;
     }
 

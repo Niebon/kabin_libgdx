@@ -19,13 +19,13 @@ public interface CollisionData extends MetadataDelegator {
 
     @NotNull
     default Stream<PointInt> getSurfaceContourRelativeToOrigin() {
-        final int rootX = getRootIntX(), rootY = getRootIntY();
+        final int rootX = getRootXAsInt(), rootY = getRootYAsInt();
         return getSurfaceContourProfile().stream()
                 .map(p -> PointInt.immutable(p.x() + rootX, p.y() + rootY));
     }
 
     default void actionEachCollisionPoint(PrimitiveIntPairConsumer consumer) {
-        final int rootX = getRootIntX(), rootY = getRootIntY();
+        final int rootX = getRootXAsInt(), rootY = getRootYAsInt();
         final List<PointInt> profile = getCollisionProfile();
 
         if (angleRad() == 0) {
@@ -68,8 +68,8 @@ public interface CollisionData extends MetadataDelegator {
         return 0;
     }
 
-    int getRootIntX();
+    int getRootXAsInt();
 
-    int getRootIntY();
+    int getRootYAsInt();
 
 }

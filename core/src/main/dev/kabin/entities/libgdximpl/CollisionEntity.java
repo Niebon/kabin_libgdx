@@ -43,13 +43,13 @@ public class CollisionEntity extends AbstractLibgdxEntity implements CollisionDa
 	}
 
 	@Override
-	public int getRootIntX() {
-		return super.getRootIntX();
+	public int getRootXAsInt() {
+		return super.getRootXAsInt();
 	}
 
 	@Override
-	public int getRootIntY() {
-		return super.getRootIntY();
+	public int getRootYAsInt() {
+		return super.getRootYAsInt();
 	}
 
 }

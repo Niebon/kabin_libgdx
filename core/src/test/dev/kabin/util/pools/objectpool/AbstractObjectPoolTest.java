@@ -44,8 +44,7 @@ class AbstractObjectPoolTest {
         pool.giveBackAllExcept(takenObject);
 
         for (int i = 0; i < availableObjects - 1; i++) {
-            //noinspection SimplifiableAssertion: We actually want to disprove that they are the same object.
-            Assertions.assertFalse(takenObject == pool.borrow());
+            Assertions.assertNotSame(takenObject, pool.borrow());
         }
     }
 

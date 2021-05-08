@@ -3,9 +3,9 @@ package dev.kabin.entities.libgdximpl;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import dev.kabin.entities.Entity;
 import dev.kabin.shaders.AnchoredLightSourceData;
+import dev.kabin.util.collections.LazyList;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public interface EntityLibgdx extends Entity<EntityGroup, EntityType, GraphicsPa
 
     @Override
     @UnmodifiableView
-    List<AnchoredLightSourceData> getLightSourceDataList();
+    LazyList<AnchoredLightSourceData> getLightSourceDataList();
 
     /**
      * @return an unmodifiable map of light source data.

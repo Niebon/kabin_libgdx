@@ -2,13 +2,13 @@ package dev.kabin.entities;
 
 import dev.kabin.shaders.LightSourceData;
 import dev.kabin.util.collections.Id;
+import dev.kabin.util.collections.LazyList;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * An entity represents an actor in the game that has coordinates and a sprite.
@@ -62,7 +62,7 @@ public interface Entity<
      * <ul>
      *     <li>Comparing {@link EntityType#getLayer() layer} of the {@link #getType() group type} of this entity.</li>
      *     <li>Comparing the {@link #getLayer() layer} of this entity.</li>
-     *     <li>Comparing the {@link #getId() id} of this.</li>
+     *     <li>Comparing the {@link #id() id} of this.</li>
      * </ul>
      * in the given order.
      * <p>
@@ -81,7 +81,7 @@ public interface Entity<
         else {
             // Dictionary order:
             final int layerComparison = Integer.compare(getLayer(), other.getLayer());
-            return (layerComparison != 0) ? layerComparison : Integer.compare(getId(), other.getId());
+            return (layerComparison != 0) ? layerComparison : Integer.compare(id(), other.id());
         }
     }
 
@@ -105,11 +105,11 @@ public interface Entity<
         return Math.round(getY());
     }
 
-    default int getRootIntX() {
+    default int getRootXAsInt() {
         return getXAsInt() - Math.round(getAvgMassCenterX());
     }
 
-    default int getRootIntY() {
+    default int getRootYAsInt() {
         return getYAsInt() - (getAvgLowestPixel() - 2);
     }
 
@@ -136,7 +136,14 @@ public interface Entity<
     /**
      * @return an unmodifiable list light source data associated with this instance. This is used for shaders.
      */
-    List<? extends LightSourceData> getLightSourceDataList();
+    LazyList<? extends LightSourceData> getLightSourceDataList();
+
+    /**
+     * @return the points of collision that this entity makes relative to the world.
+     */
+    default LazyList<PointInt> collisionRelativeToWorld() {
+        return LazyList.empty();
+    }
 
 
 }

@@ -8,5 +8,5 @@ public interface Id {
     /**
      * @return a unique id identifying this instance.
      */
-    int getId();
+    int id();
 }

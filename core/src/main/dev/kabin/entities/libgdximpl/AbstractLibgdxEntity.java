@@ -74,7 +74,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @UnmodifiableView
     @Override
-    public final List<AnchoredLightSourceData> getLightSourceDataList() {
+    public final LazyList<AnchoredLightSourceData> getLightSourceDataList() {
         return lightSourceDataList;
     }
 
@@ -241,7 +241,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public int getId() {
+    public int id() {
         return id;
     }
 
