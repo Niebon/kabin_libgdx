@@ -136,4 +136,11 @@ class CellTest {
             }
         }
     }
+
+    @Test
+    void makeRepresentationOf() {
+        var rpr = Cell.makeRepresentationOf(16, 32, 4, 100);
+        Assertions.assertEquals(32, rpr.getWidth());
+        Assertions.assertEquals(32, rpr.getWidth());
+    }
 }

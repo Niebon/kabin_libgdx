@@ -202,10 +202,10 @@ public final class Cell implements Id {
         final var intMatrixPool = new IntMatrixPool(poolObjectsAvailable, () -> new IntMatrix(minimalCellSize, minimalCellSize));
         final var floatMatrixPool = new FloatMatrixPool(poolObjectsAvailable, () -> new FloatMatrix(minimalCellSize, minimalCellSize));
         int x = minimalCellSize, y = minimalCellSize;
-        while (x < width * 2 || y < height * 2) {
+        do {
             x *= 2;
             y *= 2;
-        }
+        } while (x < width || y < height);
         logger.log(Level.WARNING, "Creating components with dimensions {" + x + ", " + y + "}");
         return new Cell(CellParameters
                 .builder(minimalCellSize)
