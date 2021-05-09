@@ -6,66 +6,70 @@ import java.util.Arrays;
  * A lightweight int to int function. Uses binary searches do to mappings, and creates no garbage,
  * except when increasing size past load capacity.
  */
-public class IntToIntFunction {
+public class IntToIntMap {
 
-    private int[] domain;
-    private int[] coDomain;
+    private int[] keySet;
+    private int[] valueSet;
 
     private int size;
 
-    public IntToIntFunction() {
+    public IntToIntMap() {
         this(8);
     }
 
-    public IntToIntFunction(int capacity) {
+    public IntToIntMap(int capacity) {
         if (capacity < 0) throw new IllegalArgumentException("Capacity must be non-negative.");
-        domain = new int[capacity];
-        coDomain = new int[capacity];
+        keySet = new int[capacity];
+        valueSet = new int[capacity];
     }
 
-    public void define(int input, int output) {
-        final int searchResult = searchDomain(input);
+    public void put(int key, int value) {
+        final int searchResult = searchKeySet(key);
         final int insertIndex;
         if (0 <= searchResult && searchResult < size) {
             insertIndex = searchResult;
-            coDomain[insertIndex] = output;
+            valueSet[insertIndex] = value;
         } else {
             insertIndex = -searchResult - 1;
             final int newSize = size + 1;
             ensureCapacity(newSize);
             shiftByOne(insertIndex);
-            domain[insertIndex] = input;
-            coDomain[insertIndex] = output;
+            keySet[insertIndex] = key;
+            valueSet[insertIndex] = value;
             size = newSize;
         }
     }
 
     private void ensureCapacity(int upToIndex) {
-        final int domainLength = domain.length;
+        final int domainLength = keySet.length;
         if (upToIndex >= domainLength) {
             final int[] newDomain = new int[2 * domainLength];
             final int[] newCoDomain = new int[2 * domainLength];
             for (int i = 0, n = size; i < n; i++) {
-                newDomain[i] = domain[i];
-                newCoDomain[i] = coDomain[i];
+                newDomain[i] = keySet[i];
+                newCoDomain[i] = valueSet[i];
             }
-            domain = newDomain;
-            coDomain = newCoDomain;
+            keySet = newDomain;
+            valueSet = newCoDomain;
         }
     }
 
     private void shiftByOne(int atIndex) {
         for (int i = size; i > atIndex; i--) {
-            domain[i] = domain[i - 1];
-            coDomain[i] = coDomain[i - 1];
+            keySet[i] = keySet[i - 1];
+            valueSet[i] = valueSet[i - 1];
         }
     }
 
-    private int searchDomain(int val) {
-        return Arrays.binarySearch(domain, 0, size, val);
+    private int searchKeySet(int key) {
+        return Arrays.binarySearch(keySet, 0, size, key);
     }
 
-    public int eval(int input) {
-        return coDomain[searchDomain(input)];
+    public int get(int key) {
+        return valueSet[searchKeySet(key)];
+    }
+
+    public boolean containsKey(int key) {
+        return Arrays.binarySearch(keySet, 0, size, key) > 0;
     }
 }

@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.WeightedAverage2D;
-import dev.kabin.util.collections.IntToIntFunction;
+import dev.kabin.util.collections.IntToIntMap;
 import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
@@ -32,7 +32,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private final int width, height;
     private final Map<T, Animation<TextureAtlas.AtlasRegion>> animationsMap;
     private final Array<TextureAtlas.AtlasRegion> regions;
-    private final IntToIntFunction animationClassIndexToAnimationLength;
+    private final IntToIntMap animationClassIndexToAnimationLength;
     private final Map<T, int[]> animationBlueprint;
     private final int maxPixelHeight;
     private final ImageAnalysisSupplier imageAnalysisSupplier;
@@ -72,9 +72,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         height = regions.get(0).originalHeight;
         cachedTextureRegion = regions.get(0);
         currentAnimation = enumClass.getEnumConstants()[0];
-        animationClassIndexToAnimationLength = new IntToIntFunction(enumClass.getEnumConstants().length);
+        animationClassIndexToAnimationLength = new IntToIntMap(enumClass.getEnumConstants().length);
         weightedAverage2D = new WeightedAverage2D(0.5f);
-        animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.define(animClass.ordinal(), ints.length));
+        animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.put(animClass.ordinal(), ints.length));
 
         maxPixelHeight = Arrays.stream(regions.items)
                 .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
@@ -119,7 +119,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     }
 
     public int getCurrentAnimationLength() {
-        return animationClassIndexToAnimationLength.eval(currentAnimation.ordinal());
+        return animationClassIndexToAnimationLength.get(currentAnimation.ordinal());
     }
 
     @Override

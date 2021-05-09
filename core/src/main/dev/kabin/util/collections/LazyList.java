@@ -25,6 +25,11 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
         this.size = size;
     }
 
+    public static <T> LazyList<T> empty() {
+        //noinspection unchecked
+        return (LazyList<T>) EMPTY_LAZY_LIST;
+    }
+
     public T reduce(BinaryOperator<T> associativeBinOp) {
         if (internalSize() == 0) {
             return null;
@@ -37,25 +42,48 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
         }
     }
 
+    /**
+     * A call to this method {@link #compose(IntToIntFunction) composes} this lazy list
+     * with an {@code int[]} that remaps indices such that the resulting lazy list is sorted with
+     * respect to the given comparator.
+     *
+     * @param comparator a comparator that compares list entries.
+     * @return a sorted lazy list with respect to the given comparator.
+     * @implNote A call to this method has <i>O(n)</i> memory complexity that
+     * will be occupied for the lifetime of the resulting list. This comes from
+     * the {@code int} array that is used for index remapping - as explained above.
+     */
     public LazyList<T> sortBy(Comparator<T> comparator) {
-        int[] remapper = new int[internalSize()];
-        dev.kabin.util.Arrays.quickSort(remapper, this::internalGet, comparator);
-        return compose(i -> remapper[i]);
+        if (isEmpty()) return empty();
+        int n = internalSize();
+        int[] indexReMapper = new int[n];
+        for (int i = 0; i < n; i++) indexReMapper[i] = i;
+        dev.kabin.util.Arrays.quickSort(indexReMapper, this::internalGet, comparator);
+        return compose(i -> indexReMapper[i]);
     }
 
     public LazyList<LazyList<T>> split(Comparator<T> comparator) {
-        var sorted = sortBy(comparator);
-        return null;
+        if (isEmpty()) return empty();
+        LazyList<T> sorted = sortBy(comparator);
+        int[] partitions = new int[internalSize() + 1];
+        T compareCandidate;
+        int numberOfPartitions = 0;
+        int index = 0;
+        do {
+            compareCandidate = sorted.internalGet(index);
+            while (comparator.compare(compareCandidate, sorted.internalGet(index)) == 0) {
+                index++;
+            }
+            partitions[++numberOfPartitions] = index;
+        } while (index < internalSize() - 1);
+        partitions[++numberOfPartitions] = index + 1;
+        int finalNumberOfPartitions = numberOfPartitions;
+        return new LazyList<>(i -> sorted.subList(partitions[i], partitions[i + 1]), () -> finalNumberOfPartitions);
     }
 
     @Override
     public LazyList<T> compose(IntToIntFunction composer) {
-        return new LazyList<T>(getter.compose(composer), size);
-    }
-
-    public static <T> LazyList<T> empty() {
-        //noinspection unchecked
-        return (LazyList<T>) EMPTY_LAZY_LIST;
+        return new LazyList<>(getter.compose(composer), size);
     }
 
     @Override
@@ -167,6 +195,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
 
     @Override
     public T get(int index) {
+        if (index < 0 || index >= size()) throw new IndexOutOfBoundsException(index);
         return internalGet(index);
     }
 
@@ -223,8 +252,8 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     @Override
     public LazyList<T> subList(int fromIndex, int toIndex) {
         int size = internalSize();
-        if (fromIndex > size) throw new IndexOutOfBoundsException(fromIndex);
-        return new LazyList<>(i -> internalGet(i + fromIndex), () -> Math.min(size, toIndex));
+        if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) throw new IllegalArgumentException();
+        return new LazyList<>(i -> internalGet(i + fromIndex), () -> toIndex - fromIndex);
     }
 
     @Override

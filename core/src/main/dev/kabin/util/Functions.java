@@ -5,6 +5,7 @@ import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -166,6 +167,14 @@ public class Functions {
         } catch (Throwable t) {
             return Optional.empty();
         }
+    }
+
+    public static <T> Comparator<T> dictionaryOrder(Comparator<T> first, Comparator<T> second) {
+        return (a, b) -> {
+            int res = first.compare(a, b);
+            if (res != 0) return res;
+            return second.compare(a, b);
+        };
     }
 
 }

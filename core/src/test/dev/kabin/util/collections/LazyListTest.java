@@ -111,6 +111,14 @@ class LazyListTest {
     }
 
     @Test
+    void getThrowsIndexOutOfBounds() {
+        String[] backingData = {"a", "b", "c"};
+        var l = new LazyList<>(backingData);
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> l.get(5));
+    }
+
+
+    @Test
     void set() {
         String[] backingData = {"a", "b", "c"};
         var l = new LazyList<>(backingData);
@@ -148,6 +156,25 @@ class LazyListTest {
     }
 
     @Test
+    void subList2() {
+        Integer[] backingData = {-2, 1, 1, 3};
+        var l = new LazyList<>(backingData);
+        Assertions.assertEquals(List.of(-2), l.subList(0, 1));
+        Assertions.assertEquals(List.of(1, 1), l.subList(1, 3));
+        Assertions.assertEquals(List.of(3), l.subList(3, 4));
+    }
+
+    @Test
+    void subList3() {
+        Integer[] backingData = {-2, 1, 1, 3};
+        var l = new LazyList<>(backingData);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> l.subList(-1, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> l.subList(1, 5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> l.subList(3, 2));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> l.subList(4, 5));
+    }
+
+    @Test
     void reduce() {
         Integer[] backingData = {1, 3, -2};
         var l = new LazyList<>(backingData);
@@ -164,6 +191,20 @@ class LazyListTest {
     }
 
     @Test
-    void split() {
+    void sortByEmpty() {
+        Integer[] backingData = {};
+        var l = new LazyList<>(backingData);
+        Assertions.assertEquals(List.of(), l.sortBy(Integer::compareTo));
     }
+
+    @Test
+    void split() {
+        Integer[] backingData = {1, 1, 3, -2};
+        var l = new LazyList<>(backingData);
+        var lSplit = l.split(Integer::compareTo);
+        Assertions.assertEquals(List.of(-2), lSplit.get(0));
+        Assertions.assertEquals(List.of(1, 1), lSplit.get(1));
+        Assertions.assertEquals(List.of(3), lSplit.get(2));
+    }
+
 }

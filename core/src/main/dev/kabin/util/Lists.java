@@ -1,5 +1,6 @@
 package dev.kabin.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,17 @@ public class Lists {
                 c.accept((T) o);
             }
         }).collect(Collectors.toList());
+    }
+
+    public static <T> ArrayList<T> arrayListOf(T obj) {
+        var ret = new ArrayList<T>();
+        ret.add(obj);
+        return ret;
+    }
+
+    public static <T> ArrayList<T> arrayListOf(T... obj) {
+        var ret = new ArrayList<>(java.util.Arrays.asList(obj));
+        return ret;
     }
 
 }
