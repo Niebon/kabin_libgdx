@@ -2,9 +2,11 @@ package dev.kabin.util.collections;
 
 import dev.kabin.util.lambdas.Function;
 import dev.kabin.util.lambdas.IntFunction;
+import dev.kabin.util.lambdas.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.IntSupplier;
 
 public class LazyList<T> implements List<T>, IntFunction<T> {
@@ -21,6 +23,34 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     public LazyList(IntFunction<T> getter, IntSupplier size) {
         this.getter = getter;
         this.size = size;
+    }
+
+    public T reduce(BinaryOperator<T> associativeBinOp) {
+        if (internalSize() == 0) {
+            return null;
+        } else {
+            T acc = internalGet(0);
+            for (int i = 1, n = internalSize(); i < n; i++) {
+                acc = associativeBinOp.apply(acc, internalGet(i));
+            }
+            return acc;
+        }
+    }
+
+    public LazyList<T> sortBy(Comparator<T> comparator) {
+        int[] remapper = new int[internalSize()];
+        dev.kabin.util.Arrays.quickSort(remapper, this::internalGet, comparator);
+        return compose(i -> remapper[i]);
+    }
+
+    public LazyList<LazyList<T>> split(Comparator<T> comparator) {
+        var sorted = sortBy(comparator);
+        return null;
+    }
+
+    @Override
+    public LazyList<T> compose(IntToIntFunction composer) {
+        return new LazyList<T>(getter.compose(composer), size);
     }
 
     public static <T> LazyList<T> empty() {
@@ -51,7 +81,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     public boolean contains(Object o) {
         int size = internalSize();
         for (int i = 0; i < size; i++) {
-            var t = internalGet(i);
+            T t = internalGet(i);
             if (t != null) return true;
         }
         return false;

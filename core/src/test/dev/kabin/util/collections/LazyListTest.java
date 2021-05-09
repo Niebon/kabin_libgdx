@@ -8,6 +8,7 @@ import java.util.Set;
 
 class LazyListTest {
 
+
     @Test
     void size() {
         Assertions.assertEquals(3, new LazyList<>(i -> "a", () -> 3).size());
@@ -144,5 +145,25 @@ class LazyListTest {
         String[] backingData = {"a", "b", "c", "b", "c"};
         var l = new LazyList<>(backingData);
         Assertions.assertEquals(List.of("a", "b", "c"), l.subList(0, 3));
+    }
+
+    @Test
+    void reduce() {
+        Integer[] backingData = {1, 3, -2};
+        var l = new LazyList<>(backingData);
+        Assertions.assertEquals(3, l.reduce(Integer::max));
+        Assertions.assertEquals(-2, l.reduce(Integer::min));
+        Assertions.assertEquals(2, l.reduce(Integer::sum));
+    }
+
+    @Test
+    void sortBy() {
+        Integer[] backingData = {1, 3, -2};
+        var l = new LazyList<>(backingData);
+        Assertions.assertEquals(List.of(-2, 1, 3), l.sortBy(Integer::compareTo));
+    }
+
+    @Test
+    void split() {
     }
 }

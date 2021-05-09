@@ -9,6 +9,10 @@ public interface IntFunction<T> {
         return i -> f.apply(apply(i));
     }
 
+    default IntFunction<T> compose(IntToIntFunction composer) {
+        return i -> apply(composer.apply(i));
+    }
+
     /**
      * Glues this function together with the given function on the given range.
      *
