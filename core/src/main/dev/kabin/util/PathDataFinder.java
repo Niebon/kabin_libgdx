@@ -2,7 +2,6 @@ package dev.kabin.util;
 
 import dev.kabin.util.collections.IntToIntMap;
 import dev.kabin.util.collections.LazyList;
-import dev.kabin.util.graph.Node;
 import dev.kabin.util.graph.SimpleNode;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.points.PointInt;
@@ -25,48 +24,19 @@ public class PathDataFinder {
     private final static int MAX_PATH_SIZE = 16;
 
     private static boolean touching(RectInt A, RectInt B) {
-        final GrowingRectInt expandedA = new GrowingRectInt(A.getMinX() - 1, A.getMinY() - 1, A.getWidth() + 2, A.getHeight() + 2);
-        final GrowingRectInt expandedB = new GrowingRectInt(B.getMinX() - 1, B.getMinY() - 1, B.getWidth() + 2, B.getHeight() + 2);
+        var expandedA = new GrowingRectInt(A.getMinX() - 1, A.getMinY() - 1, A.getWidth() + 2, A.getHeight() + 2);
+        var expandedB = new GrowingRectInt(B.getMinX() - 1, B.getMinY() - 1, B.getWidth() + 2, B.getHeight() + 2);
         return expandedA.meets(expandedB);
-    }
-
-    /**
-     * Rough tests with
-     * <p>
-     * <p> a) walking speed ~ 3 m/s
-     * <p> b) run speed     ~ 8 m/s
-     * <p>(assuming jump vel of ~  m/s)
-     * <p>
-     * yielded the following optimal tolerances:
-     * <p>
-     * <p> a) 4   * EPSILON * GameData.scaleFactor
-     * <p> b) 0.5 * EPSILON * GameData.scaleFactor
-     * <p>
-     * This method returns a linear function that fits these data.
-     * The tolerance greatly impacts the number of arrows created, which in turn greatly affects the cost of the
-     * recursive path finder algorithm.
-     * <p>
-     * (Add one extra point and return exponential fit?)
-     */
-    private static float getDistanceToleranceFactor(float vx,
-                                                    float meter) {
-        final float optimalFactorWalkingSpeed = 4f,
-                optimalFactorRunningSpeed = 0.5f,
-                walkingSpeedUsedToDetermineOptimalFactor = 3 * meter,
-                runningSpeedUsedToDetermineOptimalFactor = 8 * meter,
-                a = (optimalFactorRunningSpeed - optimalFactorWalkingSpeed) / (runningSpeedUsedToDetermineOptimalFactor - walkingSpeedUsedToDetermineOptimalFactor),
-                b = optimalFactorRunningSpeed - a * runningSpeedUsedToDetermineOptimalFactor;
-        return (a * vx + b) * EPSILON;
     }
 
     public Function<NpcMetadata, PathData> newPathDataMaker(Stream<LazyList<PointInt>> collisionContributionPerEntity,
                                                             PhysicsConstants physicsConstants,
                                                             BiIntPredicate collisionAt) {
 
-        ArrayList<ArrayList<PointInt>> indexToPathSegment = new ArrayList<>();
-        ArrayList<GrowingRectInt> pathSegmentNeighborhoods = new ArrayList<>();
-        ArrayList<ArrayList<GrowingRectInt>> pathSegmentNeighborhoodsConnectedList = new ArrayList<>();
-        IntToIntMap pathSegmentToConnectedIndex = new IntToIntMap();
+        var indexToPathSegment = new ArrayList<ArrayList<PointInt>>();
+        var pathSegmentNeighborhoods = new ArrayList<GrowingRectInt>();
+        var pathSegmentNeighborhoodsConnectedList = new ArrayList<ArrayList<GrowingRectInt>>();
+        var pathSegmentToConnectedIndex = new IntToIntMap();
 
         collisionContributionPerEntity
                 .map(l -> l.split(Comparator.comparingInt(PointInt::x)))
@@ -83,13 +53,15 @@ public class PathDataFinder {
                 );
 
         return r -> {
-            PathData pathData = new PathData(IntStream
-                    .range(0, indexToPathSegment.size())
-                    .mapToObj(SimpleNode::new)
-                    .collect(Collectors.toCollection(ArrayList::new)),
-                    pathSegmentToConnectedIndex);
+            var pathSegments = IntStream.range(0, indexToPathSegment.size())
+                    .mapToObj(i -> new IndexedRect(pathSegmentNeighborhoods.get(i), i, pathSegmentToConnectedIndex.get(i)))
+                    .filter(ir -> Functions.distance(ir.rect().getCenterX(), ir.rect().getCenterY(), r.x(), r.y()) < 512)
+                    .map(SimpleNode::new)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-            generateArrows(pathData, r, physicsConstants, collisionAt, pathSegmentNeighborhoods);
+
+            var pathData = new PathData(pathSegments);
+            generateArrows(pathData, r, physicsConstants, collisionAt);
             return pathData;
         };
     }
@@ -97,43 +69,30 @@ public class PathDataFinder {
     public void generateArrows(@NotNull PathData pathData,
                                NpcMetadata npc,
                                PhysicsConstants physicsConstants,
-                               BiIntPredicate collisionAt,
-                               ArrayList<GrowingRectInt> pathSegmentNeighborhoods) {
-
-        record GrowingRectIntAndIndex(GrowingRectInt growingRectInt, Node<Integer> node) {
-        }
-
-        final List<GrowingRectIntAndIndex> pathSegmentNeighborhoodsFiltered = IntStream
-                .range(0, pathSegmentNeighborhoods.size())
-                .mapToObj(i -> new GrowingRectIntAndIndex(pathSegmentNeighborhoods.get(i), new SimpleNode<>(i)))
-                .filter(r -> Functions.distance(r.growingRectInt().getCenterX(), r.growingRectInt().getCenterY(), npc.x, npc.y) < 512)
-                .collect(Collectors.toList());
-
-
-        // generate arrows
-        for (GrowingRectIntAndIndex nbd1 : pathSegmentNeighborhoodsFiltered) {
-            for (GrowingRectIntAndIndex nbd2 : pathSegmentNeighborhoodsFiltered) {
+                               BiIntPredicate collisionAt) {
+        for (var nbd1 : pathData.pathSegments()) {
+            for (var nbd2 : pathData.pathSegments()) {
                 if (nbd1 == nbd2) continue;
 
-                final boolean existsJumpTrajectory = existsJumpTrajectory(nbd1.growingRectInt(),
-                        nbd2.growingRectInt(),
+                boolean existsJumpTrajectory = existsJumpTrajectory(nbd1.data().rect(),
+                        nbd2.data().rect(),
                         npc,
                         physicsConstants,
                         collisionAt);
-                final boolean touching = touching(nbd1.growingRectInt(), nbd2.growingRectInt());
-                final boolean isConnected = pathData.isConnected(nbd1.node().data(), nbd2.node().data());
+                boolean touching = touching(nbd1.data().rect(), nbd2.data().rect());
+                boolean isConnected = nbd1.data().connectedIndex() == nbd2.data().connectedIndex();
 
                 if (touching) {
-                    nbd1.node().addChild(nbd2.node());
-                    nbd2.node().addChild(nbd1.node());
-                } else if (!isConnected && existsJumpTrajectory) nbd1.node().addChild(nbd2.node());
+                    nbd1.addChild(nbd2);
+                    nbd2.addChild(nbd1);
+                } else if (!isConnected && existsJumpTrajectory) nbd1.addChild(nbd2);
             }
         }
 
     }
 
-    private boolean existsJumpTrajectory(GrowingRectInt from,
-                                         GrowingRectInt to,
+    private boolean existsJumpTrajectory(RectInt from,
+                                         RectInt to,
                                          NpcMetadata npcMetadata,
                                          PhysicsConstants physicsConstants,
                                          BiIntPredicate collisionAt) {
@@ -178,7 +137,36 @@ public class PathDataFinder {
         if (collision)
             trajectory_evaluated_at_x1 = y0_after_collision - 0.5f * g * t_eval_at_x1_after_collision * t_eval_at_x1_after_collision;
         else trajectory_evaluated_at_x1 = y0 + vy * t_eval_at_x1 - 0.5f * g * t_eval_at_x1 * t_eval_at_x1;
-        return (Math.abs(trajectory_evaluated_at_x1 - y1) < getDistanceToleranceFactor(vx, meter));
+        return (Math.abs(trajectory_evaluated_at_x1 - y1) < findDistanceTolerance(vx, meter));
+    }
+
+    /**
+     * Rough tests with
+     * <p>
+     * <p> a) walking speed ~ 3 m/s
+     * <p> b) run speed     ~ 8 m/s
+     * <p>(assuming jump vel of ~  m/s)
+     * <p>
+     * yielded the following optimal tolerances:
+     * <p>
+     * <p> a) 4   * EPSILON
+     * <p> b) 0.5 * EPSILON
+     * <p>
+     * This method returns a linear function that fits these data.
+     * The tolerance greatly impacts the number of arrows created, which in turn greatly affects the cost of the
+     * recursive path finder algorithm.
+     * <p>
+     * (Add one extra point and return exponential fit?)
+     */
+    private float findDistanceTolerance(float vx,
+                                        float meter) {
+        final float optimalFactorWalkingSpeed = 4f,
+                optimalFactorRunningSpeed = 0.5f,
+                walkingSpeedUsedToDetermineOptimalFactor = 3 * meter,
+                runningSpeedUsedToDetermineOptimalFactor = 8 * meter,
+                a = (optimalFactorRunningSpeed - optimalFactorWalkingSpeed) / (runningSpeedUsedToDetermineOptimalFactor - walkingSpeedUsedToDetermineOptimalFactor),
+                b = optimalFactorRunningSpeed - a * runningSpeedUsedToDetermineOptimalFactor;
+        return (a * vx + b) * EPSILON;
     }
 
     private void addToNewPathSegment(PointInt pointInt,
@@ -200,7 +188,7 @@ public class PathDataFinder {
             pathSegmentIndexToConnectedIndex.put(pathSegments.size() - 1, 0);
         } else {
             boolean newNeighborhoodMeetsNoOtherNeighborhoods = true;
-            final int n = pathSegmentNeighborhoodsConnectedList.size();
+            int n = pathSegmentNeighborhoodsConnectedList.size();
 
             outer:
             for (int index = 1; index < n; index++) {
@@ -224,10 +212,10 @@ public class PathDataFinder {
     private boolean addPointToExistingPathSegment(PointInt p,
                                                   ArrayList<ArrayList<PointInt>> pathSegments,
                                                   List<GrowingRectInt> pathSegmentNeighborhoods) {
-        final int size = pathSegments.size();
+        int size = pathSegments.size();
         boolean added = false;
         for (int i = 0; i < size; i++) {
-            List<PointInt> pathSegment = pathSegments.get(i);
+            final List<PointInt> pathSegment = pathSegments.get(i);
             if (pathSegment.isEmpty() || pathSegment.size() > MAX_PATH_SIZE) continue;
             final PointInt last = pathSegment.get(pathSegment.size() - 1);
             if (Functions.distance(last.x(), last.y(), p.x(), p.y()) < EPSILON) {

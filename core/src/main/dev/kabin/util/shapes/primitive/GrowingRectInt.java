@@ -19,7 +19,7 @@ public class GrowingRectInt extends MutableRectInt {
 
     /**
      * Two instances of {@link RectInt} are said to be <b>isomorphic</b> if
-     * they share the same coordinates.
+     * they share the same x, y, width, and height data.
      * <p>
      * If this rectangle already contains the added point, then nothing happens.
      * Otherwise, this instance is modified so that it becomes isomorphic to the smallest
