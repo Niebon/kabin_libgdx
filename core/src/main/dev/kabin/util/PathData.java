@@ -18,5 +18,4 @@ public record PathData(ArrayList<Node<Integer>> pathSegments,
         } else return false;
     }
 
-
 }

@@ -9,9 +9,19 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.IntSupplier;
 
+/**
+ * Models a view of a list where {@link #get(int)} is a lazy getter.
+ * An instance of this list behaves much like an intermediate stream, but because this is a list view one
+ * can inspect elements by index.
+ *
+ * @param <T> the type parameter.
+ */
 public class LazyList<T> implements List<T>, IntFunction<T> {
 
+    // Constants.
     private static final LazyList<?> EMPTY_LAZY_LIST = new LazyList<>(i -> 0, () -> 0);
+
+    // Fields.
     private final IntFunction<T> getter;
     private final IntSupplier size;
 
@@ -65,7 +75,8 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     public LazyList<LazyList<T>> split(Comparator<T> comparator) {
         if (isEmpty()) return empty();
         LazyList<T> sorted = sortBy(comparator);
-        int[] partitions = new int[internalSize() + 1];
+        int size = internalSize();
+        int[] partitions = new int[size + 1];
         T compareCandidate;
         int numberOfPartitions = 0;
         int index = 0;
@@ -75,7 +86,7 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
                 index++;
             }
             partitions[++numberOfPartitions] = index;
-        } while (index < internalSize() - 1);
+        } while (index < size - 1);
         partitions[++numberOfPartitions] = index + 1;
         int finalNumberOfPartitions = numberOfPartitions;
         return new LazyList<>(i -> sorted.subList(partitions[i], partitions[i + 1]), () -> finalNumberOfPartitions);

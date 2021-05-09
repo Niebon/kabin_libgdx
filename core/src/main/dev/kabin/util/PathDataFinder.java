@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -71,6 +72,7 @@ public class PathDataFinder {
                 .map(l -> l.split(Comparator.comparingInt(PointInt::x)))
                 .map(lsp -> lsp.andThen(pts -> pts.reduce((p1, p2) -> p1.y() > p2.y() ? p1 : p2)))
                 .<PointInt>mapMulti(Iterable::forEach)
+                .filter(Objects::nonNull)
                 .distinct()
                 .sorted(Functions.dictionaryOrder(Comparator.comparingInt(PointInt::x), Comparator.comparingInt(PointInt::y)))
                 .forEach(pt -> {
