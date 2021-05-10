@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class LazyListTest {
 
@@ -207,4 +208,30 @@ class LazyListTest {
         Assertions.assertEquals(List.of(3), lSplit.get(2));
     }
 
+    @Test
+    void memoize() {
+        Integer[] backingData = {1, 1, 3, -2};
+        var l = new LazyList<>(backingData);
+
+        AtomicInteger modificationCounter = new AtomicInteger();
+
+        LazyList<Integer> lSlow = l.compose(i -> {
+            modificationCounter.getAndIncrement();
+            return i;
+        });
+        lSlow.get(0);
+        Assertions.assertEquals(1, modificationCounter.get());
+
+        LazyList<Integer> lMemoized = lSlow.memoize();
+        Assertions.assertEquals(5, modificationCounter.get()); // Has been modified by the memoizatin procedure itself.
+        lMemoized.get(0);
+        Assertions.assertEquals(5, modificationCounter.get()); // But afters, no modifications occur.
+    }
+
+    @Test
+    void memoize2() {
+        Integer[] backingData = {1, 1, 3, -2};
+        var l = new LazyList<>(backingData);
+        Assertions.assertEquals(l, l.memoize());
+    }
 }

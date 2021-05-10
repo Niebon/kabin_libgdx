@@ -11,7 +11,7 @@ import java.util.function.IntSupplier;
 
 /**
  * Models a view of a list where {@link #get(int)} is a lazy getter.
- * An instance of this list behaves much like an intermediate stream, but because this is a list view one
+ * An instance of this list behaves much like an intermediate stream, but because this is a list, it can be reused, and one
  * can inspect elements by index.
  *
  * @param <T> the type parameter.
@@ -38,6 +38,15 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     public static <T> LazyList<T> empty() {
         //noinspection unchecked
         return (LazyList<T>) EMPTY_LAZY_LIST;
+    }
+
+    public LazyList<T> memoize() {
+        @SuppressWarnings("unchecked")
+        T[] entries = (T[]) new Object[internalSize()];
+        for (int i = 0, n = internalSize(); i < n; i++) {
+            entries[i] = internalGet(i);
+        }
+        return new LazyList<>(entries);
     }
 
     public T reduce(BinaryOperator<T> associativeBinOp) {
