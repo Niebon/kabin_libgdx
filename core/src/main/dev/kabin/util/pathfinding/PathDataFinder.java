@@ -1,5 +1,8 @@
-package dev.kabin.util;
+package dev.kabin.util.pathfinding;
 
+import dev.kabin.util.Functions;
+import dev.kabin.util.IndexedRect;
+import dev.kabin.util.Lists;
 import dev.kabin.util.collections.IntToIntMap;
 import dev.kabin.util.collections.LazyList;
 import dev.kabin.util.graph.SimpleNode;
@@ -29,73 +32,11 @@ public class PathDataFinder {
         return expandedA.meets(expandedB);
     }
 
-    public Function<NpcMetadata, PathData> newPathDataMaker(Stream<LazyList<PointInt>> collisionContributionPerEntity,
-                                                            PhysicsConstants physicsConstants,
-                                                            BiIntPredicate collisionAt) {
-
-        var indexToPathSegment = new ArrayList<ArrayList<PointInt>>();
-        var pathSegmentNeighborhoods = new ArrayList<GrowingRectInt>();
-        var pathSegmentNeighborhoodsConnectedList = new ArrayList<ArrayList<GrowingRectInt>>();
-        var pathSegmentToConnectedIndex = new IntToIntMap();
-
-        collisionContributionPerEntity
-                .map(l -> l.split(Comparator.comparingInt(PointInt::x)))
-                .map(lsp -> lsp.andThen(pts -> pts.reduce((p1, p2) -> p1.y() > p2.y() ? p1 : p2)))
-                .<PointInt>mapMulti(Iterable::forEach)
-                .filter(Objects::nonNull)
-                .distinct()
-                .sorted(Functions.dictionaryOrder(Comparator.comparingInt(PointInt::x), Comparator.comparingInt(PointInt::y)))
-                .forEach(pt -> {
-                            if (!addPointToExistingPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods)) {
-                                addToNewPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods, pathSegmentNeighborhoodsConnectedList, pathSegmentToConnectedIndex);
-                            }
-                        }
-                );
-
-        return r -> {
-            var pathSegments = IntStream.range(0, indexToPathSegment.size())
-                    .mapToObj(i -> new IndexedRect(pathSegmentNeighborhoods.get(i), i, pathSegmentToConnectedIndex.get(i)))
-                    .filter(ir -> Functions.distance(ir.rect().getCenterX(), ir.rect().getCenterY(), r.x(), r.y()) < 512)
-                    .map(SimpleNode::new)
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-
-            var pathData = new PathData(pathSegments);
-            generateArrows(pathData, r, physicsConstants, collisionAt);
-            return pathData;
-        };
-    }
-
-    public void generateArrows(@NotNull PathData pathData,
-                               NpcMetadata npc,
-                               PhysicsConstants physicsConstants,
-                               BiIntPredicate collisionAt) {
-        for (var nbd1 : pathData.pathSegments()) {
-            for (var nbd2 : pathData.pathSegments()) {
-                if (nbd1 == nbd2) continue;
-
-                boolean existsJumpTrajectory = existsJumpTrajectory(nbd1.data().rect(),
-                        nbd2.data().rect(),
-                        npc,
-                        physicsConstants,
-                        collisionAt);
-                boolean touching = touching(nbd1.data().rect(), nbd2.data().rect());
-                boolean isConnected = nbd1.data().connectedIndex() == nbd2.data().connectedIndex();
-
-                if (touching) {
-                    nbd1.addChild(nbd2);
-                    nbd2.addChild(nbd1);
-                } else if (!isConnected && existsJumpTrajectory) nbd1.addChild(nbd2);
-            }
-        }
-
-    }
-
-    private boolean existsJumpTrajectory(RectInt from,
-                                         RectInt to,
-                                         NpcMetadata npcMetadata,
-                                         PhysicsConstants physicsConstants,
-                                         BiIntPredicate collisionAt) {
+    public static boolean existsJumpTrajectory(RectInt from,
+                                               RectInt to,
+                                               NpcMetadata npcMetadata,
+                                               PhysicsConstants physicsConstants,
+                                               BiIntPredicate collisionAt) {
 
         if (Math.abs(from.getCenterX() - to.getCenterX()) > 256) return false;
 
@@ -105,11 +46,11 @@ public class PathDataFinder {
                 y0 = from.getMinY(),
                 x1 = to.getCenterX(),
                 y1 = to.getMinY(),
-                vx = npcMetadata.vx,
-                vy = npcMetadata.vy,
-                heightConstant = npcMetadata.heightConstant,
-                g = physicsConstants.g,
-                meter = physicsConstants.meter,
+                vx = npcMetadata.vx(),
+                vy = npcMetadata.vy(),
+                heightConstant = npcMetadata.heightConstant(),
+                g = physicsConstants.g(),
+                meter = physicsConstants.meter(),
                 t = -vy / g,                                // time until dy/dt = 0 after jump
                 t_eval_at_x1 = Math.abs((x1 - x0) / vx);    // time until point x1 is reached
 
@@ -158,8 +99,8 @@ public class PathDataFinder {
      * <p>
      * (Add one extra point and return exponential fit?)
      */
-    private float findDistanceTolerance(float vx,
-                                        float meter) {
+    private static float findDistanceTolerance(float vx,
+                                               float meter) {
         final float optimalFactorWalkingSpeed = 4f,
                 optimalFactorRunningSpeed = 0.5f,
                 walkingSpeedUsedToDetermineOptimalFactor = 3 * meter,
@@ -169,11 +110,66 @@ public class PathDataFinder {
         return (a * vx + b) * EPSILON;
     }
 
-    private void addToNewPathSegment(PointInt pointInt,
-                                     ArrayList<ArrayList<PointInt>> pathSegments,
-                                     ArrayList<GrowingRectInt> pathSegmentNeighborhoods,
-                                     ArrayList<ArrayList<GrowingRectInt>> pathSegmentNeighborhoodsConnectedList,
-                                     IntToIntMap pathSegmentIndexToConnectedIndex) {
+    public static Function<NpcMetadata, PathData> newPathDataMaker(Stream<LazyList<PointInt>> collisionContributionPerEntity,
+                                                                   PhysicsConstants physicsConstants,
+                                                                   BiIntPredicate collisionAt) {
+
+        var indexToPathSegment = new ArrayList<ArrayList<PointInt>>();
+        var pathSegmentNeighborhoods = new ArrayList<GrowingRectInt>();
+        var pathSegmentNeighborhoodsConnectedList = new ArrayList<ArrayList<GrowingRectInt>>();
+        var pathSegmentToConnectedIndex = new IntToIntMap();
+
+        collisionContributionPerEntity
+                .map(l -> l.split(Comparator.comparingInt(PointInt::x)))
+                .map(lsp -> lsp.andThen(pts -> pts.reduce((p1, p2) -> p1.y() > p2.y() ? p1 : p2)))
+                .<PointInt>mapMulti(Iterable::forEach)
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted(Functions.dictionaryOrder(Comparator.comparingInt(PointInt::x), Comparator.comparingInt(PointInt::y)))
+                .forEach(pt -> {
+                            if (!addPointToExistingPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods)) {
+                                addToNewPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods, pathSegmentNeighborhoodsConnectedList, pathSegmentToConnectedIndex);
+                            }
+                        }
+                );
+
+        return r -> {
+            var pathSegments = IntStream.range(0, indexToPathSegment.size())
+                    .mapToObj(i -> new IndexedRect(pathSegmentNeighborhoods.get(i), i, pathSegmentToConnectedIndex.get(i)))
+                    .filter(ir -> Functions.distance(ir.rect().getCenterX(), ir.rect().getCenterY(), r.x(), r.y()) < 512)
+                    .map(SimpleNode::new)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+
+            var pathData = new PathData(new LazyList<>(pathSegments::get, pathSegments::size));
+            generateArrows(pathData, r, physicsConstants, collisionAt);
+            return pathData;
+        };
+    }
+
+    public static void generateArrows(@NotNull PathData pathData,
+                                      NpcMetadata npc,
+                                      PhysicsConstants physicsConstants,
+                                      BiIntPredicate collisionAt) {
+        for (var nbd1 : pathData.pathSegments()) {
+            for (var nbd2 : pathData.pathSegments()) {
+                if (nbd1 == nbd2) continue;
+
+                if (touching(nbd1.data().rect(), nbd2.data().rect())) {
+                    nbd1.addChild(nbd2);
+                    nbd2.addChild(nbd1);
+                } else if (nbd1.data().connectedIndex() != nbd2.data().connectedIndex()
+                        && existsJumpTrajectory(nbd1.data().rect(), nbd2.data().rect(), npc, physicsConstants, collisionAt))
+                    nbd1.addChild(nbd2);
+            }
+        }
+    }
+
+    private static void addToNewPathSegment(PointInt pointInt,
+                                            ArrayList<ArrayList<PointInt>> pathSegments,
+                                            ArrayList<GrowingRectInt> pathSegmentNeighborhoods,
+                                            ArrayList<ArrayList<GrowingRectInt>> pathSegmentNeighborhoodsConnectedList,
+                                            IntToIntMap pathSegmentIndexToConnectedIndex) {
 
         var newNeighborhood = new GrowingRectInt(pointInt.x(), pointInt.y(), 0, 0);
         pathSegmentNeighborhoods.add(newNeighborhood);
@@ -209,9 +205,9 @@ public class PathDataFinder {
         }
     }
 
-    private boolean addPointToExistingPathSegment(PointInt p,
-                                                  ArrayList<ArrayList<PointInt>> pathSegments,
-                                                  List<GrowingRectInt> pathSegmentNeighborhoods) {
+    private static boolean addPointToExistingPathSegment(PointInt p,
+                                                         ArrayList<ArrayList<PointInt>> pathSegments,
+                                                         List<GrowingRectInt> pathSegmentNeighborhoods) {
         int size = pathSegments.size();
         boolean added = false;
         for (int i = 0; i < size; i++) {
@@ -225,23 +221,6 @@ public class PathDataFinder {
             }
         }
         return added;
-    }
-
-    public record NpcMetadata(
-            float x,
-            float y,
-            float vx,
-            float vy,
-            float heightConstant
-    ) {
-
-    }
-
-    public record PhysicsConstants(
-            float g,
-            float meter
-    ) {
-
     }
 
 }

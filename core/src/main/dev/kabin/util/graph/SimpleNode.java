@@ -1,11 +1,14 @@
 package dev.kabin.util.graph;
 
+import dev.kabin.util.collections.LazyList;
+
 import java.util.ArrayList;
 
 public class SimpleNode<T> implements Node<T> {
 
 
     private final ArrayList<Node<T>> nodes = new ArrayList<>();
+    private final LazyList<Node<T>> children = new LazyList<>(nodes::get, nodes::size);
     private final T data;
 
     public SimpleNode(T data) {
@@ -33,5 +36,8 @@ public class SimpleNode<T> implements Node<T> {
         return data;
     }
 
-
+    @Override
+    public LazyList<Node<T>> children() {
+        return children;
+    }
 }

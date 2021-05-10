@@ -287,7 +287,7 @@ public class EntityNPC extends EntitySimple {
         // Update constraints
         jumpCooldown += params.dt();
 
-        // Check if player is in air.
+        // Check if in air.
         final int xUpdatedInt = getXAsInt();
         final int yUpdatedInt = getYAsInt();
         final boolean onLadder = params.isLadderAt(xUpdatedInt, yUpdatedInt);
@@ -307,12 +307,6 @@ public class EntityNPC extends EntitySimple {
         } else if (!onLadder && !affectedByVectorField) {
             inAir = true;
         }
-    }
-
-    /**
-     * Part of a route that this NPC may follow.
-     */
-    public record CheckPoint(Direction direction, boolean jump, int pathSegmentIndex) {
     }
 
 

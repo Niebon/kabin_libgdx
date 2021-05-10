@@ -1,5 +1,7 @@
 package dev.kabin.util.graph;
 
+import dev.kabin.util.collections.LazyList;
+
 /**
  * A mutable node that holds data.
  *
@@ -39,5 +41,7 @@ public interface Node<T> {
      * @return the data of this node.
      */
     T data();
+
+    LazyList<Node<T>> children();
 
 }
