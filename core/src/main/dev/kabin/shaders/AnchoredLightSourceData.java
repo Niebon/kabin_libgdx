@@ -43,13 +43,13 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     @Override
-    public float getWidth() {
-        return lightSourceData.getWidth();
+    public float getArcSpan() {
+        return lightSourceData.getArcSpan();
     }
 
     @Override
-    public void setWidth(float width) {
-        lightSourceData.setWidth(width);
+    public void setArcSpan(float arcSpan) {
+        lightSourceData.setArcSpan(arcSpan);
     }
 
     @Override

@@ -228,8 +228,8 @@ class ModifyShaderWindow {
                 220);
 
         addModifier("width",
-                f -> getLsd().ifPresent(lsd -> lsd.setWidth(f)),
-                () -> getLsd().map(AnchoredLightSourceData::getWidth).orElse(0f),
+                f -> getLsd().ifPresent(lsd -> lsd.setArcSpan(f)),
+                () -> getLsd().map(AnchoredLightSourceData::getArcSpan).orElse(0f),
                 firstColumnX,
                 secondColumnX,
                 0,

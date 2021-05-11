@@ -39,9 +39,10 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     private final EntityType type;
     private final List<NamedObj<AnchoredLightSourceData>> namedLightSourceDataList;
     private final LazyList<AnchoredLightSourceData> lightSourceDataList;
+
+    // Class variables:
     private float x;
     private float y;
-    // Class variables:
     private int layer;
 
     AbstractLibgdxEntity(EntityParameters parameters) {
@@ -137,8 +138,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         final float graphicsRootY = getRootY();
 
 
-        animationPlaybackImpl.setPos(graphicsRootX * params.scale(), graphicsRootY * params.scale());
-        animationPlaybackImpl.setScale(params.scale());
+        animationPlaybackImpl.setPos(graphicsRootX, graphicsRootY);
 
         // Sets the canonical shader for the group of this.
         animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));

@@ -42,7 +42,6 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private TextureAtlas.AtlasRegion cachedTextureRegion;
     private WeightedAverage2D weightedAverage2D;
     private ShaderProgram shaderProgram;
-    private float scale;
     private float stateTime = 0f;
     private final float avgMassCenterY;
     private final float avgMassCenterX;
@@ -189,7 +188,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         final SpriteBatch batch = params.batch();
         batch.setShader(shaderProgram);
         batch.begin();
-        batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
+        float scale = params.scale();
+        batch.draw(cachedTextureRegion, getX() * scale, getY() * scale, getWidth() * scale, getHeight() * scale);
         batch.end();
     }
 
@@ -201,7 +201,8 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         final SpriteBatch batch = params.batch();
         batch.setShader(shaderProgram);
         batch.begin();
-        batch.draw(cachedTextureRegion, getX(), getY(), getWidth(), getHeight());
+        float scale = params.scale();
+        batch.draw(cachedTextureRegion, getX() * scale, getY() * scale, getWidth() * scale, getHeight() * scale);
         batch.end();
     }
 
@@ -227,12 +228,12 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
 
     @Override
     public float getWidth() {
-        return width * getScale();
+        return width;
     }
 
     @Override
     public float getHeight() {
-        return height * getScale();
+        return height;
     }
 
     @Override
@@ -253,16 +254,6 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     @Override
     public void setY(float y) {
         weightedAverage2D.appendSignalY(y);
-    }
-
-    @Override
-    public float getScale() {
-        return scale;
-    }
-
-    @Override
-    public void setScale(float scale) {
-        this.scale = scale;
     }
 
     @Override

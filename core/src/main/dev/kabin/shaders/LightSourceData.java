@@ -33,9 +33,9 @@ public interface LightSourceData extends ModifiableFloatCoordinates, JSONSeriali
 
     void setAngle(float angle);
 
-    float getWidth();
+    float getArcSpan();
 
-    void setWidth(float width);
+    void setArcSpan(float arcSpan);
 
     default int getUnscaledR() {
         return Math.round(getR());

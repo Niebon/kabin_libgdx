@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -25,9 +24,9 @@ public class Serializer {
     public static final String ENTITIES = "entities";
 
     public static JSONObject recordWorldState(WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation) {
-        final List<EntityLibgdx> allEntities = new ArrayList<>();
+        final var allEntities = new ArrayList<EntityLibgdx>();
         worldRepresentation.populateCollection(allEntities, e -> true);
-        JSONObject o = new JSONObject();
+        final var o = new JSONObject();
         o.put(ENTITIES, allEntities.stream().map(Entity::toJSONObject).toList());
         o.put(WORLD_SIZE_X, worldRepresentation.getWorldSizeX());
         o.put(WORLD_SIZE_Y, worldRepresentation.getWorldSizeY());
@@ -42,6 +41,7 @@ public class Serializer {
                 .collect(Collectors.toCollection(HashSet::new));
         final var worldRepresentation = new WorldRepresentation<EntityGroup, EntityLibgdx>(EntityGroup.class, o.getInt(WORLD_SIZE_X), o.getInt(WORLD_SIZE_Y));
         o.getJSONArray(ENTITIES).iterator().forEachRemaining(entry -> {
+            logger.warning("Will try to load the entity: " + entry);
             if (!(entry instanceof final JSONObject json)) {
                 logger.warning(() -> "A recorded entity was not saved as a JSON object: " + entry);
                 System.exit(1);

@@ -58,7 +58,7 @@ public class LightSourceShaderBinder {
             this.r[i] = lightSourceDataIntFunction.apply(i).getR() * scale;
 
             this.angles[i] = lightSourceDataIntFunction.apply(i).getAngle();
-            this.widths[i] = lightSourceDataIntFunction.apply(i).getWidth();
+            this.widths[i] = lightSourceDataIntFunction.apply(i).getArcSpan();
         }
 
         prg.setUniform2fv("light_sources", xy, 0, xy.length);

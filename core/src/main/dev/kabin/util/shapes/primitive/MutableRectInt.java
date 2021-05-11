@@ -1,16 +1,11 @@
 package dev.kabin.util.shapes.primitive;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.shapes.RectBoxedInt;
 import org.jetbrains.annotations.Contract;
 import org.json.JSONObject;
 
 import java.util.Objects;
 
-/**
- * This class uses primitives instead of boxed values for ints.
- * Preferably, use this class instead of the boxed version {@link RectBoxedInt} if utilized in the main loop.
- */
 public class MutableRectInt implements RectInt {
 
     private int minX, maxX, minY, maxY;

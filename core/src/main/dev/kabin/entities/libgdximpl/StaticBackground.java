@@ -23,7 +23,6 @@ public class StaticBackground extends AbstractLibgdxEntity {
             );
             animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
             animationPlaybackImpl.renderNextAnimationFrame(params);
-            animationPlaybackImpl.setScale(params.scale());
         }
     }
 

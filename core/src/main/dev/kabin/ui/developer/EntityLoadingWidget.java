@@ -313,7 +313,6 @@ class EntityLoadingWidget {
                 setCurrentAnimationOfPreviewTo(preview, animationType);
             }
             float scale = 4.0f * 32 / preview.getOriginalWidth();
-            preview.setScale(scale);
             preview.setPos(0.75f * WIDTH + widget.getX(), widget.getY());
             preview.renderNextAnimationFrame(params);
         }

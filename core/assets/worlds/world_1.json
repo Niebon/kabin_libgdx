@@ -19,18 +19,18 @@
     {
       "light_sources": {
         "default": {
-          "unscaledXRelToAnchor": 0,
           "r": 70,
-          "unscaledR": 70,
-          "unscaledYRelToAnchor": 10,
-          "x": -67,
+          "x": 0,
           "width": 0,
-          "unscaledX": -67,
           "angle": 0,
           "y": -14,
-          "unscaledY": -14,
           "type": "SPHERE",
-          "tint": {}
+          "arc_span": 0,
+          "tint": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
         }
       },
       "atlas_path": "torch",
@@ -42,18 +42,18 @@
     {
       "light_sources": {
         "default": {
-          "unscaledXRelToAnchor": 0,
           "r": 70,
-          "unscaledR": 70,
-          "unscaledYRelToAnchor": 0,
-          "x": 125,
+          "x": 0,
           "width": 0,
-          "unscaledX": 125,
           "angle": 0,
-          "y": -56,
-          "unscaledY": -56,
+          "arc_span": 0,
+          "y": -14,
           "type": "SPHERE",
-          "tint": {}
+          "tint": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
         }
       },
       "atlas_path": "torch",
@@ -65,18 +65,18 @@
     {
       "light_sources": {
         "default": {
-          "unscaledXRelToAnchor": 0,
           "r": 48,
-          "unscaledR": 48,
-          "unscaledYRelToAnchor": 0,
           "x": 24.314943,
           "width": 283.4,
-          "unscaledX": 24,
           "angle": 2.1000001,
+          "arc_span": 180,
           "y": -39.49562,
-          "unscaledY": -39,
           "type": "CONE",
-          "tint": {}
+          "tint": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          }
         }
       },
       "atlas_path": "player",

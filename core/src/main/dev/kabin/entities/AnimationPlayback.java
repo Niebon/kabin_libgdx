@@ -2,7 +2,6 @@ package dev.kabin.entities;
 
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.RectangularArea;
-import dev.kabin.util.helperinterfaces.Scalable;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
 /**
@@ -20,8 +19,7 @@ public interface AnimationPlayback<
 
         > extends
         ModifiableFloatCoordinates,
-        RectangularArea,
-        Scalable {
+        RectangularArea {
 
     /**
      * @return the current animation of this animation playback.

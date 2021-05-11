@@ -27,6 +27,11 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     private final IntFunction<T> getter;
     private final IntSupplier size;
 
+    public LazyList(T entry) {
+        this.getter = i -> entry;
+        this.size = () -> 1;
+    }
+
     @SafeVarargs
     public LazyList(T... entries) {
         this.getter = i -> entries[i];

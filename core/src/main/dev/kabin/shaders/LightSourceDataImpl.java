@@ -10,16 +10,16 @@ public class LightSourceDataImpl implements LightSourceData {
 
     private final Tint tint;
     private LightSourceType type;
-    private float x, y, r, angle, width;
+    private float x, y, r, angle, arcSpan;
 
-    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float angle, float width) {
+    private LightSourceDataImpl(LightSourceType type, Tint tint, float x, float y, float r, float angle, float arcSpan) {
         this.type = type;
         this.tint = tint;
         this.x = x;
         this.y = y;
         this.r = r;
         this.angle = angle;
-        this.width = width;
+        this.arcSpan = arcSpan;
     }
 
     public static LightSourceDataImpl of(JSONObject o) {
@@ -30,7 +30,7 @@ public class LightSourceDataImpl implements LightSourceData {
                 .setX(tryGet(() -> o.getFloat("x")).orElse(0f))
                 .setY(tryGet(() -> o.getFloat("y")).orElse(0f))
                 .setAngle(tryGet(() -> o.getFloat("angle")).orElse(0f))
-                .setArcSpan(tryGet(() -> o.getFloat("arcSpan")).orElse(tryGet(() -> o.getFloat("width")).orElse(0f)))
+                .setArcSpan(tryGet(() -> o.getFloat("arc_span")).orElse(tryGet(() -> o.getFloat("width")).orElse(0f)))
 
                 // The rest should throw.
                 .setTint(Tint.of(o.getJSONObject("tint")))
@@ -96,7 +96,7 @@ public class LightSourceDataImpl implements LightSourceData {
                 "y", Math.round(y),
                 "r", Math.round(r),
                 "angle", angle,
-                "width", width,
+                "arc_span", arcSpan,
                 "type", type.name()
         ));
     }
@@ -112,13 +112,13 @@ public class LightSourceDataImpl implements LightSourceData {
     }
 
     @Override
-    public float getWidth() {
-        return width;
+    public float getArcSpan() {
+        return arcSpan;
     }
 
     @Override
-    public void setWidth(float width) {
-        this.width = width;
+    public void setArcSpan(float arcSpan) {
+        this.arcSpan = arcSpan;
     }
 
     public static class Builder {
