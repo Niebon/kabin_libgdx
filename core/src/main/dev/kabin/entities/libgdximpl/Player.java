@@ -1,10 +1,10 @@
 package dev.kabin.entities.libgdximpl;
 
 import dev.kabin.entities.Entity;
+import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
-import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
@@ -270,7 +270,7 @@ public class Player extends EntitySimple {
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - PhysicsEngine.GRAVITATION_CONSTANT * params.meter() * jumpTime) * params.dt();
+            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 

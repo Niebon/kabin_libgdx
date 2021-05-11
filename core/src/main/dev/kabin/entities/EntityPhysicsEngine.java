@@ -1,7 +1,4 @@
-package dev.kabin.physics;
-
-import dev.kabin.entities.Entity;
-import dev.kabin.entities.PhysicsParameters;
+package dev.kabin.entities;
 
 import java.util.function.Consumer;
 
@@ -9,7 +6,7 @@ import java.util.function.Consumer;
  * In order to make rendering deterministic,
  * use a standard dt of 120 fps.
  */
-public class PhysicsEngine {
+public class EntityPhysicsEngine {
 
 	public static final int METER = 10;
 	public static final float DT = 1 / 120f;

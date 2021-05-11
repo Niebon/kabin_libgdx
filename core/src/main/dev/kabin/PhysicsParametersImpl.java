@@ -1,10 +1,10 @@
 package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
+import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import org.jetbrains.annotations.NotNull;
@@ -51,11 +51,11 @@ class PhysicsParametersImpl implements PhysicsParameters {
 
     @Override
     public float dt() {
-        return PhysicsEngine.DT;
+        return EntityPhysicsEngine.DT;
     }
 
     @Override
     public float meter() {
-        return PhysicsEngine.METER;
+        return EntityPhysicsEngine.METER;
     }
 }

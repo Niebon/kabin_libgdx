@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
+import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
-import dev.kabin.physics.PhysicsEngine;
 import dev.kabin.shaders.LightSourceData;
 import dev.kabin.shaders.LightSourceShaderBinder;
 import dev.kabin.shaders.ShaderFactory;
@@ -201,7 +201,7 @@ public class MainGame extends ApplicationAdapter {
         if (worldRepresentation != null) {
             final var parameters = new PhysicsParametersImpl(scale, worldRepresentation, keyEventUtil);
 
-            PhysicsEngine.renderOutstandingFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+            EntityPhysicsEngine.renderOutstandingFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
         updateCamera(camera);
