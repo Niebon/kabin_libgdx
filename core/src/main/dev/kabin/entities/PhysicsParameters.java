@@ -8,21 +8,21 @@ import dev.kabin.util.eventhandlers.KeyCode;
 public interface PhysicsParameters {
 
     /**
-     * A collision check.
-     *
-     * @param x horizontal coordinate. Positive points right relative to the screen.
-     * @param y vertical coordinate. Positive points upwards the screen.
-     * @return true iff the coordinate has collision.
-     */
+	 * A collision check.
+	 *
+	 * @param x horizontal coordinate. Positive points right relative to the screen.
+	 * @param y vertical coordinate. Positive points upwards the screen.
+	 * @return true if the coordinate has collision.
+	 */
     boolean isCollisionAt(int x, int y);
 
-    /**
-     * A ladder data check.
-     *
-     * @param x horizontal coordinate. Positive points right relative to the screen.
-     * @param y vertical coordinate. Positive points upwards the screen.
-     * @return true iff the coordinate has ladder data.
-     */
+	/**
+	 * A ladder data check.
+	 *
+	 * @param x horizontal coordinate. Positive points right relative to the screen.
+	 * @param y vertical coordinate. Positive points upwards the screen.
+	 * @return true if the coordinate has ladder data.
+	 */
     boolean isLadderAt(int x, int y);
 
 

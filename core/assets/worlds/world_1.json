@@ -19,18 +19,17 @@
     {
       "light_sources": {
         "default": {
-          "r": 70,
+          "r": 86,
           "x": 0,
-          "width": 0,
           "angle": 0,
           "y": -14,
           "type": "SPHERE",
-          "arc_span": 0,
           "tint": {
+            "b": 0.8431373,
             "r": 1,
-            "g": 1,
-            "b": 1
-          }
+            "g": 0.8313726
+          },
+          "arc_span": 0
         }
       },
       "atlas_path": "torch",
@@ -44,16 +43,15 @@
         "default": {
           "r": 70,
           "x": 0,
-          "width": 0,
           "angle": 0,
-          "arc_span": 0,
           "y": -14,
           "type": "SPHERE",
           "tint": {
+            "b": 1,
             "r": 1,
-            "g": 1,
-            "b": 1
-          }
+            "g": 1
+          },
+          "arc_span": 0
         }
       },
       "atlas_path": "torch",
@@ -65,23 +63,22 @@
     {
       "light_sources": {
         "default": {
-          "r": 48,
-          "x": 24.314943,
-          "width": 283.4,
-          "angle": 2.1000001,
-          "arc_span": 180,
-          "y": -39.49562,
-          "type": "CONE",
+          "r": 82,
+          "x": 0,
+          "angle": 43.4,
+          "y": 35,
+          "type": "SPHERE",
           "tint": {
+            "b": 1,
             "r": 1,
-            "g": 1,
-            "b": 1
-          }
+            "g": 1
+          },
+          "arc_span": 180
         }
       },
       "atlas_path": "player",
-      "x": 24,
-      "y": -39,
+      "x": -16,
+      "y": -23,
       "type": "PLAYER",
       "layer": 1
     },

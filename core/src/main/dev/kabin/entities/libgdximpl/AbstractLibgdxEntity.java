@@ -152,8 +152,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             final float y = graphicsRootY * params.scale() - offsetY;
             actor.setBounds(
                     x, y,
-                    animationPlaybackImpl.getWidth(),
-                    animationPlaybackImpl.getHeight()
+                    animationPlaybackImpl.getWidth() * params.scale(),
+                    animationPlaybackImpl.getHeight() * params.scale()
             );
         }
 
@@ -194,7 +194,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public void setX(float x) {
-        actor.setX(x);
         this.x = x;
     }
 
@@ -205,7 +204,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public void setY(float y) {
-        actor.setY(y);
         this.y = y;
     }
 
@@ -237,7 +235,9 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
                 .put("atlas_path", atlasPath)
                 .put("layer", getLayer())
                 .put("type", getType().name())
-                .put("light_sources", namedLightSourceDataList.stream().collect(Collectors.toMap(NamedObj::name, NamedObj::obj)));
+                .put("light_sources", namedLightSourceDataList.stream()
+                        .map(no -> no.map(AnchoredLightSourceData::toJSONObject))
+                        .collect(Collectors.toMap(NamedObj::name, NamedObj::obj)));
     }
 
     @Override
