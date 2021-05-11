@@ -1,7 +1,7 @@
 package dev.kabin.physics;
 
+import dev.kabin.entities.Entity;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.libgdximpl.EntityLibgdx;
 
 import java.util.function.Consumer;
 
@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  */
 public class PhysicsEngine {
 
-	public static final int METER = 10; // One meter in pixels
+	public static final int METER = 10;
 	public static final float DT = 1 / 120f;
 	public static final float GRAVITATION_CONSTANT = 9.81f;
 
@@ -23,14 +23,14 @@ public class PhysicsEngine {
 		return frames - 1;
 	}
 
-	public static void renderOutstandingFrames(float timeElapsedSinceLastFrame, PhysicsParameters params, Consumer<Consumer<EntityLibgdx>> forEachEntity) {
+	public static <E extends Entity<?, ?, ?>> void renderOutstandingFrames(float timeElapsedSinceLastFrame, PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
 		int numberOfFramesToRender = findNumberOfFramesToRender(timeElapsedSinceLastFrame);
 		for (int i = 0; i < numberOfFramesToRender; i++) {
 			renderExactlyOneFrame(params, forEachEntity);
 		}
 	}
 
-	public static void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<EntityLibgdx>> forEachEntity) {
+	public static <E extends Entity<?, ?, ?>> void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
 		forEachEntity.accept(e -> e.updatePhysics(params));
 	}
 
