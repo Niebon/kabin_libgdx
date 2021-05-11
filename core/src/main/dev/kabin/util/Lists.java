@@ -25,7 +25,12 @@ public class Lists {
     }
 
     public static <T> ArrayList<T> arrayListOf(T... obj) {
-        var ret = new ArrayList<>(java.util.Arrays.asList(obj));
+        return new ArrayList<>(java.util.Arrays.asList(obj));
+    }
+
+    public static <T> ArrayList<T> arrayListOf(Collection<T> c, T obj) {
+        var ret = new ArrayList<>(c);
+        ret.add(obj);
         return ret;
     }
 

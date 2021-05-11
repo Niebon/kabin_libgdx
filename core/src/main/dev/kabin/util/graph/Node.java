@@ -40,7 +40,7 @@ public interface Node<T> {
     /**
      * @return the data of this node.
      */
-    T data();
+    T obj();
 
     LazyList<Node<T>> children();
 

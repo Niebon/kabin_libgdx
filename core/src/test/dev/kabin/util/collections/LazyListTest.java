@@ -200,8 +200,7 @@ class LazyListTest {
 
     @Test
     void split() {
-        Integer[] backingData = {1, 1, 3, -2};
-        var l = new LazyList<>(backingData);
+        var l = new LazyList<>(1, 1, 3, -2);
         var lSplit = l.split(Integer::compareTo);
         Assertions.assertEquals(List.of(-2), lSplit.get(0));
         Assertions.assertEquals(List.of(1, 1), lSplit.get(1));
@@ -230,8 +229,14 @@ class LazyListTest {
 
     @Test
     void memoize2() {
-        Integer[] backingData = {1, 1, 3, -2};
-        var l = new LazyList<>(backingData);
+        var l = new LazyList<>(1, 1, 3, -2);
         Assertions.assertEquals(l, l.memoize());
+    }
+
+    @Test
+    void equals() {
+        var l = new LazyList<>(1, 2, 3);
+        Assertions.assertEquals(List.of(1, 2, 3), l);
+        Assertions.assertNotEquals(List.of(3, 2, 1), l);
     }
 }

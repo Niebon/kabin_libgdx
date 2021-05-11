@@ -32,9 +32,9 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     @Override
-    public T data() {
-        return data;
-    }
+	public T obj() {
+		return data;
+	}
 
     @Override
     public LazyList<Node<T>> children() {

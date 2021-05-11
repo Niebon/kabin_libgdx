@@ -2,17 +2,19 @@ package dev.kabin.util.collections;
 
 import dev.kabin.util.lambdas.Function;
 import dev.kabin.util.lambdas.IntFunction;
+import dev.kabin.util.lambdas.IntObjPredicate;
 import dev.kabin.util.lambdas.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 
 /**
  * Models a view of a list where {@link #get(int)} is a lazy getter.
- * An instance of this list behaves much like an intermediate stream, but because this is a list, it can be reused, and one
- * can inspect elements by index.
+ * An instance of this list behaves much like an intermediate stream, but because this is a list, it can be reused,
+ * and elements may be inspected by index.
  *
  * @param <T> the type parameter.
  */
@@ -25,7 +27,8 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
     private final IntFunction<T> getter;
     private final IntSupplier size;
 
-    public LazyList(T[] entries) {
+    @SafeVarargs
+    public LazyList(T... entries) {
         this.getter = i -> entries[i];
         this.size = () -> entries.length;
     }
@@ -79,6 +82,34 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
         for (int i = 0; i < n; i++) indexReMapper[i] = i;
         dev.kabin.util.Arrays.quickSort(indexReMapper, this::internalGet, comparator);
         return compose(i -> indexReMapper[i]);
+    }
+
+    public boolean allMatch(Predicate<T> predicate) {
+        for (int i = 0, n = internalSize(); i < n; i++) {
+            if (!predicate.test(internalGet(i))) return false;
+        }
+        return true;
+    }
+
+    public boolean allMatch(IntObjPredicate<T> predicate) {
+        for (int i = 0, n = internalSize(); i < n; i++) {
+            if (!predicate.test(i, internalGet(i))) return false;
+        }
+        return true;
+    }
+
+    public boolean noneMatch(IntObjPredicate<T> predicate) {
+        for (int i = 0, n = internalSize(); i < n; i++) {
+            if (predicate.test(i, internalGet(i))) return false;
+        }
+        return true;
+    }
+
+    public boolean noneMatch(Predicate<T> predicate) {
+        for (int i = 0, n = internalSize(); i < n; i++) {
+            if (predicate.test(internalGet(i))) return false;
+        }
+        return true;
     }
 
     public LazyList<LazyList<T>> split(Comparator<T> comparator) {
@@ -293,7 +324,12 @@ public class LazyList<T> implements List<T>, IntFunction<T> {
                 return false;
             }
 
-            return containsAll(l);
+            int i = 0;
+            for (var e : l) {
+                if (!Objects.equals(e, internalGet(i))) return false;
+                i++;
+            }
+            return true;
         } else return false;
     }
 

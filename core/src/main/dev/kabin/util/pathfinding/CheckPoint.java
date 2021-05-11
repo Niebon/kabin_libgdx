@@ -2,5 +2,8 @@ package dev.kabin.util.pathfinding;
 
 import dev.kabin.util.Direction;
 
-record CheckPoint(int index, Direction direction, boolean jump) {
+/**
+ * A check point in a path.
+ */
+record CheckPoint(int pathIndex, Direction direction, boolean jump) {
 }
