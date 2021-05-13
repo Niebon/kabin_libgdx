@@ -29,7 +29,7 @@ public class EntityCollectionProvider<T extends Enum<T> & Layer, E extends Entit
     public EntityCollectionProvider(Class<T> groupTypeClass) {
         //noinspection unchecked
         typesOrdered = Arrays.stream(groupTypeClass.getEnumConstants())
-                .sorted(Comparator.comparingInt(T::getLayer))
+                .sorted(Comparator.comparingInt(T::layer))
                 .toArray(i -> (T[]) Array.newInstance(groupTypeClass, i));
         collectionMap = Arrays
                 .stream(groupTypeClass.getEnumConstants())

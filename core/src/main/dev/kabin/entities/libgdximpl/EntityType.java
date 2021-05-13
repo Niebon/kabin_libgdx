@@ -71,8 +71,8 @@ public enum EntityType implements Layer, GroupTyped<EntityGroup> {
     }
 
     @Override
-    public int getLayer() {
-        return groupEntityGroup.getLayer();
+    public int layer() {
+        return groupEntityGroup.layer();
     }
 
 

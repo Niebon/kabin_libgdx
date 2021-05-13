@@ -61,8 +61,8 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         }
         setPos(parameters.x(), parameters.y());
         {
-            positionNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
-            graphicsNbd = MutableRectInt.centeredAt((int) getPixelMassCenterX(), (int) getPixelMassCenterY(), getPixelWidth(), getPixelHeight());
+            positionNbd = MutableRectInt.centeredAt((int) artMassCenterX(), (int) artMassCenterY(), artWidth(), artHeight());
+            graphicsNbd = MutableRectInt.centeredAt((int) artMassCenterX(), (int) artMassCenterY(), artWidth(), artHeight());
             positionNbdView = new RectIntView(positionNbd);
             graphicsNbdView = new RectIntView(graphicsNbd);
             updateNeighborhood();
@@ -163,13 +163,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     private void updateNeighborhood() {
         graphicsNbd.translate(
-                Math.round(getLeftmostPixel() + x() - graphicsNbd.getCenterX()),
-                Math.round(getHighestPixelFromBelow() + y() - graphicsNbd.getCenterY())
+                Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
         );
 
         positionNbd.translate(
-                Math.round(getLeftmostPixel() + x() - graphicsNbd.getCenterX()),
-                Math.round(getHighestPixelFromBelow() + y() - graphicsNbd.getCenterY())
+                Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
         );
     }
 
@@ -179,7 +179,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public int getLayer() {
+    public int layer() {
         return layer;
     }
 
@@ -208,7 +208,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public ImageMetadata getImageMetadata() {
+    public ImageMetadata imgMetadata() {
         return animationPlaybackImpl != null ? animationPlaybackImpl.getPixelAnalysis() : ImageMetadataLibgdx.emptyAnalysis();
     }
 
@@ -233,7 +233,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
                 .put("x", getXAsInt())
                 .put("y", getYAsInt())
                 .put("atlas_path", atlasPath)
-                .put("layer", getLayer())
+                .put("layer", layer())
                 .put("type", getType().name())
                 .put("light_sources", namedLightSourceDataList.stream()
                         .map(no -> no.map(AnchoredLightSourceData::toJSONObject))

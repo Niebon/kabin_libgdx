@@ -128,11 +128,11 @@ public class EventTriggerController {
                                 4)
                 ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {
                     if (val > 0) {
-                        e.setLayer(e.getLayer() + 1);
-                        System.out.println("Modified layer: " + e.getLayer());
+                        e.setLayer(e.layer() + 1);
+                        System.out.println("Modified layer: " + e.layer());
                     } else if (val < 0) {
-                        e.setLayer(e.getLayer() - 1);
-                        System.out.println("Modified layer: " + e.getLayer());
+                        e.setLayer(e.layer() - 1);
+                        System.out.println("Modified layer: " + e.layer());
                     }
                 }));
             }

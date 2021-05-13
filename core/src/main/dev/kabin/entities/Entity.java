@@ -6,7 +6,7 @@ import dev.kabin.util.collections.LazyList;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.points.PointInt;
-import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
+import dev.kabin.util.pools.imagemetadata.ImgMetadataDelegator;
 import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public interface Entity<
 
         ModifiableFloatCoordinates,
         Comparable<Entity<GroupType, EntityType, GraphicsParamType>>,
-        MetadataDelegator,
+        ImgMetadataDelegator,
         JSONSerializable,
         Id,
         Layer {
@@ -60,8 +60,8 @@ public interface Entity<
      * A default comparing procedure for a pair of entities.
      * This is implemented as the dictionary order on:
      * <ul>
-     *     <li>Comparing {@link EntityType#getLayer() layer} of the {@link #getType() group type} of this entity.</li>
-     *     <li>Comparing the {@link #getLayer() layer} of this entity.</li>
+     *     <li>Comparing {@link EntityType#layer() layer} of the {@link #getType() group type} of this entity.</li>
+     *     <li>Comparing the {@link #layer() layer} of this entity.</li>
      *     <li>Comparing the {@link #id() id} of this.</li>
      * </ul>
      * in the given order.
@@ -76,11 +76,11 @@ public interface Entity<
      */
     @Override
     default int compareTo(@NotNull Entity<GroupType, EntityType, GraphicsParamType> other) {
-        final int resultCompareType = Integer.compare(getType().getLayer(), other.getType().getLayer());
+        final int resultCompareType = Integer.compare(getType().layer(), other.getType().layer());
         if (resultCompareType != 0) return resultCompareType;
         else {
             // Dictionary order:
-            final int layerComparison = Integer.compare(getLayer(), other.getLayer());
+            final int layerComparison = Integer.compare(layer(), other.layer());
             return (layerComparison != 0) ? layerComparison : Integer.compare(id(), other.id());
         }
     }

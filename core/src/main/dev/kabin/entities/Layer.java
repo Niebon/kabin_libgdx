@@ -9,6 +9,6 @@ public interface Layer {
     /**
      * @return the layer of this instance.
      */
-    int getLayer();
+    int layer();
 
 }

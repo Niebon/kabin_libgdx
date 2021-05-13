@@ -18,35 +18,35 @@ public class ImageMetadataLibgdx implements ImageMetadata {
 
     private static final ImageMetadataLibgdx EMPTY_ANALYSIS = new ImageMetadataLibgdx();
     private final List<PointInt> pixelProfile = new ArrayList<>();
-    private final int lowestPixel;
-    private final int highestPixel;
-    private final int leftmostPixel;
-    private final int rightmostPixel;
-    private final int pixelHeight;
-    private final int pixelWidth;
-    private final int pixelMassCenterXInt;
-    private final int pixelMassCenterYInt;
-    private final int pixelsX;
-    private final int pixelsY;
+    private final int lowestArtPixel;
+    private final int highestArtPixel;
+    private final int leftmostArtPixel;
+    private final int rightmostArtPixel;
+    private final int artHeight;
+    private final int artWidth;
+    private final int artMassCenterXAsInt;
+    private final int artMassCenterYAsInt;
+    private final int imgWith;
+    private final int imgHeight;
     private final float
-            pixelMassCenterX,
-            pixelMassCenterY;
-    private int lowestPixelFromAbove;
-    private int highestPixelFromBelow; //TODO find this
+            artMassCenterX,
+            artMassCenterY;
+    private int lowestArtPixelFromAbove;
+    private int highestArtPixelFromBelow; //TODO find this
 
     private ImageMetadataLibgdx() {
-        lowestPixel = 0;
-        highestPixel = 0;
-        leftmostPixel = 0;
-        rightmostPixel = 0;
-        pixelHeight = 0;
-        pixelWidth = 0;
-        pixelMassCenterXInt = 0;
-        pixelMassCenterYInt = 0;
-        pixelsX = 0;
-        pixelsY = 0;
-        pixelMassCenterX = 0;
-        pixelMassCenterY = 0;
+        lowestArtPixel = 0;
+        highestArtPixel = 0;
+        leftmostArtPixel = 0;
+        rightmostArtPixel = 0;
+        artHeight = 0;
+        artWidth = 0;
+        artMassCenterXAsInt = 0;
+        artMassCenterYAsInt = 0;
+        imgWith = 0;
+        imgHeight = 0;
+        artMassCenterX = 0;
+        artMassCenterY = 0;
     }
 
     public ImageMetadataLibgdx(
@@ -57,18 +57,18 @@ public class ImageMetadataLibgdx implements ImageMetadata {
         final Optional<TextureAtlas.AtlasRegion> atlasRegionMaybe = Optional.ofNullable(atlas.getRegions()
                 .select(a -> path.equals(a.toString()) && index == a.index).iterator().next());
         if (atlasRegionMaybe.isEmpty()) {
-            lowestPixel = 0;
-            highestPixel = 0;
-            leftmostPixel = 0;
-            rightmostPixel = 0;
-            pixelHeight = 0;
-            pixelWidth = 0;
-            pixelMassCenterXInt = 0;
-            pixelMassCenterYInt = 0;
-            pixelsX = 0;
-            pixelsY = 0;
-            pixelMassCenterX = 0;
-            pixelMassCenterY = 0;
+            lowestArtPixel = 0;
+            highestArtPixel = 0;
+            leftmostArtPixel = 0;
+            rightmostArtPixel = 0;
+            artHeight = 0;
+            artWidth = 0;
+            artMassCenterXAsInt = 0;
+            artMassCenterYAsInt = 0;
+            imgWith = 0;
+            imgHeight = 0;
+            artMassCenterX = 0;
+            artMassCenterY = 0;
             return;
         }
 
@@ -126,7 +126,7 @@ public class ImageMetadataLibgdx implements ImageMetadata {
                     final boolean collision = alphaValue > 0;// true means there is collision/visible pixels
 
                     if (collision) {
-                        if (j > lowestPixelFromAbove) lowestPixelFromAbove = j;
+                        if (j > lowestArtPixelFromAbove) lowestArtPixelFromAbove = j;
                         continue outer;
                     }
 
@@ -134,20 +134,20 @@ public class ImageMetadataLibgdx implements ImageMetadata {
             }
         }
 
-        this.lowestPixel = Functions.transformY(lowestPixel, height);
-        this.highestPixel = Functions.transformY(highestPixel, height);
-        this.rightmostPixel = rightmostPixel;
-        this.leftmostPixel = leftmostPixel;
+        this.lowestArtPixel = Functions.transformY(lowestPixel, height);
+        this.highestArtPixel = Functions.transformY(highestPixel, height);
+        this.rightmostArtPixel = rightmostPixel;
+        this.leftmostArtPixel = leftmostPixel;
 
-        pixelMassCenterX = (float) sumx / nx;
-        pixelMassCenterY = Functions.transformY((float) sumy / ny, height);
-        pixelMassCenterXInt = Math.round(pixelMassCenterX);
-        pixelMassCenterYInt = Functions.transformY(Math.round(pixelMassCenterY), height);
+        artMassCenterX = (float) sumx / nx;
+        artMassCenterY = Functions.transformY((float) sumy / ny, height);
+        artMassCenterXAsInt = Math.round(artMassCenterX);
+        artMassCenterYAsInt = Functions.transformY(Math.round(artMassCenterY), height);
 
-        pixelHeight = lowestPixel - highestPixel;
-        pixelWidth = rightmostPixel - leftmostPixel;
-        pixelsX = width;
-        pixelsY = height;
+        artHeight = lowestPixel - highestPixel;
+        artWidth = rightmostPixel - leftmostPixel;
+        imgWith = width;
+        imgHeight = height;
     }
 
     /**
@@ -158,78 +158,78 @@ public class ImageMetadataLibgdx implements ImageMetadata {
     }
 
     @Override
-    public List<PointInt> getPixelProfile() {
+    public List<PointInt> getArtPixelProfile() {
         return new ArrayList<>(pixelProfile);
     }
 
     @Override
-    public int getLowestPixel() {
-        return lowestPixel;
+    public int lowestArtPixel() {
+        return lowestArtPixel;
     }
 
     @Override
-    public int getHighestPixel() {
-        return highestPixel;
+    public int highestArtPixel() {
+        return highestArtPixel;
     }
 
     @Override
-    public int getLeftmostPixel() {
-        return leftmostPixel;
+    public int leftmostArtPixel() {
+        return leftmostArtPixel;
     }
 
     @Override
-    public int getRightmostPixel() {
-        return rightmostPixel;
+    public int rightmostArtPixel() {
+        return rightmostArtPixel;
     }
 
     @Override
-    public int getLowestPixelFromAbove() {
-        return lowestPixelFromAbove;
+    public int lowestArtPixelFromAbove() {
+        return lowestArtPixelFromAbove;
     }
 
     @Override
-    public int getHighestPixelFromBelow() {
-        return highestPixelFromBelow;
+    public int highestArtPixelFromBelow() {
+        return highestArtPixelFromBelow;
     }
 
     @Override
-    public int getPixelHeight() {
-        return pixelHeight;
+    public int artHeight() {
+        return artHeight;
     }
 
     @Override
-    public int getPixelWidth() {
-        return pixelWidth;
+    public int artWidth() {
+        return artWidth;
     }
 
     @Override
-    public float getPixelMassCenterX() {
-        return pixelMassCenterX;
+    public float artMassCenterX() {
+        return artMassCenterX;
     }
 
     @Override
-    public float getPixelMassCenterY() {
-        return pixelMassCenterY;
+    public float artMassCenterY() {
+        return artMassCenterY;
     }
 
     @Override
-    public int getPixelMassCenterXInt() {
-        return pixelMassCenterXInt;
+    public int artMassCenterXAsInt() {
+        return artMassCenterXAsInt;
     }
 
     @Override
-    public int getPixelMassCenterYInt() {
-        return pixelMassCenterYInt;
+    public int artMassCenterYAsInt() {
+        return artMassCenterYAsInt;
     }
 
     @Override
-    public int getPixelsX() {
-        return pixelsX;
+    public int imgWidth() {
+        return imgWith;
     }
 
     @Override
-    public int getPixelsY() {
-        return pixelsY;
+    public int imgHeight() {
+        return imgHeight;
     }
 
 }

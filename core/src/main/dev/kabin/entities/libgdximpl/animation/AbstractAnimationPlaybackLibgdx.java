@@ -78,23 +78,23 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
 
         maxPixelHeight = Arrays.stream(regions.items)
                 .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
-                .mapToInt(ImageMetadata::getPixelHeight)
+                .mapToInt(ImageMetadata::artHeight)
                 .max().orElse(0);
 
         avgMassCenterX = (float) Arrays.stream(regions.items)
                 .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
-                .mapToDouble(ImageMetadata::getPixelMassCenterX)
+                .mapToDouble(ImageMetadata::artMassCenterX)
                 .average().orElse(0);
 
         avgMassCenterY = (float) Arrays.stream(regions.items)
                 .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
-                .mapToDouble(ImageMetadata::getPixelMassCenterY)
+                .mapToDouble(ImageMetadata::artMassCenterY)
                 .average().orElse(0);
 
 
         avgLowestPixel = (int) Arrays.stream(regions.items)
                 .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
-                .mapToInt(ImageMetadata::getLowestPixel)
+                .mapToInt(ImageMetadata::lowestArtPixel)
                 .average().orElse(0);
     }
 

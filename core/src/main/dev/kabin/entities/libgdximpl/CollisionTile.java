@@ -71,7 +71,7 @@ public class CollisionTile extends CollisionEntity {
 	public void updateGraphics(GraphicsParametersLibgdx params) {
 		final AbstractAnimationPlaybackLibgdx<Tile> animationPlaybackImpl = getAnimationPlaybackImpl(Tile.class);
 		if (animationPlaybackImpl != null) {
-			animationPlaybackImpl.setPos(x() - getPixelMassCenterX(), y() - (getPixelMassCenterY() - 1));
+			animationPlaybackImpl.setPos(x() - artMassCenterX(), y() - (artMassCenterY() - 1));
 			animationPlaybackImpl.setCurrentAnimation(tile);
 			animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
 			animationPlaybackImpl.renderFrameByIndex(params, index);
@@ -127,12 +127,12 @@ public class CollisionTile extends CollisionEntity {
 	}
 
 	@Override
-	public float getPixelMassCenterX() {
+	public float artMassCenterX() {
 		return 0.5f * TILE_SIZE;
 	}
 
 	@Override
-	public float getPixelMassCenterY() {
+	public float artMassCenterY() {
 		return 0.5f * TILE_SIZE;
 	}
 

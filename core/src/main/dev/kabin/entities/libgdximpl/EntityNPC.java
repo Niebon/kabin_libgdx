@@ -221,7 +221,7 @@ public class EntityNPC extends EntitySimple {
             jumpFrame = 0;
         }
 
-        final boolean collisionWithCeiling = (dy > 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled + getPixelHeight()));
+        final boolean collisionWithCeiling = (dy > 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled + artHeight()));
         if (collisionWithCeiling) {
             dy = 0;
             vy0 = 0;
@@ -252,7 +252,7 @@ public class EntityNPC extends EntitySimple {
             {
 
                 boolean foundCollision = false;
-                for (int i = 4, len = getPixelHeight(); i < len; i++) {
+                for (int i = 4, len = artHeight(); i < len; i++) {
                     if (params.isCollisionIfNotLadderData(xNewUnscaled, yNewUnscaled + i)) {
                         foundCollision = true;
                         break;

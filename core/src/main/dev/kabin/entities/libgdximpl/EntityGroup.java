@@ -20,7 +20,7 @@ public enum EntityGroup implements Layer {
     }
 
     @Override
-    public int getLayer() {
+    public int layer() {
         return layer;
     }
 

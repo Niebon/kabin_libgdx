@@ -2,14 +2,14 @@ package dev.kabin.entities.libgdximpl;
 
 import dev.kabin.util.lambdas.PrimitiveIntPairConsumer;
 import dev.kabin.util.points.PointInt;
-import dev.kabin.util.pools.imagemetadata.MetadataDelegator;
+import dev.kabin.util.pools.imagemetadata.ImgMetadataDelegator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 
-public interface CollisionData extends MetadataDelegator {
+public interface CollisionData extends ImgMetadataDelegator {
 
     @NotNull
     List<PointInt> getCollisionProfile();
@@ -38,8 +38,8 @@ public interface CollisionData extends MetadataDelegator {
             double angleRad = angleRad();
             double cs = Math.cos(angleRad);
             double sn = Math.sin(angleRad);
-            int pixelMassCenterX = getImageMetadata().getPixelMassCenterXInt();
-            int pixelMassCenterY = getImageMetadata().getPixelMassCenterYInt();
+            int pixelMassCenterX = imgMetadata().artMassCenterXAsInt();
+            int pixelMassCenterY = imgMetadata().artMassCenterYAsInt();
 
             //noinspection ForLoopReplaceableByForEach
             for (int i = 0, n = profile.size(); i < n; i++) {
