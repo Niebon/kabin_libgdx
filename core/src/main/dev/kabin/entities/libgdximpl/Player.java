@@ -90,7 +90,7 @@ public class Player extends EntitySimple {
                     vx = vectorFieldX.eval(x, y + i),
                     vy = vectorFieldY.eval(x, y + i);
             if (vx != 0 || vy != 0) {
-                entity.setPos(entity.getX() + vx * dt, entity.getY() + vy * dt);
+                entity.setPos(entity.x() + vx * dt, entity.y() + vy * dt);
                 return true;
             }
         }
@@ -235,10 +235,10 @@ public class Player extends EntitySimple {
             dy = WALK_SPEED_PER_SECONDS * (d - u) * params.dt();
 
             if (dx == 0) {
-                dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((getY() + dy)))) ? 0 : dy;
+                dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((y() + dy)))) ? 0 : dy;
             }
 
-            dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((getY() - 8)));
+            dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((y() - 8)));
         }
 
         // Regular movement
@@ -276,8 +276,8 @@ public class Player extends EntitySimple {
 
 
         // Check the proposed new coordinates with respect to collision data
-        final int xNewUnscaled = Math.round((getX() + dx));
-        final int yNewUnscaled = Math.round((getY() + dy));
+        final int xNewUnscaled = Math.round((x() + dx));
+        final int yNewUnscaled = Math.round((y() + dy));
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
@@ -344,7 +344,7 @@ public class Player extends EntitySimple {
         }
 
         // Update physics
-        setPos(getX() + dx, getY() + dy);
+        setPos(x() + dx, y() + dy);
         cachedVx = dx / params.dt();
         cachedVy = dy / params.dt();
 

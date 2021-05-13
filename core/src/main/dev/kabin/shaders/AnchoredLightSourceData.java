@@ -78,8 +78,8 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     @Override
-    public float getX() {
-        return lightSourceData.getX() + anchorX.get();
+    public float x() {
+        return lightSourceData.x() + anchorX.get();
     }
 
     @Override
@@ -96,8 +96,8 @@ public record AnchoredLightSourceData(LightSourceDataImpl lightSourceData,
     }
 
     @Override
-    public float getY() {
-        return lightSourceData.getY() + anchorY.get();
+    public float y() {
+        return lightSourceData.y() + anchorY.get();
     }
 
     @Override

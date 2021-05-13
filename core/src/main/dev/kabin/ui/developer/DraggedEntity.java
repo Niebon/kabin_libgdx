@@ -16,8 +16,8 @@ class DraggedEntity {
     private final EntityLibgdx entity;
 
     public DraggedEntity(float initialMouseX, float initialMouseY, EntityLibgdx entity) {
-        this.entityOriginalX = entity.getX();
-        this.entityOriginalY = entity.getY();
+        this.entityOriginalX = entity.x();
+        this.entityOriginalY = entity.y();
         this.initialMouseX = initialMouseX;
         this.initialMouseY = initialMouseY;
         this.entity = entity;

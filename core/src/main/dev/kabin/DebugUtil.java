@@ -44,8 +44,8 @@ public class DebugUtil {
         forEachEntity.accept(e -> {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
             renderer.setColor(Color.GREEN);
-            float x = e.getX() - currentCameraBounds.getMinX() * scaleFactor;
-            float y = e.getY() - currentCameraBounds.getMinY() * scaleFactor;
+            float x = e.x() - currentCameraBounds.getMinX() * scaleFactor;
+            float y = e.y() - currentCameraBounds.getMinY() * scaleFactor;
             renderer.rect(x, y, scaleFactor, scaleFactor);
             renderer.end();
         });

@@ -1,7 +1,7 @@
-package dev.kabin.entities.libgdximpl.animation;
+package dev.kabin.entities;
 
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 
-public interface ImageAnalysisSupplier {
+public interface ImageAnalysisGetter {
     ImageMetadata get(String path, int index);
 }

@@ -154,7 +154,7 @@ public class Widget implements ModifiableFloatCoordinates {
     }
 
     @Override
-    public float getX() {
+    public float x() {
         return mainWindow.getX();
     }
 
@@ -164,7 +164,7 @@ public class Widget implements ModifiableFloatCoordinates {
     }
 
     @Override
-    public float getY() {
+    public float y() {
         return mainWindow.getY();
     }
 

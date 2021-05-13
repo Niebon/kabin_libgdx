@@ -180,7 +180,7 @@ class EntityLoadingWidget {
 
         final EntityLibgdx e = EntityType.Factory.parameterConstructorOf(entityType).construct(parameters);
 
-        System.out.printf("Added an entity at (x,y) = (%s,%s)%n", e.getX(), e.getY());
+        System.out.printf("Added an entity at (x,y) = (%s,%s)%n", e.x(), e.y());
 
         registerEntityToWorld.accept(e);
         e.getActor().ifPresent(stage::addActor);
@@ -313,7 +313,7 @@ class EntityLoadingWidget {
                 setCurrentAnimationOfPreviewTo(preview, animationType);
             }
             float scale = 4.0f * 32 / preview.getOriginalWidth();
-            preview.setPos(0.75f * WIDTH + widget.getX(), widget.getY());
+            preview.setPos(0.75f * WIDTH + widget.x(), widget.y());
             preview.renderNextAnimationFrame(params);
         }
     }

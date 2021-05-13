@@ -60,7 +60,7 @@ public class EntitySelection {
 
             // By abuse of the word "render" include this here...
             forEachEntity.accept(e -> {
-                if (backingRect.contains(e.getX(), e.getY())) {
+                if (backingRect.contains(e.x(), e.y())) {
                     currentlySelectedEntities.add(e);
                 } else {
                     currentlySelectedEntities.remove(e);

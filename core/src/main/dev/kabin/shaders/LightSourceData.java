@@ -42,10 +42,10 @@ public interface LightSourceData extends ModifiableFloatCoordinates, JSONSeriali
     }
 
     default int getUnscaledX() {
-        return Math.round(getX());
+        return Math.round(x());
     }
 
     default int getUnscaledY() {
-        return Math.round(getY());
+        return Math.round(y());
     }
 }

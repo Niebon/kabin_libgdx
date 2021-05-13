@@ -91,7 +91,7 @@ class ModifyShaderWindow {
                         public void clicked(InputEvent event, float x, float y) {
                             String text = tfSetName.getText();
                             if (text.length() > 3) {
-                                e.addLightSourceData(text, AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::getX, e::getY));
+                                e.addLightSourceData(text, AnchoredLightSourceData.ofNullables(LightSourceDataImpl.builder().build(), e::x, e::y));
                                 final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
                                 selectBoxLightData.setItems(items.toArray(String[]::new));
                                 selectBoxLightData.setSelected(text);

@@ -68,7 +68,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             updateNeighborhood();
         }
         namedLightSourceDataList = parameters.lightSourceData().stream()
-                .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::getX, this::getY)))
+                .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::x, this::y)))
                 .collect(Collectors.toCollection(ArrayList::new));
         lightSourceDataList = new LazyList<>(i -> namedLightSourceDataList.get(i).obj(), namedLightSourceDataList::size);
     }
@@ -163,13 +163,13 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     private void updateNeighborhood() {
         graphicsNbd.translate(
-                Math.round(getLeftmostPixel() + getX() - graphicsNbd.getCenterX()),
-                Math.round(getHighestPixelFromBelow() + getY() - graphicsNbd.getCenterY())
+                Math.round(getLeftmostPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(getHighestPixelFromBelow() + y() - graphicsNbd.getCenterY())
         );
 
         positionNbd.translate(
-                Math.round(getLeftmostPixel() + getX() - graphicsNbd.getCenterX()),
-                Math.round(getHighestPixelFromBelow() + getY() - graphicsNbd.getCenterY())
+                Math.round(getLeftmostPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(getHighestPixelFromBelow() + y() - graphicsNbd.getCenterY())
         );
     }
 
@@ -188,7 +188,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public float getX() {
+    public float x() {
         return x;
     }
 
@@ -198,7 +198,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
     }
 
     @Override
-    public float getY() {
+    public float y() {
         return y;
     }
 

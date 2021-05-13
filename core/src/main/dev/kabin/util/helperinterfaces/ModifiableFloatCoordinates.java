@@ -37,7 +37,7 @@ public interface ModifiableFloatCoordinates extends FloatCoordinates {
      * @param deltaY the vertical translation.
      */
     default void translate(float deltaX, float deltaY) {
-        setPos(getX() + deltaX, getY() + deltaY);
+        setPos(x() + deltaX, y() + deltaY);
     }
 
 }

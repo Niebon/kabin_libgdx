@@ -69,7 +69,7 @@ public class CameraWrapper {
         directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
         final float x = directionalFinalSmoothening.x();
         final float y = directionalFinalSmoothening.y();
-        setPos(player.getX() * scale() + x, player.getY() * scale() + y);
+        setPos(player.x() * scale() + x, player.y() * scale() + y);
     }
 
     public RectIntView currentCameraBounds() {

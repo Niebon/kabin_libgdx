@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.AnimationMetadata;
+import dev.kabin.entities.ImageAnalysisGetter;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntMap;
@@ -35,7 +36,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private final IntToIntMap animationClassIndexToAnimationLength;
     private final Map<T, int[]> animationBlueprint;
     private final int maxPixelHeight;
-    private final ImageAnalysisSupplier imageAnalysisSupplier;
+    private final ImageAnalysisGetter imageAnalysisGetter;
 
     // Class variables:
     private T currentAnimation;
@@ -48,12 +49,12 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private final int avgLowestPixel;
 
     AbstractAnimationPlaybackLibgdx(
-            ImageAnalysisSupplier imageAnalysisSupplier,
+            ImageAnalysisGetter imageAnalysisGetter,
             Array<TextureAtlas.AtlasRegion> regions,
             Map<T, int[]> animationBlueprint,
             Class<T> enumClass
     ) {
-        this.imageAnalysisSupplier = imageAnalysisSupplier;
+        this.imageAnalysisGetter = imageAnalysisGetter;
         if (regions.isEmpty()) {
             throw new IllegalArgumentException("The parameter regions must be non-empty.");
         }
@@ -76,23 +77,23 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         animationBlueprint.forEach((animClass, ints) -> animationClassIndexToAnimationLength.put(animClass.ordinal(), ints.length));
 
         maxPixelHeight = Arrays.stream(regions.items)
-                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
                 .mapToInt(ImageMetadata::getPixelHeight)
                 .max().orElse(0);
 
         avgMassCenterX = (float) Arrays.stream(regions.items)
-                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
                 .mapToDouble(ImageMetadata::getPixelMassCenterX)
                 .average().orElse(0);
 
         avgMassCenterY = (float) Arrays.stream(regions.items)
-                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
                 .mapToDouble(ImageMetadata::getPixelMassCenterY)
                 .average().orElse(0);
 
 
         avgLowestPixel = (int) Arrays.stream(regions.items)
-                .map(region -> imageAnalysisSupplier.get(String.valueOf(region), region.index))
+                .map(region -> imageAnalysisGetter.get(String.valueOf(region), region.index))
                 .mapToInt(ImageMetadata::getLowestPixel)
                 .average().orElse(0);
     }
@@ -189,7 +190,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         batch.setShader(shaderProgram);
         batch.begin();
         float scale = params.scale();
-        batch.draw(cachedTextureRegion, getX() * scale, getY() * scale, getWidth() * scale, getHeight() * scale);
+        batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
         batch.end();
     }
 
@@ -202,7 +203,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         batch.setShader(shaderProgram);
         batch.begin();
         float scale = params.scale();
-        batch.draw(cachedTextureRegion, getX() * scale, getY() * scale, getWidth() * scale, getHeight() * scale);
+        batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
         batch.end();
     }
 
@@ -218,7 +219,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
 
     @Override
     public ImageMetadata getPixelAnalysis() {
-        return imageAnalysisSupplier.get(getCurrentImageAssetPath(), getCurrentImageAssetIndex());
+        return imageAnalysisGetter.get(getCurrentImageAssetPath(), getCurrentImageAssetIndex());
     }
 
     @Override
@@ -237,7 +238,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     }
 
     @Override
-    public float getX() {
+    public float x() {
         return weightedAverage2D.x();
     }
 
@@ -247,7 +248,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     }
 
     @Override
-    public float getY() {
+    public float y() {
         return weightedAverage2D.y();
     }
 

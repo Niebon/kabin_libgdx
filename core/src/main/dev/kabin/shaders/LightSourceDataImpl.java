@@ -68,7 +68,7 @@ public class LightSourceDataImpl implements LightSourceData {
     }
 
     @Override
-    public float getX() {
+    public float x() {
         return x;
     }
 
@@ -78,7 +78,7 @@ public class LightSourceDataImpl implements LightSourceData {
     }
 
     @Override
-    public float getY() {
+    public float y() {
         return y;
     }
 

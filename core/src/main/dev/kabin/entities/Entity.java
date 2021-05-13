@@ -98,11 +98,11 @@ public interface Entity<
     }
 
     default int getXAsInt() {
-        return Math.round(getX());
+        return Math.round(x());
     }
 
     default int getYAsInt() {
-        return Math.round(getY());
+        return Math.round(y());
     }
 
     default int getRootXAsInt() {
@@ -114,11 +114,11 @@ public interface Entity<
     }
 
     default float getRootX() {
-        return getX() - getAvgMassCenterX();
+        return x() - getAvgMassCenterX();
     }
 
     default float getRootY() {
-        return getY() - (getAvgLowestPixel() - 2);
+        return y() - (getAvgLowestPixel() - 2);
     }
 
     RectIntView graphicsNbd();

@@ -121,7 +121,7 @@ public class TileSelectionWidget {
             final Iterator<EntityLibgdx> entityIterator = worldRepresentationSupplier.get().getEntitiesWithinCameraBoundsCached(currCamBounds.get()).iterator();
             while (entityIterator.hasNext()) {
                 final EntityLibgdx e = entityIterator.next();
-                if (e instanceof final CollisionTile ct && e.getX() == (float) intX && e.getY() == (float) intY) {
+                if (e instanceof final CollisionTile ct && e.x() == (float) intX && e.y() == (float) intY) {
                     if (!worldRepresentationSupplier.get().unregisterEntity(e)) {
                         throw new IllegalStateException("Tried to remove an entity which did not exist in %s.".formatted(EntityCollectionProvider.class.getName()));
                     }
@@ -288,8 +288,8 @@ public class TileSelectionWidget {
                 float height = scale * 16;
                 float offsetX = 75;
                 float offsetY = 75;
-                float x = widget.getX() + separationOffsetFactor * (width + offsetSeparation) + offsetX;
-                float y = widget.getY() + offsetY;
+                float x = widget.x() + separationOffsetFactor * (width + offsetSeparation) + offsetX;
+                float y = widget.y() + offsetY;
 
 
                 SpriteBatch batch = params.batch();

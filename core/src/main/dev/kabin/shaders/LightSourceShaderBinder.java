@@ -52,8 +52,8 @@ public class LightSourceShaderBinder {
             this.tints[3 * i + 1] = lightSourceDataIntFunction.apply(i).getTint().green();
             this.tints[3 * i + 2] = lightSourceDataIntFunction.apply(i).getTint().blue();
 
-            this.xy[2 * i] = lightSourceDataIntFunction.apply(i).getX() * scale - camXMinusHalfWidth;
-            this.xy[2 * i + 1] = lightSourceDataIntFunction.apply(i).getY() * scale - camYMinusHalfHeight;
+            this.xy[2 * i] = lightSourceDataIntFunction.apply(i).x() * scale - camXMinusHalfWidth;
+            this.xy[2 * i + 1] = lightSourceDataIntFunction.apply(i).y() * scale - camYMinusHalfHeight;
 
             this.r[i] = lightSourceDataIntFunction.apply(i).getR() * scale;
 

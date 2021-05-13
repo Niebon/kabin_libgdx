@@ -3,6 +3,7 @@ package dev.kabin.entities.libgdximpl.animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import dev.kabin.entities.AnimationMetadata;
+import dev.kabin.entities.ImageAnalysisGetter;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
 import dev.kabin.entities.libgdximpl.animation.enums.Inanimate;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
@@ -86,10 +87,10 @@ public class AnimationBundleFactory {
 
     public static class AnimationPlaybackLibgdxAnimate extends AbstractAnimationPlaybackLibgdx<Animate> {
 
-        public AnimationPlaybackLibgdxAnimate(ImageAnalysisSupplier imageAnalysisSupplier,
+        public AnimationPlaybackLibgdxAnimate(ImageAnalysisGetter imageAnalysisGetter,
                                               Array<TextureAtlas.AtlasRegion> regions,
                                               Map<Animate, int[]> animationBlueprint) {
-            super(imageAnalysisSupplier, regions, animationBlueprint, Animate.class);
+            super(imageAnalysisGetter, regions, animationBlueprint, Animate.class);
         }
 
         @Override
@@ -111,10 +112,10 @@ public class AnimationBundleFactory {
 
     public static class AnimationPlaybackLibgdxInanimate extends AbstractAnimationPlaybackLibgdx<Inanimate> {
 
-        public AnimationPlaybackLibgdxInanimate(ImageAnalysisSupplier imageAnalysisSupplier,
+        public AnimationPlaybackLibgdxInanimate(ImageAnalysisGetter imageAnalysisGetter,
                                                 Array<TextureAtlas.AtlasRegion> regions,
                                                 Map<Inanimate, int[]> animationBlueprint) {
-            super(imageAnalysisSupplier, regions, animationBlueprint, Inanimate.class);
+            super(imageAnalysisGetter, regions, animationBlueprint, Inanimate.class);
         }
 
         @Override
@@ -135,10 +136,10 @@ public class AnimationBundleFactory {
 
     public static class AnimationPlaybackLibgdxTile extends AbstractAnimationPlaybackLibgdx<Tile> {
 
-        public AnimationPlaybackLibgdxTile(ImageAnalysisSupplier imageAnalysisSupplier,
+        public AnimationPlaybackLibgdxTile(ImageAnalysisGetter imageAnalysisGetter,
                                            Array<TextureAtlas.AtlasRegion> regions,
                                            Map<Tile, int[]> animationBlueprint) {
-            super(imageAnalysisSupplier, regions, animationBlueprint, Tile.class);
+            super(imageAnalysisGetter, regions, animationBlueprint, Tile.class);
         }
 
         @Override

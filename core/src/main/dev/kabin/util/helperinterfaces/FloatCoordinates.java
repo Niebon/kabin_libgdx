@@ -5,10 +5,10 @@ public interface FloatCoordinates {
     /**
      * @return the horizontal component.
      */
-    float getX();
+    float x();
 
     /**
      * @return the vertical component.
      */
-    float getY();
+    float y();
 }
