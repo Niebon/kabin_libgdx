@@ -251,7 +251,7 @@ public class Player extends EntitySimple {
             // Handle jump input
             if (jump == 1) {
                 jump = 0;
-                final double jumpCooldownThreshold = 0.2;
+                final float jumpCooldownThreshold = 1f; // Hinders successive micro jumps.
                 if (!inAir && jumpCooldown > jumpCooldownThreshold) {
                     jumpCooldown = 0;
                     jumpFrame = 0; // start jump frame

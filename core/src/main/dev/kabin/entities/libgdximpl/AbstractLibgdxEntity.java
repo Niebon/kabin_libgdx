@@ -257,23 +257,23 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public int getMaxPixelHeight() {
-        return animationPlaybackImpl.getMaxPixelHeight();
+        return animationPlaybackImpl.maxArtPixelHeight();
     }
 
     @Override
     public int getAvgLowestPixel() {
-        return animationPlaybackImpl.getAvgLowestPixel();
+        return animationPlaybackImpl.avgLowestArtPixel();
     }
 
 
     @Override
     public float getAvgMassCenterX() {
-        return animationPlaybackImpl.getAvgMassCenterX();
+        return animationPlaybackImpl.avgArtPixelMassCenterX();
     }
 
     @Override
     public float getAvgMassCenterY() {
-        return animationPlaybackImpl.getAvgMassCenterY();
+        return animationPlaybackImpl.avgArtPixelMassCenterY();
     }
 
 }

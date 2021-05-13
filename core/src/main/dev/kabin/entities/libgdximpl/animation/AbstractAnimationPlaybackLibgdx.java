@@ -47,6 +47,7 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     private final float avgMassCenterY;
     private final float avgMassCenterX;
     private final int avgLowestPixel;
+    private float renderScale = 1f;
 
     AbstractAnimationPlaybackLibgdx(
             ImageAnalysisGetter imageAnalysisGetter,
@@ -99,22 +100,22 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     }
 
     @Override
-    public int getMaxPixelHeight() {
+    public int maxArtPixelHeight() {
         return maxPixelHeight;
     }
 
     @Override
-    public int getAvgLowestPixel() {
+    public int avgLowestArtPixel() {
         return avgLowestPixel;
     }
 
     @Override
-    public float getAvgMassCenterX() {
+    public float avgArtPixelMassCenterX() {
         return avgMassCenterX;
     }
 
     @Override
-    public float getAvgMassCenterY() {
+    public float avgArtPixelMassCenterY() {
         return avgMassCenterY;
     }
 
@@ -186,11 +187,19 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
             setCurrentAnimation(toDefaultAnimation(currentAnimation));
         }
 
+        renderProcedure(params);
+    }
+
+    private void renderProcedure(GraphicsParametersLibgdx params) {
         final SpriteBatch batch = params.batch();
         batch.setShader(shaderProgram);
         batch.begin();
         float scale = params.scale();
-        batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
+        if (renderScale == 1f) {
+            batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
+        } else {
+            batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale * renderScale, getHeight() * scale * renderScale);
+        }
         batch.end();
     }
 
@@ -198,14 +207,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     public void renderFrameByIndex(GraphicsParametersLibgdx params, int index) {
         stateTime = 0f;
         cachedTextureRegion = regions.get(animationBlueprint.get(currentAnimation)[index]);
-
-        final SpriteBatch batch = params.batch();
-        batch.setShader(shaderProgram);
-        batch.begin();
-        float scale = params.scale();
-        batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
-        batch.end();
+        renderProcedure(params);
     }
+
 
     @Override
     public String getCurrentImageAssetPath() {
@@ -267,4 +271,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
 
     public abstract Class<T> getAnimationClass();
 
+
+    @Override
+    public void setRenderScale(float renderScale) {
+        this.renderScale = renderScale;
+    }
 }

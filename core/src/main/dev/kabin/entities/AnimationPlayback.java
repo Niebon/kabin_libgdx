@@ -79,13 +79,13 @@ public interface AnimationPlayback<
     /**
      * @return the maximal pixel height among all animations.
      */
-    int getMaxPixelHeight();
+    int maxArtPixelHeight();
 
-    int getAvgLowestPixel();
+    int avgLowestArtPixel();
 
-    float getAvgMassCenterX();
+    float avgArtPixelMassCenterX();
 
-    float getAvgMassCenterY();
+    float avgArtPixelMassCenterY();
 
 
     /**
@@ -118,4 +118,10 @@ public interface AnimationPlayback<
      */
     void renderFrameByIndex(GraphicsParametersType params, int index);
 
+    /**
+     * Modifies the height and width that this animation playback is drawn with.
+     *
+     * @param renderScale the value. For default scaling, use {@code 1f}.
+     */
+    void setRenderScale(float renderScale);
 }

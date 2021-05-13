@@ -75,6 +75,7 @@ public class CollisionTile extends CollisionEntity {
 			animationPlaybackImpl.setCurrentAnimation(tile);
 			animationPlaybackImpl.setShaderProgram(params.shaderFor(getGroupType()));
 			animationPlaybackImpl.renderFrameByIndex(params, index);
+			animationPlaybackImpl.setRenderScale(1.01f);
 			float scale = params.scale();
 			actor().setBounds(
 					x() * scale,
