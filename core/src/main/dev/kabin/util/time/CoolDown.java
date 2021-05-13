@@ -1,4 +1,4 @@
-package dev.kabin.util;
+package dev.kabin.util.time;
 
 public interface CoolDown {
 

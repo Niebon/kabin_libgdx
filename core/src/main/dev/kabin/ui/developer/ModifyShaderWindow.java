@@ -11,9 +11,9 @@ import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.shaders.*;
 import dev.kabin.util.Lists;
 import dev.kabin.util.NamedObj;
-import dev.kabin.util.SimpleCoolDown;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.lambdas.Function;
+import dev.kabin.util.time.SimpleCoolDown;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

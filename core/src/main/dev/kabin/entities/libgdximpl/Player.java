@@ -5,10 +5,14 @@ import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
-import dev.kabin.util.*;
+import dev.kabin.util.Direction;
+import dev.kabin.util.Functions;
+import dev.kabin.util.Statistics;
+import dev.kabin.util.TangentFinder;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.lambdas.BiIntToFloatFunction;
+import dev.kabin.util.time.CoolDown;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -254,7 +258,7 @@ public class Player extends EntitySimple {
                 if (!inAir && jumpCooldown.isCompleted()) {
                     jumpCooldown = CoolDown.builder()
                             .setDurationMillis(350L)
-                            .setWaitBeforeAcceptStart(300L) // This cooldown will by default wait 0.3 seconds before accepting a .start() call.
+                            .setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
                             .build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
 
                     jumpFrame = 0; // start jump frame.
