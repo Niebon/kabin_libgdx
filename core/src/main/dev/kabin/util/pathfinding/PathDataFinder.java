@@ -33,7 +33,7 @@ record PathDataFinder(PhysicsConstants physicsConstants, BiIntPredicate collisio
 
 	static boolean existsJumpTrajectory(RectInt from,
 										RectInt to,
-										NpcMetadata npcMetadata,
+										BeingMetadata beingMetadata,
 										PhysicsConstants physicsConstants,
 										BiIntPredicate collisionAt) {
 
@@ -45,9 +45,9 @@ record PathDataFinder(PhysicsConstants physicsConstants, BiIntPredicate collisio
 				y0 = from.getMinY(),
 				x1 = to.getCenterX(),
 				y1 = to.getMinY(),
-				vx = npcMetadata.vx(),
-				vy = npcMetadata.vy(),
-				heightConstant = npcMetadata.heightConstant(),
+				vx = beingMetadata.movementSpeed() * Math.signum(x1 - x0),
+				vy = beingMetadata.jumpSpeed(),
+				heightConstant = beingMetadata.heightConstant(),
 				g = physicsConstants.g(),
 				meter = physicsConstants.meter(),
 				t = -vy / g,                                // time until dy/dt = 0 after jump
@@ -167,7 +167,7 @@ record PathDataFinder(PhysicsConstants physicsConstants, BiIntPredicate collisio
 		return added;
 	}
 
-	public Function<NpcMetadata, PathData> newPathDataMaker(Stream<LazyList<PointInt>> collisionContributionPerEntity) {
+	public Function<BeingMetadata, PathData> newPathDataMaker(Stream<LazyList<PointInt>> collisionContributionPerEntity) {
 
 		var indexToPathSegment = new ArrayList<ArrayList<PointInt>>();
 		var pathSegmentNeighborhoods = new ArrayList<GrowingRectInt>();
@@ -204,7 +204,7 @@ record PathDataFinder(PhysicsConstants physicsConstants, BiIntPredicate collisio
 	}
 
 	private void generateArrows(@NotNull PathData pathData,
-								NpcMetadata npc) {
+								BeingMetadata npc) {
 		for (var nbd1 : pathData.pathSegments()) {
 			for (var nbd2 : pathData.pathSegments()) {
 				if (nbd1 == nbd2) continue;
