@@ -7,11 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import dev.kabin.Cooldown;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.shaders.*;
 import dev.kabin.util.Lists;
 import dev.kabin.util.NamedObj;
+import dev.kabin.util.SimpleCoolDown;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.lambdas.Function;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ class ModifyShaderWindow {
     private final EntityLibgdx e;
     private final Window window;
     private final ArrayList<Runnable> refreshRunnables = new ArrayList<Runnable>();
-    private final Cooldown addNewShaderCooldown = new Cooldown(100);
+    private final SimpleCoolDown addNewShaderCooldown = new SimpleCoolDown(100);
     private String currLightSourceData;
 
 
@@ -68,7 +68,7 @@ class ModifyShaderWindow {
         selectBoxLightData.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (addNewShaderCooldown.isReady() && selectBoxLightData.getSelected().equals("--new--")) {
+                if (addNewShaderCooldown.isCompleted() && selectBoxLightData.getSelected().equals("--new--")) {
                     float width = 200, height = 100;
 
                     var dialogSetName = new Dialog("Set name", skin);
@@ -97,7 +97,7 @@ class ModifyShaderWindow {
                                 selectBoxLightData.setSelected(text);
                                 dialogSetName.remove();
                                 refreshRunnables.forEach(Runnable::run);
-                                addNewShaderCooldown.trigger();
+                                addNewShaderCooldown.start();
                             }
                         }
                     });
@@ -144,7 +144,7 @@ class ModifyShaderWindow {
                 yes.addListener(new ClickListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        addNewShaderCooldown.trigger();
+                        addNewShaderCooldown.start();
                         e.removeLightSourceData(currLightSourceData);
                         final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
                         selectBoxLightData.setItems(items.toArray(String[]::new));

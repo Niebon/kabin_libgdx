@@ -5,10 +5,7 @@ import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
-import dev.kabin.util.Direction;
-import dev.kabin.util.Functions;
-import dev.kabin.util.Statistics;
-import dev.kabin.util.TangentFinder;
+import dev.kabin.util.*;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.lambdas.BiIntToFloatFunction;
@@ -51,7 +48,7 @@ public class Player extends EntitySimple {
     private float dx, dy;
     private int r, l, u, d;
     private int jump;
-    private float jumpCooldown = Float.MAX_VALUE / 2f;
+    private CoolDown jumpCooldown = CoolDown.builder().build();
     private float vAbsPerSecond;
     private boolean facingRight;
     private boolean onLadder;
@@ -155,7 +152,7 @@ public class Player extends EntitySimple {
         debugCounter++;
 
         // If in air
-        if (inAir || jumpCooldown < 0.5) {
+        if (inAir || !jumpCooldown.isActive()) {
             if (facingRight) animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_RIGHT);
             else animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_LEFT);
             // If not in air
@@ -228,7 +225,10 @@ public class Player extends EntitySimple {
             vx0 = 0f;
             vy0 = 0f;
 
-            if (inAir) inAir = false;
+            if (inAir) {
+                inAir = false;
+                jumpCooldown.start();
+            }
             onLadder = true;
 
             dx = WALK_SPEED_PER_SECONDS * (r - l) * params.dt();
@@ -251,10 +251,13 @@ public class Player extends EntitySimple {
             // Handle jump input
             if (jump == 1) {
                 jump = 0;
-                final float jumpCooldownThreshold = 1f; // Hinders successive micro jumps.
-                if (!inAir && jumpCooldown > jumpCooldownThreshold) {
-                    jumpCooldown = 0;
-                    jumpFrame = 0; // start jump frame
+                if (!inAir && jumpCooldown.isCompleted()) {
+                    jumpCooldown = CoolDown.builder()
+                            .setDurationMillis(350L)
+                            .setWaitBeforeAcceptStart(300L) // This cooldown will by default wait 0.3 seconds before accepting a .start() call.
+                            .build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
+
+                    jumpFrame = 0; // start jump frame.
                     Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
                     if (affectedByVectorField) {
                         int i = 0;
@@ -276,8 +279,8 @@ public class Player extends EntitySimple {
 
 
         // Check the proposed new coordinates with respect to collision data
-        final int xNewUnscaled = Math.round((x() + dx));
-        final int yNewUnscaled = Math.round((y() + dy));
+        final int xNewUnscaled = Math.round(x() + dx);
+        final int yNewUnscaled = Math.round(y() + dy);
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
         if (collisionWithFloor) {
@@ -348,10 +351,6 @@ public class Player extends EntitySimple {
         cachedVx = dx / params.dt();
         cachedVy = dy / params.dt();
 
-
-        // Update constraints
-        jumpCooldown += params.dt();
-
         // Check if player is in air.
         final int xUpdatedInt = getXAsInt();
         final int yUpdatedInt = getYAsInt();
@@ -369,6 +368,7 @@ public class Player extends EntitySimple {
 
         if (willSoonInterceptCollisionData) {
             inAir = false;
+            jumpCooldown.start();
         } else if (!onLadder && !affectedByVectorField) {
             inAir = true;
         }
