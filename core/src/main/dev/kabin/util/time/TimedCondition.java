@@ -18,7 +18,7 @@ public class TimedCondition {
 	}
 
 	public void init() {
-		cooldown.start();
+		cooldown.init();
 	}
 
 	public boolean eval() {

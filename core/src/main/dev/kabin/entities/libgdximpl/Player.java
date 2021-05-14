@@ -63,7 +63,10 @@ public class Player extends EntitySimple {
 	private boolean onLadder;
 	private boolean running;
 	private int debugCounter;
-	private Cooldown jumpCooldown = Cooldown.builder().build();
+	private final Cooldown jumpCooldown = Cooldown.builder()
+			.setDurationMillis(350L)
+			.setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
+			.build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
 
 	{
 		jumpCooldown.forceComplete();
@@ -233,19 +236,19 @@ public class Player extends EntitySimple {
 		handlePlayerInputMovementKeyboard(params);
 
 		// Get initial conditions.
-		final int xPrevUnscaled = getXAsInt();
-		final int yPrevUnscaled = getYAsInt();
-		final boolean affectedByVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY, params.dt());
+		final int xPrevAsInt = getXAsInt();
+		final int yPrevAsInt = getYAsInt();
+		final boolean thisIsSubjectToVectorField = action(this, params::getVectorFieldX, params::getVectorFieldY, params.dt());
 
 		// Ladder movement
-		if (params.isLadderAt(xPrevUnscaled, yPrevUnscaled)) {
+		if (params.isLadderAt(xPrevAsInt, yPrevAsInt)) {
 			jumpFrame = 0;
 			vx0 = 0f;
 			vy0 = 0f;
 
 			if (inAir) {
 				inAir = false;
-				jumpCooldown.start();
+				jumpCooldown.init();
 			}
 			onLadder = true;
 
@@ -253,10 +256,10 @@ public class Player extends EntitySimple {
 			dy = WALK_SPEED_PER_SECONDS * (d.curr() - u.curr()) * params.dt();
 
 			if (dx == 0) {
-				dy = (dy < 0 && !params.isLadderAt(xPrevUnscaled, Math.round((y() + dy)))) ? 0 : dy;
+				dy = (dy < 0 && !params.isLadderAt(xPrevAsInt, Math.round((y() + dy)))) ? 0 : dy;
 			}
 
-			dropHeldEntityIfOnLadder(xPrevUnscaled, Math.round((y() - 8)));
+			dropHeldEntityIfOnLadder(xPrevAsInt, Math.round((y() - 8)));
 		}
 
 		// Regular movement
@@ -266,29 +269,30 @@ public class Player extends EntitySimple {
 
 			dx = vAbsPerSecond * params.meter() * (r.curr() - l.curr()) * params.dt();
 
-			// Handle jump input
 			if (jump.curr() == 1) {
-				jump.set(0);
-				if (!inAir && jumpCooldown.isCompleted()) {
-					jumpCooldown = Cooldown.builder()
-							.setDurationMillis(350L)
-							.setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
-							.build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
-					justBeganJump.init();
+				System.out.println(System.currentTimeMillis() + ": Registered jump input.");
+				System.out.println("In air: " + inAir);
+				System.out.println("Jump cooldown is complete: " + jumpCooldown.isCompleted());
+			}
 
-					jumpFrame = 0; // start jump frame.
-					Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
-					if (affectedByVectorField) {
-						int i = 0;
-						while (params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i) == 0 && i < 8)
-							i++;
-						vx0 = params.getVectorFieldX(xPrevUnscaled, yPrevUnscaled - i);
-						vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevUnscaled, yPrevUnscaled - i);
-					} else {
-						vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
-					}
+			// Handle jump input
+			if (jump.curr() == 1 && !inAir && jumpCooldown.isCompleted()) {
+				jumpCooldown.init();
+				justBeganJump.init();
+
+				jumpFrame = 0; // start jump frame.
+				//Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
+				if (thisIsSubjectToVectorField) {
+					int i = 0;
+					while (params.getVectorFieldX(xPrevAsInt, yPrevAsInt - i) == 0 && i < 8)
+						i++;
+					vx0 = params.getVectorFieldX(xPrevAsInt, yPrevAsInt - i);
+					vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevAsInt, yPrevAsInt - i);
+				} else {
+					vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
 				}
 			}
+
 
 			// Follow freeFall trajectory
 			final float jumpTime = (jumpFrame++) * params.dt();
@@ -301,7 +305,7 @@ public class Player extends EntitySimple {
 		final int xNewUnscaled = Math.round(x() + dx);
 		final int yNewUnscaled = Math.round(y() + dy);
 
-		final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled));
+		final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevAsInt, yNewUnscaled));
 		if (collisionWithFloor) {
 			dy = Math.min(findLiftAboveGround(getXAsInt(), getYAsInt(), params::isCollisionAt), vAbsPerSecond * params.meter() * params.dt());
 			vy0 = 0;
@@ -309,7 +313,7 @@ public class Player extends EntitySimple {
 			jumpFrame = 0;
 		}
 
-		final boolean collisionWithCeiling = (dy > 0 && params.isCollisionIfNotLadderData(xPrevUnscaled, yNewUnscaled + artHeight()));
+		final boolean collisionWithCeiling = (dy > 0 && params.isCollisionIfNotLadderData(xPrevAsInt, yNewUnscaled + artHeight()));
 		if (collisionWithCeiling) {
 			dy = 0;
 			vy0 = 0;
@@ -354,8 +358,8 @@ public class Player extends EntitySimple {
 
 				// If the path in the given direction is obstructed:
 				final double angle = TangentFinder.slope(
-						xPrevUnscaled,
-						yPrevUnscaled,
+						xPrevAsInt,
+						yPrevAsInt,
 						Direction.valueOf(dx),
 						params::isCollisionAt);
 
@@ -387,8 +391,8 @@ public class Player extends EntitySimple {
 
 		if (willSoonInterceptCollisionData) {
 			inAir = false;
-			jumpCooldown.start();
-		} else if (!onLadder && !affectedByVectorField) {
+			jumpCooldown.init();
+		} else if (!onLadder && !thisIsSubjectToVectorField) {
 			inAir = true;
 		}
 	}

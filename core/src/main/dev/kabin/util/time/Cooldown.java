@@ -6,9 +6,11 @@ public interface Cooldown {
         return new Builder();
     }
 
-    void stop();
+    void init();
 
-    void start();
+    void pause();
+
+    void unpause();
 
     boolean isCompleted();
 

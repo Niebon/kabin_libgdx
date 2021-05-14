@@ -13,22 +13,29 @@ public class DelayedCooldown implements Cooldown {
 
     public static DelayedCooldown of(long durationMillis, long waitBeforeAcceptStart) {
         var first = new SimpleCooldown(waitBeforeAcceptStart);
-        var dc = new DelayedCooldown(first, new SimpleCooldown(durationMillis));
-        first.start();
-        return dc;
+        var delayedCooldown = new DelayedCooldown(first, new SimpleCooldown(durationMillis));
+        first.init();
+        return delayedCooldown;
     }
 
     @Override
-    public void stop() {
+    public void init() {
         if (first.isCompleted()) {
-            second.stop();
+            second.init();
         }
     }
 
     @Override
-    public void start() {
+    public void pause() {
         if (first.isCompleted()) {
-            second.start();
+            second.pause();
+        }
+    }
+
+    @Override
+    public void unpause() {
+        if (first.isCompleted()) {
+            second.unpause();
         }
     }
 
