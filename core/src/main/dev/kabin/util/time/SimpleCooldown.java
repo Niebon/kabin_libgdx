@@ -2,19 +2,30 @@ package dev.kabin.util.time;
 
 public class SimpleCooldown implements Cooldown {
 
-    private long durationMillis;
-    private long beganAtMillis = 0;
+    private final long durationMillis;
+    private long beganAtMillis = 0L;
+    private long accumulatedPauseDurationMillis = 0L;
+    private long lastPauseStart = 0L;
     private boolean paused = true;
+    private boolean mayStart = true;
 
     public SimpleCooldown(long durationMillis) {
         this.durationMillis = durationMillis;
     }
 
     @Override
-    public void init() {
-        if (System.currentTimeMillis() - beganAtMillis > durationMillis) {
+    public void reset() {
+        if (isCompleted()) {
+            mayStart = true;
+        }
+    }
+
+    @Override
+    public void start() {
+        if (mayStart && System.currentTimeMillis() - (beganAtMillis + accumulatedPauseDurationMillis) > durationMillis) {
             beganAtMillis = System.currentTimeMillis();
             paused = false;
+            mayStart = false;
         }
     }
 
@@ -22,7 +33,7 @@ public class SimpleCooldown implements Cooldown {
     public void pause() {
         if (!paused && !isCompleted()) {
             paused = true;
-            durationMillis = durationMillis - (System.currentTimeMillis() - beganAtMillis);
+            lastPauseStart = System.currentTimeMillis();
         }
     }
 
@@ -30,13 +41,13 @@ public class SimpleCooldown implements Cooldown {
     public void unpause() {
         if (paused || isCompleted()) {
             paused = false;
-            beganAtMillis = System.currentTimeMillis();
+            accumulatedPauseDurationMillis += System.currentTimeMillis() - lastPauseStart;
         }
     }
 
     @Override
     public boolean isActive() {
-        return !paused;
+        return !paused && !mayStart;
     }
 
     @Override
@@ -47,7 +58,10 @@ public class SimpleCooldown implements Cooldown {
 
     @Override
     public boolean isCompleted() {
-        return !paused && System.currentTimeMillis() - beganAtMillis > durationMillis;
+        return paused ?
+                //System.currentTimeMillis() - (accumulatedPauseDurationMillis + (System.currentTimeMillis() - lastPauseStart)) - beganAtMillis > durationMillis
+                lastPauseStart - accumulatedPauseDurationMillis - beganAtMillis > durationMillis // Above expression "simplified".
+                : System.currentTimeMillis() - (beganAtMillis + accumulatedPauseDurationMillis) > durationMillis;
     }
 
 

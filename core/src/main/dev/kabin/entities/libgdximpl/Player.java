@@ -62,15 +62,14 @@ public class Player extends EntitySimple {
 	private boolean facingRight;
 	private boolean onLadder;
 	private boolean running;
-	private int debugCounter;
 	private final Cooldown jumpCooldown = Cooldown.builder()
 			.setDurationMillis(350L)
 			.setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
 			.build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
 
-	{
-		jumpCooldown.forceComplete();
-	}
+//	{
+//		jumpCooldown.forceComplete();
+//	}
 
 	Player(EntityParameters parameters) {
 		super(parameters);
@@ -170,8 +169,6 @@ public class Player extends EntitySimple {
 
 		facingRight = (r.curr() == l.curr()) ? facingRight : (r.curr() == 1 && l.curr() == 0);
 
-		debugCounter++;
-
 		// If in air
 		if (inAir || justBeganJump.eval()) {
 			if (facingRight) animationPlaybackImpl.setCurrentAnimation(Animate.JUMP_RIGHT);
@@ -248,7 +245,7 @@ public class Player extends EntitySimple {
 
 			if (inAir) {
 				inAir = false;
-				jumpCooldown.init();
+				jumpCooldown.start();
 			}
 			onLadder = true;
 
@@ -277,8 +274,9 @@ public class Player extends EntitySimple {
 
 			// Handle jump input
 			if (jump.curr() == 1 && !inAir && jumpCooldown.isCompleted()) {
-				jumpCooldown.init();
+				justBeganJump.reset();
 				justBeganJump.init();
+				jumpCooldown.reset();
 
 				jumpFrame = 0; // start jump frame.
 				//Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
@@ -391,7 +389,7 @@ public class Player extends EntitySimple {
 
 		if (willSoonInterceptCollisionData) {
 			inAir = false;
-			jumpCooldown.init();
+			jumpCooldown.start();
 		} else if (!onLadder && !thisIsSubjectToVectorField) {
 			inAir = true;
 		}

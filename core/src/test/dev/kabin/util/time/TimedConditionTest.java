@@ -19,13 +19,12 @@ class TimedConditionTest {
 		var tc = new TimedCondition(true, 1000);
 
 		// Use once.
-		System.out.println("\nPrev:");
 		tc.init();
 		assertTrue(tc.eval());
 		Thread.sleep(1000);
 
 		// Can be reused.
-		System.out.println("\nReuse:");
+		tc.reset();
 		tc.init();
 		assertTrue(tc.eval());
 		Thread.sleep(1000);

@@ -6,11 +6,18 @@ import org.junit.jupiter.api.Test;
 class SimpleCooldownTest {
 
 	@Test
+	void doesNotStartAsComplete() {
+		var cooldown = new SimpleCooldown(100L);
+		Assertions.assertFalse(cooldown.isCompleted());
+	}
+
+	@Test
 	void initAndIsComplete() throws InterruptedException {
 		var cooldown = new SimpleCooldown(100L);
 		Assertions.assertFalse(cooldown.isCompleted());
-		cooldown.init();
+		cooldown.start();
 		Thread.sleep(200L);
+		Assertions.assertTrue(cooldown.isCompleted());
 		Assertions.assertTrue(cooldown.isCompleted());
 	}
 
@@ -18,10 +25,11 @@ class SimpleCooldownTest {
 	void repeatedInitAndIsComplete() throws InterruptedException {
 		var cooldown = new SimpleCooldown(100L);
 		Assertions.assertFalse(cooldown.isCompleted());
-		cooldown.init();
+		cooldown.start();
 		Thread.sleep(200L);
 		Assertions.assertTrue(cooldown.isCompleted());
-		cooldown.init();
+		cooldown.reset();
+		cooldown.start();
 		Assertions.assertFalse(cooldown.isCompleted());
 		Thread.sleep(200L);
 		Assertions.assertTrue(cooldown.isCompleted());
@@ -31,7 +39,7 @@ class SimpleCooldownTest {
 	void pauseAndUnpause() throws InterruptedException {
 		var cooldown = new SimpleCooldown(100L);
 		Assertions.assertFalse(cooldown.isCompleted());
-		cooldown.init();
+		cooldown.start();
 		cooldown.pause();
 		Thread.sleep(200L);
 		Assertions.assertFalse(cooldown.isCompleted());
@@ -43,7 +51,7 @@ class SimpleCooldownTest {
 	@Test
 	void isActive() {
 		var cooldown = new SimpleCooldown(100L);
-		cooldown.init();
+		cooldown.start();
 		Assertions.assertTrue(cooldown.isActive());
 		cooldown.pause();
 		Assertions.assertFalse(cooldown.isActive());

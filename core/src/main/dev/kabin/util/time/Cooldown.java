@@ -6,7 +6,9 @@ public interface Cooldown {
         return new Builder();
     }
 
-    void init();
+    void reset();
+
+    void start();
 
     void pause();
 

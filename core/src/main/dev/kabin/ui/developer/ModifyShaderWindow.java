@@ -97,7 +97,7 @@ class ModifyShaderWindow {
                                 selectBoxLightData.setSelected(text);
                                 dialogSetName.remove();
                                 refreshRunnables.forEach(Runnable::run);
-                                addNewShaderCooldown.init();
+                                addNewShaderCooldown.start();
                             }
                         }
                     });
@@ -144,7 +144,7 @@ class ModifyShaderWindow {
                 yes.addListener(new ClickListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        addNewShaderCooldown.init();
+                        addNewShaderCooldown.start();
                         e.removeLightSourceData(currLightSourceData);
                         final var items = Lists.concat(e.getLightSourceDataMap().keySet(), "--new--");
                         selectBoxLightData.setItems(items.toArray(String[]::new));
