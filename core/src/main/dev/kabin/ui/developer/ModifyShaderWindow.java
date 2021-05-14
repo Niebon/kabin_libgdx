@@ -13,7 +13,7 @@ import dev.kabin.util.Lists;
 import dev.kabin.util.NamedObj;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.lambdas.Function;
-import dev.kabin.util.time.SimpleCoolDown;
+import dev.kabin.util.time.SimpleCooldown;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ class ModifyShaderWindow {
     private final EntityLibgdx e;
     private final Window window;
     private final ArrayList<Runnable> refreshRunnables = new ArrayList<Runnable>();
-    private final SimpleCoolDown addNewShaderCooldown = new SimpleCoolDown(100);
+    private final SimpleCooldown addNewShaderCooldown = new SimpleCooldown(100);
     private String currLightSourceData;
 
 

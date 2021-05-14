@@ -1,6 +1,6 @@
 package dev.kabin.util.time;
 
-public interface CoolDown {
+public interface Cooldown {
 
     static Builder builder() {
         return new Builder();
@@ -13,6 +13,8 @@ public interface CoolDown {
     boolean isCompleted();
 
     boolean isActive();
+
+    void forceComplete();
 
     class Builder {
 
@@ -29,8 +31,10 @@ public interface CoolDown {
             return this;
         }
 
-        public CoolDown build() {
-            return waitBeforeAcceptStart == 0f ? new SimpleCoolDown(durationMillis) : DelayedCooldown.of(durationMillis, waitBeforeAcceptStart);
+        public Cooldown build() {
+            return waitBeforeAcceptStart == 0f
+                    ? new SimpleCooldown(durationMillis)
+                    : DelayedCooldown.of(durationMillis, waitBeforeAcceptStart);
         }
 
     }

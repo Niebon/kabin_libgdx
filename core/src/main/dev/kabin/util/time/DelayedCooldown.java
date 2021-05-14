@@ -1,18 +1,19 @@
 package dev.kabin.util.time;
 
-public class DelayedCooldown implements CoolDown {
+@SuppressWarnings("ClassCanBeRecord") // Don't expose first & second.
+public class DelayedCooldown implements Cooldown {
 
-    private final CoolDown first;
-    private final CoolDown second;
+    private final Cooldown first;
+    private final Cooldown second;
 
-    private DelayedCooldown(CoolDown first, CoolDown second) {
+    private DelayedCooldown(Cooldown first, Cooldown second) {
         this.first = first;
         this.second = second;
     }
 
     public static DelayedCooldown of(long durationMillis, long waitBeforeAcceptStart) {
-        var first = new SimpleCoolDown(waitBeforeAcceptStart);
-        var dc = new DelayedCooldown(first, new SimpleCoolDown(durationMillis));
+        var first = new SimpleCooldown(waitBeforeAcceptStart);
+        var dc = new DelayedCooldown(first, new SimpleCooldown(durationMillis));
         first.start();
         return dc;
     }
@@ -39,5 +40,11 @@ public class DelayedCooldown implements CoolDown {
     @Override
     public boolean isActive() {
         return first.isCompleted() && second.isActive();
+    }
+
+    @Override
+    public void forceComplete() {
+        first.forceComplete();
+        second.forceComplete();
     }
 }
