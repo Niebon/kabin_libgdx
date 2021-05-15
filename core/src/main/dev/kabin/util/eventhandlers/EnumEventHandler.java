@@ -13,16 +13,16 @@ import java.util.Map;
  *
  * @param <T> the enum constant that is used.
  */
-public interface EnumHandler<T extends Enum<T>> {
+public interface EnumEventHandler<T extends Enum<T>> {
 
-    @NotNull Map<T, Collection<EventListener>> getListeners();
+    @NotNull Map<T, Collection<Runnable>> getListeners();
 
-    @NotNull Collection<EventListener> getDefaultListeners();
+    @NotNull Collection<Runnable> getDefaultListeners();
 
     default void registerEvent(T value) {
-        getDefaultListeners().forEach(EventListener::onEvent);
+        getDefaultListeners().forEach(Runnable::run);
         if (getListeners().containsKey(value)) {
-            getListeners().get(value).forEach(EventListener::onEvent);
+            getListeners().get(value).forEach(Runnable::run);
         }
     }
 
@@ -31,18 +31,18 @@ public interface EnumHandler<T extends Enum<T>> {
      * every time the given event is registered, i.e., every
      * time a call is made to {@link #registerEvent(Enum)}.
      */
-    default void addListener(T value, EventListener eventListener) {
+    default void addListener(T value, Runnable action) {
         if (!getListeners().containsKey(value)) {
             getListeners().put(value, new ArrayList<>());
         }
-        getListeners().get(value).add(eventListener);
+        getListeners().get(value).add(action);
     }
 
     /**
      * Add event listener for any event of this type.
      */
-    default void addListener(EventListener defaultListener) {
-        getDefaultListeners().add(defaultListener);
+    default void addListener(Runnable action) {
+        getDefaultListeners().add(action);
     }
 
     default void clear() {

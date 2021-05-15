@@ -15,18 +15,18 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
     private static final Logger logger = Logger.getLogger(EnumWithBoolHandler.class.getName());
 
-    private final List<EventListener> changeListeners = new ArrayList<>();
+    private final List<Runnable> changeListeners = new ArrayList<>();
     private final Map<MouseButton, Boolean> currentMouseStates = new EnumMap<>(MouseButton.class);
-    private final Map<MouseButton, List<EventListener>> listenersPressed = new EnumMap<>(MouseButton.class);
-    private final Map<MouseButton, List<EventListener>> listenersReleased = new EnumMap<>(MouseButton.class);
+    private final Map<MouseButton, List<Runnable>> listenersPressed = new EnumMap<>(MouseButton.class);
+    private final Map<MouseButton, List<Runnable>> listenersReleased = new EnumMap<>(MouseButton.class);
     private final Map<MouseButton, List<MouseDraggedEvent>> listenersMouseDrag = new EnumMap<>(MouseButton.class);
     private final List<MouseScrollEvent> mouseScrollEvents = new ArrayList<>();
-    private final List<EventListener> defaultListeners = new ArrayList<>();
+    private final List<Runnable> defaultListeners = new ArrayList<>();
     private final Map<MouseButton, PointFloat> dragStart = new EnumMap<>(MouseButton.class);
     private final Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier;
     private final FloatSupplier camPosX;
-	private final FloatSupplier camPosY;
-	private float xRelativeToWorld, yRelativeToWorld;
+    private final FloatSupplier camPosY;
+    private float xRelativeToWorld, yRelativeToWorld;
     private float xRelativeToUI, yRelativeToUI;
     private final FloatSupplier scale;
 
@@ -133,24 +133,24 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
 
     @NotNull
     @Override
-    public Map<MouseButton, List<EventListener>> getListenersPressed() {
+    public Map<MouseButton, List<Runnable>> getListenersPressed() {
         return listenersPressed;
     }
 
     @NotNull
     @Override
-    public Map<MouseButton, List<EventListener>> getListenersReleased() {
+    public Map<MouseButton, List<Runnable>> getListenersReleased() {
         return listenersReleased;
     }
 
     @Override
-    public @NotNull List<EventListener> getChangeListeners() {
+    public @NotNull List<Runnable> getChangeListeners() {
         return changeListeners;
     }
 
     @NotNull
     @Override
-    public List<EventListener> getDefaultListeners() {
+    public List<Runnable> getDefaultListeners() {
         return defaultListeners;
     }
 

@@ -7,7 +7,6 @@ import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.eventhandlers.EventListener;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
@@ -75,7 +74,8 @@ public class EventTriggerController {
             keyEventUtil.addListener(KeyCode.SHIFT_LEFT, true, () -> Player.getInstance().ifPresent(Player::toggleWalkSpeed));
             keyEventUtil.addListener(KeyCode.E, true, () -> Player.getInstance().ifPresent(Player::interactWithNearestIntractable));
 
-            keyEventUtil.addChangeListener(EventListener.empty());
+            keyEventUtil.addChangeListener(() -> {
+            });
 
             mouseEventUtil.addListener(MouseEventUtil.MouseButton.RIGHT, true,
                     () -> Player.getInstance().ifPresent(p -> p.getHeldEntity().ifPresent(e -> p.releaseHeldEntity())));
@@ -90,7 +90,7 @@ public class EventTriggerController {
                 developerMode = !developerMode;
                 // TODO
                 developerUISupplier.get().setVisible(developerMode);
-
+                Player.getInstance().ifPresent(player -> player.setHandleInput(!developerMode));
                 //UserInterface.showUserInterface(!GlobalData.developerMode);
             });
         }

@@ -12,7 +12,7 @@ import java.util.Map;
  * For example (key-board-button, pressed) or (mouse-button, pressed).
  * <p>
  * The listeners added to each event will fire each time the method {@link #registerEvent(Enum, boolean)} is called.
- * To add listeners, use {@link #addListener(Enum, boolean, EventListener)} and {@link #addListener(EventListener)}.
+ * To add listeners, use {@link #addListener(Enum, boolean, Runnable)} and {@link #addListener(Runnable)}.
  *
  * @param <T> the enum constant that is used.
  */
@@ -20,13 +20,13 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
 
     @NotNull Map<T, Boolean> getCurrentStates();
 
-    @NotNull Map<T, List<EventListener>> getListenersPressed();
+    @NotNull Map<T, List<Runnable>> getListenersPressed();
 
-    @NotNull Map<T, List<EventListener>> getListenersReleased();
+    @NotNull Map<T, List<Runnable>> getListenersReleased();
 
-    @NotNull List<EventListener> getChangeListeners();
+    @NotNull List<Runnable> getChangeListeners();
 
-    @NotNull List<EventListener> getDefaultListeners();
+    @NotNull List<Runnable> getDefaultListeners();
 
     default void registerEvent(@NotNull T value, boolean pressed) {
         final Boolean valueCurrentState;
@@ -62,10 +62,10 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
         }
     }
 
-    private void makeCallToListeners(@NotNull List<EventListener> listeners) {
+    private void makeCallToListeners(@NotNull List<Runnable> listeners) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = listeners.size(); i < n; i++) {
-            listeners.get(i).onEvent();
+            listeners.get(i).run();
         }
     }
 
@@ -77,28 +77,28 @@ public interface EnumWithBoolHandler<T extends Enum<T>> {
      * Adds a listener for a key event (keycode, pressed), which gets called
      * every time the given event occurs.
      */
-    default void addListener(@NotNull T value, boolean pressed, @NotNull EventListener eventListener) {
+    default void addListener(@NotNull T value, boolean pressed, @NotNull Runnable voidEventListener) {
         if (pressed) {
             if (!getListenersPressed().containsKey(value)) {
                 getListenersPressed().put(value, new ArrayList<>());
             }
-            getListenersPressed().get(value).add(eventListener);
+            getListenersPressed().get(value).add(voidEventListener);
         } else {
             if (!getListenersReleased().containsKey(value)) {
                 getListenersReleased().put(value, new ArrayList<>());
             }
-            getListenersReleased().get(value).add(eventListener);
+            getListenersReleased().get(value).add(voidEventListener);
         }
     }
 
     /**
      * Add event listener for any event of this type.
      */
-    default void addListener(@NotNull EventListener defaultListener) {
+    default void addListener(@NotNull Runnable defaultListener) {
         getDefaultListeners().add(defaultListener);
     }
 
-    default void addChangeListener(@NotNull EventListener changeListener) {
+    default void addChangeListener(@NotNull Runnable changeListener) {
         getChangeListeners().add(changeListener);
     }
 

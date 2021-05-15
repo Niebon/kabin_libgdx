@@ -7,17 +7,17 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class KeyEventUtil implements EnumWithBoolHandler<KeyCode>{
+public class KeyEventUtil implements EnumWithBoolHandler<KeyCode> {
 
 
-    private final List<EventListener> changeListeners = new ArrayList<>();
+    private final List<Runnable> changeListeners = new ArrayList<>();
     private final Map<KeyCode, Boolean> currentKeyStates = new EnumMap<>(KeyCode.class);
-    private final Map<KeyCode, List<EventListener>> listenersPressed = new EnumMap<>(KeyCode.class);
-    private final Map<KeyCode, List<EventListener>> listenersReleased = new EnumMap<>(KeyCode.class);
-    private final List<EventListener> defaultListeners = new ArrayList<>();
+    private final Map<KeyCode, List<Runnable>> listenersPressed = new EnumMap<>(KeyCode.class);
+    private final Map<KeyCode, List<Runnable>> listenersReleased = new EnumMap<>(KeyCode.class);
+    private final List<Runnable> defaultListeners = new ArrayList<>();
 
-    public KeyEventUtil(){}
-
+    public KeyEventUtil() {
+    }
 
     @NotNull
     @Override
@@ -27,24 +27,24 @@ public class KeyEventUtil implements EnumWithBoolHandler<KeyCode>{
 
     @NotNull
     @Override
-    public Map<KeyCode, List<EventListener>> getListenersPressed() {
+    public Map<KeyCode, List<Runnable>> getListenersPressed() {
         return listenersPressed;
     }
 
     @NotNull
     @Override
-    public Map<KeyCode, List<EventListener>> getListenersReleased() {
+    public Map<KeyCode, List<Runnable>> getListenersReleased() {
         return listenersReleased;
     }
 
     @Override
-    public @NotNull List<EventListener> getChangeListeners() {
+    public @NotNull List<Runnable> getChangeListeners() {
         return changeListeners;
     }
 
     @NotNull
     @Override
-    public List<EventListener> getDefaultListeners() {
+    public List<Runnable> getDefaultListeners() {
         return defaultListeners;
     }
 

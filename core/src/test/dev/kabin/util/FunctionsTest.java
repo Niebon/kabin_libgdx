@@ -24,4 +24,12 @@ class FunctionsTest {
     void concat() {
         Assertions.assertEquals(List.of("a", "b", "c"), Lists.concat(List.of("a", "b"), "c"));
     }
+
+    @Test
+    void get() {
+        Assertions.assertEquals(Functions.conditionalOperator(true, true, "tt", "tf", "ft", "ff"), "tt");
+        Assertions.assertEquals(Functions.conditionalOperator(true, false, "tt", "tf", "ft", "ff"), "tf");
+        Assertions.assertEquals(Functions.conditionalOperator(false, true, "tt", "tf", "ft", "ff"), "ft");
+        Assertions.assertEquals(Functions.conditionalOperator(false, false, "tt", "tf", "ft", "ff"), "ff");
+    }
 }

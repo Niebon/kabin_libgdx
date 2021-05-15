@@ -2,7 +2,7 @@ package dev.kabin.libgdx;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import dev.kabin.util.eventhandlers.EnumHandler;
+import dev.kabin.util.eventhandlers.EnumEventHandler;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.eventhandlers.KeyEventUtil;
 import dev.kabin.util.eventhandlers.MouseEventUtil;
@@ -10,7 +10,7 @@ import dev.kabin.util.eventhandlers.MouseEventUtil;
 /**
  * An input event distributor that distributes events accordingly to event handlers of this game project.
  * An instance of this class effectively acts as a translator for the input processor to the event-based implementation
- * of the {@link EnumHandler}:
+ * of the {@link EnumEventHandler}:
  * <ul>
  *     <li>{@link KeyEventUtil}</li>
  *     <li>{@link MouseEventUtil}</li>

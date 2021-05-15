@@ -80,8 +80,6 @@ public class MainGameDeveloper extends MainGame {
 
     @Override
     public void render() {
-        Player.getInstance().ifPresent(player -> player.setHandleInput(!isDeveloperMode()));
-
         super.render();
 
         // Render interface:
