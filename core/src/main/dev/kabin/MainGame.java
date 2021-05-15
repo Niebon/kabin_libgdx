@@ -15,12 +15,16 @@ import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
+import dev.kabin.libgdx.EventTriggerController;
+import dev.kabin.libgdx.InputEventDistributor;
 import dev.kabin.shaders.LightSourceData;
 import dev.kabin.shaders.LightSourceShaderBinder;
 import dev.kabin.shaders.ShaderFactory;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.Functions;
-import dev.kabin.util.eventhandlers.*;
+import dev.kabin.util.eventhandlers.EnumWithBoolHandler;
+import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.Nullable;
 

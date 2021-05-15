@@ -276,4 +276,9 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
     public void setRenderScale(float renderScale) {
         this.renderScale = renderScale;
     }
+
+    @Override
+    public void reset() {
+        stateTime = 0f;
+    }
 }

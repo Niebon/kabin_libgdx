@@ -20,7 +20,9 @@ public class DelayedCooldown implements Cooldown {
 
     @Override
     public void reset() {
-        if (first.isCompleted()) {
+        if (first.isCompleted() && second.isCompleted()) {
+            first.reset();
+            first.start();
             second.reset();
         }
     }

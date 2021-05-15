@@ -114,14 +114,17 @@ public interface AnimationPlayback<
      * Renders a specific frame by index.
      *
      * @param params graphics parameters.
-     * @param index  the index.
-     */
-    void renderFrameByIndex(GraphicsParametersType params, int index);
+	 * @param index  the index.
+	 */
+	void renderFrameByIndex(GraphicsParametersType params, int index);
 
-    /**
-     * Modifies the height and width that this animation playback is drawn with.
-     *
-     * @param renderScale the value. For default scaling, use {@code 1f}.
-     */
-    void setRenderScale(float renderScale);
+	/**
+	 * Modifies the height and width that this animation playback is drawn with.
+	 *
+	 * @param renderScale the value. For default scaling, use {@code 1f}.
+	 */
+	void setRenderScale(float renderScale);
+
+	void reset();
+
 }

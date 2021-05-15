@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.libgdx;
 
 
 import dev.kabin.components.WorldRepresentation;
@@ -7,6 +7,10 @@ import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.eventhandlers.EventListener;
+import dev.kabin.util.eventhandlers.KeyCode;
+import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.eventhandlers.MouseEventUtil;
 import dev.kabin.util.lambdas.FloatSupplier;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.Contract;

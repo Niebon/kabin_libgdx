@@ -2,25 +2,27 @@ package dev.kabin.util.time;
 
 public class ChangeIntTimer {
 
-    private int curr;
-    private int last;
-    private long timeCurrent;
+	private int curr;
+	private int last;
 
-    public int curr() {
-        return curr;
-    }
+	public int curr() {
+		return curr;
+	}
 
-    public void set(int value) {
-        this.timeCurrent = 0L;
-        this.last = curr;
-        this.curr = value;
-    }
+	public void set(int value) {
+		this.last = curr;
+		this.curr = value;
+	}
 
-    public long getTimeOnCurrent() {
-        return timeCurrent;
-    }
+	public int last() {
+		return last;
+	}
 
-    public int last() {
-        return last;
-    }
+	@Override
+	public String toString() {
+		return "ChangeIntTimer{" +
+				"curr=" + curr +
+				", last=" + last +
+				'}';
+	}
 }

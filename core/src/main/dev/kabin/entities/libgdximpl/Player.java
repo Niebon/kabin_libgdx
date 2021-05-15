@@ -9,6 +9,8 @@ import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.Statistics;
 import dev.kabin.util.TangentFinder;
+import dev.kabin.util.eventhandlers.EnumHandler;
+import dev.kabin.util.eventhandlers.EnumHandlerImpl;
 import dev.kabin.util.eventhandlers.KeyCode;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.lambdas.BiIntToFloatFunction;
@@ -41,15 +43,18 @@ public class Player extends EntitySimple {
 	// Static variables:
 	private static Player instance;
 	private final ChangeIntTimer
-			r = new ChangeIntTimer(),
-			l = new ChangeIntTimer(),
-			u = new ChangeIntTimer(),
-			d = new ChangeIntTimer(),
+			horizontalInstruction = new ChangeIntTimer(),
+			verticalInstruction = new ChangeIntTimer(),
 			jump = new ChangeIntTimer();
-	private final TimedCondition justBeganJump = new TimedCondition(true, 100L);
+	private final TimedCondition justBeganJump = new TimedCondition(true, 500L);
+	private final Cooldown jumpCooldown = Cooldown.builder()
+			.setDurationMillis(350L)
+			.setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
+			.build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
 	// Class variables:
 	private boolean handleInput = true;
 	private int jumpFrame;
+	private final EnumHandler<Events.Awsd> awsdEvents = EnumHandlerImpl.of(Events.Awsd.class);
 	// Cached velocity caused by environment.
 	private float vx0;
 	private float vy0;
@@ -62,14 +67,8 @@ public class Player extends EntitySimple {
 	private boolean facingRight;
 	private boolean onLadder;
 	private boolean running;
-	private final Cooldown jumpCooldown = Cooldown.builder()
-			.setDurationMillis(350L)
-			.setWaitBeforeAcceptStart(300L) // This cooldown will by default wait X seconds before accepting a .start() call.
-			.build(); // Make a new cooldown. Init cooldown once the player reaches the ground.
-
-//	{
-//		jumpCooldown.forceComplete();
-//	}
+	private final EnumHandler<Events.Jump> jumpEvents = EnumHandlerImpl.of(Events.Jump.class);
+	private int currentJumpLevel = 0;
 
 	Player(EntityParameters parameters) {
 		super(parameters);
@@ -126,10 +125,8 @@ public class Player extends EntitySimple {
 
 	public void setHandleInput(boolean b) {
 		handleInput = b;
-		r.set(0);
-		l.set(0);
-		u.set(0);
-		r.set(0);
+		horizontalInstruction.set(0);
+		verticalInstruction.set(0);
 		jump.set(0);
 	}
 
@@ -167,7 +164,11 @@ public class Player extends EntitySimple {
 		final AbstractAnimationPlaybackLibgdx<Animate> animationPlaybackImpl = getAnimationPlaybackImpl(Animate.class);
 		if (animationPlaybackImpl == null) return;
 
-		facingRight = (r.curr() == l.curr()) ? facingRight : (r.curr() == 1 && l.curr() == 0);
+		if (horizontalInstruction.curr() == 1) {
+			facingRight = true;
+		} else if (horizontalInstruction.curr() == -1) {
+			facingRight = false;
+		}
 
 		// If in air
 		if (inAir || justBeganJump.eval()) {
@@ -218,14 +219,30 @@ public class Player extends EntitySimple {
 			return;
 		}
 
-		l.set(params.isPressed(KeyCode.A) ? 1 : 0);
-		r.set(params.isPressed(KeyCode.D) ? 1 : 0);
-		u.set(params.isPressed(KeyCode.W) ? 1 : 0);
-		d.set(params.isPressed(KeyCode.S) ? 1 : 0);
+
+		horizontalInstruction.set((params.isPressed(KeyCode.D) ? 1 : 0) - (params.isPressed(KeyCode.A) ? 1 : 0));
+		verticalInstruction.set((params.isPressed(KeyCode.W) ? 1 : 0) - (params.isPressed(KeyCode.S) ? 1 : 0));
+
+		//System.out.println(horizontalInstruction);
+
+		if (horizontalInstruction.curr() == 1 && horizontalInstruction.last() != 1) {
+			awsdEvents.registerEvent(Events.Awsd.WALK_RIGHT);
+			System.out.println("Started waling right.");
+		}
+//		if (horizontalInstruction.curr() == -1 && horizontalInstruction.last() != -1) {
+//			awsdEvents.registerEvent(Events.Awsd.WALK_LEFT);
+//			System.out.println("Started walking left.");
+//		}
+
+
 		jump.set(params.isPressed(KeyCode.SPACE) ? 1 : 0);
 	}
 
 	private void exhaustRunnable() {
+	}
+
+	private float jumpLevelReductionFactor() {
+		return (float) (1 / Math.pow(currentJumpLevel, 8));
 	}
 
 	@Override
@@ -249,8 +266,8 @@ public class Player extends EntitySimple {
 			}
 			onLadder = true;
 
-			dx = WALK_SPEED_PER_SECONDS * (r.curr() - l.curr()) * params.dt();
-			dy = WALK_SPEED_PER_SECONDS * (d.curr() - u.curr()) * params.dt();
+			dx = WALK_SPEED_PER_SECONDS * horizontalInstruction.curr() * params.dt();
+			dy = WALK_SPEED_PER_SECONDS * verticalInstruction.curr() * params.dt();
 
 			if (dx == 0) {
 				dy = (dy < 0 && !params.isLadderAt(xPrevAsInt, Math.round((y() + dy)))) ? 0 : dy;
@@ -264,30 +281,25 @@ public class Player extends EntitySimple {
 
 			onLadder = false;
 
-			dx = vAbsPerSecond * params.meter() * (r.curr() - l.curr()) * params.dt();
-
-			if (jump.curr() == 1) {
-				System.out.println(System.currentTimeMillis() + ": Registered jump input.");
-				System.out.println("In air: " + inAir);
-				System.out.println("Jump cooldown is complete: " + jumpCooldown.isCompleted());
-			}
+			dx = vAbsPerSecond * params.meter() * horizontalInstruction.curr() * params.dt();
 
 			// Handle jump input
-			if (jump.curr() == 1 && !inAir && jumpCooldown.isCompleted()) {
+			if (firstJumpCondition() || secondJumpCondition()) {
+				getAnimationPlaybackImpl().reset();
+				currentJumpLevel++;
 				justBeganJump.reset();
 				justBeganJump.init();
 				jumpCooldown.reset();
 
 				jumpFrame = 0; // start jump frame.
-				//Optional.ofNullable(getAnimationPlaybackImpl()).ifPresent(AbstractAnimationPlaybackLibgdx::toDefaultFromCurrent);
 				if (thisIsSubjectToVectorField) {
 					int i = 0;
 					while (params.getVectorFieldX(xPrevAsInt, yPrevAsInt - i) == 0 && i < 8)
 						i++;
 					vx0 = params.getVectorFieldX(xPrevAsInt, yPrevAsInt - i);
-					vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevAsInt, yPrevAsInt - i);
+					vy0 += JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(xPrevAsInt, yPrevAsInt - i) * jumpLevelReductionFactor();
 				} else {
-					vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
+					vy0 += JUMP_VEL_METERS_PER_SECONDS * params.meter() * jumpLevelReductionFactor();
 				}
 			}
 
@@ -363,7 +375,6 @@ public class Player extends EntitySimple {
 
 				dy = (float) (vAbsPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
 				dx = (float) (vAbsPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
-
 			}
 		}
 
@@ -372,7 +383,7 @@ public class Player extends EntitySimple {
 		cachedVx = dx / params.dt();
 		cachedVy = dy / params.dt();
 
-		// Check if player is in air.
+		// Check if in air.
 		final int xUpdatedInt = getXAsInt();
 		final int yUpdatedInt = getYAsInt();
 		final boolean onLadder = params.isLadderAt(xUpdatedInt, yUpdatedInt);
@@ -390,9 +401,20 @@ public class Player extends EntitySimple {
 		if (willSoonInterceptCollisionData) {
 			inAir = false;
 			jumpCooldown.start();
+			if (!justBeganJump.eval()) {
+				currentJumpLevel = 0;
+			}
 		} else if (!onLadder && !thisIsSubjectToVectorField) {
 			inAir = true;
 		}
+	}
+
+	private boolean secondJumpCondition() {
+		return currentJumpLevel == 1 && jump.curr() == 1 && jump.last() == 0 && !justBeganJump.eval();
+	}
+
+	private boolean firstJumpCondition() {
+		return currentJumpLevel == 0 && jump.curr() == 1 && !inAir && jumpCooldown.isCompleted();
 	}
 
 	private void dropHeldEntityIfOnLadder(int xPrevUnscaled, int round) {
@@ -406,6 +428,21 @@ public class Player extends EntitySimple {
 
 	public double getVy() {
 		return cachedVy;
+	}
+
+	private static class Events {
+
+		private enum Jump {
+			JUMP, JUMP_DOUBLE,
+			LAND,
+		}
+
+		private enum Awsd {
+			WALK_LEFT, WALK_RIGHT,
+			RUN_LEFT, RUN_RIGHT,
+			STOP,
+		}
+
 	}
 
 }
