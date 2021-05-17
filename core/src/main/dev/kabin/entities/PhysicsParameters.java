@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.util.eventhandlers.KeyCode;
+import dev.kabin.util.events.KeyCode;
 
 /**
  * Parameters for entities that undergo physical interactions with their surroundings.

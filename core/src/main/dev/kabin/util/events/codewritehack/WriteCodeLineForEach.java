@@ -1,6 +1,6 @@
-package dev.kabin.util.eventhandlers.codewritehack;
+package dev.kabin.util.events.codewritehack;
 
-import dev.kabin.util.eventhandlers.KeyCode;
+import dev.kabin.util.events.KeyCode;
 
 import java.io.BufferedWriter;
 import java.io.File;

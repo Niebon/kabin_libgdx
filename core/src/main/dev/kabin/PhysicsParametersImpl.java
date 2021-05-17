@@ -5,8 +5,8 @@ import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.util.eventhandlers.KeyCode;
-import dev.kabin.util.eventhandlers.KeyEventUtil;
+import dev.kabin.util.events.KeyCode;
+import dev.kabin.util.events.KeyEventUtil;
 import org.jetbrains.annotations.NotNull;
 
 class PhysicsParametersImpl implements PhysicsParameters {

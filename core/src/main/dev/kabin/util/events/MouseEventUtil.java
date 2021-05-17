@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events;
 
 import com.badlogic.gdx.Gdx;
 import dev.kabin.components.WorldRepresentation;

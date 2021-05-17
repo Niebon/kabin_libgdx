@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events;
 
 import java.util.ArrayList;
 import java.util.List;

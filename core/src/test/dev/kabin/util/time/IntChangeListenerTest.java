@@ -1,6 +1,6 @@
 package dev.kabin.util.time;
 
-import dev.kabin.util.eventhandlers.IntChangeListener;
+import dev.kabin.util.events.primitives.IntChangeListener;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

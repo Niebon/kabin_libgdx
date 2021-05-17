@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  */
 public class EntityPhysicsEngine {
 
-	public static final int METER = 10;
+	public static final int METER = 16;
 	public static final float DT = 1 / 120f;
 	public static final float GRAVITATION_CONSTANT = 9.81f;
 

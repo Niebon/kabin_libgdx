@@ -7,7 +7,9 @@ import dev.kabin.entities.libgdximpl.animation.enums.Animate;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.TangentFinder;
-import dev.kabin.util.eventhandlers.*;
+import dev.kabin.util.events.*;
+import dev.kabin.util.events.primitives.BoolChangeListener;
+import dev.kabin.util.events.primitives.IntChangeListener;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.time.Cooldown;
 import dev.kabin.util.time.TimedCondition;
@@ -54,7 +56,7 @@ public class Player extends EntitySimple {
     private boolean facingRight;
     private int currentJumpLevel = 0;
 
-    // Set up player events.
+    // Link player events.
     {
         // Input.
         inputX.addListener(0, () -> awsdEvents.registerEvent(Events.Awsd.HORIZONTAL_REST));
@@ -90,11 +92,11 @@ public class Player extends EntitySimple {
             getAnimPlaybackElseThrow().setCurrentAnimation(facingRight ? Animate.JUMP_RIGHT : Animate.JUMP_LEFT);
         });
         jumpEvents.addListener(Events.Jump.LAND, params -> {
-            if (inputX.curr() == 1) {
+            if (inputX.get() == 1) {
                 awsdEvents.registerEvent(isUsingWalkSpeed() ? Events.Awsd.WALK_RIGHT : Events.Awsd.RUN_RIGHT);
-            } else if (inputX.curr() == -1) {
+            } else if (inputX.get() == -1) {
                 awsdEvents.registerEvent(isUsingWalkSpeed() ? Events.Awsd.WALK_LEFT : Events.Awsd.RUN_LEFT);
-            } else if (inputX.curr() == 0) awsdEvents.registerEvent(Events.Awsd.HORIZONTAL_REST);
+            } else if (inputX.get() == 0) awsdEvents.registerEvent(Events.Awsd.HORIZONTAL_REST);
         });
 
         // Jump events - physics.
@@ -208,7 +210,6 @@ public class Player extends EntitySimple {
         // Ladder movement
         float dx;
         float dy;
-        boolean onLadder1;
         if (params.isLadderAt(xPrevAsInt, yPrevAsInt)) {
             jumpFrame = 0;
             vx0 = 0f;
@@ -218,10 +219,9 @@ public class Player extends EntitySimple {
                 inAir.set(false);
                 jumpCooldown.start();
             }
-            onLadder1 = true;
 
-            dx = WALK_SPEED_PER_SECONDS * inputX.curr() * params.dt();
-            dy = WALK_SPEED_PER_SECONDS * inputY.curr() * params.dt();
+            dx = WALK_SPEED_PER_SECONDS * inputX.get() * params.dt();
+            dy = WALK_SPEED_PER_SECONDS * inputY.get() * params.dt();
 
             if (dx == 0) {
                 dy = (dy < 0 && !params.isLadderAt(xPrevAsInt, Math.round((y() + dy)))) ? 0 : dy;
@@ -233,9 +233,7 @@ public class Player extends EntitySimple {
         // Regular movement
         else {
 
-            onLadder1 = false;
-
-            dx = vAbsPerSecond * params.meter() * inputX.curr() * params.dt();
+            dx = vAbsPerSecond * params.meter() * inputX.get() * params.dt();
 
             // Handle jump input
             if (firstJumpCondition()) {
@@ -331,11 +329,11 @@ public class Player extends EntitySimple {
         final boolean willSoonInterceptCollisionData;
         if (inAir.get() && dy < 0) {
             double angle = Functions.findAngleDeg(dx, dy);
-            int dxInt = (int) Math.cos(Math.toRadians(angle)) * 8;
-            int dyInt = (int) Math.sin(Math.toRadians(angle)) * 8;
+            int dxInt = (int) Math.cos(Math.toRadians(angle)) * 2;
+            int dyInt = (int) Math.sin(Math.toRadians(angle)) * 2;
             willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt + dxInt, yUpdatedInt + dyInt);
         } else {
-            willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt - 8);
+            willSoonInterceptCollisionData = params.isCollisionIfNotLadderData(xUpdatedInt, yUpdatedInt - 1);
         }
 
         if (willSoonInterceptCollisionData) {
@@ -368,11 +366,11 @@ public class Player extends EntitySimple {
     }
 
     private boolean secondJumpCondition() {
-        return currentJumpLevel == 1 && jump.curr() == 1 && jump.last() == 0 && !justBeganJump.eval();
+        return currentJumpLevel == 1 && jump.get() == 1 && jump.last() == 0 && !justBeganJump.eval();
     }
 
     private boolean firstJumpCondition() {
-        return currentJumpLevel == 0 && jump.curr() == 1 && !inAir.get() && jumpCooldown.isCompleted();
+        return currentJumpLevel == 0 && jump.get() == 1 && !inAir.get() && jumpCooldown.isCompleted();
     }
 
     private void dropHeldEntityIfOnLadder(int xPrevUnscaled, int round) {

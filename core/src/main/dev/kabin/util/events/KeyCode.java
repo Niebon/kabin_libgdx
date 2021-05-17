@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events;
 
 /**
  * Enum constants for key codes.

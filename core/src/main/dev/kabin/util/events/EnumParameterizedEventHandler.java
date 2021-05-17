@@ -1,37 +1,33 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 /**
  * An interface to provide default implementations for adding listeners {@link #addListener},
  * that react to events being registered {@link #registerEvent}.
  *
- * @param <T> the enum constant that is used.
+ * @param <E> the enum constant that is used.
  */
-public interface EnumEventHandler<T extends Enum<T>> {
+public interface EnumParameterizedEventHandler<T, E extends Enum<E>> {
 
-    @NotNull Map<T, Collection<Runnable>> getListeners();
+    @NotNull Map<E, Collection<Consumer<T>>> getListeners();
 
-    @NotNull Collection<Runnable> getDefaultListeners();
+    @NotNull Collection<Consumer<T>> getDefaultListeners();
 
-    default void registerEvent(T value) {
-        getDefaultListeners().forEach(Runnable::run);
+    default void registerEvent(T parameter, E value) {
+        getDefaultListeners().forEach(a -> a.accept(parameter));
         if (getListeners().containsKey(value)) {
-            getListeners().get(value).forEach(Runnable::run);
+            getListeners().get(value).forEach(a -> a.accept(parameter));
         }
     }
 
-    /**
-     * Adds a listener for a the value T, which gets called
-     * every time the given event is registered, i.e., every
-     * time a call is made to {@link #registerEvent(Enum)}.
-     */
-    default void addListener(T value, Runnable action) {
+    default void addListener(E value, Consumer<T> action) {
         if (!getListeners().containsKey(value)) {
             getListeners().put(value, new ArrayList<>());
         }
@@ -41,7 +37,7 @@ public interface EnumEventHandler<T extends Enum<T>> {
     /**
      * Add event listener for any event of this type.
      */
-    default void addListener(Runnable action) {
+    default void addListener(Consumer<T> action) {
         getDefaultListeners().add(action);
     }
 

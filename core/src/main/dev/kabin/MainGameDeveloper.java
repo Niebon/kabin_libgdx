@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
-import dev.kabin.util.eventhandlers.KeyCode;
+import dev.kabin.util.events.KeyCode;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 

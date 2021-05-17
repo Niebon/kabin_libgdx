@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events;
 
 import org.jetbrains.annotations.NotNull;
 

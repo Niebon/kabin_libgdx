@@ -1,4 +1,4 @@
-package dev.kabin.util.eventhandlers;
+package dev.kabin.util.events.primitives;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,12 +8,14 @@ public class IntChangeListener {
 	private final HashMap<Integer, ArrayList<Runnable>> actions = new HashMap<>();
 	private int curr;
 	private int last;
+	private int lastSetValue;
 
-	public int curr() {
+	public int get() {
 		return curr;
 	}
 
 	public void set(int value) {
+		lastSetValue = value;
 		if (value != curr) {
 			this.last = curr;
 			this.curr = value;
@@ -25,6 +27,10 @@ public class IntChangeListener {
 
 	public int last() {
 		return last;
+	}
+
+	public int lastSetValue() {
+		return lastSetValue;
 	}
 
 	public void addListener(int value, Runnable action) {
