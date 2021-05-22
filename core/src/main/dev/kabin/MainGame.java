@@ -56,6 +56,8 @@ public class MainGame extends ApplicationAdapter {
     private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
     private ShaderProgram lightShader;
+    private EntityPhysicsEngine<EntityLibgdx> entityPhysicsEngine;
+
 
     /**
      * @return the scale factor for the pixel art from the native resolution 400 by 225.
@@ -155,7 +157,7 @@ public class MainGame extends ApplicationAdapter {
         }
 
         //textureAtlas.getTextures().forEach(t -> t.setFilter(Texture.TextureFilter.Nearest , Texture.TextureFilter.Nearest ));
-
+        entityPhysicsEngine = new EntityPhysicsEngine<>();
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -205,7 +207,7 @@ public class MainGame extends ApplicationAdapter {
         if (worldRepresentation != null) {
             final var parameters = new PhysicsParametersImpl(scale, worldRepresentation, keyEventUtil);
 
-            EntityPhysicsEngine.renderOutstandingFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+            entityPhysicsEngine.renderOutstandingPhysicsFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
         updateCamera(camera);

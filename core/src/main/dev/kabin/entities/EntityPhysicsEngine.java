@@ -6,28 +6,37 @@ import java.util.function.Consumer;
  * In order to make rendering deterministic,
  * use a standard dt of 120 fps.
  */
-public class EntityPhysicsEngine {
+public class EntityPhysicsEngine<E extends Entity<?, ?, ?>> {
 
+	// Constants
 	public static final int METER = 16;
-	public static final float DT = 1 / 120f;
-	public static final float GRAVITATION_CONSTANT = 9.81f;
+	public static final float DT_SECONDS = 1 / 60f;
+	public static final float GRAVITATION_CONSTANT_PER_METER = 9.81f;
 
-	private static int findNumberOfFramesToRender(float timeElapsedSinceLastFrame) {
-		int frames = 1;
-		while (frames * DT < timeElapsedSinceLastFrame) {
-			frames++;
+	// Private data
+	private float accumulatedTimeElapsedSinceLastPhysicsFrame = 0f;
+
+	private int findNumberOfPhysicsFramesToRender(float timeElapsedSinceLastPhysicsFrame) {
+		if (timeElapsedSinceLastPhysicsFrame < DT_SECONDS) {
+			return 0;
+		} else {
+			return 1 + findNumberOfPhysicsFramesToRender(timeElapsedSinceLastPhysicsFrame - DT_SECONDS);
 		}
-		return frames - 1;
 	}
 
-	public static <E extends Entity<?, ?, ?>> void renderOutstandingFrames(float timeElapsedSinceLastFrame, PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
-		int numberOfFramesToRender = findNumberOfFramesToRender(timeElapsedSinceLastFrame);
-		for (int i = 0; i < numberOfFramesToRender; i++) {
+	public void renderOutstandingPhysicsFrames(float timeElapsedSinceLastGraphicsFrame, PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
+		accumulatedTimeElapsedSinceLastPhysicsFrame += timeElapsedSinceLastGraphicsFrame;
+//		int numberOfFramesToRender = findNumberOfPhysicsFramesToRender(accumulatedTimeElapsedSinceLastPhysicsFrame);
+		if (accumulatedTimeElapsedSinceLastPhysicsFrame > DT_SECONDS) {
+//			for (int i = 0; i < numberOfFramesToRender; i++) {
+//				renderExactlyOneFrame(params, forEachEntity);
+//			}
 			renderExactlyOneFrame(params, forEachEntity);
+			accumulatedTimeElapsedSinceLastPhysicsFrame = accumulatedTimeElapsedSinceLastPhysicsFrame - DT_SECONDS;
 		}
 	}
 
-	public static <E extends Entity<?, ?, ?>> void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
+	public void renderExactlyOneFrame(PhysicsParameters params, Consumer<Consumer<E>> forEachEntity) {
 		forEachEntity.accept(e -> e.updatePhysics(params));
 	}
 

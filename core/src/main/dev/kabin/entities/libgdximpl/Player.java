@@ -35,6 +35,7 @@ public class Player extends EntitySimple {
     private final IntChangeListener inputY = new IntChangeListener();
     private final IntChangeListener jump = new IntChangeListener();
     private final BoolChangeListener inAir = new BoolChangeListener();
+    private final BoolChangeListener inputWalking = new BoolChangeListener();
     private final TimedCondition justBeganJump = new TimedCondition(true, 500L);
     private final Cooldown jumpCooldown = Cooldown.builder()
             .setDurationMillis(350L)
@@ -68,6 +69,15 @@ public class Player extends EntitySimple {
             awsdEvents.registerEvent(isUsingWalkSpeed() ? Events.Awsd.WALK_LEFT : Events.Awsd.RUN_LEFT);
             facingRight = false;
         });
+        inputWalking.addListener(true, () -> {
+            if (facingRight) awsdEvents.registerEvent(Events.Awsd.WALK_RIGHT);
+            else awsdEvents.registerEvent(Events.Awsd.WALK_LEFT);
+        });
+        inputWalking.addListener(false, () -> {
+            if (facingRight) awsdEvents.registerEvent(Events.Awsd.RUN_RIGHT);
+            else awsdEvents.registerEvent(Events.Awsd.RUN_LEFT);
+        });
+
 
         // State
         inAir.addListener(false, () -> jumpEvents.registerEvent(null, Events.Jump.LAND));
@@ -129,7 +139,6 @@ public class Player extends EntitySimple {
     private static float findLiftAboveGround(int x,
                                              int y,
                                              @NotNull BiIntPredicate collisionPredicate) {
-
         int j = 0;
         while (collisionPredicate.test(x, y + j)) j++;
         return j;
@@ -141,7 +150,7 @@ public class Player extends EntitySimple {
     }
 
     private boolean isUsingWalkSpeed() {
-        return vAbsPerSecond == WALK_SPEED_PER_SECONDS;
+        return inputWalking.get();
     }
 
     public void setHandleInput(boolean b) {
@@ -189,7 +198,7 @@ public class Player extends EntitySimple {
             return;
         }
 
-
+        inputWalking.set(params.isPressed(KeyCode.SHIFT_LEFT));
         inputX.set((params.isPressed(KeyCode.D) ? 1 : 0) - (params.isPressed(KeyCode.A) ? 1 : 0));
         inputY.set((params.isPressed(KeyCode.W) ? 1 : 0) - (params.isPressed(KeyCode.S) ? 1 : 0));
 
@@ -244,7 +253,7 @@ public class Player extends EntitySimple {
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT * params.meter() * jumpTime) * params.dt();
+            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 
@@ -313,6 +322,8 @@ public class Player extends EntitySimple {
 
                 dy = (float) (vAbsPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
                 dx = (float) (vAbsPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
+
+
             }
         }
 

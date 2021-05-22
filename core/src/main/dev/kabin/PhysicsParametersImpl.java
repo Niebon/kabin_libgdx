@@ -51,7 +51,7 @@ class PhysicsParametersImpl implements PhysicsParameters {
 
     @Override
     public float dt() {
-        return EntityPhysicsEngine.DT;
+        return EntityPhysicsEngine.DT_SECONDS;
     }
 
     @Override

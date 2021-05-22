@@ -38,7 +38,7 @@ public interface Entity<
      * Modify the layer of this entity.
      *
      * @param layer the new layer.
-     * @implSpec modifies the order that the graphics is drawn
+     * @implSpec modifies the order that the graphics is drawn relative to the group layer.
      */
     void setLayer(int layer);
 
@@ -60,7 +60,7 @@ public interface Entity<
      * A default comparing procedure for a pair of entities.
      * This is implemented as the dictionary order on:
      * <ul>
-     *     <li>Comparing {@link EntityType#layer() layer} of the {@link #getType() group type} of this entity.</li>
+     *     <li>Comparing the {@link #typeLayer() type layer} layer of this entity.</li>
      *     <li>Comparing the {@link #layer() layer} of this entity.</li>
      *     <li>Comparing the {@link #id() id} of this.</li>
      * </ul>
@@ -76,13 +76,17 @@ public interface Entity<
      */
     @Override
     default int compareTo(@NotNull Entity<GroupType, EntityType, GraphicsParamType> other) {
-        final int resultCompareType = Integer.compare(getType().layer(), other.getType().layer());
+        final int resultCompareType = Integer.compare(typeLayer(), other.typeLayer());
         if (resultCompareType != 0) return resultCompareType;
         else {
             // Dictionary order:
             final int layerComparison = Integer.compare(layer(), other.layer());
             return (layerComparison != 0) ? layerComparison : Integer.compare(id(), other.id());
         }
+    }
+
+    default int typeLayer() {
+        return getType().layer();
     }
 
     /**

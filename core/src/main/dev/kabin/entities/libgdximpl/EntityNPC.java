@@ -204,7 +204,7 @@ public class EntityNPC extends EntitySimple {
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT * params.meter() * jumpTime) * params.dt();
+            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 
