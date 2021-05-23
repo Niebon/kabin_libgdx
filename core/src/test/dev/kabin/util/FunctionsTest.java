@@ -27,9 +27,9 @@ class FunctionsTest {
 
     @Test
     void get() {
-        Assertions.assertEquals(Functions.ternOp2(true, true, "tt", "tf", "ft", "ff"), "tt");
-        Assertions.assertEquals(Functions.ternOp2(true, false, "tt", "tf", "ft", "ff"), "tf");
-        Assertions.assertEquals(Functions.ternOp2(false, true, "tt", "tf", "ft", "ff"), "ft");
-        Assertions.assertEquals(Functions.ternOp2(false, false, "tt", "tf", "ft", "ff"), "ff");
+        Assertions.assertEquals(Booleans.ternOp2(true, true, "tt", "tf", "ft", "ff"), "tt");
+        Assertions.assertEquals(Booleans.ternOp2(true, false, "tt", "tf", "ft", "ff"), "tf");
+        Assertions.assertEquals(Booleans.ternOp2(false, true, "tt", "tf", "ft", "ff"), "ft");
+        Assertions.assertEquals(Booleans.ternOp2(false, false, "tt", "tf", "ft", "ff"), "ff");
     }
 }

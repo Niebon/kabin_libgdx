@@ -3,6 +3,7 @@ package dev.kabin.entities.libgdximpl;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
+import dev.kabin.util.Booleans;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.TangentFinder;
@@ -32,7 +33,7 @@ public class Player extends EntitySimple {
     private final EnumParameterizedEventHandler<PhysicsParameters, Events.Jump> jumpEvents = EnumParametrizedEventHandlerImpl.of(Events.Jump.class);
     private final IntChangeListener inputX = new IntChangeListener();
     private final IntChangeListener inputY = new IntChangeListener();
-    private final IntChangeListener jump = new IntChangeListener();
+    private final IntChangeListener inputJump = new IntChangeListener();
     private final BoolChangeListener inAir = new BoolChangeListener();
     private final BoolChangeListener inputWalking = new BoolChangeListener();
     private final TimedCondition justBeganJump = new TimedCondition(true, 500L);
@@ -86,7 +87,7 @@ public class Player extends EntitySimple {
         awsdEvents.addListener(Events.Awsd.RUN_RIGHT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_RIGHT : Animate.RUN_RIGHT));
         awsdEvents.addListener(Events.Awsd.WALK_LEFT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_LEFT : Animate.WALK_LEFT));
         awsdEvents.addListener(Events.Awsd.WALK_RIGHT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_RIGHT : Animate.WALK_RIGHT));
-        awsdEvents.addListener(Events.Awsd.HORIZONTAL_REST, () -> getAnimPlaybackElseThrow().setCurrentAnimation(Functions.ternOp2(
+        awsdEvents.addListener(Events.Awsd.HORIZONTAL_REST, () -> getAnimPlaybackElseThrow().setCurrentAnimation(Booleans.ternOp2(
                 inAir.get(), facingRight, Animate.JUMP_RIGHT, Animate.JUMP_LEFT, Animate.DEFAULT_RIGHT, Animate.DEFAULT_LEFT
         )));
 
@@ -156,7 +157,7 @@ public class Player extends EntitySimple {
         handleInput = b;
         inputX.set(0);
         inputY.set(0);
-        jump.set(0);
+        inputJump.set(0);
     }
 
     public void freeze() {
@@ -192,19 +193,13 @@ public class Player extends EntitySimple {
      * @param params input.
      */
     private void handlePlayerInputMovementKeyboard(PhysicsParameters params) {
-        exhaustRunnable();
         if (!handleInput) {
             return;
         }
-
         inputWalking.set(params.isPressed(KeyCode.SHIFT_LEFT));
-        inputX.set((params.isPressed(KeyCode.D) ? 1 : 0) - (params.isPressed(KeyCode.A) ? 1 : 0));
-        inputY.set((params.isPressed(KeyCode.W) ? 1 : 0) - (params.isPressed(KeyCode.S) ? 1 : 0));
-
-        jump.set(params.isPressed(KeyCode.SPACE) ? 1 : 0);
-    }
-
-    private void exhaustRunnable() {
+        inputX.set(Booleans.toInt(params.isPressed(KeyCode.D)) - Booleans.toInt(params.isPressed(KeyCode.A)));
+        inputY.set(Booleans.toInt(params.isPressed(KeyCode.W)) - Booleans.toInt(params.isPressed(KeyCode.S)));
+        inputJump.set(Booleans.toInt(params.isPressed(KeyCode.SPACE)));
     }
 
     @Override
@@ -232,10 +227,8 @@ public class Player extends EntitySimple {
             dy = WALK_SPEED_PER_SECONDS * inputY.get() * params.dt();
 
             if (dx == 0) {
-                dy = (dy < 0 && !params.isLadderAt(xPrevAsInt, Math.round((y() + dy)))) ? 0 : dy;
+                dy = dy < 0 && !params.isLadderAt(xPrevAsInt, Math.round((y() + dy))) ? 0 : dy;
             }
-
-            dropHeldEntityIfOnLadder(xPrevAsInt, Math.round((y() - 8)));
         }
 
         // Regular movement
@@ -251,7 +244,7 @@ public class Player extends EntitySimple {
             }
 
             // Follow freeFall trajectory
-            final float jumpTime = (jumpFrame++) * params.dt();
+            final float jumpTime = jumpFrame++ * params.dt();
             dy = (vy0 - PhysicsParameters.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
@@ -368,25 +361,18 @@ public class Player extends EntitySimple {
         justBeganJump.init();
         jumpCooldown.reset();
         jumpFrame = 0; // start jump frame.
-        if (params.getVectorFieldY(getXAsInt(), getYAsInt()) != 0) {
-            vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(getXAsInt(), getYAsInt());
-        } else {
-            vy0 = JUMP_VEL_METERS_PER_SECONDS * params.meter();
-        }
+        vy0 = params.getVectorFieldY(getXAsInt(), getYAsInt()) != 0
+                ? JUMP_VEL_METERS_PER_SECONDS * params.meter() + params.getVectorFieldY(getXAsInt(), getYAsInt())
+                : JUMP_VEL_METERS_PER_SECONDS * params.meter();
     }
 
     private boolean secondJumpCondition() {
-        return currentJumpLevel == 1 && jump.get() == 1 && jump.last() == 0 && !justBeganJump.eval();
+        return currentJumpLevel == 1 && inputJump.get() == 1 && inputJump.last() == 0 && !justBeganJump.eval();
     }
 
     private boolean firstJumpCondition() {
-        return currentJumpLevel == 0 && jump.get() == 1 && !inAir.get() && jumpCooldown.isCompleted();
+        return currentJumpLevel == 0 && inputJump.get() == 1 && !inAir.get() && jumpCooldown.isCompleted();
     }
-
-    private void dropHeldEntityIfOnLadder(int xPrevUnscaled, int round) {
-
-    }
-
 
     public double getVx() {
         return cachedVx;
