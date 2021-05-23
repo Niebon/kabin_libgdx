@@ -1,6 +1,5 @@
 package dev.kabin.entities.libgdximpl;
 
-import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
@@ -87,7 +86,7 @@ public class Player extends EntitySimple {
         awsdEvents.addListener(Events.Awsd.RUN_RIGHT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_RIGHT : Animate.RUN_RIGHT));
         awsdEvents.addListener(Events.Awsd.WALK_LEFT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_LEFT : Animate.WALK_LEFT));
         awsdEvents.addListener(Events.Awsd.WALK_RIGHT, () -> getAnimPlaybackElseThrow().setCurrentAnimation(inAir.get() ? Animate.JUMP_RIGHT : Animate.WALK_RIGHT));
-        awsdEvents.addListener(Events.Awsd.HORIZONTAL_REST, () -> getAnimPlaybackElseThrow().setCurrentAnimation(Functions.conditionalOperator(
+        awsdEvents.addListener(Events.Awsd.HORIZONTAL_REST, () -> getAnimPlaybackElseThrow().setCurrentAnimation(Functions.ternOp2(
                 inAir.get(), facingRight, Animate.JUMP_RIGHT, Animate.JUMP_LEFT, Animate.DEFAULT_RIGHT, Animate.DEFAULT_LEFT
         )));
 
@@ -253,7 +252,7 @@ public class Player extends EntitySimple {
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
+            dy = (vy0 - PhysicsParameters.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 

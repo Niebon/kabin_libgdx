@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.EntityPhysicsEngine;
+import dev.kabin.entities.PhysicsRenderer;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
@@ -56,7 +56,7 @@ public class MainGame extends ApplicationAdapter {
     private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
     private ShaderProgram lightShader;
-    private EntityPhysicsEngine<EntityLibgdx> entityPhysicsEngine;
+    private PhysicsRenderer<EntityLibgdx> physicsRenderer;
 
 
     /**
@@ -157,7 +157,7 @@ public class MainGame extends ApplicationAdapter {
         }
 
         //textureAtlas.getTextures().forEach(t -> t.setFilter(Texture.TextureFilter.Nearest , Texture.TextureFilter.Nearest ));
-        entityPhysicsEngine = new EntityPhysicsEngine<>();
+        physicsRenderer = new PhysicsRenderer<>();
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -205,9 +205,9 @@ public class MainGame extends ApplicationAdapter {
 
         // Render physics
         if (worldRepresentation != null) {
-            final var parameters = new PhysicsParametersImpl(scale, worldRepresentation, keyEventUtil);
+            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil);
 
-            entityPhysicsEngine.renderOutstandingPhysicsFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+            physicsRenderer.renderOutstandingPhysicsFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
         updateCamera(camera);

@@ -1,7 +1,6 @@
 package dev.kabin.entities.libgdximpl;
 
 import dev.kabin.entities.Entity;
-import dev.kabin.entities.EntityPhysicsEngine;
 import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
@@ -204,7 +203,7 @@ public class EntityNPC extends EntitySimple {
 
             // Follow freeFall trajectory
             final float jumpTime = (jumpFrame++) * params.dt();
-            dy = (vy0 - EntityPhysicsEngine.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
+            dy = (vy0 - PhysicsParameters.GRAVITATION_CONSTANT_PER_METER * params.meter() * jumpTime) * params.dt();
             dx = dx + vx0 * params.dt();
         }
 

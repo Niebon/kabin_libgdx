@@ -27,9 +27,9 @@ class FunctionsTest {
 
     @Test
     void get() {
-        Assertions.assertEquals(Functions.conditionalOperator(true, true, "tt", "tf", "ft", "ff"), "tt");
-        Assertions.assertEquals(Functions.conditionalOperator(true, false, "tt", "tf", "ft", "ff"), "tf");
-        Assertions.assertEquals(Functions.conditionalOperator(false, true, "tt", "tf", "ft", "ff"), "ft");
-        Assertions.assertEquals(Functions.conditionalOperator(false, false, "tt", "tf", "ft", "ff"), "ff");
+        Assertions.assertEquals(Functions.ternOp2(true, true, "tt", "tf", "ft", "ff"), "tt");
+        Assertions.assertEquals(Functions.ternOp2(true, false, "tt", "tf", "ft", "ff"), "tf");
+        Assertions.assertEquals(Functions.ternOp2(false, true, "tt", "tf", "ft", "ff"), "ft");
+        Assertions.assertEquals(Functions.ternOp2(false, false, "tt", "tf", "ft", "ff"), "ff");
     }
 }

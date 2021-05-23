@@ -7,13 +7,22 @@ import dev.kabin.util.events.KeyCode;
  */
 public interface PhysicsParameters {
 
+    // Constants
+    @SuppressWarnings("unused")
+    float FPS_30 = 1 / 30f;
+    float FPS_60 = 1 / 30f;
+    @SuppressWarnings("unused")
+    float FPS_120 = 1 / 120f;
+    float GRAVITATION_CONSTANT_PER_METER = 9.81f;
+    int METER = 16;
+
     /**
-	 * A collision check.
-	 *
-	 * @param x horizontal coordinate. Positive points right relative to the screen.
-	 * @param y vertical coordinate. Positive points upwards the screen.
-	 * @return true if the coordinate has collision.
-	 */
+     * A collision check.
+     *
+     * @param x horizontal coordinate. Positive points right relative to the screen.
+     * @param y vertical coordinate. Positive points upwards the screen.
+     * @return true if the coordinate has collision.
+     */
     boolean isCollisionAt(int x, int y);
 
 	/**
@@ -62,10 +71,14 @@ public interface PhysicsParameters {
     /**
      * @return time step.
      */
-    float dt();
+    default float dt() {
+        return FPS_60;
+    }
 
     /**
-     * @return a meter.
+     * @return a meter measured in pixels.
      */
-    float meter();
+    default float meter() {
+        return METER;
+    }
 }
