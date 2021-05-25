@@ -15,8 +15,7 @@ public class Statistics {
      */
     @Nullable
     public static <T> T drawUniform(@NotNull List<T> list, double prob) {
-        int i = RANDOM.nextInt(list.size());
-        return RANDOM.nextDouble() < prob ? list.get(i) : null;
+        return RANDOM.nextDouble() < prob ? list.get(RANDOM.nextInt(list.size())) : null;
     }
 
     /**

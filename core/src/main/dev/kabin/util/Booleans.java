@@ -12,4 +12,5 @@ public class Booleans {
     public static int toInt(boolean b) {
         return b ? 1 : 0;
     }
+
 }

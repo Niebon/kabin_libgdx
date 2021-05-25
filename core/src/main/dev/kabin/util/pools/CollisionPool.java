@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
-import dev.kabin.util.HalfOpenRectangle;
+import dev.kabin.util.HalfOpenIntRectangle;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.points.ImmutablePointInt;
 import dev.kabin.util.points.PointInt;
@@ -95,7 +95,7 @@ public class CollisionPool {
         }
 
         // Helper function to do index validations.
-        final BiIntPredicate indexValidator = HalfOpenRectangle.of(x, x + width, y, y + height)::contains;
+        final BiIntPredicate indexValidator = HalfOpenIntRectangle.of(x, x + width, y, y + height)::contains;
 
 
         /*
