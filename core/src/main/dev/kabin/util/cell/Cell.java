@@ -34,8 +34,7 @@ import java.util.stream.IntStream;
  * |            |            |
  * |____________|____________|
  * </pre>
- * This instance will have sub-components iff the provided {@link CellParameters} have {@link CellParameters#hasSubCells()}
- * equal to true.
+ * This instance has sub-components if the provided {@link CellParameters} satisfy {@link CellParameters#hasSubCells()}.
  * <p>
  * In that case, we associate 0 -> (0,0), 1 -> (1,0), 2 -> (0,1), and 3 -> (1,1), where the pairs (m,n) determine the
  * position of the sub-component relative to this component. Also we say that a component is <b>indivisible</b> if
@@ -43,7 +42,7 @@ import java.util.stream.IntStream;
  * <p>
  * To make adjacent components non-intersecting, we use the convention that the area
  * this instance represents is spanned by the half-open intervals
- * [minX, maxX) x [minY, maxY). A point in then said to be contained in a component
+ * [minX, maxX) x [minY, maxY). A pair of ints (x,y) is then said to be <b>contained</b> in a component
  * if it is contained in [minX, maxX) x [minY, maxY) for that component.
  */
 public final class Cell implements Id {
@@ -173,15 +172,11 @@ public final class Cell implements Id {
             }
         }
 
-        // Figure out the depth of this component.
-        int depth = 0;
-        Cell cellStack = this;
+        this.depth = findDepth(this);
+    }
 
-        while (cellStack.subCells != null) {
-            cellStack = cellStack.subCells[0];
-            depth++;
-        }
-        this.depth = depth;
+    private static int findDepth(Cell cell) {
+        return cell.subCells != null ? 1 + findDepth(cell.subCells[0]) : 0;
     }
 
     private static int cellIndexToXCoordinate(int index) {

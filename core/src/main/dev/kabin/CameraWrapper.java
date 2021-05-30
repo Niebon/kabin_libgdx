@@ -2,7 +2,6 @@ package dev.kabin;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import dev.kabin.entities.libgdximpl.Player;
-import dev.kabin.util.Functions;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.lambdas.FloatSupplier;
 import dev.kabin.util.shapes.primitive.MutableRectInt;
@@ -35,12 +34,12 @@ public class CameraWrapper {
         camera.update();
         // Find new camera position:
         currentCameraBounds.translate(
-                Math.round(Functions.toIntDivideBy(x, scale.get()) - currentCameraBounds.getCenterX()),
-                Math.round(Functions.toIntDivideBy(y, scale.get()) - currentCameraBounds.getCenterY())
+                Math.round(x / scale.get() - currentCameraBounds.getCenterX()),
+                Math.round(y / scale.get() - currentCameraBounds.getCenterY())
         );
         currentCameraNeighborhood.translate(
-                Math.round(Functions.toIntDivideBy(x, scale.get()) - currentCameraNeighborhood.getCenterX()),
-                Math.round(Functions.toIntDivideBy(y, scale.get()) - currentCameraNeighborhood.getCenterY())
+                Math.round(x / scale.get() - currentCameraNeighborhood.getCenterX()),
+                Math.round(y / scale.get() - currentCameraNeighborhood.getCenterY())
         );
     }
 
@@ -61,10 +60,10 @@ public class CameraWrapper {
         return scale.get();
     }
 
-    public void follow(Player player) {
+    public void follow(Player player, float timeElapsedSinceLastFrame) {
         final float unit = 3 * player.getMaxPixelHeight() * scale();
-        directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx() * scale()) * unit));
-        directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy() * scale()) * unit + 0.5f * unit));
+        directionalPreSmoothening.appendSignalX((float) (Math.signum(player.getVx() * timeElapsedSinceLastFrame) * unit));
+        directionalPreSmoothening.appendSignalY((float) (Math.signum(player.getVy() * timeElapsedSinceLastFrame) * unit + 0.5f * unit));
         directionalFinalSmoothening.appendSignalX(directionalPreSmoothening.x());
         directionalFinalSmoothening.appendSignalY(directionalPreSmoothening.y());
         final float x = directionalFinalSmoothening.x();

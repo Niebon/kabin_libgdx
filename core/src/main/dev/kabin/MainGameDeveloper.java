@@ -2,7 +2,6 @@ package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.events.KeyCode;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +61,7 @@ public class MainGameDeveloper extends MainGame {
     }
 
     @Override
-    protected void updateCamera(CameraWrapper camera) {
+    protected void updateCamera(CameraWrapper camera, float timeElapsedSinceLastFrame) {
         // Admit camera free mode movement if in developer mode.
         if (isDeveloperMode()) {
             if (!getKeyEventUtil().isControlDown()) camera.setPos(
@@ -74,7 +73,7 @@ public class MainGameDeveloper extends MainGame {
                                     getKeyEventUtil().isPressed(KeyCode.S) ? -getScale() : getScale())
             );
         } else {
-            Player.getInstance().ifPresent(camera::follow);
+            super.updateCamera(camera, timeElapsedSinceLastFrame);
         }
     }
 

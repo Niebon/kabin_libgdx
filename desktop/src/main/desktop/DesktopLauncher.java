@@ -13,9 +13,9 @@ public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "Kabin";
-        config.width = 1280;
-        config.height = 780;
-        config.resizable = true;
+        config.width = 2650;//1280;
+        config.height = 1440;//780;
+        config.resizable = false;
         TexturePacker.Settings settings = new TexturePacker.Settings();
         settings.pot = true;
         settings.fast = true;

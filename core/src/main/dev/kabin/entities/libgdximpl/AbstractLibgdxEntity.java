@@ -65,7 +65,14 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
             graphicsNbd = MutableRectInt.centeredAt((int) artMassCenterX(), (int) artMassCenterY(), artWidth(), artHeight());
             positionNbdView = new RectIntView(positionNbd);
             graphicsNbdView = new RectIntView(graphicsNbd);
-            updateNeighborhood();
+            graphicsNbd.translate(
+                    Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                    Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
+            );
+            positionNbd.translate(
+                    Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                    Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
+            );
         }
         namedLightSourceDataList = parameters.lightSourceData().stream()
                 .map(namedLsd -> namedLsd.map(l -> AnchoredLightSourceData.ofNullables(l, this::x, this::y)))
@@ -158,10 +165,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         }
 
         // Updates nbds.
-        updateNeighborhood();
-    }
-
-    private void updateNeighborhood() {
         graphicsNbd.translate(
                 Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
                 Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
@@ -219,11 +222,19 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
 
     @Override
     public RectIntView graphicsNbd() {
+        graphicsNbd.translate(
+                Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
+        );
         return graphicsNbdView;
     }
 
     @Override
     public RectIntView positionNbd() {
+        positionNbd.translate(
+                Math.round(leftmostArtPixel() + x() - graphicsNbd.getCenterX()),
+                Math.round(highestArtPixelFromBelow() + y() - graphicsNbd.getCenterY())
+        );
         return positionNbdView;
     }
 

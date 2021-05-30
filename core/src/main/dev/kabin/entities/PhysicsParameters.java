@@ -10,7 +10,7 @@ public interface PhysicsParameters {
     // Constants
     @SuppressWarnings("unused")
     float FPS_30 = 1 / 30f;
-    float FPS_60 = 1 / 30f;
+    float FPS_60 = 1 / 60f;
     @SuppressWarnings("unused")
     float FPS_120 = 1 / 120f;
     float GRAVITATION_CONSTANT_PER_METER = 9.81f;
@@ -72,7 +72,7 @@ public interface PhysicsParameters {
      * @return time step.
      */
     default float dt() {
-        return FPS_60;
+        return FPS_30;
     }
 
     /**

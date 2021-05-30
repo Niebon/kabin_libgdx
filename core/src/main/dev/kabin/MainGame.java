@@ -128,7 +128,6 @@ public class MainGame extends ApplicationAdapter {
 
         textureAtlas = new TextureAtlas("textures.atlas");
         imageAnalysisPool = new ImageMetadataPoolLibgdx(textureAtlas);
-        scale = (float) Gdx.graphics.getWidth() / GlobalData.ART_WIDTH;
 
 
         logger.setLevel(GlobalData.getLogLevel());
@@ -177,8 +176,8 @@ public class MainGame extends ApplicationAdapter {
      *
      * @param cameraWrapper the camera wrapper that will be updated.
      */
-    protected void updateCamera(CameraWrapper cameraWrapper) {
-        Player.getInstance().ifPresent(cameraWrapper::follow);
+    protected void updateCamera(CameraWrapper cameraWrapper, float timeElaspedSinceLastFrame) {
+        Player.getInstance().ifPresent(p -> cameraWrapper.follow(p, timeElaspedSinceLastFrame));
     }
 
     public float getCameraX() {
@@ -196,6 +195,10 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
+        // Update scale. TODO: improve.
+        scale = (float) Gdx.graphics.getWidth() / GlobalData.ART_WIDTH;
+
+
         final float timeSinceLastFrame = Gdx.graphics.getDeltaTime();
         stage.act(timeSinceLastFrame);
 
@@ -210,7 +213,7 @@ public class MainGame extends ApplicationAdapter {
             physicsRenderer.renderOutstandingPhysicsFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
-        updateCamera(camera);
+        updateCamera(camera, timeSinceLastFrame);
 
 
         spriteBatch.setProjectionMatrix(camera.getCamera().combined);
