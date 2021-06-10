@@ -10,9 +10,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.PhysicsRenderer;
+import dev.kabin.entities.ConstantFrameRateRenderer;
+import dev.kabin.entities.Entity;
+import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
+import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.libgdx.EventTriggerController;
@@ -56,7 +59,9 @@ public class MainGame extends ApplicationAdapter {
     private SpriteBatch spriteBatch;
     private ShaderProgram ambientShader;
     private ShaderProgram lightShader;
-    private PhysicsRenderer<EntityLibgdx> physicsRenderer;
+    private ConstantFrameRateRenderer<EntityLibgdx, PhysicsParameters> physicsRenderer;
+    private ConstantFrameRateRenderer<EntityLibgdx, GraphicsParametersLibgdx> graphicsRenderer;
+    private float renderRate;
 
 
     /**
@@ -156,7 +161,13 @@ public class MainGame extends ApplicationAdapter {
         }
 
         //textureAtlas.getTextures().forEach(t -> t.setFilter(Texture.TextureFilter.Nearest , Texture.TextureFilter.Nearest ));
-        physicsRenderer = new PhysicsRenderer<>();
+        renderRate = GlobalData.FPS_120;
+        physicsRenderer = new ConstantFrameRateRenderer<>(this::getRenderRate, Entity::updatePhysics);
+        graphicsRenderer = new ConstantFrameRateRenderer<>(this::getRenderRate, Entity::updateGraphics);
+    }
+
+    private float getRenderRate() {
+        return renderRate;
     }
 
     protected KeyEventUtil getKeyEventUtil() {
@@ -208,25 +219,21 @@ public class MainGame extends ApplicationAdapter {
 
         // Render physics
         if (worldRepresentation != null) {
-            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil);
-
-            physicsRenderer.renderOutstandingPhysicsFrames(timeSinceLastFrame, parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil, getRenderRate());
+            physicsRenderer.accumulateTime(timeSinceLastFrame);
+            physicsRenderer.render(parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }
 
-        updateCamera(camera, timeSinceLastFrame);
-
-
-        spriteBatch.setProjectionMatrix(camera.getCamera().combined);
-
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
         //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
         // Render graphics
         if (worldRepresentation != null) {
+
+
             {
                 final ShaderProgram prg = shaderProgramMap.get(EntityGroup.FOCAL_POINT);
-                final LightSourceShaderBinder lssBinder = new LightSourceShaderBinder(prg);
-                final ArrayList<LightSourceData> lightSourceData = new ArrayList<>();
+                final var lssBinder = new LightSourceShaderBinder(prg);
+                final var lightSourceData = new ArrayList<LightSourceData>();
                 getWorldRepresentation().forEachEntityInCameraNeighborhood(e -> lightSourceData.addAll(e.getLightSourceDataList()));
 
                 final float camXMinusHalfWidth = getCameraX() - getCameraWrapper().getCamera().viewportWidth * 0.5f;
@@ -247,17 +254,23 @@ public class MainGame extends ApplicationAdapter {
                 lssBinder.setAmbient(0.4f, 0.4f, 0.4f, 4f);
             }
 
-            final GraphicsParametersImpl graphicsParameters = new GraphicsParametersImpl(spriteBatch,
+            final var graphicsParameters = new GraphicsParametersImpl(spriteBatch,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
-                    timeSinceLastFrame,
+                    getRenderRate(),
                     scale,
                     Gdx.graphics.getWidth(),
                     Gdx.graphics.getHeight(),
                     shaderProgramMap);
-            worldRepresentation.forEachEntityInCameraNeighborhood(e ->
-                    e.updateGraphics(graphicsParameters)
-            );
+
+            graphicsRenderer.accumulateTime(timeSinceLastFrame);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clears the screen.
+            if (graphicsRenderer.isReadyToRender()) {
+                updateCamera(camera, timeSinceLastFrame);
+                spriteBatch.setProjectionMatrix(camera.getCamera().combined);
+                graphicsRenderer.render(graphicsParameters, worldRepresentation::forEachEntityInCameraNeighborhood);
+            }
+
         }
 
         //bundle.renderFrameByIndex(0);

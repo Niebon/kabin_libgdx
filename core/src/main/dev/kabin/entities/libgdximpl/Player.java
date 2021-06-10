@@ -203,33 +203,6 @@ public class Player extends EntitySimple {
     }
 
     @Override
-    public void updateGraphics(GraphicsParametersLibgdx params) {
-
-        final float graphicsRootX = getRootX();
-        final float graphicsRootY = getRootY();
-
-        getAnimationPlaybackImpl().translate(cachedVx * params.timeElapsedSinceLastFrame(), cachedVy * params.timeElapsedSinceLastFrame());
-
-
-        // Sets the canonical shader for the group of this.
-        getAnimationPlaybackImpl().setShaderProgram(params.shaderFor(getGroupType()));
-        getAnimationPlaybackImpl().renderNextAnimationFrame(params);
-
-        // Configure actor.
-        {
-            final float offsetX = params.camX() - params.screenWidth() * 0.5f;
-            final float offsetY = params.camY() - params.screenHeight() * 0.5f;
-            final float x = graphicsRootX * params.scale() - offsetX;
-            final float y = graphicsRootY * params.scale() - offsetY;
-            getActor().ifPresent(a -> a.setBounds(
-                    x, y,
-                    getAnimationPlaybackImpl().getWidth() * params.scale(),
-                    getAnimationPlaybackImpl().getHeight() * params.scale()
-            ));
-        }
-    }
-
-    @Override
     public void updatePhysics(PhysicsParameters params) {
         handlePlayerInputMovementKeyboard(params);
 

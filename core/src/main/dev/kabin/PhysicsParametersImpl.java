@@ -14,11 +14,14 @@ class PhysicsParametersImpl implements PhysicsParameters {
     private final WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
     @NotNull
     private final KeyEventUtil keyEventUtil;
+    private final float dt;
 
     PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
-                          @NotNull KeyEventUtil keyEventUtil) {
+                          @NotNull KeyEventUtil keyEventUtil,
+                          float dt) {
         this.worldRepresentation = worldRepresentation;
         this.keyEventUtil = keyEventUtil;
+        this.dt = dt;
     }
 
     @Override
@@ -46,4 +49,8 @@ class PhysicsParametersImpl implements PhysicsParameters {
         return keyEventUtil.isPressed(keycode);
     }
 
+    @Override
+    public float dt() {
+        return dt;
+    }
 }

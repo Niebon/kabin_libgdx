@@ -14,6 +14,12 @@ public class GlobalData {
     public static final String TEXTURES_PATH = "core/assets/textures.png";
     public static final int ART_WIDTH = 400;
     public static final int ART_HEIGHT = 225;
+    // Constants
+    public static final float FPS_30 = 1 / 30f;
+    public static final float FPS_60 = 1 / 60f;
+    public static final float FPS_120 = 1 / 120f;
+
+
     public static String currentWorld = "world_1.json";
     public static int worldSizeX;
     public static int worldSizeY;
