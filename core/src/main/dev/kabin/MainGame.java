@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class MainGame extends ApplicationAdapter {
@@ -72,8 +71,8 @@ public class MainGame extends ApplicationAdapter {
     }
 
     // Protected methods:
-    protected void setDeveloperUISupplier(Supplier<DeveloperUI> developerUISupplier) {
-        eventTriggerController.setDeveloperUISupplier(developerUISupplier);
+    protected EventTriggerController getEventTriggerController() {
+        return eventTriggerController;
     }
 
     protected boolean isDeveloperMode() {
@@ -95,7 +94,7 @@ public class MainGame extends ApplicationAdapter {
 
 
     protected void synchronizer(Runnable r) {
-        threadHandler.synchronize(r);
+        threadHandler.runSynchronized(r);
     }
 
     private RectInt getCameraNeighborhood() {

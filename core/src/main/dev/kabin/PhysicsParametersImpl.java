@@ -8,7 +8,8 @@ import dev.kabin.util.events.KeyCode;
 import dev.kabin.util.events.KeyEventUtil;
 import org.jetbrains.annotations.NotNull;
 
-class PhysicsParametersImpl implements PhysicsParameters {
+// Do not expose worldRepresentation.
+final class PhysicsParametersImpl implements PhysicsParameters {
 
     @NotNull
     private final WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
@@ -16,6 +17,11 @@ class PhysicsParametersImpl implements PhysicsParameters {
     private final KeyEventUtil keyEventUtil;
     private final float dt;
 
+    /**
+     * @param worldRepresentation provides parameters by delegation.
+     * @param keyEventUtil        provides key press statuses by delegation.
+     * @param dt                  the time step parameter.
+     */
     PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
                           @NotNull KeyEventUtil keyEventUtil,
                           float dt) {

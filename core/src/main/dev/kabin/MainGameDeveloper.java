@@ -56,7 +56,7 @@ public class MainGameDeveloper extends MainGame {
         developerUI.loadEntityLoadingWidgetSettings(entityLoadingWidgetSettings);
         developerUI.loadTileLoadingWidgetSettings(tileSelectionWidgetSettings);
         developerUI.setVisible(isDeveloperMode());
-        setDeveloperUISupplier(() -> developerUI);
+        getEventTriggerController().setDeveloperUISupplier(() -> developerUI);
         developerUISpriteBatch = new SpriteBatch();
     }
 

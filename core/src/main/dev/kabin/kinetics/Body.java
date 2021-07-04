@@ -4,6 +4,7 @@ import dev.kabin.util.collections.LazyList;
 import dev.kabin.util.shapes.deltacomplexes.Simplex2;
 
 public interface Body {
+
     float x();
 
     float y();

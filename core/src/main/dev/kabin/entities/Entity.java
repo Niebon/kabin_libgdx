@@ -66,7 +66,7 @@ public interface Entity<
      * </ul>
      * in the given order.
      * <p>
-     * This order is motivated by the order in which we wish to draw a ordered collection of entities on the screen in
+     * This order can be used to draw an ordered collection of entities on the screen in
      * such a way that the resulting image is as intended. For example, using this order, an entity of type
      * {@code STATIC_BACKGROUND} (typically a picture of mountains) will precede an entity
      * of type {@code ENTITY_INANIMATE} (typically an individual tree or a rock).
