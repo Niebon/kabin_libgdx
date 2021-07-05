@@ -2,6 +2,10 @@ package dev.kabin.util.shapes.deltacomplexes;
 
 public interface Simplex1 {
 
+	static Simplex1 of(float startX, float startY, float endX, float endY) {
+		return new Simplex1Impl(Simplex0.of(startX, startY), Simplex0.of(endX, endY));
+	}
+
 	Simplex0 start();
 
 	Simplex0 end();
