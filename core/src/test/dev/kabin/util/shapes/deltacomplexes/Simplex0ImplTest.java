@@ -45,4 +45,16 @@ class Simplex0ImplTest {
 		Assertions.assertEquals(0f, s0.y(), 0.0001f);
 	}
 
+	@Test
+	void rotate_aboutPivotPointDifferentFromOrigin() {
+		var s0 = Simplex0Impl.of(2f, 0);
+		s0.rotate(1, 0, 0.5 * Math.PI);
+		Assertions.assertEquals(1f, s0.x(), 0.0001f);
+		Assertions.assertEquals(1f, s0.y(), 0.0001f);
+
+		s0.rotate(1, 0, 0.5 * Math.PI);
+		Assertions.assertEquals(0f, s0.x(), 0.0001f);
+		Assertions.assertEquals(0f, s0.y(), 0.0001f);
+	}
+
 }

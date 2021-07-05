@@ -36,7 +36,4 @@ public record Simplex0Impl(ModifiablePointFloat point) implements Simplex0 {
         return point.y();
     }
 
-    public void translate(float x, float y) {
-        point.translate(x, y);
-    }
 }

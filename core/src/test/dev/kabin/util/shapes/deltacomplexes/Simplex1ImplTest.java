@@ -81,16 +81,10 @@ class Simplex1ImplTest {
 
 	@Test
 	void isJoined() {
-
+		var s1 = Simplex1Impl.of(0, 0, 1, 1);
+		var t1 = Simplex1Impl.of(1, 1, 2, 2);
+		Assertions.assertTrue(s1.isJoined(t1));
+		Assertions.assertFalse(t1.isJoined(s1));
 	}
 
-	@Test
-	void start() {
-
-	}
-
-	@Test
-	void end() {
-
-	}
 }

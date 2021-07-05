@@ -1,8 +1,9 @@
 package dev.kabin.util.points;
 
+import dev.kabin.util.helperinterfaces.FloatCoordinates;
 import org.jetbrains.annotations.Contract;
 
-public interface PointFloat {
+public interface PointFloat extends FloatCoordinates {
 
     static ImmutablePointFloat immutable(float x, float y) {
         return new ImmutablePointFloat(x, y);
@@ -11,10 +12,6 @@ public interface PointFloat {
     static ModifiablePointFloat modifiableOf(float x, float y) {
         return new ModifiablePointFloat(x, y);
     }
-
-    float x();
-
-    float y();
 
     @Contract("_->new")
     default PointFloat scaleBy(float scale) {
