@@ -16,4 +16,5 @@ public interface Body {
     float vy();
 
     LazyList<Simplex2> triangulation();
+
 }

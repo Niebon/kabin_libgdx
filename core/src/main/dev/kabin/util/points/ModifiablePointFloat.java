@@ -77,9 +77,9 @@ public final class ModifiablePointFloat implements PointFloat {
 				'}';
 	}
 
-	public ModifiablePointFloat translate(@NotNull ModifiablePointFloat amount) {
-		x = x + amount.x();
-		y = y + amount.y();
+	public ModifiablePointFloat translate(float x, float y) {
+		this.x = this.x + x;
+		this.y = this.y + y;
 		return this;
 	}
 

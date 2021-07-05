@@ -1,26 +1,42 @@
 package dev.kabin.util.shapes.deltacomplexes;
 
+import dev.kabin.util.points.ModifiablePointFloat;
+
 /**
  * A modifiable 0-simplex.
  */
-public class Simplex0Impl {
+public record Simplex0Impl(ModifiablePointFloat point) implements Simplex0 {
 
-    private float x, y;
+    /**
+     * A factory constructor.
+     *
+     * @param x horizontal coordinate.
+     * @param y vertical coordinate.
+     * @return a 0 simplex with coordinates (0,0).
+     */
+    public static Simplex0 of(float x, float y) {
+        return new Simplex0Impl(new ModifiablePointFloat(x, y));
+    }
 
     public void setX(float x) {
-        this.x = x;
+        point.setX(x);
     }
 
     public void setY(float y) {
-        this.y = y;
+        point.setY(y);
     }
 
+    @Override
     public float x() {
-        return x;
+        return point.x();
     }
 
+    @Override
     public float y() {
-        return y;
+        return point.y();
     }
 
+    public void translate(float x, float y) {
+        point.translate(x, y);
+    }
 }
