@@ -1,4 +1,4 @@
-package dev.kabin.util.shapes.deltacomplexes;
+package dev.kabin.util.deltacomplexes;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

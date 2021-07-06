@@ -1,7 +1,7 @@
 package dev.kabin.kinetics;
 
 import dev.kabin.util.collections.LazyList;
-import dev.kabin.util.shapes.deltacomplexes.Simplex2;
+import dev.kabin.util.deltacomplexes.Simplex2;
 
 public interface Body {
 

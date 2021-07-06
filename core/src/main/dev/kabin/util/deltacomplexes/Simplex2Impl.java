@@ -1,4 +1,4 @@
-package dev.kabin.util.shapes.deltacomplexes;
+package dev.kabin.util.deltacomplexes;
 
 public record Simplex2Impl(Simplex1 e1, Simplex1 e2, Simplex1 e3) implements Simplex2 {
 

@@ -1,16 +1,29 @@
-package dev.kabin.util.shapes.deltacomplexes;
+package dev.kabin.util.deltacomplexes;
 
 import dev.kabin.util.helperinterfaces.FloatCoordinates;
-import dev.kabin.util.points.PointFloat;
 
 public interface Simplex2 {
+
+	static Simplex2Impl of(
+			Simplex1 edgeP1P3,
+			Simplex0 p2
+	) {
+		var p1 = edgeP1P3.start();
+		var p3 = edgeP1P3.end();
+
+		var e1 = new Simplex1Impl(p1, p2);
+		var e2 = new Simplex1Impl(p2, p3);
+		var e3 = new Simplex1Impl(p3, p1);
+
+		return new Simplex2Impl(e1, e2, e3);
+	}
 
 	static Simplex2Impl of(float x1, float y1,
 						   float x2, float y2,
 						   float x3, float y3) {
-		var p1 = new Simplex0Impl(PointFloat.modifiableOf(x1, y1));
-		var p2 = new Simplex0Impl(PointFloat.modifiableOf(x2, y2));
-		var p3 = new Simplex0Impl(PointFloat.modifiableOf(x3, y3));
+		var p1 = new Simplex0Impl(x1, y1);
+		var p2 = new Simplex0Impl(x2, y2);
+		var p3 = new Simplex0Impl(x3, y3);
 
 		var e1 = new Simplex1Impl(p1, p2);
 		var e2 = new Simplex1Impl(p2, p3);

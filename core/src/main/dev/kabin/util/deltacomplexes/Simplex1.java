@@ -1,7 +1,19 @@
-package dev.kabin.util.shapes.deltacomplexes;
+package dev.kabin.util.deltacomplexes;
 
+/**
+ * An oriented 1-Simplex with a start and an end.
+ */
 public interface Simplex1 {
 
+	/**
+	 * A factory method for 1-simplex.
+	 *
+	 * @param startX the horizontal coordinate of the start point.
+	 * @param startY the vertical coordinate of the start point.
+	 * @param endX   the horizontal coordinate of the start point.
+	 * @param endY   the vertical coordinate of the start point.
+	 * @return a 1-simplex defined by the input.
+	 */
 	static Simplex1 of(float startX, float startY, float endX, float endY) {
 		return new Simplex1Impl(Simplex0.of(startX, startY), Simplex0.of(endX, endY));
 	}

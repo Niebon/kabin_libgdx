@@ -1,7 +1,9 @@
-package dev.kabin.util.shapes.deltacomplexes;
+package dev.kabin.util.deltacomplexes;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
 
 class Simplex0ImplTest {
 
@@ -57,4 +59,18 @@ class Simplex0ImplTest {
 		Assertions.assertEquals(0f, s0.y(), 0.0001f);
 	}
 
+	@Test
+	void testEquals() {
+		Assertions.assertEquals(Simplex0.of(0, 1), Simplex0.of(0, 1));
+	}
+
+	@Test
+	void testHashCode() {
+		Assertions.assertEquals(Objects.hash(0f, 1f), Simplex0.of(0, 1).hashCode());
+	}
+
+	@Test
+	void testToString() {
+		Assertions.assertEquals("Simplex0Impl{x=0.0, y=1.0}", Simplex0.of(0, 1).toString());
+	}
 }
