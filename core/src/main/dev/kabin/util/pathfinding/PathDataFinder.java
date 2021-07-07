@@ -4,11 +4,11 @@ import dev.kabin.util.Functions;
 import dev.kabin.util.Lists;
 import dev.kabin.util.collections.IntToIntMap;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.geometry.points.PointInt;
+import dev.kabin.util.geometry.primitive.GrowingRectInt;
+import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.graph.SimpleNode;
 import dev.kabin.util.lambdas.BiIntPredicate;
-import dev.kabin.util.points.PointInt;
-import dev.kabin.util.shapes.primitive.GrowingRectInt;
-import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

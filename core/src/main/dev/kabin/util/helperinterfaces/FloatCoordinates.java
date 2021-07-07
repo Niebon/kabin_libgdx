@@ -11,4 +11,5 @@ public interface FloatCoordinates {
      * @return the vertical component.
      */
     float y();
+
 }

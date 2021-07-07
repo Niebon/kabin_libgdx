@@ -3,11 +3,11 @@ package dev.kabin.entities;
 import dev.kabin.shaders.LightSourceData;
 import dev.kabin.util.collections.Id;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.geometry.points.PointInt;
+import dev.kabin.util.geometry.primitive.RectIntView;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
 import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
-import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.imagemetadata.ImgMetadataDelegator;
-import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
 /**

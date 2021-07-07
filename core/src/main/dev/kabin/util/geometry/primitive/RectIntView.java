@@ -1,4 +1,4 @@
-package dev.kabin.util.shapes.primitive;
+package dev.kabin.util.geometry.primitive;
 
 /**
  * Implements an <b>unmodifiable</b> view of a {@link RectInt}.

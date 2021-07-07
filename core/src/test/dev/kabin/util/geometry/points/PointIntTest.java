@@ -1,4 +1,4 @@
-package dev.kabin.util.points;
+package dev.kabin.util.geometry.points;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

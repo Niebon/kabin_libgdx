@@ -1,6 +1,6 @@
-package dev.kabin.util.points;
+package dev.kabin.util.geometry.points;
 
-import dev.kabin.util.shapes.RectFloat;
+import dev.kabin.util.geometry.RectFloat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

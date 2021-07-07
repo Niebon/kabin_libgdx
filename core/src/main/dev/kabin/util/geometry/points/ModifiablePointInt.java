@@ -1,54 +1,54 @@
-package dev.kabin.util.points;
+package dev.kabin.util.geometry.points;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.lambdas.FloatToFloatFunction;
+import dev.kabin.util.lambdas.IntToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper class for a pair of ints.
  */
-public final class ModifiablePointFloat implements PointFloat {
+public final class ModifiablePointInt implements PointInt {
 
-	private float x, y;
+	private int x, y;
 
-	public ModifiablePointFloat(float x, float y) {
+	public ModifiablePointInt(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public ModifiablePointFloat(@NotNull PointFloat p) {
+	public ModifiablePointInt(@NotNull PointInt p) {
 		x = p.x();
 		y = p.y();
 	}
 
-	public ModifiablePointFloat setX(float x) {
+	public ModifiablePointInt setX(int x) {
 		this.x = x;
 		return this;
 	}
 
-	public ModifiablePointFloat setY(float y) {
+	public ModifiablePointInt setY(int y) {
 		this.y = y;
 		return this;
 	}
 
 	@Override
-	public float x() {
+	public int x() {
 		return x;
 	}
 
 	@Override
-	public float y() {
+	public int y() {
 		return y;
 	}
 
 
-	public ModifiablePointFloat transform(@NotNull FloatToFloatFunction fx, @NotNull FloatToFloatFunction fy) {
+	public ModifiablePointInt transform(@NotNull IntToIntFunction fx, @NotNull IntToIntFunction fy) {
 		x = fx.apply(x);
 		y = fy.apply(y);
 		return this;
 	}
 
-	public ModifiablePointFloat rotate(double angleRadians) {
+	public ModifiablePointInt rotate(double angleRadians) {
 		final double cs = Math.cos(angleRadians), sn = Math.sin(angleRadians);
 		x = (int) Math.round(x * cs - y * sn);
 		y = (int) Math.round(x * sn + y * cs);
@@ -59,25 +59,25 @@ public final class ModifiablePointFloat implements PointFloat {
 	@Override
 	final public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof PointFloat that)) return false;
+		if (!(o instanceof PointInt that)) return false;
 		return x == that.x() &&
 				y == that.y();
 	}
 
 	@Override
 	final public int hashCode() {
-		return HashCodeUtil.hashCode(Float.hashCode(x), Float.hashCode(y));
+		return HashCodeUtil.hashCode(x, y);
 	}
 
 	@Override
 	public String toString() {
-		return "PointFloat{" +
+		return "PointInt{" +
 				"x=" + x +
 				", y=" + y +
 				'}';
 	}
 
-	public ModifiablePointFloat translate(@NotNull ModifiablePointFloat amount) {
+	public ModifiablePointInt translate(@NotNull ModifiablePointInt amount) {
 		x = x + amount.x();
 		y = y + amount.y();
 		return this;

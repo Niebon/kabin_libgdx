@@ -1,4 +1,4 @@
-package dev.kabin.util.points;
+package dev.kabin.util.geometry.points;
 
 public interface PointInt {
 

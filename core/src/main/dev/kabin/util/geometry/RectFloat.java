@@ -1,4 +1,4 @@
-package dev.kabin.util.shapes;
+package dev.kabin.util.geometry;
 
 
 import dev.kabin.util.HashCodeUtil;

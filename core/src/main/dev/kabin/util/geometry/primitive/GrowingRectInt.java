@@ -1,4 +1,4 @@
-package dev.kabin.util.shapes.primitive;
+package dev.kabin.util.geometry.primitive;
 
 /**
  * A mutable rectangle with {@code int} coordinates, that can grow by adding points.

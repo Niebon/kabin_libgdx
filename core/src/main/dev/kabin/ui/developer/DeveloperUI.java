@@ -19,9 +19,9 @@ import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.util.events.KeyEventUtil;
 import dev.kabin.util.events.MouseEventUtil;
+import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.lambdas.BooleanSupplier;
 import dev.kabin.util.lambdas.FloatSupplier;
-import dev.kabin.util.shapes.primitive.RectInt;
 import org.json.JSONObject;
 
 import javax.swing.*;

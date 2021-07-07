@@ -10,8 +10,8 @@ import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.events.KeyCode;
 import dev.kabin.util.events.KeyEventUtil;
 import dev.kabin.util.events.MouseEventUtil;
+import dev.kabin.util.geometry.primitive.MutableRectInt;
 import dev.kabin.util.lambdas.FloatSupplier;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

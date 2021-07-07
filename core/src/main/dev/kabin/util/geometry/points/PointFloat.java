@@ -1,22 +1,17 @@
-package dev.kabin.util.points;
+package dev.kabin.util.geometry.points;
 
-import org.jetbrains.annotations.Contract;
+import dev.kabin.util.helperinterfaces.FloatCoordinates;
 
-public interface PointFloat {
+public interface PointFloat extends FloatCoordinates {
 
     static ImmutablePointFloat immutable(float x, float y) {
         return new ImmutablePointFloat(x, y);
     }
 
-    static ModifiablePointFloat modifiableOf(float x, float y) {
+    static ModifiablePointFloat modifiable(float x, float y) {
         return new ModifiablePointFloat(x, y);
     }
 
-    float x();
-
-    float y();
-
-    @Contract("_->new")
     default PointFloat scaleBy(float scale) {
         return immutable(x() * scale, y() * scale);
     }

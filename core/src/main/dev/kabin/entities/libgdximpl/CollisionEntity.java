@@ -2,7 +2,7 @@ package dev.kabin.entities.libgdximpl;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
-import dev.kabin.util.points.PointInt;
+import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.pools.CollisionPool;
 import org.jetbrains.annotations.NotNull;
 

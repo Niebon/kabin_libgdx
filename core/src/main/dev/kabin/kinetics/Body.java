@@ -1,9 +1,10 @@
 package dev.kabin.kinetics;
 
 import dev.kabin.util.collections.LazyList;
-import dev.kabin.util.shapes.deltacomplexes.Simplex2;
+import dev.kabin.util.geometry.polygon.Triangle;
 
 public interface Body {
+
     float x();
 
     float y();
@@ -14,5 +15,6 @@ public interface Body {
 
     float vy();
 
-    LazyList<Simplex2> triangulation();
+    LazyList<Triangle> triangulation();
+
 }
