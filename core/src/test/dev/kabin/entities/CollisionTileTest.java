@@ -4,11 +4,12 @@ import dev.kabin.entities.libgdximpl.CollisionTile;
 import dev.kabin.entities.libgdximpl.EntityParameters;
 import dev.kabin.entities.libgdximpl.EntityType;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
-import dev.kabin.util.Procedures;
-import dev.kabin.util.Statistics;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
+import java.util.stream.IntStream;
 
 class CollisionTileTest {
 
@@ -18,7 +19,7 @@ class CollisionTileTest {
                 .setY(y)
                 .setLayer(0)
                 .setAtlasPath("raw_textures/ground")
-                .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
+                .put(CollisionTile.FRAME_INDEX, new Random().nextInt())
                 .put(CollisionTile.TILE, Tile.SURFACE.name())
                 .setEntityType(EntityType.COLLISION_TILE)
                 .build();
@@ -26,8 +27,7 @@ class CollisionTileTest {
 
     @Test
     void recordLoad() {
-        float scale = 4.8f;
-        Procedures.forEachIntInRange(0, 1_000_000, i -> {
+        IntStream.range(0, 1_000_000).forEach(i -> {
 
             int x = (int) Math.round((Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE);
             int y = (int) Math.round((Math.random() - 0.5) * 3 * CollisionTile.TILE_SIZE);

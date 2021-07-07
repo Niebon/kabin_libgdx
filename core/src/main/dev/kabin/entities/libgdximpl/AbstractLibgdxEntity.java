@@ -155,12 +155,12 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         {
             final float offsetX = params.camX() - params.screenWidth() * 0.5f;
             final float offsetY = params.camY() - params.screenHeight() * 0.5f;
-            final float x = graphicsRootX * params.scale() - offsetX;
-            final float y = graphicsRootY * params.scale() - offsetY;
+            final float x = graphicsRootX * params.scaleX() - offsetX;
+            final float y = graphicsRootY * params.scaleY() - offsetY;
             actor.setBounds(
                     x, y,
-                    animationPlaybackImpl.getWidth() * params.scale(),
-                    animationPlaybackImpl.getHeight() * params.scale()
+                    animationPlaybackImpl.getWidth() * params.scaleX(),
+                    animationPlaybackImpl.getHeight() * params.scaleY()
             );
         }
 

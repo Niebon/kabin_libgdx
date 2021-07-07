@@ -2,6 +2,7 @@ package dev.kabin;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import dev.kabin.entities.libgdximpl.GraphicsParametersImpl;
 import dev.kabin.ui.developer.DeveloperUI;
 import dev.kabin.util.events.KeyCode;
 import org.jetbrains.annotations.Nullable;
@@ -67,10 +68,10 @@ public class MainGameDeveloper extends MainGame {
             if (!getKeyEventUtil().isControlDown()) camera.setPos(
                     camera.getCamera().position.x +
                             (getKeyEventUtil().isPressed(KeyCode.A) == getKeyEventUtil().isPressed(KeyCode.D) ? 0 :
-                                    getKeyEventUtil().isPressed(KeyCode.A) ? -getScale() : getScale()),
+                                    getKeyEventUtil().isPressed(KeyCode.A) ? -getScaleX() : getScaleX()),
                     camera.getCamera().position.y +
                             (getKeyEventUtil().isPressed(KeyCode.S) == getKeyEventUtil().isPressed(KeyCode.W) ? 0 :
-                                    getKeyEventUtil().isPressed(KeyCode.S) ? -getScale() : getScale())
+                                    getKeyEventUtil().isPressed(KeyCode.S) ? -getScaleY() : getScaleY())
             );
         } else {
             super.updateCamera(camera, timeElapsedSinceLastFrame);
@@ -85,11 +86,12 @@ public class MainGameDeveloper extends MainGame {
         if (isDeveloperMode()) {
             developerUI.updatePositionsOfDraggedEntities();
             developerUISpriteBatch.setShader(null);
-            developerUI.render(new GraphicsParametersImpl(developerUISpriteBatch,
+            developerUI.render(GraphicsParametersImpl.of(developerUISpriteBatch,
                     getCameraWrapper().getCamera(),
                     worldRepresentation::forEachEntityInCameraNeighborhood,
                     Gdx.graphics.getDeltaTime(),
-                    getScale(),
+                    getScaleX(),
+                    getScaleY(),
                     Gdx.graphics.getWidth(),
                     Gdx.graphics.getHeight(),
                     shaderProgramMap));

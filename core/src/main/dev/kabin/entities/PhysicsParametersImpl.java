@@ -1,14 +1,13 @@
-package dev.kabin;
+package dev.kabin.entities;
 
 import dev.kabin.components.WorldRepresentation;
-import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.events.KeyCode;
 import dev.kabin.util.events.KeyEventUtil;
 import org.jetbrains.annotations.NotNull;
 
-class PhysicsParametersImpl implements PhysicsParameters {
+public final class PhysicsParametersImpl implements PhysicsParameters {
 
     @NotNull
     private final WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation;
@@ -16,9 +15,9 @@ class PhysicsParametersImpl implements PhysicsParameters {
     private final KeyEventUtil keyEventUtil;
     private final float dt;
 
-    PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
-                          @NotNull KeyEventUtil keyEventUtil,
-                          float dt) {
+    public PhysicsParametersImpl(@NotNull WorldRepresentation<EntityGroup, EntityLibgdx> worldRepresentation,
+                                 @NotNull KeyEventUtil keyEventUtil,
+                                 float dt) {
         this.worldRepresentation = worldRepresentation;
         this.keyEventUtil = keyEventUtil;
         this.dt = dt;

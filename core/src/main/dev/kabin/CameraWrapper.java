@@ -16,16 +16,19 @@ public class CameraWrapper {
     // Neighborhood
     public final MutableRectInt currentCameraNeighborhood = MutableRectInt.centeredAt(0, 0, 2 * GlobalData.ART_WIDTH, 2 * GlobalData.ART_HEIGHT);
     public final RectIntView currentCameraNeighborhoodView = new RectIntView(currentCameraNeighborhood);
-    private final FloatSupplier scale;
+    private final FloatSupplier scaleX;
+    private final FloatSupplier scaleY;
     @NotNull
     private final OrthographicCamera camera;
     private final WeightedAverage2D directionalPreSmoothening = new WeightedAverage2D(0.1f);
     private final WeightedAverage2D directionalFinalSmoothening = new WeightedAverage2D(0.005f);
 
 
-    public CameraWrapper(FloatSupplier scale,
+    public CameraWrapper(FloatSupplier scaleX,
+                         FloatSupplier scaleY,
                          @NotNull OrthographicCamera camera) {
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.camera = camera;
     }
 
@@ -34,12 +37,12 @@ public class CameraWrapper {
         camera.update();
         // Find new camera position:
         currentCameraBounds.translate(
-                Math.round(x / scale.get() - currentCameraBounds.getCenterX()),
-                Math.round(y / scale.get() - currentCameraBounds.getCenterY())
+                Math.round(x / scaleX.get() - currentCameraBounds.getCenterX()),
+                Math.round(y / scaleY.get() - currentCameraBounds.getCenterY())
         );
         currentCameraNeighborhood.translate(
-                Math.round(x / scale.get() - currentCameraNeighborhood.getCenterX()),
-                Math.round(y / scale.get() - currentCameraNeighborhood.getCenterY())
+                Math.round(x / scaleX.get() - currentCameraNeighborhood.getCenterX()),
+                Math.round(y / scaleY.get() - currentCameraNeighborhood.getCenterY())
         );
     }
 
@@ -57,7 +60,7 @@ public class CameraWrapper {
     }
 
     private float scale() {
-        return scale.get();
+        return scaleX.get();
     }
 
     public void follow(Player player, float timeElapsedSinceLastFrame) {

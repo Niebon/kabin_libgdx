@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Player extends EntitySimple {
+public final class Player extends EntitySimple {
 
     // Constants
     private static final float JUMP_VEL_METERS_PER_SECONDS = 5f;

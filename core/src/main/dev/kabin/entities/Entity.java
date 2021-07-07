@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * An entity represents an actor in the game that has coordinates and a sprite.
  *
- * @param <GroupType>         to which group does this entity belong. Could be {@code BACKGROUND}, {@code FOREGROUND}.
- *                            Is used in the canonical ordering on entities.
- * @param <EntityType>        the type of this entity. This is also used in the canonical ordering on entities.
+ * @param <GroupType>         to which group does this entity belong. E.g {@code BACKGROUND}, {@code FOREGROUND}.
+ *                            This enum helps defining the canonical ordering on entities.
+ * @param <EntityType>        the type of this entity. This also defines the canonical ordering on entities.
  * @param <GraphicsParamType> the type of graphics parameters. This is a generic parameter so that one may switch graphics
  *                            dependencies.
  */
@@ -66,8 +66,13 @@ public interface Entity<
      * </ul>
      * in the given order.
      * <p>
-     * This order is motivated by the order in which we wish to draw a ordered collection of entities on the screen in
-     * such a way that the resulting image is as intended. For example, using this order, an entity of type
+     * This order is the order that a collection of entities should be drawn.
+     * <pre> {@code
+     *     var entityCollection = findCollection();
+     *     entityCollection.sort(Entity::compareTo);
+     *     entityCollection.forEach(e -> updateGraphics(params)); }
+     * </pre>
+     * For example, using this order, an entity of type
      * {@code STATIC_BACKGROUND} (typically a picture of mountains) will precede an entity
      * of type {@code ENTITY_INANIMATE} (typically an individual tree or a rock).
      *

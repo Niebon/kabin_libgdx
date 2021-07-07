@@ -28,17 +28,18 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
     private final FloatSupplier camPosY;
     private float xRelativeToWorld, yRelativeToWorld;
     private float xRelativeToUI, yRelativeToUI;
-    private final FloatSupplier scale;
+    private final FloatSupplier scaleX, scaleY;
 
     public MouseEventUtil(Supplier<WorldRepresentation<?, ?>> worldRepresentationSupplier,
                           FloatSupplier camPosX,
                           FloatSupplier camPosY,
-                          FloatSupplier scale) {
+                          FloatSupplier scaleX, FloatSupplier scaleY) {
         initUnmodifiableListeners();
         this.worldRepresentationSupplier = worldRepresentationSupplier;
         this.camPosX = camPosX;
         this.camPosY = camPosY;
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
     }
 
     public PointFloat getPositionRelativeToWorld() {
@@ -102,9 +103,9 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         final WorldRepresentation<?, ?> worldState = worldRepresentationSupplier.get();
         return "Info found about point: \n" +
                 "mouseRelToWorld: " + getPositionRelativeToWorld() + "\n" +
-                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleBy(1 / scale.get()).toPointInt() + "\n" +
+                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleBy(1 / scaleX.get()).toPointInt() + "\n" +
                 "mouseRelToUI: " + getPositionRelativeToUI() + "\n" +
-                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleBy(1 / scale.get()).toPointInt() + "\n" +
+                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleBy(1 / scaleY.get()).toPointInt() + "\n" +
                 "collision: " + (worldState != null ? worldState.getCollision(
                 Math.round(getMouseXRelativeToWorld()),
                 Math.round(getMouseYRelativeToWorld())
@@ -119,8 +120,8 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         float offsetX = camPosX.get() - Gdx.graphics.getWidth() * 0.5f;
         float offsetY = camPosY.get() - Gdx.graphics.getHeight() * 0.5f;
 
-        xRelativeToWorld = (x + offsetX) / scale.get();
-        yRelativeToWorld = (Functions.transformY(y, Gdx.graphics.getHeight()) + offsetY) / scale.get();
+        xRelativeToWorld = (x + offsetX) / scaleX.get();
+        yRelativeToWorld = (Functions.transformY(y, Gdx.graphics.getHeight()) + offsetY) / scaleY.get();
         logger.info(() -> "\n" + "BLC: " + xRelativeToWorld + ", " + yRelativeToWorld + "\n"
                 + "TLC: " + x + "," + y);
     }

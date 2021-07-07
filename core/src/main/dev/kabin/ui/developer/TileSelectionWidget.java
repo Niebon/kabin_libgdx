@@ -17,7 +17,6 @@ import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
-import dev.kabin.util.Statistics;
 import dev.kabin.util.lambdas.FloatSupplier;
 import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +27,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -176,7 +176,7 @@ public class TileSelectionWidget {
                     .setY(mouseRelativeToWorldY.get())
                     .setLayer(0)
                     .setAtlasPath(selectedAsset)
-                    .put(CollisionTile.FRAME_INDEX, Statistics.RANDOM.nextInt())
+                    .put(CollisionTile.FRAME_INDEX, new Random().nextInt())
                     .put(CollisionTile.TILE, currentType.name())
                     .setTextureAtlas(textureAtlasSupplier.get())
                     .setEntityType(EntityType.COLLISION_TILE)

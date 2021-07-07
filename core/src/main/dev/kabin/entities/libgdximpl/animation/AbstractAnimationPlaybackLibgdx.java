@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import dev.kabin.entities.AnimationMetadata;
 import dev.kabin.entities.ImageAnalysisGetter;
+import dev.kabin.entities.libgdximpl.AnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
 import dev.kabin.util.WeightedAverage2D;
 import dev.kabin.util.collections.IntToIntMap;
@@ -194,12 +195,15 @@ public abstract class AbstractAnimationPlaybackLibgdx<T extends Enum<T>>
         final SpriteBatch batch = params.batch();
         batch.setShader(shaderProgram);
         batch.begin();
-        float scale = params.scale();
+        batch.setColor(params.red(), params.green(), params.blue(), params.alpha());
+        float scaleX = params.scaleX();
+        float scaleY = params.scaleY();
         if (renderScale == 1f) {
-            batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale, getHeight() * scale);
+            batch.draw(cachedTextureRegion, x() * scaleX, y() * scaleY, getWidth() * scaleX, getHeight() * scaleY);
         } else {
-            batch.draw(cachedTextureRegion, x() * scale, y() * scale, getWidth() * scale * renderScale, getHeight() * scale * renderScale);
+            batch.draw(cachedTextureRegion, x() * scaleX, y() * scaleY, getWidth() * scaleX * renderScale, getHeight() * scaleY * renderScale);
         }
+        //batch.setColor(Color.WHITE); // Is resetting the color redundant?
         batch.end();
     }
 

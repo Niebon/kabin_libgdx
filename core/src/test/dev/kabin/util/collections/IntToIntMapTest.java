@@ -1,10 +1,10 @@
 package dev.kabin.util.collections;
 
-import dev.kabin.util.Statistics;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,7 +42,7 @@ class IntToIntMapTest {
     void stressTest() {
         IntToIntMap f = new IntToIntMap();
         Map<Integer, Integer> intToIntMap = IntStream.range(0, 1000).boxed()
-                .collect(Collectors.toMap(Function.identity(), i -> Statistics.RANDOM.nextInt()));
+                .collect(Collectors.toMap(Function.identity(), i -> new Random().nextInt()));
         intToIntMap.forEach(f::put);
         intToIntMap.forEach((i, j) -> Assertions.assertEquals(j, f.get(i)));
     }

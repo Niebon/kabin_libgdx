@@ -6,7 +6,7 @@ import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Animate;
 import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
-import dev.kabin.util.Statistics;
+import dev.kabin.util.Random;
 import dev.kabin.util.TangentFinder;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.lambdas.BiIntToFloatFunction;
@@ -125,10 +125,10 @@ public class EntityNPC extends EntitySimple {
                 // If standing still
                 if (dx == 0 && dy == 0) {
                     if (facingRight && !STANDARD_RIGHT_LIST.contains(animationPlaybackImpl.getCurrentAnimation())) {
-                        Animate randomPick = Statistics.drawUniform(STANDARD_RIGHT_LIST, 0.005);
+                        Animate randomPick = Random.maybeDrawUniformWithProbability(STANDARD_RIGHT_LIST, 0.005);
                         animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, Animate.DEFAULT_RIGHT));
                     } else if (!facingRight && !STANDARD_LEFT_LIST.contains(animationPlaybackImpl.getCurrentAnimation())) {
-                        Animate randomPick = Statistics.drawUniform(STANDARD_LEFT_LIST, 0.005);
+                        Animate randomPick = Random.maybeDrawUniformWithProbability(STANDARD_LEFT_LIST, 0.005);
                         animationPlaybackImpl.setCurrentAnimation(Objects.requireNonNullElse(randomPick, Animate.DEFAULT_LEFT));
                     }
                 }

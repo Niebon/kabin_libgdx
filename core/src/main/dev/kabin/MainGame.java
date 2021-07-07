@@ -13,10 +13,8 @@ import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.ConstantFrameRateRenderer;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.libgdximpl.EntityGroup;
-import dev.kabin.entities.libgdximpl.EntityLibgdx;
-import dev.kabin.entities.libgdximpl.GraphicsParametersLibgdx;
-import dev.kabin.entities.libgdximpl.Player;
+import dev.kabin.entities.PhysicsParametersImpl;
+import dev.kabin.entities.libgdximpl.*;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.libgdx.EventTriggerController;
 import dev.kabin.libgdx.InputEventDistributor;
@@ -51,7 +49,8 @@ public class MainGame extends ApplicationAdapter {
     private CameraWrapper camera;
     private ImageMetadataPoolLibgdx imageAnalysisPool;
     private Stage stage;
-    private float scale = 1.0f;
+    private float scaleX = 1.0f;
+    private float scaleY = 1.0f;
     private MouseEventUtil mouseEventUtil;
     private EventTriggerController eventTriggerController;
     private ThreadHandler threadHandler;
@@ -65,10 +64,18 @@ public class MainGame extends ApplicationAdapter {
 
 
     /**
-     * @return the scale factor for the pixel art from the native resolution 400 by 225.
+     * @return the horizontal scale factor for the pixel art from the native resolution 400 by 225.
      */
-    public float getScale() {
-        return scale;
+    public float getScaleX() {
+        return scaleX;
+    }
+
+
+    /**
+     * @return the vertical scale factor for the pixel art from the native resolution 400 by 225.
+     */
+    public float getScaleY() {
+        return scaleY;
     }
 
     // Protected methods:
@@ -112,7 +119,7 @@ public class MainGame extends ApplicationAdapter {
         stage = new Stage();
         // Setup input handling:
         {
-            mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScale);
+            mouseEventUtil = new MouseEventUtil(this::getWorldRepresentation, this::getCameraX, this::getCameraY, this::getScaleX, this::getScaleY);
             keyEventUtil = new KeyEventUtil();
             {
                 final var inputProcessor = new InputEventDistributor(mouseEventUtil, keyEventUtil);
@@ -126,7 +133,8 @@ public class MainGame extends ApplicationAdapter {
                     mouseEventUtil,
                     this::getWorldRepresentation,
                     Functions::getNull,
-                    this::getScale
+                    this::getScaleX,
+                    this::getScaleY
             );
         }
         threadHandler = new ThreadHandler(this::getWorldRepresentation, this::getCameraNeighborhood, this::getDevUI, this::isDeveloperMode);
@@ -139,7 +147,7 @@ public class MainGame extends ApplicationAdapter {
         eventTriggerController.setInputOptions(EventTriggerController.InputOptions.registerAll());
         spriteBatch = new SpriteBatch();
 
-        camera = new CameraWrapper(this::getScale, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        camera = new CameraWrapper(this::getScaleX, this::getScaleY, new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         threadHandler.reload();
         Player.getInstance().ifPresent(p -> p.setHandleInput(true));
 
@@ -187,8 +195,8 @@ public class MainGame extends ApplicationAdapter {
      *
      * @param cameraWrapper the camera wrapper that will be updated.
      */
-    protected void updateCamera(CameraWrapper cameraWrapper, float timeElaspedSinceLastFrame) {
-        Player.getInstance().ifPresent(p -> cameraWrapper.follow(p, timeElaspedSinceLastFrame));
+    protected void updateCamera(CameraWrapper cameraWrapper, float timeElapsedSinceLastFrame) {
+        Player.getInstance().ifPresent(p -> cameraWrapper.follow(p, timeElapsedSinceLastFrame));
     }
 
     public float getCameraX() {
@@ -206,8 +214,22 @@ public class MainGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Update scale. TODO: improve.
-        scale = (float) Gdx.graphics.getWidth() / GlobalData.ART_WIDTH;
+        // Update scale.
+        int height = Gdx.graphics.getHeight();
+        int width = Gdx.graphics.getWidth();
+        float normalRatio = 9f / 16f;
+        float inverseNormalRatio = 16f / 9f;
+        if ((float) height / width < normalRatio) {
+            // Assuming Δy = 0.
+            float deltaX = inverseNormalRatio * height - width;
+            this.scaleX = (width + deltaX) / GlobalData.ART_WIDTH;
+            this.scaleY = (float) height / GlobalData.ART_HEIGHT;
+        } else {
+            // Assuming Δx = 0.
+            float deltaY = normalRatio * width - height;
+            this.scaleX = (float) width / GlobalData.ART_WIDTH;
+            this.scaleY = (height + deltaY) / GlobalData.ART_HEIGHT;
+        }
 
 
         final float timeSinceLastFrame = Gdx.graphics.getDeltaTime();
@@ -249,18 +271,19 @@ public class MainGame extends ApplicationAdapter {
                         camXMinusHalfWidth,
                         camYMinusHalfHeight,
                         Math.min(64, lightSourceData.size()),
-                        scale
+                        this.scaleX
                 );
                 lssBinder.setAmbient(0.4f, 0.4f, 0.4f, 4f);
             }
 
-            final var graphicsParameters = new GraphicsParametersImpl(spriteBatch,
+            final GraphicsParametersLibgdx graphicsParameters = GraphicsParametersImpl.of(spriteBatch,
                     camera.getCamera(),
                     consumer -> worldRepresentation.actionForEachEntityOrderedByType(consumer),
                     getRenderRate(),
-                    scale,
+                    this.scaleX,
+                    this.scaleY,
                     Gdx.graphics.getWidth(),
-                    Gdx.graphics.getHeight(),
+                    height,
                     shaderProgramMap);
 
             graphicsRenderer.accumulateTime(timeSinceLastFrame);

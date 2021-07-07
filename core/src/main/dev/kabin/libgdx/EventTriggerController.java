@@ -24,7 +24,8 @@ public class EventTriggerController {
     private final MouseEventUtil mouseEventUtil;
     private final Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> representation;
     private Supplier<DeveloperUI> developerUISupplier;
-    private final FloatSupplier scaleSupplier;
+    private final FloatSupplier scaleX;
+    private final FloatSupplier scaleY;
     private boolean developerMode = false;
 
     public EventTriggerController(@NotNull EventTriggerController.InputOptions options,
@@ -32,12 +33,14 @@ public class EventTriggerController {
                                   @NotNull MouseEventUtil mouseEventUtil,
                                   @NotNull Supplier<WorldRepresentation<EntityGroup, EntityLibgdx>> representation,
                                   @NotNull Supplier<DeveloperUI> developerUISupplier,
-                                  @NotNull FloatSupplier scaleSupplier) {
+                                  @NotNull FloatSupplier scaleX,
+                                  @NotNull FloatSupplier scaleY) {
         this.keyEventUtil = keyEventUtil;
         this.mouseEventUtil = mouseEventUtil;
         this.representation = representation;
         this.developerUISupplier = developerUISupplier;
-        this.scaleSupplier = scaleSupplier;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         setInputOptions(options);
     }
 
@@ -126,8 +129,8 @@ public class EventTriggerController {
 
                 mouseEventUtil.addMouseScrollListener(val -> representation.get().getEntitiesWithinCameraBoundsCached(
                         MutableRectInt.centeredAt(
-                                Math.round(mouseEventUtil.getMouseXRelativeToWorld() / scaleSupplier.get()),
-                                Math.round(mouseEventUtil.getMouseYRelativeToWorld() / scaleSupplier.get()),
+                                Math.round(mouseEventUtil.getMouseXRelativeToWorld() / scaleX.get()),
+                                Math.round(mouseEventUtil.getMouseYRelativeToWorld() / scaleY.get()),
                                 4,
                                 4)
                 ).stream().sorted(Entity::compareTo).findAny().ifPresent(e -> {

@@ -15,6 +15,15 @@ public interface GraphicsParameters {
 
     float camY();
 
-    float scale();
+    float scaleX();
 
+    float scaleY();
+
+    float alpha();
+
+    float red();
+
+    float green();
+
+    float blue();
 }

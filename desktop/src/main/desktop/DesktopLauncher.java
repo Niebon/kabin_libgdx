@@ -15,7 +15,7 @@ public class DesktopLauncher {
         config.title = "Kabin";
         config.width = 2650;//1280;
         config.height = 1440;//780;
-        config.resizable = false;
+        //config.resizable = false;
         TexturePacker.Settings settings = new TexturePacker.Settings();
         settings.pot = true;
         settings.fast = true;
