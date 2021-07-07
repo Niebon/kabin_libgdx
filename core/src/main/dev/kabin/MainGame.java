@@ -13,7 +13,6 @@ import dev.kabin.components.WorldRepresentation;
 import dev.kabin.entities.ConstantFrameRateRenderer;
 import dev.kabin.entities.Entity;
 import dev.kabin.entities.PhysicsParameters;
-import dev.kabin.entities.PhysicsParametersImpl;
 import dev.kabin.entities.libgdximpl.*;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.libgdx.EventTriggerController;
@@ -240,7 +239,7 @@ public class MainGame extends ApplicationAdapter {
 
         // Render physics
         if (worldRepresentation != null) {
-            final var parameters = new PhysicsParametersImpl(worldRepresentation, keyEventUtil, getRenderRate());
+            final var parameters = new dev.kabin.PhysicsParametersImpl(worldRepresentation, keyEventUtil, getRenderRate());
             physicsRenderer.accumulateTime(timeSinceLastFrame);
             physicsRenderer.render(parameters, worldRepresentation::forEachEntityInCameraNeighborhood);
         }

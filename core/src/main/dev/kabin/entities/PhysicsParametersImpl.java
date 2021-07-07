@@ -1,6 +1,7 @@
 package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
+import dev.kabin.entities.PhysicsParameters;
 import dev.kabin.entities.libgdximpl.EntityGroup;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.events.KeyCode;

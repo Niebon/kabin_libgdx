@@ -17,7 +17,6 @@ import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataPoolLibgdx;
 import dev.kabin.ui.Widget;
 import dev.kabin.util.Functions;
-import dev.kabin.util.Statistics;
 import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.lambdas.FloatSupplier;
 import org.jetbrains.annotations.NotNull;
