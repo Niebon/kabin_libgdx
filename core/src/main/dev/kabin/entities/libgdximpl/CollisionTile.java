@@ -3,8 +3,8 @@ package dev.kabin.entities.libgdximpl;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.util.Functions;
-import dev.kabin.util.points.ImmutablePointInt;
-import dev.kabin.util.points.PointInt;
+import dev.kabin.util.geometry.points.ImmutablePointInt;
+import dev.kabin.util.geometry.points.PointInt;
 import org.json.JSONObject;
 
 import java.util.Map;

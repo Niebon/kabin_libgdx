@@ -8,10 +8,10 @@ import dev.kabin.entities.libgdximpl.animation.imageanalysis.ImageMetadataLibgdx
 import dev.kabin.shaders.AnchoredLightSourceData;
 import dev.kabin.util.NamedObj;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.geometry.primitive.MutableRectInt;
+import dev.kabin.util.geometry.primitive.RectIntView;
 import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
-import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.json.JSONObject;

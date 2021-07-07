@@ -1,6 +1,6 @@
 package dev.kabin.util.pools.imagemetadata;
 
-import dev.kabin.util.points.PointInt;
+import dev.kabin.util.geometry.points.PointInt;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;

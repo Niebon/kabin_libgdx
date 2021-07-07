@@ -2,10 +2,10 @@ package dev.kabin.util.cell;
 
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
+import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.lambdas.FloatUnaryOperation;
 import dev.kabin.util.linalg.FloatMatrix;
 import dev.kabin.util.linalg.IntMatrix;
-import dev.kabin.util.points.PointInt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

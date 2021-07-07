@@ -3,8 +3,8 @@ package dev.kabin;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import dev.kabin.entities.Entity;
+import dev.kabin.util.geometry.primitive.MutableRectInt;
 import dev.kabin.util.lambdas.BiIntPredicate;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;

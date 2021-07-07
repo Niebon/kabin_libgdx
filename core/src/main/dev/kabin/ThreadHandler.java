@@ -2,8 +2,8 @@ package dev.kabin;
 
 import dev.kabin.components.WorldRepresentation;
 import dev.kabin.ui.developer.DeveloperUI;
+import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.lambdas.BooleanSupplier;
-import dev.kabin.util.shapes.primitive.RectInt;
 
 import java.util.Optional;
 import java.util.concurrent.Executors;

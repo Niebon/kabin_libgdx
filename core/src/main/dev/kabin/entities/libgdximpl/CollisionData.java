@@ -1,7 +1,7 @@
 package dev.kabin.entities.libgdximpl;
 
+import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.lambdas.PrimitiveIntPairConsumer;
-import dev.kabin.util.points.PointInt;
 import dev.kabin.util.pools.imagemetadata.ImgMetadataDelegator;
 import org.jetbrains.annotations.NotNull;
 

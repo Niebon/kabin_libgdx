@@ -1,7 +1,7 @@
 package dev.kabin.util;
 
+import dev.kabin.util.geometry.points.PointFloat;
 import dev.kabin.util.lambdas.BiIntPredicate;
-import dev.kabin.util.points.PointFloat;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,7 @@
 package dev.kabin.util;
 
+import dev.kabin.util.geometry.primitive.MutableRectInt;
 import dev.kabin.util.lambdas.BiIntConsumer;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
 
 import java.util.function.IntConsumer;
 

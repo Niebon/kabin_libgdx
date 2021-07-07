@@ -8,8 +8,8 @@ import dev.kabin.entities.Layer;
 import dev.kabin.entities.libgdximpl.CollisionData;
 import dev.kabin.util.cell.Cell;
 import dev.kabin.util.collections.IndexedSet;
+import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.pools.objectpool.Borrowed;
-import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

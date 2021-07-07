@@ -3,9 +3,9 @@ package dev.kabin;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import dev.kabin.entities.libgdximpl.Player;
 import dev.kabin.util.WeightedAverage2D;
+import dev.kabin.util.geometry.primitive.MutableRectInt;
+import dev.kabin.util.geometry.primitive.RectIntView;
 import dev.kabin.util.lambdas.FloatSupplier;
-import dev.kabin.util.shapes.primitive.MutableRectInt;
-import dev.kabin.util.shapes.primitive.RectIntView;
 import org.jetbrains.annotations.NotNull;
 
 public class CameraWrapper {

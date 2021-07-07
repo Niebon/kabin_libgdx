@@ -1,8 +1,8 @@
 package dev.kabin.util.pathfinding;
 
 import dev.kabin.util.Functions;
+import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.lambdas.BiIntPredicate;
-import dev.kabin.util.shapes.primitive.RectInt;
 import org.jetbrains.annotations.NotNull;
 
 

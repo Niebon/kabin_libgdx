@@ -4,12 +4,12 @@ package dev.kabin.util.cell;
 import dev.kabin.components.worldmodel.FloatMatrixPool;
 import dev.kabin.components.worldmodel.IntMatrixPool;
 import dev.kabin.util.collections.Id;
+import dev.kabin.util.geometry.primitive.ImmutableRectInt;
 import dev.kabin.util.lambdas.BiIntToFloatFunction;
 import dev.kabin.util.lambdas.FloatUnaryOperation;
 import dev.kabin.util.lambdas.IntBinaryOperator;
 import dev.kabin.util.linalg.FloatMatrix;
 import dev.kabin.util.linalg.IntMatrix;
-import dev.kabin.util.shapes.primitive.ImmutableRectInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;

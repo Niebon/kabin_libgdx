@@ -28,7 +28,7 @@ import dev.kabin.util.Functions;
 import dev.kabin.util.events.EnumWithBoolHandler;
 import dev.kabin.util.events.KeyEventUtil;
 import dev.kabin.util.events.MouseEventUtil;
-import dev.kabin.util.shapes.primitive.RectInt;
+import dev.kabin.util.geometry.primitive.RectInt;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

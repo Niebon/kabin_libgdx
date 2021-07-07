@@ -2,7 +2,7 @@ package dev.kabin.entities.libgdximpl.animation.imageanalysis;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import dev.kabin.util.Functions;
-import dev.kabin.util.points.PointInt;
+import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.pools.ImagePool;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 import org.jetbrains.annotations.NotNull;
