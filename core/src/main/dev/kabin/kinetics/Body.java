@@ -1,7 +1,6 @@
 package dev.kabin.kinetics;
 
-import dev.kabin.util.collections.LazyList;
-import dev.kabin.util.geometry.polygon.Triangle;
+import dev.kabin.util.geometry.Polygon;
 
 public interface Body {
 
@@ -15,6 +14,6 @@ public interface Body {
 
     float vy();
 
-    LazyList<Triangle> triangulation();
+    Polygon representation();
 
 }

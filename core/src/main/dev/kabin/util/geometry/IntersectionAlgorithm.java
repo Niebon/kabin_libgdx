@@ -1,4 +1,4 @@
-package dev.kabin.util.geometry.polygon;
+package dev.kabin.util.geometry;
 
 
 /**

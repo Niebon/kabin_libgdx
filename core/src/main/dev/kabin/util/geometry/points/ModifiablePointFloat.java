@@ -1,13 +1,14 @@
 package dev.kabin.util.geometry.points;
 
 import dev.kabin.util.HashCodeUtil;
+import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 import dev.kabin.util.lambdas.FloatToFloatFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper class for a pair of ints.
  */
-public final class ModifiablePointFloat implements PointFloat {
+public final class ModifiablePointFloat implements PointFloat, ModifiableFloatCoordinates {
 
 	private float x, y;
 
@@ -19,16 +20,6 @@ public final class ModifiablePointFloat implements PointFloat {
 	public ModifiablePointFloat(@NotNull PointFloat p) {
 		x = p.x();
 		y = p.y();
-	}
-
-	public ModifiablePointFloat setX(float x) {
-		this.x = x;
-		return this;
-	}
-
-	public ModifiablePointFloat setY(float y) {
-		this.y = y;
-		return this;
 	}
 
 	@Override
@@ -45,13 +36,6 @@ public final class ModifiablePointFloat implements PointFloat {
 	public ModifiablePointFloat transform(@NotNull FloatToFloatFunction fx, @NotNull FloatToFloatFunction fy) {
 		x = fx.apply(x);
 		y = fy.apply(y);
-		return this;
-	}
-
-	public ModifiablePointFloat rotate(double angleRadians) {
-		final double cs = Math.cos(angleRadians), sn = Math.sin(angleRadians);
-		x = (int) Math.round(x * cs - y * sn);
-		y = (int) Math.round(x * sn + y * cs);
 		return this;
 	}
 
@@ -77,11 +61,19 @@ public final class ModifiablePointFloat implements PointFloat {
 				'}';
 	}
 
-	public ModifiablePointFloat translate(float x, float y) {
-		this.x = this.x + x;
-		this.y = this.y + y;
-		return this;
+	@Override
+	public void setX(float x) {
+		this.x = x;
 	}
 
+	@Override
+	public void setY(float y) {
+		this.y = y;
+	}
 
+	@SuppressWarnings("MethodDoesntCallSuperMethod")
+	@Override
+	public ModifiablePointFloat clone() {
+		return new ModifiablePointFloat(x, y);
+	}
 }

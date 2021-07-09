@@ -1,6 +1,7 @@
-package dev.kabin.util.geometry.polygon;
+package dev.kabin.util.geometry;
 
 import dev.kabin.util.Functions;
+import dev.kabin.util.geometry.points.PointFloat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,13 +18,13 @@ public class GrahamScanAlgorithm {
      */
     // https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf
     // See Graham’s scan
-    public static Polygon on(Collection<Point> candidatePoints) {
+    public static Polygon on(Collection<PointFloat> candidatePoints) {
 
         final var points = new ArrayList<>(candidatePoints);
-        final var stack = new ArrayStack<Point>(candidatePoints.size());
+        final var stack = new ArrayStack<PointFloat>(candidatePoints.size());
 
-        Point p0 = points.stream()
-                .min(Functions.dictionaryOrder(Comparator.comparing(Point::y), Comparator.comparing(Point::x)))
+        PointFloat p0 = points.stream()
+                .min(Functions.dictionaryOrder(Comparator.comparing(PointFloat::y), Comparator.comparing(PointFloat::x)))
                 .orElseThrow();
 
         points.remove(p0);
@@ -31,7 +32,7 @@ public class GrahamScanAlgorithm {
                 // First compare angle.
                 Comparator.comparingDouble(p -> Functions.findAngleRad(p.x() - p0.x(), p.y() - p0.y())),
                 // If angles do not determine a winner, find who's farthest away from p0.
-                Comparator.<Point>comparingDouble(p -> Functions.distance(p.x(), p.y(), p0.x(), p0.y())).reversed())
+                Comparator.<PointFloat>comparingDouble(p -> Functions.distance(p.x(), p.y(), p0.x(), p0.y())).reversed())
         );
 
         stack.add(p0);
@@ -46,11 +47,11 @@ public class GrahamScanAlgorithm {
             stack.add(point);
         }
 
-        return Polygon.builder().addAll(stack).build();
+        return Polygon.builder().addAll(stack).buildImmutable();
     }
 
-    private static Point direction(Point p1, Point p2) {
-        return Point.of(p2.x() - p1.x(), p2.y() - p1.y());
+    private static PointFloat direction(PointFloat p1, PointFloat p2) {
+        return PointFloat.immutable(p2.x() - p1.x(), p2.y() - p1.y());
     }
 
     /**
@@ -62,7 +63,7 @@ public class GrahamScanAlgorithm {
      * @return the sign of the direction of the turn p1 -> p2 -> p3. If the direction goes to the left, then the sign is positive.
      * Otherwise it is negative.
      */
-    private static float turnSign(Point p1, Point p2, Point p3) {
+    private static float turnSign(PointFloat p1, PointFloat p2, PointFloat p3) {
         var p1p2 = direction(p1, p2);
         var p2p3 = direction(p2, p3);
         return p1p2.cross(p2p3);

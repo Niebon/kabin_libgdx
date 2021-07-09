@@ -15,4 +15,9 @@ public record ImmutablePointFloat(float x, float y) implements PointFloat {
         return HashCodeUtil.hashCode(Float.hashCode(x), Float.hashCode(y));
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public ImmutablePointFloat clone() {
+        return new ImmutablePointFloat(x, y);
+    }
 }

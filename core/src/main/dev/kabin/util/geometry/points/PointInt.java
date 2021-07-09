@@ -13,4 +13,6 @@ public interface PointInt {
     int x();
 
     int y();
+
+
 }

@@ -1,4 +1,7 @@
-package dev.kabin.util.geometry.polygon;
+package dev.kabin.util.geometry;
+
+import dev.kabin.util.geometry.points.PointFloat;
+import dev.kabin.util.helperinterfaces.FloatCoordinates;
 
 /**
  * An oriented line segment with a start and an end.
@@ -14,13 +17,18 @@ public interface Segment {
 	 * @param endY   the vertical coordinate of the start point.
 	 * @return a 1-simplex defined by the input.
 	 */
-	static Segment of(float startX, float startY, float endX, float endY) {
-		return new SegmentImpl(Point.of(startX, startY), Point.of(endX, endY));
+	static Segment modifiable(float startX, float startY, float endX, float endY) {
+		return new SegmentModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
 	}
 
-	Point start();
+	/**
+	 * @return a deep clone of this segment.
+	 */
+	Segment clone();
 
-	Point end();
+	PointFloat start();
+
+	PointFloat end();
 
 	default float startX() {
 		return start().x();
@@ -83,15 +91,9 @@ public interface Segment {
 		return dir4 == 0 && other.contains(end());
 	}
 
-	default void translate(float deltaX, float deltaY) {
-		start().translate(deltaX, deltaY);
-		end().translate(deltaX, deltaY);
-	}
+	void translate(float deltaX, float deltaY);
 
-	default void rotate(float pivotX, float pivotY, double angleRad) {
-		start().rotate(pivotX, pivotY, angleRad);
-		end().rotate(pivotX, pivotY, angleRad);
-	}
+	void rotate(float pivotX, float pivotY, double angleRad);
 
 	/**
 	 * @param other the other simplex.
@@ -101,13 +103,13 @@ public interface Segment {
 		return end().equals(other.start());
 	}
 
-	private boolean contains(Point p) {
+	private boolean contains(FloatCoordinates p) {
 		// Check whether p is on the line or not:
 		return p.x() <= Math.max(startX(), endX()) && p.x() >= Math.min(startX(), endX()) &&
 				p.y() <= Math.max(startY(), endY()) && p.y() >= Math.min(startY(), endY());
 	}
 
-	private int direction(Point a, Point b, Point c) {
+	private int direction(FloatCoordinates a, FloatCoordinates b, FloatCoordinates c) {
 		float val = (b.y() - a.y()) * (c.x() - b.x()) - (b.x() - a.x()) * (c.y() - b.y());
 		if (val == 0)
 			// Co-linear
