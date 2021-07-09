@@ -247,7 +247,7 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
                 .put("layer", layer())
                 .put("type", getType().name())
                 .put("light_sources", namedLightSourceDataList.stream()
-                        .map(no -> no.map(AnchoredLightSourceData::toJSONObject))
+                        .map(namedObj -> namedObj.map(AnchoredLightSourceData::toJSONObject))
                         .collect(Collectors.toMap(NamedObj::name, NamedObj::obj)));
     }
 

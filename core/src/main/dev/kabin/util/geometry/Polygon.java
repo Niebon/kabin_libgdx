@@ -30,7 +30,7 @@ public interface Polygon {
             return this;
         }
 
-        public Builder addAll(List<PointFloat> data) {
+        public Builder addAll(List<? extends PointFloat> data) {
             builderHelper.addAll(data);
             return this;
         }

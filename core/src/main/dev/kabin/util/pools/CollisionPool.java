@@ -1,13 +1,12 @@
 package dev.kabin.util.pools;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.HalfOpenIntRectangle;
-import dev.kabin.util.geometry.Polygon;
 import dev.kabin.util.geometry.points.ImmutablePointInt;
 import dev.kabin.util.geometry.points.PointInt;
+import dev.kabin.util.geometry.primitive.RectInt;
+import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +21,9 @@ public class CollisionPool {
     private static final Map<String, Map<Integer, List<PointInt>>> pathIndexPairToCollisionProfileBoundary = new HashMap<>();
     private static final Map<String, Map<Integer, List<PointInt>>> pathIndexPairToSurfaceContourMapping = new HashMap<>();
     private static final Map<String, Map<Integer, BiIntPredicate>> pathIndexPairToCollisionCheck = new HashMap<>();
-    private static final Map<String, Map<Integer, Polygon>> pathIndexPairToPolygon = new HashMap<>();
 
 
-    public static BiIntPredicate findCollisionCheck(TextureAtlas textureAtlas, String path, int index) {
+    public static BiIntPredicate findCollisionCheck(BiFunction<String, Integer, RectInt> textureAtlas, String path, int index) {
 
         if (!pathIndexPairToCollisionCheck.containsKey(path)) {
             pathIndexPairToCollisionCheck.put(path, new HashMap<>());
@@ -48,7 +46,7 @@ public class CollisionPool {
     }
 
 
-    public static List<PointInt> findCollisionProfile(TextureAtlas textureAtlas, String path, int index) {
+    public static List<PointInt> findCollisionProfile(BiFunction<String, Integer, RectInt> textureAtlas, String path, int index) {
         if (!pathIndexPairToCollisionProfile.containsKey(path) || !pathIndexPairToCollisionProfile.get(path).containsKey(index)) {
             calculateCollisionData(textureAtlas, path, index);
         }
@@ -56,7 +54,7 @@ public class CollisionPool {
     }
 
 
-    public static List<PointInt> findSurfaceContourProfile(TextureAtlas textureAtlas, String path, int index) {
+    public static List<PointInt> findSurfaceContourProfile(BiFunction<String, Integer, RectInt> textureAtlas, String path, int index) {
         if (!pathIndexPairToSurfaceContourMapping.containsKey(path) || !pathIndexPairToSurfaceContourMapping.get(path).containsKey(index)) {
             calculateCollisionData(textureAtlas, path, index);
         }
@@ -65,21 +63,21 @@ public class CollisionPool {
 
 
     private static void calculateCollisionData(
-            TextureAtlas textureAtlas,
+            BiFunction<String, Integer, RectInt> pathIndexToRegion,
             String path,
             int index
     ) {
 
-        final TextureRegion atlasRegion = textureAtlas.findRegion(path, index);
+        final RectInt atlasRegion = pathIndexToRegion.apply(path, index);
 
         if (atlasRegion == null) {
-        	throw new RuntimeException("No atlas region matching name == " + path + ", index == " + index + ".");
-		}
+            throw new RuntimeException("No atlas region matching name == " + path + ", index == " + index + ".");
+        }
 
-        final int x = atlasRegion.getRegionX();
-        final int y = atlasRegion.getRegionY();
-        final int width = atlasRegion.getRegionWidth();
-        final int height = atlasRegion.getRegionHeight();
+        final int x = atlasRegion.getMinX();
+        final int y = atlasRegion.getMinY();
+        final int width = atlasRegion.getWidth();
+        final int height = atlasRegion.getHeight();
 
 
         final BufferedImage bufferedImage = ImagePool.findBufferedImage(GlobalData.TEXTURES_PATH);
