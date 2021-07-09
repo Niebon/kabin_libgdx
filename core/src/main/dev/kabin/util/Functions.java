@@ -43,7 +43,7 @@ public class Functions {
      */
     public static double findAngleDeg(double dx, double dy) {
 
-        double angle = Math.round(Math.toDegrees(Math.atan(dy / dx)));
+        double angle = Math.toDegrees(Math.atan(dy / dx));
 
         if (dx < 0 && dy >= 0) angle = 180 + angle;      // 2nd quadrant
         else if (dx < 0 && dy <= 0) angle = 180 + angle; // 3nd quadrant
@@ -51,7 +51,30 @@ public class Functions {
         if (angle == 360) angle = 0;
 
         return angle;
+    }
 
+    /**
+     * Returns the angle between [0, 2pi) of the given pair [dx,dy].
+     *
+     * @param dx horizontal displacement.
+     * @param dy vertical displacement.
+     * @return angle.
+     */
+    public static double findAngleRad(double dx, double dy) {
+
+        class Constant {
+            static final double HALF_TURN = Math.PI;
+            static final double FULL_TURN = 2 * Math.PI;
+        }
+
+        double angle = Math.atan(dy / dx);
+
+        if (dx < 0 && dy >= 0) angle = Constant.HALF_TURN + angle;      // 2nd quadrant
+        else if (dx < 0 && dy <= 0) angle = Constant.HALF_TURN + angle; // 3nd quadrant
+        else if (dx >= 0 && dy <= 0) angle = Constant.FULL_TURN + angle; // 4nd quadrant
+        if (angle == Constant.FULL_TURN) angle = 0;
+
+        return angle;
     }
 
     /**

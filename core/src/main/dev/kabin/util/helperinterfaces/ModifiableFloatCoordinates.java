@@ -57,4 +57,13 @@ public interface ModifiableFloatCoordinates extends FloatCoordinates {
 		setPos(x() + pivotX, y() + pivotY);
 	}
 
+	/**
+	 * Rotates these coordinates about the origin.
+	 *
+	 * @param angleRad the angle (in radians) that these coordinates are to be rotated by.
+	 */
+	default void rotate(double angleRad) {
+		rotate(0, 0, angleRad);
+	}
+
 }

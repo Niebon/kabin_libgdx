@@ -32,4 +32,16 @@ class FunctionsTest {
         Assertions.assertEquals(Booleans.ternOp2(false, true, "tt", "tf", "ft", "ff"), "ft");
         Assertions.assertEquals(Booleans.ternOp2(false, false, "tt", "tf", "ft", "ff"), "ff");
     }
+
+    @Test
+    void findAngleRad() {
+        Assertions.assertEquals(0, Functions.findAngleRad(1, 0));
+        Assertions.assertEquals(Math.PI / 4, Functions.findAngleRad(1, 1));
+        Assertions.assertEquals(Math.PI / 2, Functions.findAngleRad(0, 1));
+        Assertions.assertEquals(Math.PI * 3 / 4, Functions.findAngleRad(-1, 1));
+        Assertions.assertEquals(Math.PI, Functions.findAngleRad(-1, 0));
+        Assertions.assertEquals(Math.PI * 5 / 4, Functions.findAngleRad(-1, -1));
+        Assertions.assertEquals(Math.PI * 3 / 2, Functions.findAngleRad(0, -1));
+        Assertions.assertEquals(Math.PI * 7 / 4, Functions.findAngleRad(1, -1));
+    }
 }
