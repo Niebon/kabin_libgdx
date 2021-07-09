@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.HalfOpenIntRectangle;
+import dev.kabin.util.geometry.Polygon;
 import dev.kabin.util.geometry.points.ImmutablePointInt;
 import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.lambdas.BiIntPredicate;
@@ -21,6 +22,7 @@ public class CollisionPool {
     private static final Map<String, Map<Integer, List<PointInt>>> pathIndexPairToCollisionProfileBoundary = new HashMap<>();
     private static final Map<String, Map<Integer, List<PointInt>>> pathIndexPairToSurfaceContourMapping = new HashMap<>();
     private static final Map<String, Map<Integer, BiIntPredicate>> pathIndexPairToCollisionCheck = new HashMap<>();
+    private static final Map<String, Map<Integer, Polygon>> pathIndexPairToPolygon = new HashMap<>();
 
 
     public static BiIntPredicate findCollisionCheck(TextureAtlas textureAtlas, String path, int index) {
