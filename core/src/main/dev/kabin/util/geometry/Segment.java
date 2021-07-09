@@ -21,11 +21,6 @@ public interface Segment {
 		return new SegmentModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
 	}
 
-	/**
-	 * @return a deep clone of this segment.
-	 */
-	Segment clone();
-
 	PointFloat start();
 
 	PointFloat end();
