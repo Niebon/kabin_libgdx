@@ -5,7 +5,6 @@ import dev.kabin.util.lambdas.BiIntPredicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -42,15 +41,7 @@ public class Functions {
      * @return angle.
      */
     public static double findAngleDeg(double dx, double dy) {
-
-        double angle = Math.toDegrees(Math.atan(dy / dx));
-
-        if (dx < 0 && dy >= 0) angle = 180 + angle;      // 2nd quadrant
-        else if (dx < 0 && dy <= 0) angle = 180 + angle; // 3nd quadrant
-        else if (dx >= 0 && dy <= 0) angle = 360 + angle; // 4nd quadrant
-        if (angle == 360) angle = 0;
-
-        return angle;
+        return Math.toDegrees(findAngleRad(dx, dy));
     }
 
     /**
@@ -190,14 +181,6 @@ public class Functions {
         } catch (Throwable t) {
             return Optional.empty();
         }
-    }
-
-    public static <T> Comparator<T> dictionaryOrder(Comparator<T> first, Comparator<T> second) {
-        return (a, b) -> {
-            int res = first.compare(a, b);
-            if (res != 0) return res;
-            return second.compare(a, b);
-        };
     }
 
 }

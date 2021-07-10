@@ -174,13 +174,13 @@ record PathDataFinder(PhysicsConstants physicsConstants, BiIntPredicate collisio
 		var pathSegmentNeighborhoodsConnectedList = new ArrayList<ArrayList<GrowingRectInt>>();
 		var pathSegmentToConnectedIndex = new IntToIntMap();
 
-		collisionContributionPerEntity
+        collisionContributionPerEntity
 				.map(l -> l.split(Comparator.comparingInt(PointInt::x)))
 				.map(lsp -> lsp.andThen(pts -> pts.reduce((p1, p2) -> p1.y() > p2.y() ? p1 : p2)))
 				.<PointInt>mapMulti(Iterable::forEach)
 				.filter(Objects::nonNull)
 				.distinct()
-				.sorted(Functions.dictionaryOrder(Comparator.comparingInt(PointInt::x), Comparator.comparingInt(PointInt::y)))
+				.sorted(Comparator.comparingInt(PointInt::x).thenComparingInt(PointInt::y))
 				.forEach(pt -> {
 							if (!addPointToExistingPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods)) {
 								addToNewPathSegment(pt, indexToPathSegment, pathSegmentNeighborhoods, pathSegmentNeighborhoodsConnectedList, pathSegmentToConnectedIndex);

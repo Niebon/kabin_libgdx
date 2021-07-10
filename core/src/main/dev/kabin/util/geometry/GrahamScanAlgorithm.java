@@ -24,16 +24,14 @@ public class GrahamScanAlgorithm {
         final var stack = new ArrayStack<PointFloat>(candidatePoints.size());
 
         PointFloat p0 = points.stream()
-                .min(Functions.dictionaryOrder(Comparator.comparing(PointFloat::y), Comparator.comparing(PointFloat::x)))
+                .min(Comparator.comparing(PointFloat::y).thenComparing(PointFloat::x))
                 .orElseThrow();
 
         points.remove(p0);
-        points.sort(Functions.dictionaryOrder(
-                // First compare angle.
-                Comparator.comparingDouble(p -> Functions.findAngleRad(p.x() - p0.x(), p.y() - p0.y())),
-                // If angles do not determine a winner, find who's farthest away from p0.
-                Comparator.<PointFloat>comparingDouble(p -> Functions.distance(p.x(), p.y(), p0.x(), p0.y())).reversed())
-        );
+        // First compare angle.
+        // If angles do not determine a winner, find who's farthest away from p0.
+        points.sort(Comparator.<PointFloat>comparingDouble(p -> Functions.findAngleRad(p.x() - p0.x(), p.y() - p0.y()))
+                .thenComparing(Comparator.<PointFloat>comparingDouble(p1 -> Functions.distance(p1.x(), p1.y(), p0.x(), p0.y())).reversed()));
 
         stack.add(p0);
         stack.add(points.get(0));
