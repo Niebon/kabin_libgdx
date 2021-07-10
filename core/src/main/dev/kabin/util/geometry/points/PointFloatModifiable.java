@@ -1,23 +1,23 @@
 package dev.kabin.util.geometry.points;
 
 import dev.kabin.util.HashCodeUtil;
-import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.geometry.ModifiableFloatCoordinates;
 import dev.kabin.util.lambdas.FloatToFloatFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper class for a pair of ints.
  */
-public final class ModifiablePointFloat implements PointFloat, ModifiableFloatCoordinates {
+public final class PointFloatModifiable implements PointFloat, ModifiableFloatCoordinates {
 
 	private float x, y;
 
-	public ModifiablePointFloat(float x, float y) {
+	public PointFloatModifiable(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public ModifiablePointFloat(@NotNull PointFloat p) {
+	public PointFloatModifiable(@NotNull PointFloat p) {
 		x = p.x();
 		y = p.y();
 	}
@@ -33,7 +33,7 @@ public final class ModifiablePointFloat implements PointFloat, ModifiableFloatCo
 	}
 
 
-	public ModifiablePointFloat transform(@NotNull FloatToFloatFunction fx, @NotNull FloatToFloatFunction fy) {
+	public PointFloatModifiable transform(@NotNull FloatToFloatFunction fx, @NotNull FloatToFloatFunction fy) {
 		x = fx.apply(x);
 		y = fy.apply(y);
 		return this;
@@ -73,7 +73,7 @@ public final class ModifiablePointFloat implements PointFloat, ModifiableFloatCo
 
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	@Override
-	public ModifiablePointFloat clone() {
-		return new ModifiablePointFloat(x, y);
+	public PointFloatModifiable clone() {
+		return new PointFloatModifiable(x, y);
 	}
 }

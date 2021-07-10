@@ -1,23 +1,23 @@
 package dev.kabin.util.geometry.points;
 
-import dev.kabin.util.helperinterfaces.FloatCoordinates;
+import dev.kabin.util.geometry.FloatCoordinates;
 
 public interface PointFloat extends FloatCoordinates {
 
-    static ImmutablePointFloat immutable(PointFloat p) {
-        return new ImmutablePointFloat(p.x(), p.y());
+    static PointFloatImmutable immutable(PointFloat p) {
+        return new PointFloatImmutable(p.x(), p.y());
     }
 
-    static ModifiablePointFloat modifiable(PointFloat p) {
-        return new ModifiablePointFloat(p.x(), p.y());
+    static PointFloatModifiable modifiable(PointFloat p) {
+        return new PointFloatModifiable(p.x(), p.y());
     }
 
-    static ImmutablePointFloat immutable(float x, float y) {
-        return new ImmutablePointFloat(x, y);
+    static PointFloatImmutable immutable(float x, float y) {
+        return new PointFloatImmutable(x, y);
     }
 
-    static ModifiablePointFloat modifiable(float x, float y) {
-        return new ModifiablePointFloat(x, y);
+    static PointFloatModifiable modifiable(float x, float y) {
+        return new PointFloatModifiable(x, y);
     }
 
     default PointFloat scaleBy(float scale) {

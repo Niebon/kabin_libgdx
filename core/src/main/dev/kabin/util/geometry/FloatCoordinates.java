@@ -1,4 +1,4 @@
-package dev.kabin.util.helperinterfaces;
+package dev.kabin.util.geometry;
 
 public interface FloatCoordinates {
 

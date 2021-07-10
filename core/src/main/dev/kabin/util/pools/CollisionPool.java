@@ -3,8 +3,8 @@ package dev.kabin.util.pools;
 import dev.kabin.GlobalData;
 import dev.kabin.util.Functions;
 import dev.kabin.util.HalfOpenIntRectangle;
-import dev.kabin.util.geometry.points.ImmutablePointInt;
 import dev.kabin.util.geometry.points.PointInt;
+import dev.kabin.util.geometry.points.PointIntImmutable;
 import dev.kabin.util.geometry.primitive.RectInt;
 import dev.kabin.util.lambdas.BiFunction;
 import dev.kabin.util.lambdas.BiIntPredicate;
@@ -115,12 +115,12 @@ public class CollisionPool {
                                 && !((0xFF & (bufferedImage.getRGB(i, j - 1) >> 24)) > 0);
                     }
                 } else pointOfPath = false;
-                final ImmutablePointInt immutablePointInt = new ImmutablePointInt(i - x, j - y);
+                final PointIntImmutable pointIntImmutable = new PointIntImmutable(i - x, j - y);
                 if (collision) {
-                    pathIndexPairToCollisionProfile.get(path).get(index).add(immutablePointInt);
+                    pathIndexPairToCollisionProfile.get(path).get(index).add(pointIntImmutable);
                 }
                 if (pointOfPath) {
-                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(immutablePointInt);
+                    pathIndexPairToSurfaceContourMapping.get(path).get(index).add(pointIntImmutable);
                 }
             }
         }
@@ -129,9 +129,9 @@ public class CollisionPool {
         pathIndexPairToCollisionProfileBoundary.get(path).put(index, findCollisionProfileBoundary(x, y, width, height, bufferedImage));
 
         // Finally, transform to game coordinates: positive y-direction points upwards ...
-        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
-        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
-        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new ImmutablePointInt(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToCollisionProfile.get(path).get(index).replaceAll(p -> new PointIntImmutable(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToCollisionProfileBoundary.get(path).get(index).replaceAll(p -> new PointIntImmutable(p.x(), Functions.transformY(p.y(), height)));
+        pathIndexPairToSurfaceContourMapping.get(path).get(index).replaceAll(p -> new PointIntImmutable(p.x(), Functions.transformY(p.y(), height)));
 
 
         // ... and make collections unmodifiable:
@@ -199,7 +199,7 @@ public class CollisionPool {
     private static boolean boundaryFound(int i, int j, @NotNull BufferedImage bufferedImage, List<PointInt> boundary) {
         final double alphaValue = (0xFF & (bufferedImage.getRGB(i, j) >> 24));
         final boolean collision = alphaValue > 0;
-        if (collision) boundary.add(new ImmutablePointInt(i, j));
+        if (collision) boundary.add(new PointIntImmutable(i, j));
         return collision;
     }
 

@@ -1,7 +1,7 @@
 package dev.kabin.shaders;
 
+import dev.kabin.util.geometry.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.JSONSerializable;
-import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
 
 public interface LightSourceData extends ModifiableFloatCoordinates, JSONSerializable {
 

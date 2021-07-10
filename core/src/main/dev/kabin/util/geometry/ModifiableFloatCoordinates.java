@@ -1,9 +1,9 @@
-package dev.kabin.util.helperinterfaces;
+package dev.kabin.util.geometry;
 
 /**
  * An interface that provides standard methods for modifiable coordinates.
  */
-public interface ModifiableFloatCoordinates extends FloatCoordinates {
+public interface ModifiableFloatCoordinates extends FloatCoordinates, RigidTransformations {
 
 	/**
 	 * Modify the horizontal component.
@@ -48,6 +48,7 @@ public interface ModifiableFloatCoordinates extends FloatCoordinates {
 	 * @param pivotY   y coordinate of a pivot point.
 	 * @param angleRad the angle (in radians) that these coordinates are to be rotated by.
 	 */
+	@Override
 	default void rotate(float pivotX, float pivotY, double angleRad) {
 		setPos(x() - pivotX, y() - pivotY);
 		final double cs = Math.cos(angleRad);
@@ -55,15 +56,6 @@ public interface ModifiableFloatCoordinates extends FloatCoordinates {
 		// Apply rotation matrix.
 		setPos((float) (x() * cs - y() * sn), (float) (x() * sn + y() * cs));
 		setPos(x() + pivotX, y() + pivotY);
-	}
-
-	/**
-	 * Rotates these coordinates about the origin.
-	 *
-	 * @param angleRad the angle (in radians) that these coordinates are to be rotated by.
-	 */
-	default void rotate(double angleRad) {
-		rotate(0, 0, angleRad);
 	}
 
 }

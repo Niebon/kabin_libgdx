@@ -1,6 +1,6 @@
 package dev.kabin.kinetics;
 
-import dev.kabin.util.geometry.ModifiablePolygon;
+import dev.kabin.util.geometry.PolygonModifiable;
 
 public interface Body {
 
@@ -14,6 +14,6 @@ public interface Body {
 
     float vy();
 
-    ModifiablePolygon representation();
+    PolygonModifiable representation();
 
 }

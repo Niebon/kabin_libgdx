@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import dev.kabin.util.Functions;
-import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.geometry.ModifiableFloatCoordinates;
 
 import java.util.Arrays;
 import java.util.Objects;

@@ -23,7 +23,7 @@ public class GrahamScanAlgorithm {
         final var points = new ArrayList<>(candidatePoints);
         final var stack = new ArrayStack<PointFloat>(candidatePoints.size());
 
-        PointFloat p0 = points.stream()
+        final PointFloat p0 = points.stream()
                 .min(Comparator.comparing(PointFloat::y).thenComparing(PointFloat::x))
                 .orElseThrow();
 

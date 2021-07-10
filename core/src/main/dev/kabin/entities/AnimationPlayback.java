@@ -1,6 +1,6 @@
 package dev.kabin.entities;
 
-import dev.kabin.util.helperinterfaces.ModifiableFloatCoordinates;
+import dev.kabin.util.geometry.ModifiableFloatCoordinates;
 import dev.kabin.util.helperinterfaces.RectangularArea;
 import dev.kabin.util.pools.imagemetadata.ImageMetadata;
 

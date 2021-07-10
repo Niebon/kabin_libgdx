@@ -3,8 +3,8 @@ package dev.kabin.entities.libgdximpl;
 import dev.kabin.entities.libgdximpl.animation.AbstractAnimationPlaybackLibgdx;
 import dev.kabin.entities.libgdximpl.animation.enums.Tile;
 import dev.kabin.util.Functions;
-import dev.kabin.util.geometry.points.ImmutablePointInt;
 import dev.kabin.util.geometry.points.PointInt;
+import dev.kabin.util.geometry.points.PointIntImmutable;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class CollisionTile extends CollisionEntity {
 	public static final int TILE_SIZE = 16;
 
 	// Static variables
-	private static final Map<ImmutablePointInt, CollisionTile> objectPool = new ConcurrentHashMap<>();
+	private static final Map<PointIntImmutable, CollisionTile> objectPool = new ConcurrentHashMap<>();
 
 	// Fields
 	private final Tile tile;

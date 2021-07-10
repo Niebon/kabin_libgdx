@@ -1,23 +1,23 @@
 package dev.kabin.util.geometry;
 
-import dev.kabin.util.geometry.points.ImmutablePointFloat;
 import dev.kabin.util.geometry.points.PointFloat;
+import dev.kabin.util.geometry.points.PointFloatImmutable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Arrays;
 import java.util.List;
 
-public final class ModifiablePolygon implements Polygon {
+public final class PolygonModifiable implements Polygon {
 
 	private final SegmentModifiable[] data;
 
-	ModifiablePolygon(SegmentModifiable[] data) {
+	PolygonModifiable(SegmentModifiable[] data) {
 		this.data = data;
 	}
 
 	@Override
 	@UnmodifiableView
-	public List<ImmutablePointFloat> boundary() {
+	public List<PointFloatImmutable> boundary() {
 		return Arrays.stream(data).map(Segment::start).map(PointFloat::immutable).toList();
 	}
 

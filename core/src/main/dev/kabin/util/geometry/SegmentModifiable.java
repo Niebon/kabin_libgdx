@@ -1,11 +1,12 @@
 package dev.kabin.util.geometry;
 
-import dev.kabin.util.geometry.points.ModifiablePointFloat;
+import dev.kabin.util.geometry.points.PointFloatModifiable;
 
 /**
  * A modifiable 1-simplex.
  */
-public record SegmentModifiable(ModifiablePointFloat start, ModifiablePointFloat end) implements Segment {
+public record SegmentModifiable(PointFloatModifiable start,
+								PointFloatModifiable end) implements Segment, RigidTransformations {
 	public SegmentModifiable {
 		if (start.equals(end)) {
 			throw new IllegalArgumentException("Start must not equal end: " + this);

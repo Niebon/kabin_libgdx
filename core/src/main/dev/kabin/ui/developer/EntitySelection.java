@@ -6,8 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import dev.kabin.entities.libgdximpl.EntityLibgdx;
 import dev.kabin.util.events.MouseEventUtil;
 import dev.kabin.util.geometry.RectFloat;
-import dev.kabin.util.geometry.points.ImmutablePointFloat;
 import dev.kabin.util.geometry.points.PointFloat;
+import dev.kabin.util.geometry.points.PointFloatImmutable;
 import dev.kabin.util.lambdas.FloatSupplier;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class EntitySelection {
     private final FloatSupplier camPosX;
     private final FloatSupplier camPosY;
     private RectFloat backingRect;
-    private ImmutablePointFloat begin;
+    private PointFloatImmutable begin;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final EntitySelectionMuters entitySelectionMuters = new EntitySelectionMuters();
 

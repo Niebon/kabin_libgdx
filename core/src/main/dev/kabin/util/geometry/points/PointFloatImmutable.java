@@ -8,11 +8,16 @@ import dev.kabin.util.HashCodeUtil;
  * Also implements hash {@link #equals(Object)} and {@link #hashCode()}, so it should be safe to
  * use as hash-map keys.
  */
-public record ImmutablePointInt(int x, int y) implements PointInt {
+public record PointFloatImmutable(float x, float y) implements PointFloat {
 
     @Override
     final public int hashCode() {
-        return HashCodeUtil.hashCode(x, y);
+        return HashCodeUtil.hashCode(Float.hashCode(x), Float.hashCode(y));
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public PointFloatImmutable clone() {
+        return new PointFloatImmutable(x, y);
+    }
 }

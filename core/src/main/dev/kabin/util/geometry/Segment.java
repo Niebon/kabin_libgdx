@@ -1,7 +1,6 @@
 package dev.kabin.util.geometry;
 
 import dev.kabin.util.geometry.points.PointFloat;
-import dev.kabin.util.helperinterfaces.FloatCoordinates;
 
 /**
  * An oriented line segment with a start and an end.
@@ -17,7 +16,7 @@ public interface Segment {
 	 * @param endY   the vertical coordinate of the start point.
 	 * @return a 1-simplex defined by the input.
 	 */
-	static Segment modifiable(float startX, float startY, float endX, float endY) {
+	static SegmentModifiable modifiable(float startX, float startY, float endX, float endY) {
 		return new SegmentModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
 	}
 
@@ -85,10 +84,6 @@ public interface Segment {
 		// When p1 of line1 are on the line2:
 		return dir4 == 0 && other.contains(end());
 	}
-
-	void translate(float deltaX, float deltaY);
-
-	void rotate(float pivotX, float pivotY, double angleRad);
 
 	/**
 	 * @param other the other simplex.
