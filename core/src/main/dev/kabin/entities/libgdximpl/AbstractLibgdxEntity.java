@@ -276,7 +276,6 @@ abstract class AbstractLibgdxEntity implements EntityLibgdx {
         return animationPlaybackImpl.avgLowestArtPixel();
     }
 
-
     @Override
     public float getAvgMassCenterX() {
         return animationPlaybackImpl.avgArtPixelMassCenterX();
