@@ -103,9 +103,9 @@ public class MouseEventUtil implements EnumWithBoolHandler<MouseEventUtil.MouseB
         final WorldRepresentation<?, ?> worldState = worldRepresentationSupplier.get();
         return "Info found about point: \n" +
                 "mouseRelToWorld: " + getPositionRelativeToWorld() + "\n" +
-                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().scaleBy(1 / scaleX.get()).toPointInt() + "\n" +
+                "mouseRelToWorldUnscaled: " + getPositionRelativeToWorld().map((x, y) -> PointFloat.immutable(x / scaleX.get(), y / scaleY.get())) + "\n" +
                 "mouseRelToUI: " + getPositionRelativeToUI() + "\n" +
-                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().scaleBy(1 / scaleY.get()).toPointInt() + "\n" +
+                "mouseRelToUIUnscaled: " + getPositionRelativeToUI().map((x, y) -> PointFloat.immutable(x / scaleX.get(), y / scaleY.get())) + "\n" +
                 "collision: " + (worldState != null ? worldState.getCollision(
                 Math.round(getMouseXRelativeToWorld()),
                 Math.round(getMouseYRelativeToWorld())

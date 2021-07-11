@@ -11,6 +11,14 @@ import dev.kabin.util.HashCodeUtil;
 public record PointFloatImmutable(float x, float y) implements PointFloat {
 
     @Override
+    final public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PointFloat that)) return false;
+        return x == that.x() &&
+                y == that.y();
+    }
+
+    @Override
     final public int hashCode() {
         return HashCodeUtil.hashCode(Float.hashCode(x), Float.hashCode(y));
     }

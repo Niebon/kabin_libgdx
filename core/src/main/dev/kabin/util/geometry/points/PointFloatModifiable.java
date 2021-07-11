@@ -2,7 +2,7 @@ package dev.kabin.util.geometry.points;
 
 import dev.kabin.util.HashCodeUtil;
 import dev.kabin.util.geometry.ModifiableFloatCoordinates;
-import dev.kabin.util.lambdas.FloatToFloatFunction;
+import dev.kabin.util.lambdas.FloatFunction;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,27 +23,27 @@ public final class PointFloatModifiable implements PointFloat, ModifiableFloatCo
 	}
 
 	@Override
-	public float x() {
-		return x;
-	}
+    public float x() {
+        return x;
+    }
 
-	@Override
-	public float y() {
-		return y;
-	}
-
-
-	public PointFloatModifiable transform(@NotNull FloatToFloatFunction fx, @NotNull FloatToFloatFunction fy) {
-		x = fx.apply(x);
-		y = fy.apply(y);
-		return this;
-	}
+    @Override
+    public float y() {
+        return y;
+    }
 
 
-	@Override
-	final public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof PointFloat that)) return false;
+    public PointFloatModifiable transform(@NotNull FloatFunction fx, @NotNull FloatFunction fy) {
+        x = fx.apply(x);
+        y = fy.apply(y);
+        return this;
+    }
+
+
+    @Override
+    final public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PointFloat that)) return false;
 		return x == that.x() &&
 				y == that.y();
 	}

@@ -1,6 +1,8 @@
 package dev.kabin.util.geometry;
 
 import dev.kabin.util.geometry.points.PointFloat;
+import dev.kabin.util.geometry.points.PointFloatImmutable;
+import dev.kabin.util.geometry.points.PointFloatModifiable;
 
 /**
  * An oriented line segment with a start and an end.
@@ -8,7 +10,7 @@ import dev.kabin.util.geometry.points.PointFloat;
 public interface Segment {
 
 	/**
-	 * A factory method for a line segment.
+	 * A factory method for a modifiable line segment.
 	 *
 	 * @param startX the horizontal coordinate of the start point.
 	 * @param startY the vertical coordinate of the start point.
@@ -18,6 +20,28 @@ public interface Segment {
 	 */
 	static SegmentModifiable modifiable(float startX, float startY, float endX, float endY) {
 		return new SegmentModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
+	}
+
+	static SegmentModifiable modifiable(PointFloatModifiable start, PointFloatModifiable end) {
+		return new SegmentModifiable(start, end);
+	}
+
+
+	/**
+	 * A factory method for an immutable line segment.
+	 *
+	 * @param startX the horizontal coordinate of the start point.
+	 * @param startY the vertical coordinate of the start point.
+	 * @param endX   the horizontal coordinate of the start point.
+	 * @param endY   the vertical coordinate of the start point.
+	 * @return a 1-simplex defined by the input.
+	 */
+	static SegmentImmutable immutable(float startX, float startY, float endX, float endY) {
+		return Segment.immutable(PointFloat.immutable(startX, startY), PointFloat.immutable(endX, endY));
+	}
+
+	static SegmentImmutable immutable(PointFloatImmutable start, PointFloatImmutable end) {
+		return new SegmentImmutable(start, end);
 	}
 
 	PointFloat start();

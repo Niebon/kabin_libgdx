@@ -15,4 +15,11 @@ public record PointIntImmutable(int x, int y) implements PointInt {
         return HashCodeUtil.hashCode(x, y);
     }
 
+    @Override
+    final public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PointFloat that)) return false;
+        return x == that.x() &&
+                y == that.y();
+    }
 }
