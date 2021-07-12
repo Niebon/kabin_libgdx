@@ -9,16 +9,16 @@ import java.util.List;
 
 public final class PolygonModifiable implements Polygon, RigidTransformations {
 
-    private final SegmentModifiable[] data;
+    private final EdgeModifiable[] data;
 
-    PolygonModifiable(SegmentModifiable[] data) {
+    PolygonModifiable(EdgeModifiable[] data) {
         this.data = data;
     }
 
     @Override
     @UnmodifiableView
     public List<PointFloatImmutable> boundary() {
-		return Arrays.stream(data).map(Segment::start).map(PointFloat::immutable).toList();
+        return Arrays.stream(data).map(Edge::start).map(PointFloat::immutable).toList();
     }
 
     @Override
@@ -31,14 +31,14 @@ public final class PolygonModifiable implements Polygon, RigidTransformations {
 
     @Override
     public void rotate(float pivotX, float pivotY, double angleRad) {
-        for (SegmentModifiable datum : data) {
+        for (EdgeModifiable datum : data) {
             datum.start().rotate(pivotX, pivotY, angleRad);
         }
     }
 
     @Override
     public void translate(float deltaX, float deltaY) {
-        for (SegmentModifiable datum : data) {
+        for (EdgeModifiable datum : data) {
             datum.start().translate(deltaX, deltaY);
         }
     }

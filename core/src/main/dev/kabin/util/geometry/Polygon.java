@@ -46,9 +46,9 @@ class PolygonBuilder {
                 .mapToObj(i -> {
                     var first = builderHelper.get(Math.floorMod(i, builderHelper.size()));
                     var second = builderHelper.get(Math.floorMod(i + 1, builderHelper.size()));
-                    return new SegmentModifiable(PointFloat.modifiable(first), PointFloat.modifiable(second));
+                    return new EdgeModifiable(PointFloat.modifiable(first), PointFloat.modifiable(second));
                 })
-                .toArray(SegmentModifiable[]::new));
+                .toArray(EdgeModifiable[]::new));
     }
 
     public PolygonImmutable buildImmutable() {
@@ -56,9 +56,9 @@ class PolygonBuilder {
                 .mapToObj(i -> {
                     var first = builderHelper.get(Math.floorMod(i, builderHelper.size()));
                     var second = builderHelper.get(Math.floorMod(i + 1, builderHelper.size()));
-                    return new SegmentImmutable(PointFloat.immutable(first), PointFloat.immutable(second));
+                    return new EdgeImmutable(PointFloat.immutable(first), PointFloat.immutable(second));
                 })
-                .toArray(SegmentImmutable[]::new));
+                .toArray(EdgeImmutable[]::new));
     }
 
 }

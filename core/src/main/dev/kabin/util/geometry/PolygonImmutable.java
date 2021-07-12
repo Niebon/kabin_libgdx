@@ -8,19 +8,19 @@ import java.util.List;
 
 public final class PolygonImmutable implements Polygon {
 
-	private final SegmentImmutable[] data;
+    private final EdgeImmutable[] data;
 
-	PolygonImmutable(SegmentImmutable[] data) {
-		this.data = data;
-	}
+    PolygonImmutable(EdgeImmutable[] data) {
+        this.data = data;
+    }
 
-	@Override
-	@UnmodifiableView
-	public List<PointFloatImmutable> boundary() {
-		return Arrays.stream(data).map(Segment::start).map(PointFloatImmutable.class::cast).toList();
-	}
+    @Override
+    @UnmodifiableView
+    public List<PointFloatImmutable> boundary() {
+        return Arrays.stream(data).map(Edge::start).map(PointFloatImmutable.class::cast).toList();
+    }
 
-	@Override
+    @Override
 	public String toString() {
 		return "Polygon{" +
 				"data=" + Arrays.toString(data) +

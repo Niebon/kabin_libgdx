@@ -18,7 +18,7 @@ public record PointIntImmutable(int x, int y) implements PointInt {
     @Override
     final public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PointFloat that)) return false;
+        if (!(o instanceof PointInt that)) return false;
         return x == that.x() &&
                 y == that.y();
     }

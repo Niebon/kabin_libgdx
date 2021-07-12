@@ -1,6 +1,7 @@
 package dev.kabin.util.geometry;
 
 import dev.kabin.util.geometry.points.PointFloat;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -13,10 +14,15 @@ public interface Triangle {
         var p2 = PointFloat.immutable(x2, y2);
         var p3 = PointFloat.immutable(x3, y3);
 
-        var e1 = Segment.immutable(p1, p2);
-        var e2 = Segment.immutable(p2, p3);
-        var e3 = Segment.immutable(p3, p1);
+        var e1 = Edge.immutable(p1, p2);
+        var e2 = Edge.immutable(p2, p3);
+        var e3 = Edge.immutable(p3, p1);
 
+        return immutable(e1, e2, e3);
+    }
+
+    @NotNull
+    private static TriangleImmutable immutable(EdgeImmutable e1, EdgeImmutable e2, EdgeImmutable e3) {
         return new TriangleImmutable(e1, e2, e3);
     }
 
@@ -27,17 +33,22 @@ public interface Triangle {
         var p2 = PointFloat.modifiable(x2, y2);
         var p3 = PointFloat.modifiable(x3, y3);
 
-        var e1 = Segment.modifiable(p1, p2);
-        var e2 = Segment.modifiable(p2, p3);
-        var e3 = Segment.modifiable(p3, p1);
+        var e1 = Edge.modifiable(p1, p2);
+        var e2 = Edge.modifiable(p2, p3);
+        var e3 = Edge.modifiable(p3, p1);
 
+        return modifiable(e1, e2, e3);
+    }
+
+    @NotNull
+    private static TriangleModifiable modifiable(EdgeModifiable e1, EdgeModifiable e2, EdgeModifiable e3) {
         return new TriangleModifiable(e1, e2, e3);
     }
 
-    default void forEachVertex(Consumer<Segment> action) {
-        action.accept(e1());
-        action.accept(e2());
-        action.accept(e3());
+    default void forEachEdge(Consumer<Edge> edgeAction) {
+        edgeAction.accept(e1());
+        edgeAction.accept(e2());
+        edgeAction.accept(e3());
 
     }
 
@@ -53,20 +64,20 @@ public interface Triangle {
         return e3().start();
     }
 
-    Segment e1();
+    Edge e1();
 
-    Segment e2();
+    Edge e2();
 
-    Segment e3();
+    Edge e3();
 
     /**
-     * Check if the given triangle contains the given vertex.
+     * Check if the given triangle contains the given edge.
      *
-     * @param vertex a vertex.
+     * @param edge an edge.
      * @return true if this triangle contains it - false otherwise.
      */
-    default boolean hasVertex(Segment vertex) {
-        return e1().equals(vertex) || e2().equals(vertex) || e3().equals(vertex);
+    default boolean hasEdge(Edge edge) {
+        return e1().equals(edge) || e2().equals(edge) || e3().equals(edge);
     }
 
     /**

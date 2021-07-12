@@ -1,13 +1,14 @@
 package dev.kabin.util.geometry;
 
+import dev.kabin.util.Functions;
 import dev.kabin.util.geometry.points.PointFloat;
 import dev.kabin.util.geometry.points.PointFloatImmutable;
 import dev.kabin.util.geometry.points.PointFloatModifiable;
 
 /**
- * An oriented line segment with a start and an end.
+ * An edge with a start and an end.
  */
-public interface Segment {
+public interface Edge {
 
 	/**
 	 * A factory method for a modifiable line segment.
@@ -18,12 +19,12 @@ public interface Segment {
 	 * @param endY   the vertical coordinate of the start point.
 	 * @return a 1-simplex defined by the input.
 	 */
-	static SegmentModifiable modifiable(float startX, float startY, float endX, float endY) {
-		return new SegmentModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
+	static EdgeModifiable modifiable(float startX, float startY, float endX, float endY) {
+		return new EdgeModifiable(PointFloat.modifiable(startX, startY), PointFloat.modifiable(endX, endY));
 	}
 
-	static SegmentModifiable modifiable(PointFloatModifiable start, PointFloatModifiable end) {
-		return new SegmentModifiable(start, end);
+	static EdgeModifiable modifiable(PointFloatModifiable start, PointFloatModifiable end) {
+		return new EdgeModifiable(start, end);
 	}
 
 
@@ -36,12 +37,12 @@ public interface Segment {
 	 * @param endY   the vertical coordinate of the start point.
 	 * @return a 1-simplex defined by the input.
 	 */
-	static SegmentImmutable immutable(float startX, float startY, float endX, float endY) {
-		return Segment.immutable(PointFloat.immutable(startX, startY), PointFloat.immutable(endX, endY));
+	static EdgeImmutable immutable(float startX, float startY, float endX, float endY) {
+		return Edge.immutable(PointFloat.immutable(startX, startY), PointFloat.immutable(endX, endY));
 	}
 
-	static SegmentImmutable immutable(PointFloatImmutable start, PointFloatImmutable end) {
-		return new SegmentImmutable(start, end);
+	static EdgeImmutable immutable(PointFloatImmutable start, PointFloatImmutable end) {
+		return new EdgeImmutable(start, end);
 	}
 
 	PointFloat start();
@@ -64,6 +65,14 @@ public interface Segment {
 		return end().y();
 	}
 
+	default PointFloat direction() {
+		return PointFloat.immutable(endX() - startX(), endY() - startY());
+	}
+
+	default float length() {
+		return (float) Functions.distance(startX(), startY(), endX(), endY());
+	}
+
 	/**
 	 * @return the slope, or {@code a} of the line {@code y = ax + b}
 	 * determined by this segment.
@@ -79,10 +88,10 @@ public interface Segment {
 	 * determined by this segment.
 	 */
 	default float constantTerm() {
-		return startY() - slope() * startY();
+		return startY() - slope() * startX();
 	}
 
-	default boolean intersects(Segment other) {
+	default boolean intersects(Edge other) {
 		// Four direction for two lines and points of other line.
 		int dir1 = direction(start(), end(), other.start());
 		int dir2 = direction(start(), end(), other.end());
@@ -113,7 +122,7 @@ public interface Segment {
 	 * @param other the other simplex.
 	 * @return true if the end of this simplex equals the start of the other simplex. Otherwise false.
 	 */
-	default boolean isJoined(Segment other) {
+	default boolean isJoined(Edge other) {
 		return end().equals(other.start());
 	}
 

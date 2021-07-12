@@ -1,4 +1,4 @@
 package dev.kabin.util.geometry;
 
-public record TriangleImmutable(SegmentImmutable e1, SegmentImmutable e2, SegmentImmutable e3) implements Triangle {
+public record TriangleImmutable(EdgeImmutable e1, EdgeImmutable e2, EdgeImmutable e3) implements Triangle {
 }
