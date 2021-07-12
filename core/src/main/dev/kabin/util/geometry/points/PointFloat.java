@@ -39,10 +39,4 @@ public interface PointFloat extends FloatCoordinates {
         return immutable(x(), y.apply(x(), y()));
     }
 
-
-    /**
-     * @return a deep clone of this point.
-     */
-    PointFloat clone();
-
 }

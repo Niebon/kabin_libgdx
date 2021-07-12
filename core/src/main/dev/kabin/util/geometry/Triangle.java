@@ -3,7 +3,10 @@ package dev.kabin.util.geometry;
 import dev.kabin.util.geometry.points.PointFloat;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface Triangle {
 
@@ -45,11 +48,19 @@ public interface Triangle {
         return new TriangleModifiable(e1, e2, e3);
     }
 
+    default void forEachVertex(Consumer<PointFloat> edgeAction) {
+        edgeAction.accept(e1().start());
+        edgeAction.accept(e1().end());
+        edgeAction.accept(e2().start());
+        edgeAction.accept(e2().end());
+        edgeAction.accept(e3().start());
+        edgeAction.accept(e3().end());
+    }
+
     default void forEachEdge(Consumer<Edge> edgeAction) {
         edgeAction.accept(e1());
         edgeAction.accept(e2());
         edgeAction.accept(e3());
-
     }
 
     default PointFloat p1() {
@@ -78,6 +89,18 @@ public interface Triangle {
      */
     default boolean hasEdge(Edge edge) {
         return e1().equals(edge) || e2().equals(edge) || e3().equals(edge);
+    }
+
+    /**
+     * Check if the given triangle contains the given vertex.
+     *
+     * @param vertex a vertex.
+     * @return true if this triangle contains it - false otherwise.
+     */
+    default boolean hasVertex(FloatCoordinates vertex) {
+        return e1().start().equals(vertex) || e1().end().equals(vertex) ||
+                e2().start().equals(vertex) || e2().end().equals(vertex) ||
+                e3().start().equals(vertex) || e3().end().equals(vertex);
     }
 
     /**
@@ -120,6 +143,25 @@ public interface Triangle {
                 || e1().intersects(other.e1()) || e1().intersects(other.e2()) || e1().intersects(other.e3())
                 || e2().intersects(other.e1()) || e2().intersects(other.e2()) || e2().intersects(other.e3())
                 || e3().intersects(other.e1()) || e3().intersects(other.e2()) || e3().intersects(other.e3());
+    }
+
+    /**
+     * @return a string of the form [x1,y1,x2,y2,x3,y2].
+     */
+    default String prettyPrint() {
+        return "[" + Stream.of(e1(), e2(), e3())
+                .mapMulti((e, c) -> {
+                    c.accept(e.startX());
+                    c.accept(e.startY());
+                })
+                .map(String::valueOf)
+                .collect(Collectors.joining(",")) + "]";
+    }
+
+    default List<PointFloat> boundary() {
+        return Stream.of(e1(), e2(), e3())
+                .map(Edge::start)
+                .toList();
     }
 
 }
