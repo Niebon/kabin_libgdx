@@ -2,7 +2,10 @@ package dev.kabin.util.geometry;
 
 import dev.kabin.util.geometry.points.PointFloat;
 
-class Make {
+final class Make {
+
+    private Make() {
+    }
 
     static PointFloat intersection(Line l1, Line l2) {
         float a = l1.slope();

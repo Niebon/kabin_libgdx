@@ -41,7 +41,7 @@ public interface Triangle {
     }
 
     @NotNull
-    private static TriangleModifiable modifiable(EdgeModifiable e1, EdgeModifiable e2, EdgeModifiable e3) {
+    static TriangleModifiable modifiable(EdgeModifiable e1, EdgeModifiable e2, EdgeModifiable e3) {
         return new TriangleModifiable(e1, e2, e3);
     }
 

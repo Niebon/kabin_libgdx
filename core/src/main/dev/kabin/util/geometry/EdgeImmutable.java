@@ -3,8 +3,6 @@ package dev.kabin.util.geometry;
 import dev.kabin.util.HashCodeUtil;
 import dev.kabin.util.geometry.points.PointFloatImmutable;
 
-import java.util.Objects;
-
 /**
  * A modifiable 1-simplex.
  */
@@ -19,8 +17,8 @@ public record EdgeImmutable(PointFloatImmutable start, PointFloatImmutable end) 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Edge that)) return false;
-		return Objects.equals(start, that.start()) && Objects.equals(end, that.end());
+		if ((!(o instanceof Edge that))) return false;
+		return start.equals(that.start()) && end.equals(that.end());
 	}
 
 	@Override

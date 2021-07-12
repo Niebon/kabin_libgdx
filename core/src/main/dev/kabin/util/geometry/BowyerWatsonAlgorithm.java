@@ -50,9 +50,10 @@ public class BowyerWatsonAlgorithm {
             }
             var polygon = new HashSet<Edge>();
             for (var triangle : badTriangles) {
-                triangle.forEachEdge(e -> {
-                    if (badTriangles.stream().noneMatch(t -> t.hasEdge(e))) {
-                        polygon.add(e);
+                triangle.forEachEdge(edge -> {
+                    // If edge is not shared by any other triangles in badTriangles:
+                    if (badTriangles.stream().filter(t -> t != triangle).noneMatch(t -> t.hasEdge(edge))) {
+                        polygon.add(edge);
                     }
                 });
             }
