@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class BowyerWatsonAlgorithm {
+public class AlgorithmBowyerWatson {
 
     // https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
     // See under pseudocode.
-    public static Collection<Triangle> calculateDelaunayTriangulation(Collection<PointFloat> pointList) {
+    public static Collection<Triangle> calculateDelaunayTriangulation(Collection<? extends PointFloat> pointList) {
 
         class Constant {
-            final static float EPSILON = 10e-5f;
+            final static float EPSILON = 1f;
         }
 
         // Find minimal and maximal coordinates among points to be triangulated:
@@ -35,8 +35,8 @@ public class BowyerWatsonAlgorithm {
         // Add epsilon to subdue any round-off errors.
         final var superTriangle = Triangle.immutable(
                 xMin, yMin,
-                xMin, 2 * yMax,
-                2 * xMax, yMin
+                2 * xMax, yMin,
+                xMin, 2 * yMax
         );
 
         final var triangulation = new ArrayList<Triangle>();
@@ -44,7 +44,7 @@ public class BowyerWatsonAlgorithm {
         for (var point : pointList) {
             final var badTriangles = new HashSet<Triangle>();
             for (var triangle : triangulation) {
-                if (Make.circumCircleOf(triangle).contains(point.x(), point.y())) {
+                if (Make.circumCircleOf(triangle).contains(point)) {
                     badTriangles.add(triangle);
                 }
             }
@@ -59,7 +59,7 @@ public class BowyerWatsonAlgorithm {
             }
             triangulation.removeIf(badTriangles::contains);
             for (var edge : polygon) {
-                triangulation.add(Triangle.immutable(point.x(), point.y(), edge.startX(), edge.startY(), edge.endX(), edge.endY()));
+                triangulation.add(Triangle.immutable(edge.startX(), edge.startY(), edge.endX(), edge.endY(), point.x(), point.y()));
             }
         }
         superTriangle.forEachVertex(v -> triangulation.removeIf(t -> t.hasVertex(v)));

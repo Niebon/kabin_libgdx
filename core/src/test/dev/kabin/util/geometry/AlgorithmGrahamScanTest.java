@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class GrahamScanAlgorithmTest {
+class AlgorithmGrahamScanTest {
 
 
     @Test
     public void square() {
-        var convexRepresentation = GrahamScanAlgorithm.on(List.of(
+        var convexRepresentation = AlgorithmGrahamScan.on(List.of(
                 PointFloat.immutable(0, 0),
                 PointFloat.immutable(0, 1),
                 PointFloat.immutable(1, 1),
@@ -27,7 +27,7 @@ class GrahamScanAlgorithmTest {
 
     @Test
     public void squareWithInterior() {
-        var convexRepresentation = GrahamScanAlgorithm.on(List.of(
+        var convexRepresentation = AlgorithmGrahamScan.on(List.of(
                 // Boundary
                 PointFloat.immutable(0, 0),
                 PointFloat.immutable(0, 1),
@@ -47,7 +47,7 @@ class GrahamScanAlgorithmTest {
 
     @Test
     public void squareWithRedunantBoundaryPoints() {
-        var convexRepresentation = GrahamScanAlgorithm.on(List.of(
+        var convexRepresentation = AlgorithmGrahamScan.on(List.of(
                 // Boundary
                 PointFloat.immutable(0, 0),
                 PointFloat.immutable(0, 1),
@@ -67,7 +67,7 @@ class GrahamScanAlgorithmTest {
 
     @Test
     public void squareUnionOutlier() {
-        var convexRepresentation = GrahamScanAlgorithm.on(List.of(
+        var convexRepresentation = AlgorithmGrahamScan.on(List.of(
                 // Boundary
                 PointFloat.immutable(0, 0),
                 PointFloat.immutable(0, 1),

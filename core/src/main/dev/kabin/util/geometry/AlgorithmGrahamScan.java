@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
-public class GrahamScanAlgorithm {
+public class AlgorithmGrahamScan {
 
     /**
      * Performs a Graham scan algorithm on the given collection of points.
@@ -39,7 +39,7 @@ public class GrahamScanAlgorithm {
 
         for (var point : points.subList(2, points.size())) {
             // While angle formed by points [stack.peekNextToTop(), stack.peek(), point] makes a non-left turn, pop the stack:
-            while (stack.size() > 1 && turnSign(stack.peekNextToTop(), stack.peek(), point) <= 0) {
+            while (stack.size() > 1 && Calculate.turnSign(stack.peekNextToTop(), stack.peek(), point) <= 0) {
                 stack.pop();
             }
             stack.add(point);
@@ -48,24 +48,6 @@ public class GrahamScanAlgorithm {
         return Polygon.builder().addAll(stack).buildImmutable();
     }
 
-    private static PointFloat direction(PointFloat p1, PointFloat p2) {
-        return PointFloat.immutable(p2.x() - p1.x(), p2.y() - p1.y());
-    }
-
-    /**
-     * Calculates the cross product p1p2 x p2p3.
-     *
-     * @param p1 the first point.
-     * @param p2 the second point.
-     * @param p3 the third point.
-     * @return the sign of the direction of the turn p1 -> p2 -> p3. If the direction goes to the left, then the sign is positive.
-     * Otherwise it is negative.
-     */
-    private static float turnSign(PointFloat p1, PointFloat p2, PointFloat p3) {
-        var p1p2 = direction(p1, p2);
-        var p2p3 = direction(p2, p3);
-        return p1p2.cross(p2p3);
-    }
 
     // A little helper class to model a stack interface.
     final static class ArrayStack<T> extends ArrayList<T> {

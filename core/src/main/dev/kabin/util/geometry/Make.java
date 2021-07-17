@@ -7,6 +7,10 @@ final class Make {
     private Make() {
     }
 
+    static PointFloat directionOf(Edge segment) {
+        return PointFloat.immutable(segment.endX() - segment.startX(), segment.endY() - segment.startY());
+    }
+
     static PointFloat intersection(Line l1, Line l2) {
         float a = l1.slope();
         float b = l2.slope();
@@ -25,14 +29,15 @@ final class Make {
     }
 
     public static Circle circumCircleOf(Triangle t) {
+        // TODO: unit test this:
         float a = t.e1().length();
         float b = t.e2().length();
         float c = t.e3().length();
         float s = (a + b + c) / 2;
         float r = (float) (a * b * c / (4 * Math.sqrt(s * (s - a) * (s - b) * (s - c))));
 
-        var dir1 = t.e1().direction();
-        var dir2 = t.e2().direction();
+        var dir1 = Make.directionOf(t.e1());
+        var dir2 = Make.directionOf(t.e2());
         var normal1 = dir1.map((x, y) -> -y, (x, y) -> x);
         var normal2 = dir2.map((x, y) -> -y, (x, y) -> x);
         var midPoint1 = midPoint(t.e1());

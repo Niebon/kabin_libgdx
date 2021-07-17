@@ -6,7 +6,7 @@ import dev.kabin.util.geometry.points.PointFloatImmutable;
 import dev.kabin.util.geometry.points.PointFloatModifiable;
 
 /**
- * An edge with a start and an end.
+ * An oriented edge; it has a start and an end.
  */
 public interface Edge {
 
@@ -45,6 +45,18 @@ public interface Edge {
 		return new EdgeImmutable(start, end);
 	}
 
+	static Edge inverse(Edge t) {
+		if (t instanceof EdgeImmutable) {
+			return Edge.immutable(t.endX(), t.endY(), t.startX(), t.startY());
+		} else if (t instanceof EdgeModifiable) {
+			return Edge.modifiable(t.endX(), t.endY(), t.startX(), t.startY());
+		} else throw new IllegalArgumentException();
+	}
+
+	default boolean isInverseTo(Edge other) {
+		return start().equals(other.end()) && end().equals(other.start());
+	}
+
 	PointFloat start();
 
 	PointFloat end();
@@ -65,12 +77,16 @@ public interface Edge {
 		return end().y();
 	}
 
-	default PointFloat direction() {
-		return PointFloat.immutable(endX() - startX(), endY() - startY());
-	}
-
 	default float length() {
 		return (float) Functions.distance(startX(), startY(), endX(), endY());
+	}
+
+	default double angleRad() {
+		return Functions.findAngleRad(endX() - startX(), endY() - startY());
+	}
+
+	default double angleDeg() {
+		return Functions.findAngleDeg(endX() - startX(), endY() - startY());
 	}
 
 	/**

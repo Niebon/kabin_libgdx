@@ -6,7 +6,7 @@ package dev.kabin.util.geometry;
  * These are stored into temp variables that can be accessed by getters.
  * So this class is intend for reuse.
  */
-public final class IntersectionAlgorithm {
+public final class AlgorithmIntersection {
 
     private float xTemp = Float.NaN, yTemp = Float.NaN;
 

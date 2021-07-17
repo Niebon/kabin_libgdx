@@ -8,4 +8,8 @@ public interface Circle extends FloatCoordinates {
     default boolean contains(float x, float y) {
         return Functions.distance(x, y, x(), y()) < r();
     }
+
+    default boolean contains(FloatCoordinates xy) {
+        return contains(xy.x(), xy.y());
+    }
 }
