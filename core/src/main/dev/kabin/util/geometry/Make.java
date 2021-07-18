@@ -11,16 +11,6 @@ final class Make {
         return PointFloat.immutable(segment.endX() - segment.startX(), segment.endY() - segment.startY());
     }
 
-    static PointFloat intersection(Line l1, Line l2) {
-        float a = l1.slope();
-        float b = l2.slope();
-        float c = l1.intercept();
-        float d = l2.intercept();
-        return PointFloat.immutable(
-                (d - c) / (a - b),
-                a * (d - c) / (a - b) + c
-        );
-    }
 
     static PointFloat midPoint(Edge edge) {
         float x = 0.5f * (edge.startX() + edge.endX());
@@ -42,10 +32,24 @@ final class Make {
         var normal2 = dir2.map((x, y) -> -y, (x, y) -> x);
         var midPoint1 = midPoint(t.e1());
         var midPoint2 = midPoint(t.e2());
-        var line1 = Line.of(midPoint1, normal1);
-        var line2 = Line.of(midPoint2, normal2);
 
-        var circumCenter = intersection(line1, line2);
+        float x1 = midPoint1.x();
+        float y1 = midPoint1.y();
+        float x2 = x1 + normal1.x();
+        float y2 = y1 + normal1.y();
+        float x3 = midPoint2.x();
+        float y3 = midPoint2.y();
+        float x4 = x3 + normal2.x();
+        float y4 = y3 + normal2.y();
+
+
+        float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+
+        var circumCenter = PointFloat.immutable(
+                (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4) / d,
+                (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4) / d
+        );
 
         return new CircleImmutable(circumCenter.x(), circumCenter.y(), r);
     }
