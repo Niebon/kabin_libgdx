@@ -1,38 +1,38 @@
-package dev.kabin.util.events.primitives;
+package dev.kabin.util.events;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class IntChangeListener {
+public class IntChangeListenerSimple implements IntChangeListener {
 
 	private final HashMap<Integer, ArrayList<Runnable>> actions = new HashMap<>();
 	private int curr;
 	private int last;
-	private int lastSetValue;
 
+	@Override
 	public int get() {
 		return curr;
 	}
 
-	public void set(int value) {
-		lastSetValue = value;
+	@Override
+	public boolean set(int value) {
 		if (value != curr) {
 			this.last = curr;
 			this.curr = value;
 			if (actions.containsKey(value)) {
 				actions.get(value).forEach(Runnable::run);
 			}
+			return true;
 		}
+		return false;
 	}
 
+	@Override
 	public int last() {
 		return last;
 	}
 
-	public int lastSetValue() {
-		return lastSetValue;
-	}
-
+	@Override
 	public void addListener(int value, Runnable action) {
 		if (!actions.containsKey(value)) {
 			actions.put(value, new ArrayList<>());
@@ -40,6 +40,7 @@ public class IntChangeListener {
 		actions.get(value).add(action);
 	}
 
+	@Override
 	public void clear() {
 		actions.clear();
 	}

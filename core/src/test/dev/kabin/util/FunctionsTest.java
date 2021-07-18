@@ -1,5 +1,6 @@
 package dev.kabin.util;
 
+import dev.kabin.util.events.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

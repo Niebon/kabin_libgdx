@@ -183,4 +183,13 @@ public class Functions {
         }
     }
 
+    public static double sigmoid(double x) {
+        if (x >= 0) {
+            return 1 / (1 + Math.exp(-x));
+        } else {
+            double ex = Math.exp(x);
+            return ex / (1 + ex);
+        }
+    }
+
 }

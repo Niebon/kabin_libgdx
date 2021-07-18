@@ -1,14 +1,14 @@
 package dev.kabin.util.time;
 
-import dev.kabin.util.events.primitives.IntChangeListener;
+import dev.kabin.util.events.IntChangeListenerSimple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class IntChangeListenerTest {
+class IntChangeListenerSimpleTest {
 
     @Test
     void set() {
-        var c = new IntChangeListener();
+        var c = new IntChangeListenerSimple();
         c.set(1);
         Assertions.assertEquals(0, c.last());
 

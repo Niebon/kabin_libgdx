@@ -1,8 +1,8 @@
 package dev.kabin.util.pathfinding;
 
 import dev.kabin.util.Direction;
-import dev.kabin.util.Lists;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.events.Lists;
 import dev.kabin.util.graph.Node;
 import org.jetbrains.annotations.NotNull;
 

@@ -8,8 +8,6 @@ import dev.kabin.util.Direction;
 import dev.kabin.util.Functions;
 import dev.kabin.util.TangentFinder;
 import dev.kabin.util.events.*;
-import dev.kabin.util.events.primitives.BoolChangeListener;
-import dev.kabin.util.events.primitives.IntChangeListener;
 import dev.kabin.util.lambdas.BiIntPredicate;
 import dev.kabin.util.time.Cooldown;
 import dev.kabin.util.time.TimedCondition;
@@ -31,9 +29,9 @@ public final class Player extends EntitySimple {
     // Fields:
     private final EnumEventHandler<Events.Awsd> awsdEvents = EnumEventHandlerImpl.of(Events.Awsd.class);
     private final EnumParameterizedEventHandler<PhysicsParameters, Events.Jump> jumpEvents = EnumParametrizedEventHandlerImpl.of(Events.Jump.class);
-    private final IntChangeListener inputX = new IntChangeListener();
-    private final IntChangeListener inputY = new IntChangeListener();
-    private final IntChangeListener inputJump = new IntChangeListener();
+    private final IntChangeListenerTimed inputX = new IntChangeListenerTimed();
+    private final IntChangeListenerSimple inputY = new IntChangeListenerSimple();
+    private final IntChangeListenerSimple inputJump = new IntChangeListenerSimple();
     private final BoolChangeListener inAir = new BoolChangeListener();
     private final BoolChangeListener inputWalking = new BoolChangeListener();
     private final TimedCondition justBeganJump = new TimedCondition(true, 500L);
@@ -234,7 +232,7 @@ public final class Player extends EntitySimple {
         // Regular movement
         else {
 
-            dx = vAbsPerSecond * params.meter() * inputX.get() * params.dt();
+            dx = getvAbsPerSecond() * params.meter() * inputX.get() * params.dt();
 
             // Handle jump input
             if (firstJumpCondition()) {
@@ -256,7 +254,7 @@ public final class Player extends EntitySimple {
 
         final boolean collisionWithFloor = (dy < 0 && params.isCollisionIfNotLadderData(xPrevAsInt, yNewUnscaled));
         if (collisionWithFloor) {
-            dy = Math.min(findLiftAboveGround(getXAsInt(), getYAsInt(), params::isCollisionAt), vAbsPerSecond * params.meter() * params.dt());
+            dy = Math.min(findLiftAboveGround(getXAsInt(), getYAsInt(), params::isCollisionAt), getvAbsPerSecond() * params.meter() * params.dt());
             vy0 = 0;
             vx0 = 0;
             jumpFrame = 0;
@@ -312,8 +310,8 @@ public final class Player extends EntitySimple {
                         Direction.valueOf(dx),
                         params::isCollisionAt);
 
-                dy = (float) (vAbsPerSecond * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
-                dx = (float) (vAbsPerSecond * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
+                dy = (float) (getvAbsPerSecond() * params.meter() * Math.sin(Math.toRadians(angle)) * params.dt());
+                dx = (float) (getvAbsPerSecond() * params.meter() * Math.cos(Math.toRadians(angle)) * params.dt());
 
 
             }
@@ -348,6 +346,16 @@ public final class Player extends EntitySimple {
         } else if (!onLadder) {
             inAir.set(true);
         }
+    }
+
+    private float getvAbsPerSecond() {
+        if (!inAir.get()) {
+            return (float) (vAbsPerSecond * getSpeedUpFactor());
+        } else return vAbsPerSecond;
+    }
+
+    private double getSpeedUpFactor() {
+        return Math.tanh(inputX.timeCurrentStateMillis() / 125.0);
     }
 
     /**

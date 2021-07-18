@@ -1,9 +1,9 @@
 package dev.kabin.util.pathfinding;
 
 import dev.kabin.util.Functions;
-import dev.kabin.util.Lists;
 import dev.kabin.util.collections.IntToIntMap;
 import dev.kabin.util.collections.LazyList;
+import dev.kabin.util.events.Lists;
 import dev.kabin.util.geometry.points.PointInt;
 import dev.kabin.util.geometry.primitive.GrowingRectInt;
 import dev.kabin.util.geometry.primitive.RectInt;

@@ -63,7 +63,7 @@ public interface PhysicsParameters {
 
 
     /**
-     * @return time step.
+     * @return time step, measured in seconds.
      */
     float dt();
 
